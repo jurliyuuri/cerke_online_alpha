@@ -1,0 +1,31 @@
+<head>
+<style>
+    #board_containment {
+        border: 1px solid blue; width: 631px; height: 631px; position: relative;
+    }
+    #board {
+        position: absolute; top: 0px; left: 0px;
+    }
+
+    img.piece_image_on_board {
+        position: absolute;
+    }
+</style>
+<script src="type__piece.js"></script>
+<script src="drawboard.js"></script>
+</head>
+<body>
+    <div id="board_containment">
+        <div id="board">
+            <img src="image/field.png" width="631" height="631" />
+        </div>
+        <div id="contains_pieces_on_board">
+        </div>        
+    </div>
+    
+    <script>
+        
+        
+        drawBoard(sampleBoard);
+    </script>
+</body>
