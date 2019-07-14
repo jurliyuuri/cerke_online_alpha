@@ -57,14 +57,14 @@ const sampleBoard: Board = [
     [{color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward}, 
         null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null, null],
     [null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, null, null, null, null, null, null],
-    [null, "Tam2", "Tam2", null, null, null, null, null, null],
-    [null, null, "Tam2", null, null, null, null, null, null],
+    [{ color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2", "Tam2", null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
+    [null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, "Tam2", null, null, null, null, null, null],
     [null, null, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, 
         null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
-    [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, "Tam2"]
+    [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null, null],
+    [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, null],
+    [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"]
 ];
 
 type GAME_STATE = {
@@ -140,22 +140,7 @@ function drawSelectednessOnBoard(coord: Coord) {
     return i;
 }
 
-function applyDelta(coord: Coord, deltas: Array<[number, number]>): Array<Coord> {
-    const [i, j] = coord;
-    const assertCoord: (k: number[]) => Coord = ([l, m]) => ([l, m] as Coord);
-    return deltas.map(([delta_x, delta_y]) => [i + delta_x, j + delta_y])
-    .filter(([l, m]) => (0 <= l && l <= 8 && 0 <= m && m <= 8))
-    .map(assertCoord);
-}
 
-function eightNeighborhood(coord: Coord): Array<Coord>
-{
-    return applyDelta(coord, [
-        [-1, -1], [-1, 0], [-1, 1],
-        [0, -1], [0, 1],
-        [1, -1], [1, 0], [1, 1]
-    ]);
-}
 
 function coordEq(a: Coord, b: Coord): boolean {
     return a[0] === b[0] && a[1] === b[1];
@@ -179,71 +164,15 @@ function isTamHue(coord: Coord, board: Readonly<Board>): boolean
 }
 
 
-function getYellowGuideList(coord: Coord, sq: Piece | null): Array<Coord>
-{
-    if (sq == null) {
-        alert("Programming Error!!!");
-        throw new Error("Programming Error!!!!");
-    } 
-    
-    if (sq === "Tam2") {
-        return eightNeighborhood(coord);
-    } 
-
-    let _dummy: NonTam2Piece = sq;
-
-    if (sq.side === Side.Downward) {
-        alert("We do not expect a downward stuff!!!");
-        throw new Error("We do not expect a downward stuff!!!");
-    }
-
-    if (sq.prof === Profession.Io) {
-        return eightNeighborhood(coord);
-    }
-
-    if (isTamHue(coord, GAME_STATE.currentBoard)) {
-        switch (sq.prof) {
-            case Profession.Nuak1:  // Vessel, 船, felkana
-            case Profession.Kauk2: // Pawn, 兵, elmer
-            case Profession.Gua2: // Rook, 弓, gustuer
-            case Profession.Kaun1: // Bishop, 車, vadyrd
-            case Profession.Dau2: // Tiger, 虎, stistyst
-            case Profession.Maun1: // Horse, 馬, dodor
-            case Profession.Kua2: // Clerk, 筆, kua
-            case Profession.Tuk2: // Shaman, 巫, terlsk
-            case Profession.Uai1: // General, 将, varxle
-
-        }
-    } else {
-        switch (sq.prof) {
-            case Profession.Nuak1:  // Vessel, 船, felkana
-            case Profession.Kauk2: // Pawn, 兵, elmer
-            case Profession.Gua2: // Rook, 弓, gustuer
-            case Profession.Kaun1: // Bishop, 車, vadyrd
-            case Profession.Dau2: // Tiger, 虎, stistyst
-            case Profession.Maun1: // Horse, 馬, dodor
-            case Profession.Kua2: // Clerk, 筆, kua
-            case Profession.Tuk2: // Shaman, 巫, terlsk
-            case Profession.Uai1: // General, 将, varxle
-        }
-    }
-
-    return [
-        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
-        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
-        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
-        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex]
-    ];
-}
 
 type Coord = Readonly<[BoardIndex, BoardIndex]>;
 
-function showGuideOf(coord: Coord, sq: Piece | null) {
+function showGuideOf(coord: Coord, sq: Piece) {
     const contains_guides = document.getElementById("contains_guides")!;
     const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
 
-    const guideList: Array<Coord> = getYellowGuideList(coord, sq);
+    const guideList: Array<Coord> = calculateMovablePositions(coord, sq, GAME_STATE.currentBoard);
 
     for (let ind = 0; ind < guideList.length; ind++) {
         contains_guides.appendChild(drawYellowGuideOnBoard(guideList[ind]));
@@ -251,7 +180,7 @@ function showGuideOf(coord: Coord, sq: Piece | null) {
     
 }
 
-function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Piece | null, imgNode: HTMLImageElement) {
+function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Piece, imgNode: HTMLImageElement) {
     const [i, j] = coord;
     console.log(ev, i, j, sq);
 
