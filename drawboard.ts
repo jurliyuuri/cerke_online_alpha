@@ -56,9 +56,9 @@ const sampleBoard: Board = [
     [{color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward}, 
         null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null, null],
     [null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, null, null, null, null, null, null],
-    [null, "Tam2", null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
+    [null, "Tam2", "Tam2", null, null, null, null, null, null],
+    [null, null, "Tam2", null, null, null, null, null, null],
+    [null, null, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, 
         null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null],
@@ -66,8 +66,68 @@ const sampleBoard: Board = [
     [null, null, null, null, null, null, null, null, null]
 ];
 
+type UI_STATE = {
+    selectedIndex: null | [BoardIndex, BoardIndex];
+};
+
+let UI_STATE: UI_STATE = {
+    selectedIndex: null
+};
+
+function eraseGuide() {
+    let contains_guides = document.getElementById("contains_guides")!;
+
+    // delete everything
+    while (contains_guides.firstChild) {
+        contains_guides.removeChild(contains_guides.firstChild);
+    }
+}
+
+function drawSelectednessOnBoard(row_index: BoardIndex, column_index: BoardIndex) {
+    let i = document.createElement("img");
+    i.classList.add("selection");
+    i.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2}px`;
+    i.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2}px`;
+    i.src = `image/selection2.png`;
+    i.width = PIECE_SIZE;
+    i.height = PIECE_SIZE;
+    i.style.cursor = "pointer";
+
+    // click on it to erase
+    i.addEventListener('click', function() {
+        eraseGuide();
+        UI_STATE.selectedIndex = null;
+    });
+    return i;
+}
+
+function showGuideOf(i: BoardIndex, j: BoardIndex, sq: Square) {
+    let contains_guides = document.getElementById("contains_guides")!;
+    let centralNode: HTMLImageElement = drawSelectednessOnBoard(i, j);
+    contains_guides.appendChild(centralNode);
+}
+
+function selectOwnPieceOnBoard(ev: MouseEvent, i: BoardIndex, j: BoardIndex, sq: Square, imgNode: HTMLImageElement) {
+    console.log(ev, i, j, sq);
+
+    if (UI_STATE.selectedIndex != null && UI_STATE.selectedIndex[0] === i && UI_STATE.selectedIndex[1] === j) {
+        eraseGuide();
+        UI_STATE.selectedIndex = null;
+    } else {
+        eraseGuide();
+        UI_STATE.selectedIndex = [i, j];
+        showGuideOf(i, j, sq);
+    }
+    
+}
+
 function drawBoard(board: Board) {
     let contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
+
+    // delete everything
+    while (contains_pieces_on_board.firstChild) {
+        contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
+    }
 
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
@@ -76,11 +136,23 @@ function drawBoard(board: Board) {
                 continue;
             } 
             
-            let imgNode;
+            let i_: BoardIndex = i as BoardIndex;
+            let j_: BoardIndex = j as BoardIndex;
+            let imgNode: HTMLImageElement;
+            let selectable;
             if (sq === "Tam2") {
-                imgNode = drawPieceOnBoard(i as BoardIndex, j as BoardIndex, "piece/tam");
+                imgNode = drawPieceOnBoard(i_, j_, "piece/tam");
+                selectable = true;
             } else {
-                imgNode = drawPieceOnBoard(i as BoardIndex, j as BoardIndex, toPath(sq));
+                imgNode = drawPieceOnBoard(i_, j_, toPath(sq));
+                selectable = (sq.side === Side.Upward);
+            }
+
+            if (selectable) {
+                imgNode.style.cursor = "pointer";
+                imgNode.addEventListener('click', function(ev){
+                    selectOwnPieceOnBoard(ev, i_, j_, sq, imgNode)
+                });
             }
 
             contains_pieces_on_board.appendChild(imgNode);

@@ -59,31 +59,92 @@ var sampleBoard = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
         null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null, null],
     [null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, null, null, null, null, null, null],
-    [null, "Tam2", null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
+    [null, "Tam2", "Tam2", null, null, null, null, null, null],
+    [null, null, "Tam2", null, null, null, null, null, null],
+    [null, null, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
         null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null]
 ];
+var UI_STATE = {
+    selectedIndex: null
+};
+function eraseGuide() {
+    var contains_guides = document.getElementById("contains_guides");
+    // delete everything
+    while (contains_guides.firstChild) {
+        contains_guides.removeChild(contains_guides.firstChild);
+    }
+}
+function drawSelectednessOnBoard(row_index, column_index) {
+    var i = document.createElement("img");
+    i.classList.add("selection");
+    i.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 + "px";
+    i.style.left = 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 + "px";
+    i.src = "image/selection2.png";
+    i.width = PIECE_SIZE;
+    i.height = PIECE_SIZE;
+    i.style.cursor = "pointer";
+    // click on it to erase
+    i.addEventListener('click', function () {
+        eraseGuide();
+        UI_STATE.selectedIndex = null;
+    });
+    return i;
+}
+function showGuideOf(i, j, sq) {
+    var contains_guides = document.getElementById("contains_guides");
+    var centralNode = drawSelectednessOnBoard(i, j);
+    contains_guides.appendChild(centralNode);
+}
+function selectOwnPieceOnBoard(ev, i, j, sq, imgNode) {
+    console.log(ev, i, j, sq);
+    if (UI_STATE.selectedIndex != null && UI_STATE.selectedIndex[0] === i && UI_STATE.selectedIndex[1] === j) {
+        eraseGuide();
+        UI_STATE.selectedIndex = null;
+    }
+    else {
+        eraseGuide();
+        UI_STATE.selectedIndex = [i, j];
+        showGuideOf(i, j, sq);
+    }
+}
 function drawBoard(board) {
     var contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
+    // delete everything
+    while (contains_pieces_on_board.firstChild) {
+        contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
+    }
     for (var i = 0; i < board.length; i++) {
-        for (var j = 0; j < board[i].length; j++) {
+        var _loop_1 = function (j) {
             var sq = board[i][j];
             if (sq == null) {
-                continue;
+                return "continue";
             }
-            var imgNode = void 0;
+            var i_ = i;
+            var j_ = j;
+            var imgNode;
+            var selectable = void 0;
             if (sq === "Tam2") {
-                imgNode = drawPieceOnBoard(i, j, "piece/tam");
+                imgNode = drawPieceOnBoard(i_, j_, "piece/tam");
+                selectable = true;
             }
             else {
-                imgNode = drawPieceOnBoard(i, j, toPath(sq));
+                imgNode = drawPieceOnBoard(i_, j_, toPath(sq));
+                selectable = (sq.side === Side.Upward);
+            }
+            if (selectable) {
+                imgNode.style.cursor = "pointer";
+                imgNode.addEventListener('click', function (ev) {
+                    selectOwnPieceOnBoard(ev, i_, j_, sq, imgNode);
+                });
             }
             contains_pieces_on_board.appendChild(imgNode);
+        };
+        for (var j = 0; j < board[i].length; j++) {
+            _loop_1(j);
         }
     }
 }

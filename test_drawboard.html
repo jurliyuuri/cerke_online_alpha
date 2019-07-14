@@ -7,6 +7,16 @@
         position: absolute; top: 0px; left: 0px;
     }
 
+    img.selection {
+        position: absolute;
+        animation: anime1 0.81s ease -2s infinite alternate;
+    }
+
+    @keyframes anime1 {
+    0% {opacity: 0.5;}
+    100% {opacity: 1.0;}
+    }
+
     img.piece_image_on_board {
         position: absolute;
     }
@@ -20,7 +30,9 @@
             <img src="image/field.png" width="631" height="631" />
         </div>
         <div id="contains_pieces_on_board">
-        </div>        
+        </div>
+        <div id="contains_guides">
+        </div>
     </div>
     
     <script>
