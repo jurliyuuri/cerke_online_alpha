@@ -62,13 +62,14 @@ const sampleBoard: Board = [
     [null, null, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, 
         null, null, null, null, null, null, null, null],
-    [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null, null],
+    [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null],
     [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, null],
     [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"]
 ];
 
 type GAME_STATE = {
-    currentBoard: Board
+    currentBoard: Board,
+    IA_is_down: boolean
 };
 
 let GAME_STATE = {
@@ -82,7 +83,8 @@ let GAME_STATE = {
         [null, null, null, null, null, null, null, null, "Tam2"],
         [null, null, null, null, null, null, null, null, "Tam2"],
         [null, null, null, null, null, null, null, null, "Tam2"]
-    ] as Board
+    ] as Board,
+    IA_is_down: true
 }
 
 type UI_STATE = {
@@ -102,24 +104,7 @@ function eraseGuide() {
     }
 }
 
-function drawYellowGuideOnBoard(coord: Coord) {
-    let [row_index, column_index] = coord;
-    let i = document.createElement("img");
-    i.classList.add("guide");
-    i.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
-    i.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
-    i.src = `image/ct.png`;
-    i.width = MAX_PIECE_SIZE;
-    i.height = MAX_PIECE_SIZE;
-    i.style.cursor = "pointer";
-    i.style.opacity = "0.3";
 
-    // click on it to erase
-    i.addEventListener('click', function () {
-        alert("implement me");
-    });
-    return i;
-}
 
 function drawSelectednessOnBoard(coord: Coord) {
     let [row_index, column_index] = coord;
@@ -167,6 +152,60 @@ function isTamHue(coord: Coord, board: Readonly<Board>): boolean
 
 type Coord = Readonly<[BoardIndex, BoardIndex]>;
 
+function toAbsoluteCoord([row, col]: Coord): AbsoluteCoord {
+    return [
+        [
+            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I, 
+            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y, 
+            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA
+        ][GAME_STATE.IA_is_down ? row : 8 - row],
+        [
+            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N, 
+            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X, 
+            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
+        ][GAME_STATE.IA_is_down ? col : 8 - col]
+    ];
+}
+
+function getThingsGoing(ev: MouseEvent, sq: Piece, from: Coord, to: Coord) {
+    let dest = GAME_STATE.currentBoard[to[0]][to[1]];
+
+    if (dest == null) { // dest is empty square; try to simply move
+        let message: NormalMove;
+
+        if (sq !== "Tam2") {
+            let abs_src: AbsoluteCoord = toAbsoluteCoord(from);
+            let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
+            message = {
+                type: "NonTamMove",
+                data: {
+                    type: "SrcDst",
+                    src: abs_src,
+                    dest: abs_dst
+                }
+            };
+            console.log("sending normal move:", JSON.stringify(message));
+
+            eraseGuide();
+            UI_STATE.selectedCoord = null;
+    
+            alert("message sent.");
+            return;
+        } else {
+            alert("implement Tam2 movement");
+            return;
+        }
+    }
+
+    if (dest === "Tam2" || dest.side === Side.Upward) { // can step, but cannot take
+        alert("implement stepping");
+        return;
+    }
+
+
+    alert("implement me");
+}
+
 function showGuideOf(coord: Coord, sq: Piece) {
     const contains_guides = document.getElementById("contains_guides")!;
     const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
@@ -175,7 +214,26 @@ function showGuideOf(coord: Coord, sq: Piece) {
     const guideList: Array<Coord> = calculateMovablePositions(coord, sq, GAME_STATE.currentBoard);
 
     for (let ind = 0; ind < guideList.length; ind++) {
-        contains_guides.appendChild(drawYellowGuideOnBoard(guideList[ind]));
+
+        // draw the yellow guides
+        const [row_index, column_index] = guideList[ind];
+        let img = document.createElement("img");
+        img.classList.add("guide");
+        img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
+        img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
+        img.src = `image/ct.png`;
+        img.width = MAX_PIECE_SIZE;
+        img.height = MAX_PIECE_SIZE;
+        img.style.cursor = "pointer";
+        img.style.opacity = "0.3";
+    
+        // click on it to get things going
+        img.addEventListener('click', function (ev) {
+            getThingsGoing(ev, sq, coord, guideList[ind]);
+            
+        });
+
+        contains_guides.appendChild(img);
     }
     
 }

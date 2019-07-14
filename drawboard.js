@@ -65,7 +65,7 @@ var sampleBoard = [
     [null, null, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
         null, null, null, null, null, null, null, null],
-    [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null, null],
+    [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null],
     [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, null],
     [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"]
 ];
@@ -80,7 +80,8 @@ var GAME_STATE = {
         [null, null, null, null, null, null, null, null, "Tam2"],
         [null, null, null, null, null, null, null, null, "Tam2"],
         [null, null, null, null, null, null, null, null, "Tam2"]
-    ]
+    ],
+    IA_is_down: true
 };
 var UI_STATE = {
     selectedCoord: null
@@ -91,23 +92,6 @@ function eraseGuide() {
     while (contains_guides.firstChild) {
         contains_guides.removeChild(contains_guides.firstChild);
     }
-}
-function drawYellowGuideOnBoard(coord) {
-    var row_index = coord[0], column_index = coord[1];
-    var i = document.createElement("img");
-    i.classList.add("guide");
-    i.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
-    i.style.left = 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
-    i.src = "image/ct.png";
-    i.width = MAX_PIECE_SIZE;
-    i.height = MAX_PIECE_SIZE;
-    i.style.cursor = "pointer";
-    i.style.opacity = "0.3";
-    // click on it to erase
-    i.addEventListener('click', function () {
-        alert("implement me");
-    });
-    return i;
 }
 function drawSelectednessOnBoard(coord) {
     var row_index = coord[0], column_index = coord[1];
@@ -144,13 +128,78 @@ function isTamHue(coord, board) {
         return board[i][j] === "Tam2";
     });
 }
+function toAbsoluteCoord(_a) {
+    var row = _a[0], col = _a[1];
+    return [
+        [
+            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
+            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
+            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA
+        ][GAME_STATE.IA_is_down ? row : 8 - row],
+        [
+            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
+            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
+            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
+        ][GAME_STATE.IA_is_down ? col : 8 - col]
+    ];
+}
+function getThingsGoing(ev, sq, from, to) {
+    var dest = GAME_STATE.currentBoard[to[0]][to[1]];
+    if (dest == null) { // dest is empty square; try to simply move
+        var message = void 0;
+        if (sq !== "Tam2") {
+            var abs_src = toAbsoluteCoord(from);
+            var abs_dst = toAbsoluteCoord(to);
+            message = {
+                type: "NonTamMove",
+                data: {
+                    type: "SrcDst",
+                    src: abs_src,
+                    dest: abs_dst
+                }
+            };
+            console.log("sending normal move:", JSON.stringify(message));
+            eraseGuide();
+            UI_STATE.selectedCoord = null;
+            alert("message sent.");
+            return;
+        }
+        else {
+            alert("implement Tam2 movement");
+            return;
+        }
+    }
+    if (dest === "Tam2" || dest.side === Side.Upward) { // can step, but cannot take
+        alert("implement stepping");
+        return;
+    }
+    alert("implement me");
+}
 function showGuideOf(coord, sq) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
     var guideList = calculateMovablePositions(coord, sq, GAME_STATE.currentBoard);
+    var _loop_1 = function (ind) {
+        // draw the yellow guides
+        var _a = guideList[ind], row_index = _a[0], column_index = _a[1];
+        var img = document.createElement("img");
+        img.classList.add("guide");
+        img.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
+        img.style.left = 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
+        img.src = "image/ct.png";
+        img.width = MAX_PIECE_SIZE;
+        img.height = MAX_PIECE_SIZE;
+        img.style.cursor = "pointer";
+        img.style.opacity = "0.3";
+        // click on it to get things going
+        img.addEventListener('click', function (ev) {
+            getThingsGoing(ev, sq, coord, guideList[ind]);
+        });
+        contains_guides.appendChild(img);
+    };
     for (var ind = 0; ind < guideList.length; ind++) {
-        contains_guides.appendChild(drawYellowGuideOnBoard(guideList[ind]));
+        _loop_1(ind);
     }
 }
 function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
@@ -174,7 +223,7 @@ function drawBoard(board) {
         contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
     }
     for (var i = 0; i < board.length; i++) {
-        var _loop_1 = function (j) {
+        var _loop_2 = function (j) {
             var sq = board[i][j];
             if (sq == null) {
                 return "continue";
@@ -199,7 +248,7 @@ function drawBoard(board) {
             contains_pieces_on_board.appendChild(imgNode);
         };
         for (var j = 0; j < board[i].length; j++) {
-            _loop_1(j);
+            _loop_2(j);
         }
     }
 }
