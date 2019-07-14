@@ -29,6 +29,7 @@ interface NonTam2Piece {
 
 type Piece = "Tam2" | NonTam2Piece;
 
-type Board = [Row, Row, Row, Row, Row, Row, Row, Row, Row];
-type Row = [Square, Square, Square, Square, Square, Square, Square, Square, Square];
-type Square = Piece | null;
+type Tuple9<T> = [T, T, T, T, T, T, T, T, T]
+
+type Board = Tuple9<Row>;
+type Row = Tuple9<Piece | null>;

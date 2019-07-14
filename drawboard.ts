@@ -67,6 +67,24 @@ const sampleBoard: Board = [
     [null, null, null, null, null, null, null, null, "Tam2"]
 ];
 
+type GAME_STATE = {
+    currentBoard: Board
+};
+
+let GAME_STATE = {
+    currentBoard: [
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"]
+    ] as Board
+}
+
 type UI_STATE = {
     selectedCoord: null | Coord;
 };
@@ -122,26 +140,46 @@ function drawSelectednessOnBoard(coord: Coord) {
     return i;
 }
 
-function eightNeighborhood(coord: Coord): Array<Coord>
-{
-    const [i,j] = coord;
-    const assertCoord: (k: number[]) => Coord = ([l,m]) => ([l,m] as Coord);
-    return [
-        [i - 1, j - 1], [i - 1, j], [i - 1, j + 1],
-        [i, j - 1], [i, j + 1],
-        [i + 1, j - 1], [i + 1, j], [i + 1, j + 1]
-    ].filter(([l,m]) => (0 <= l && l <= 8 && 0 <= m && m <= 8))
+function applyDelta(coord: Coord, deltas: Array<[number, number]>): Array<Coord> {
+    const [i, j] = coord;
+    const assertCoord: (k: number[]) => Coord = ([l, m]) => ([l, m] as Coord);
+    return deltas.map(([delta_x, delta_y]) => [i + delta_x, j + delta_y])
+    .filter(([l, m]) => (0 <= l && l <= 8 && 0 <= m && m <= 8))
     .map(assertCoord);
 }
 
-/*
-function isTamHue(i: BoardIndex, j: BoardIndex): boolean
+function eightNeighborhood(coord: Coord): Array<Coord>
 {
-
+    return applyDelta(coord, [
+        [-1, -1], [-1, 0], [-1, 1],
+        [0, -1], [0, 1],
+        [1, -1], [1, 0], [1, 1]
+    ]);
 }
-*/
 
-function getYellowGuideList(coord: Coord, sq: Square): Array<Coord>
+function coordEq(a: Coord, b: Coord): boolean {
+    return a[0] === b[0] && a[1] === b[1];
+}
+
+
+function isTamHue(coord: Coord, board: Readonly<Board>): boolean
+{
+    // unconditionally TamHue
+    if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) || 
+        coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) || 
+        coordEq(coord, [4, 4]) || 
+        coordEq(coord, [5, 3]) || coordEq(coord, [5, 5]) || 
+        coordEq(coord, [6, 2]) || coordEq(coord, [6, 6])
+    ) {
+        return true;
+    }
+
+    // is Tam2 available at any neighborhood?
+    return eightNeighborhood(coord).some(([i, j]) => board[i][j] === "Tam2");
+}
+
+
+function getYellowGuideList(coord: Coord, sq: Piece | null): Array<Coord>
 {
     if (sq == null) {
         alert("Programming Error!!!");
@@ -163,19 +201,33 @@ function getYellowGuideList(coord: Coord, sq: Square): Array<Coord>
         return eightNeighborhood(coord);
     }
 
-    switch(sq.prof) {
-        case Profession.Nuak1:  // Vessel, 船, felkana
-        case Profession.Kauk2: // Pawn, 兵, elmer
-        case Profession.Gua2: // Rook, 弓, gustuer
-        case Profession.Kaun1: // Bishop, 車, vadyrd
-        case Profession.Dau2: // Tiger, 虎, stistyst
-        case Profession.Maun1: // Horse, 馬, dodor
-        case Profession.Kua2: // Clerk, 筆, kua
-        case Profession.Tuk2: // Shaman, 巫, terlsk
-        case Profession.Uai1: // General, 将, varxle
-        
+    if (isTamHue(coord, GAME_STATE.currentBoard)) {
+        switch (sq.prof) {
+            case Profession.Nuak1:  // Vessel, 船, felkana
+            case Profession.Kauk2: // Pawn, 兵, elmer
+            case Profession.Gua2: // Rook, 弓, gustuer
+            case Profession.Kaun1: // Bishop, 車, vadyrd
+            case Profession.Dau2: // Tiger, 虎, stistyst
+            case Profession.Maun1: // Horse, 馬, dodor
+            case Profession.Kua2: // Clerk, 筆, kua
+            case Profession.Tuk2: // Shaman, 巫, terlsk
+            case Profession.Uai1: // General, 将, varxle
+
+        }
+    } else {
+        switch (sq.prof) {
+            case Profession.Nuak1:  // Vessel, 船, felkana
+            case Profession.Kauk2: // Pawn, 兵, elmer
+            case Profession.Gua2: // Rook, 弓, gustuer
+            case Profession.Kaun1: // Bishop, 車, vadyrd
+            case Profession.Dau2: // Tiger, 虎, stistyst
+            case Profession.Maun1: // Horse, 馬, dodor
+            case Profession.Kua2: // Clerk, 筆, kua
+            case Profession.Tuk2: // Shaman, 巫, terlsk
+            case Profession.Uai1: // General, 将, varxle
+        }
     }
-    
+
     return [
         [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
         [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
@@ -186,7 +238,7 @@ function getYellowGuideList(coord: Coord, sq: Square): Array<Coord>
 
 type Coord = Readonly<[BoardIndex, BoardIndex]>;
 
-function showGuideOf(coord: Coord, sq: Square) {
+function showGuideOf(coord: Coord, sq: Piece | null) {
     const contains_guides = document.getElementById("contains_guides")!;
     const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
@@ -199,7 +251,7 @@ function showGuideOf(coord: Coord, sq: Square) {
     
 }
 
-function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Square, imgNode: HTMLImageElement) {
+function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Piece | null, imgNode: HTMLImageElement) {
     const [i, j] = coord;
     console.log(ev, i, j, sq);
 
@@ -216,6 +268,7 @@ function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Square, imgNode
 
 function drawBoard(board: Board) {
     const contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
+    GAME_STATE.currentBoard = board;
 
     // delete everything
     while (contains_pieces_on_board.firstChild) {
@@ -224,7 +277,7 @@ function drawBoard(board: Board) {
 
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
-            const sq : Square = board[i][j];
+            const sq: Piece | null = board[i][j];
             if (sq == null) {
                 continue;
             } 

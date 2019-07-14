@@ -69,6 +69,19 @@ var sampleBoard = [
     [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, "Tam2"]
 ];
+var GAME_STATE = {
+    currentBoard: [
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"],
+        [null, null, null, null, null, null, null, null, "Tam2"]
+    ]
+};
 var UI_STATE = {
     selectedCoord: null
 };
@@ -113,28 +126,47 @@ function drawSelectednessOnBoard(coord) {
     });
     return i;
 }
-function eightNeighborhood(coord) {
+function applyDelta(coord, deltas) {
     var i = coord[0], j = coord[1];
     var assertCoord = function (_a) {
         var l = _a[0], m = _a[1];
         return [l, m];
     };
-    return [
-        [i - 1, j - 1], [i - 1, j], [i - 1, j + 1],
-        [i, j - 1], [i, j + 1],
-        [i + 1, j - 1], [i + 1, j], [i + 1, j + 1]
-    ].filter(function (_a) {
+    return deltas.map(function (_a) {
+        var delta_x = _a[0], delta_y = _a[1];
+        return [i + delta_x, j + delta_y];
+    })
+        .filter(function (_a) {
         var l = _a[0], m = _a[1];
         return (0 <= l && l <= 8 && 0 <= m && m <= 8);
     })
         .map(assertCoord);
 }
-/*
-function isTamHue(i: BoardIndex, j: BoardIndex): boolean
-{
-
+function eightNeighborhood(coord) {
+    return applyDelta(coord, [
+        [-1, -1], [-1, 0], [-1, 1],
+        [0, -1], [0, 1],
+        [1, -1], [1, 0], [1, 1]
+    ]);
 }
-*/
+function coordEq(a, b) {
+    return a[0] === b[0] && a[1] === b[1];
+}
+function isTamHue(coord, board) {
+    // unconditionally TamHue
+    if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) ||
+        coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) ||
+        coordEq(coord, [4, 4]) ||
+        coordEq(coord, [5, 3]) || coordEq(coord, [5, 5]) ||
+        coordEq(coord, [6, 2]) || coordEq(coord, [6, 6])) {
+        return true;
+    }
+    // is Tam2 available at any neighborhood?
+    return eightNeighborhood(coord).some(function (_a) {
+        var i = _a[0], j = _a[1];
+        return board[i][j] === "Tam2";
+    });
+}
 function getYellowGuideList(coord, sq) {
     if (sq == null) {
         alert("Programming Error!!!");
@@ -151,16 +183,31 @@ function getYellowGuideList(coord, sq) {
     if (sq.prof === Profession.Io) {
         return eightNeighborhood(coord);
     }
-    switch (sq.prof) {
-        case Profession.Nuak1: // Vessel, 船, felkana
-        case Profession.Kauk2: // Pawn, 兵, elmer
-        case Profession.Gua2: // Rook, 弓, gustuer
-        case Profession.Kaun1: // Bishop, 車, vadyrd
-        case Profession.Dau2: // Tiger, 虎, stistyst
-        case Profession.Maun1: // Horse, 馬, dodor
-        case Profession.Kua2: // Clerk, 筆, kua
-        case Profession.Tuk2: // Shaman, 巫, terlsk
-        case Profession.Uai1: // General, 将, varxle
+    if (isTamHue(coord, GAME_STATE.currentBoard)) {
+        switch (sq.prof) {
+            case Profession.Nuak1: // Vessel, 船, felkana
+            case Profession.Kauk2: // Pawn, 兵, elmer
+            case Profession.Gua2: // Rook, 弓, gustuer
+            case Profession.Kaun1: // Bishop, 車, vadyrd
+            case Profession.Dau2: // Tiger, 虎, stistyst
+            case Profession.Maun1: // Horse, 馬, dodor
+            case Profession.Kua2: // Clerk, 筆, kua
+            case Profession.Tuk2: // Shaman, 巫, terlsk
+            case Profession.Uai1: // General, 将, varxle
+        }
+    }
+    else {
+        switch (sq.prof) {
+            case Profession.Nuak1: // Vessel, 船, felkana
+            case Profession.Kauk2: // Pawn, 兵, elmer
+            case Profession.Gua2: // Rook, 弓, gustuer
+            case Profession.Kaun1: // Bishop, 車, vadyrd
+            case Profession.Dau2: // Tiger, 虎, stistyst
+            case Profession.Maun1: // Horse, 馬, dodor
+            case Profession.Kua2: // Clerk, 筆, kua
+            case Profession.Tuk2: // Shaman, 巫, terlsk
+            case Profession.Uai1: // General, 将, varxle
+        }
     }
     return [
         [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)],
@@ -193,6 +240,7 @@ function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
 }
 function drawBoard(board) {
     var contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
+    GAME_STATE.currentBoard = board;
     // delete everything
     while (contains_pieces_on_board.firstChild) {
         contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
