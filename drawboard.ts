@@ -83,6 +83,24 @@ function eraseGuide() {
     }
 }
 
+function drawGuideOnBoard(row_index: BoardIndex, column_index: BoardIndex) {
+    let i = document.createElement("img");
+    i.classList.add("guide");
+    i.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
+    i.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
+    i.src = `image/ct.png`;
+    i.width = MAX_PIECE_SIZE;
+    i.height = MAX_PIECE_SIZE;
+    i.style.cursor = "pointer";
+    i.style.opacity = "0.3";
+
+    // click on it to erase
+    i.addEventListener('click', function () {
+        alert("implement me");
+    });
+    return i;
+}
+
 function drawSelectednessOnBoard(row_index: BoardIndex, column_index: BoardIndex) {
     let i = document.createElement("img");
     i.classList.add("selection");
@@ -105,6 +123,13 @@ function showGuideOf(i: BoardIndex, j: BoardIndex, sq: Square) {
     let contains_guides = document.getElementById("contains_guides")!;
     let centralNode: HTMLImageElement = drawSelectednessOnBoard(i, j);
     contains_guides.appendChild(centralNode);
+
+    for (let i = 0; i < 4; i++) {
+        let l = Math.floor(Math.random() * 9) as BoardIndex;
+        let m = Math.floor(Math.random() * 9) as BoardIndex;
+        contains_guides.appendChild(drawGuideOnBoard(l, m));
+    }
+    
 }
 
 function selectOwnPieceOnBoard(ev: MouseEvent, i: BoardIndex, j: BoardIndex, sq: Square, imgNode: HTMLImageElement) {
