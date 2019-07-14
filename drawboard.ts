@@ -5,7 +5,8 @@ const PIECE_SIZE = 60;
 
 type BoardIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
-function drawPieceOnBoard(row_index: BoardIndex, column_index: BoardIndex, path: string) {
+function drawPieceOnBoard(coord: Coord, path: string) {
+    let [row_index, column_index] = coord;
     let i = document.createElement("img");
     i.classList.add("piece_image_on_board");
     i.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2}px`;
@@ -62,16 +63,16 @@ const sampleBoard: Board = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, 
         null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null]
+    [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null, "Tam2"]
 ];
 
 type UI_STATE = {
-    selectedIndex: null | [BoardIndex, BoardIndex];
+    selectedCoord: null | Coord;
 };
 
 let UI_STATE: UI_STATE = {
-    selectedIndex: null
+    selectedCoord: null
 };
 
 function eraseGuide() {
@@ -83,7 +84,8 @@ function eraseGuide() {
     }
 }
 
-function drawYellowGuideOnBoard(row_index: BoardIndex, column_index: BoardIndex) {
+function drawYellowGuideOnBoard(coord: Coord) {
+    let [row_index, column_index] = coord;
     let i = document.createElement("img");
     i.classList.add("guide");
     i.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
@@ -101,7 +103,8 @@ function drawYellowGuideOnBoard(row_index: BoardIndex, column_index: BoardIndex)
     return i;
 }
 
-function drawSelectednessOnBoard(row_index: BoardIndex, column_index: BoardIndex) {
+function drawSelectednessOnBoard(coord: Coord) {
+    let [row_index, column_index] = coord;
     let i = document.createElement("img");
     i.classList.add("selection");
     i.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2}px`;
@@ -114,13 +117,65 @@ function drawSelectednessOnBoard(row_index: BoardIndex, column_index: BoardIndex
     // click on it to erase
     i.addEventListener('click', function() {
         eraseGuide();
-        UI_STATE.selectedIndex = null;
+        UI_STATE.selectedCoord = null;
     });
     return i;
 }
 
-function getYellowGuideList(i: BoardIndex, j: BoardIndex, sq: Square): Array<Coord>
+function eightNeighborhood(coord: Coord): Array<Coord>
 {
+    const [i,j] = coord;
+    const assertCoord: (k: number[]) => Coord = ([l,m]) => ([l,m] as Coord);
+    return [
+        [i - 1, j - 1], [i - 1, j], [i - 1, j + 1],
+        [i, j - 1], [i, j + 1],
+        [i + 1, j - 1], [i + 1, j], [i + 1, j + 1]
+    ].filter(([l,m]) => (0 <= l && l <= 8 && 0 <= m && m <= 8))
+    .map(assertCoord);
+}
+
+/*
+function isTamHue(i: BoardIndex, j: BoardIndex): boolean
+{
+
+}
+*/
+
+function getYellowGuideList(coord: Coord, sq: Square): Array<Coord>
+{
+    if (sq == null) {
+        alert("Programming Error!!!");
+        throw new Error("Programming Error!!!!");
+    } 
+    
+    if (sq === "Tam2") {
+        return eightNeighborhood(coord);
+    } 
+
+    let _dummy: NonTam2Piece = sq;
+
+    if (sq.side === Side.Downward) {
+        alert("We do not expect a downward stuff!!!");
+        throw new Error("We do not expect a downward stuff!!!");
+    }
+
+    if (sq.prof === Profession.Io) {
+        return eightNeighborhood(coord);
+    }
+
+    switch(sq.prof) {
+        case Profession.Nuak1:  // Vessel, 船, felkana
+        case Profession.Kauk2: // Pawn, 兵, elmer
+        case Profession.Gua2: // Rook, 弓, gustuer
+        case Profession.Kaun1: // Bishop, 車, vadyrd
+        case Profession.Dau2: // Tiger, 虎, stistyst
+        case Profession.Maun1: // Horse, 馬, dodor
+        case Profession.Kua2: // Clerk, 筆, kua
+        case Profession.Tuk2: // Shaman, 巫, terlsk
+        case Profession.Uai1: // General, 将, varxle
+        
+    }
+    
     return [
         [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
         [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
@@ -129,38 +184,38 @@ function getYellowGuideList(i: BoardIndex, j: BoardIndex, sq: Square): Array<Coo
     ];
 }
 
-type Coord = [BoardIndex, BoardIndex];
+type Coord = Readonly<[BoardIndex, BoardIndex]>;
 
-function showGuideOf(i: BoardIndex, j: BoardIndex, sq: Square) {
-    let contains_guides = document.getElementById("contains_guides")!;
-    let centralNode: HTMLImageElement = drawSelectednessOnBoard(i, j);
+function showGuideOf(coord: Coord, sq: Square) {
+    const contains_guides = document.getElementById("contains_guides")!;
+    const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
 
-    let guideList: Array<Coord> = getYellowGuideList(i, j, sq);
+    const guideList: Array<Coord> = getYellowGuideList(coord, sq);
 
     for (let ind = 0; ind < guideList.length; ind++) {
-        let [l, m] = guideList[ind];
-        contains_guides.appendChild(drawYellowGuideOnBoard(l, m));
+        contains_guides.appendChild(drawYellowGuideOnBoard(guideList[ind]));
     }
     
 }
 
-function selectOwnPieceOnBoard(ev: MouseEvent, i: BoardIndex, j: BoardIndex, sq: Square, imgNode: HTMLImageElement) {
+function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Square, imgNode: HTMLImageElement) {
+    const [i, j] = coord;
     console.log(ev, i, j, sq);
 
-    if (UI_STATE.selectedIndex != null && UI_STATE.selectedIndex[0] === i && UI_STATE.selectedIndex[1] === j) {
+    if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === i && UI_STATE.selectedCoord[1] === j) {
         eraseGuide();
-        UI_STATE.selectedIndex = null;
+        UI_STATE.selectedCoord = null;
     } else {
         eraseGuide();
-        UI_STATE.selectedIndex = [i, j];
-        showGuideOf(i, j, sq);
+        UI_STATE.selectedCoord = coord;
+        showGuideOf(coord, sq);
     }
     
 }
 
 function drawBoard(board: Board) {
-    let contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
+    const contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
 
     // delete everything
     while (contains_pieces_on_board.firstChild) {
@@ -169,27 +224,26 @@ function drawBoard(board: Board) {
 
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
-            let sq : Square = board[i][j];
+            const sq : Square = board[i][j];
             if (sq == null) {
                 continue;
             } 
             
-            let i_: BoardIndex = i as BoardIndex;
-            let j_: BoardIndex = j as BoardIndex;
+            const coord: Coord = [i as BoardIndex, j as BoardIndex];
             let imgNode: HTMLImageElement;
             let selectable;
             if (sq === "Tam2") {
-                imgNode = drawPieceOnBoard(i_, j_, "piece/tam");
+                imgNode = drawPieceOnBoard(coord, "piece/tam");
                 selectable = true;
             } else {
-                imgNode = drawPieceOnBoard(i_, j_, toPath(sq));
+                imgNode = drawPieceOnBoard(coord, toPath(sq));
                 selectable = (sq.side === Side.Upward);
             }
 
             if (selectable) {
                 imgNode.style.cursor = "pointer";
                 imgNode.addEventListener('click', function(ev){
-                    selectOwnPieceOnBoard(ev, i_, j_, sq, imgNode)
+                    selectOwnPieceOnBoard(ev, coord, sq, imgNode)
                 });
             }
 

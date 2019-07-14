@@ -2,7 +2,8 @@
 var BOX_SIZE = 70;
 var MAX_PIECE_SIZE = BOX_SIZE - 1;
 var PIECE_SIZE = 60;
-function drawPieceOnBoard(row_index, column_index, path) {
+function drawPieceOnBoard(coord, path) {
+    var row_index = coord[0], column_index = coord[1];
     var i = document.createElement("img");
     i.classList.add("piece_image_on_board");
     i.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 + "px";
@@ -65,11 +66,11 @@ var sampleBoard = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
         null, null, null, null, null, null, null, null],
     [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null]
+    [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null, "Tam2"]
 ];
 var UI_STATE = {
-    selectedIndex: null
+    selectedCoord: null
 };
 function eraseGuide() {
     var contains_guides = document.getElementById("contains_guides");
@@ -78,7 +79,8 @@ function eraseGuide() {
         contains_guides.removeChild(contains_guides.firstChild);
     }
 }
-function drawYellowGuideOnBoard(row_index, column_index) {
+function drawYellowGuideOnBoard(coord) {
+    var row_index = coord[0], column_index = coord[1];
     var i = document.createElement("img");
     i.classList.add("guide");
     i.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
@@ -94,7 +96,8 @@ function drawYellowGuideOnBoard(row_index, column_index) {
     });
     return i;
 }
-function drawSelectednessOnBoard(row_index, column_index) {
+function drawSelectednessOnBoard(coord) {
+    var row_index = coord[0], column_index = coord[1];
     var i = document.createElement("img");
     i.classList.add("selection");
     i.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 + "px";
@@ -106,11 +109,59 @@ function drawSelectednessOnBoard(row_index, column_index) {
     // click on it to erase
     i.addEventListener('click', function () {
         eraseGuide();
-        UI_STATE.selectedIndex = null;
+        UI_STATE.selectedCoord = null;
     });
     return i;
 }
-function getYellowGuideList(i, j, sq) {
+function eightNeighborhood(coord) {
+    var i = coord[0], j = coord[1];
+    var assertCoord = function (_a) {
+        var l = _a[0], m = _a[1];
+        return [l, m];
+    };
+    return [
+        [i - 1, j - 1], [i - 1, j], [i - 1, j + 1],
+        [i, j - 1], [i, j + 1],
+        [i + 1, j - 1], [i + 1, j], [i + 1, j + 1]
+    ].filter(function (_a) {
+        var l = _a[0], m = _a[1];
+        return (0 <= l && l <= 8 && 0 <= m && m <= 8);
+    })
+        .map(assertCoord);
+}
+/*
+function isTamHue(i: BoardIndex, j: BoardIndex): boolean
+{
+
+}
+*/
+function getYellowGuideList(coord, sq) {
+    if (sq == null) {
+        alert("Programming Error!!!");
+        throw new Error("Programming Error!!!!");
+    }
+    if (sq === "Tam2") {
+        return eightNeighborhood(coord);
+    }
+    var _dummy = sq;
+    if (sq.side === Side.Downward) {
+        alert("We do not expect a downward stuff!!!");
+        throw new Error("We do not expect a downward stuff!!!");
+    }
+    if (sq.prof === Profession.Io) {
+        return eightNeighborhood(coord);
+    }
+    switch (sq.prof) {
+        case Profession.Nuak1: // Vessel, 船, felkana
+        case Profession.Kauk2: // Pawn, 兵, elmer
+        case Profession.Gua2: // Rook, 弓, gustuer
+        case Profession.Kaun1: // Bishop, 車, vadyrd
+        case Profession.Dau2: // Tiger, 虎, stistyst
+        case Profession.Maun1: // Horse, 馬, dodor
+        case Profession.Kua2: // Clerk, 筆, kua
+        case Profession.Tuk2: // Shaman, 巫, terlsk
+        case Profession.Uai1: // General, 将, varxle
+    }
     return [
         [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)],
         [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)],
@@ -118,26 +169,26 @@ function getYellowGuideList(i, j, sq) {
         [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)]
     ];
 }
-function showGuideOf(i, j, sq) {
+function showGuideOf(coord, sq) {
     var contains_guides = document.getElementById("contains_guides");
-    var centralNode = drawSelectednessOnBoard(i, j);
+    var centralNode = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
-    var guideList = getYellowGuideList(i, j, sq);
+    var guideList = getYellowGuideList(coord, sq);
     for (var ind = 0; ind < guideList.length; ind++) {
-        var _a = guideList[ind], l = _a[0], m = _a[1];
-        contains_guides.appendChild(drawYellowGuideOnBoard(l, m));
+        contains_guides.appendChild(drawYellowGuideOnBoard(guideList[ind]));
     }
 }
-function selectOwnPieceOnBoard(ev, i, j, sq, imgNode) {
+function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
+    var i = coord[0], j = coord[1];
     console.log(ev, i, j, sq);
-    if (UI_STATE.selectedIndex != null && UI_STATE.selectedIndex[0] === i && UI_STATE.selectedIndex[1] === j) {
+    if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === i && UI_STATE.selectedCoord[1] === j) {
         eraseGuide();
-        UI_STATE.selectedIndex = null;
+        UI_STATE.selectedCoord = null;
     }
     else {
         eraseGuide();
-        UI_STATE.selectedIndex = [i, j];
-        showGuideOf(i, j, sq);
+        UI_STATE.selectedCoord = coord;
+        showGuideOf(coord, sq);
     }
 }
 function drawBoard(board) {
@@ -152,22 +203,21 @@ function drawBoard(board) {
             if (sq == null) {
                 return "continue";
             }
-            var i_ = i;
-            var j_ = j;
+            var coord = [i, j];
             var imgNode;
             var selectable = void 0;
             if (sq === "Tam2") {
-                imgNode = drawPieceOnBoard(i_, j_, "piece/tam");
+                imgNode = drawPieceOnBoard(coord, "piece/tam");
                 selectable = true;
             }
             else {
-                imgNode = drawPieceOnBoard(i_, j_, toPath(sq));
+                imgNode = drawPieceOnBoard(coord, toPath(sq));
                 selectable = (sq.side === Side.Upward);
             }
             if (selectable) {
                 imgNode.style.cursor = "pointer";
                 imgNode.addEventListener('click', function (ev) {
-                    selectOwnPieceOnBoard(ev, i_, j_, sq, imgNode);
+                    selectOwnPieceOnBoard(ev, coord, sq, imgNode);
                 });
             }
             contains_pieces_on_board.appendChild(imgNode);
