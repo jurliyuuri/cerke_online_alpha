@@ -83,7 +83,7 @@ function eraseGuide() {
     }
 }
 
-function drawGuideOnBoard(row_index: BoardIndex, column_index: BoardIndex) {
+function drawYellowGuideOnBoard(row_index: BoardIndex, column_index: BoardIndex) {
     let i = document.createElement("img");
     i.classList.add("guide");
     i.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
@@ -119,15 +119,28 @@ function drawSelectednessOnBoard(row_index: BoardIndex, column_index: BoardIndex
     return i;
 }
 
+function getYellowGuideList(i: BoardIndex, j: BoardIndex, sq: Square): Array<Coord>
+{
+    return [
+        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
+        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
+        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex],
+        [Math.floor(Math.random() * 9) as BoardIndex, Math.floor(Math.random() * 9) as BoardIndex]
+    ];
+}
+
+type Coord = [BoardIndex, BoardIndex];
+
 function showGuideOf(i: BoardIndex, j: BoardIndex, sq: Square) {
     let contains_guides = document.getElementById("contains_guides")!;
     let centralNode: HTMLImageElement = drawSelectednessOnBoard(i, j);
     contains_guides.appendChild(centralNode);
 
-    for (let i = 0; i < 4; i++) {
-        let l = Math.floor(Math.random() * 9) as BoardIndex;
-        let m = Math.floor(Math.random() * 9) as BoardIndex;
-        contains_guides.appendChild(drawGuideOnBoard(l, m));
+    let guideList: Array<Coord> = getYellowGuideList(i, j, sq);
+
+    for (let ind = 0; ind < guideList.length; ind++) {
+        let [l, m] = guideList[ind];
+        contains_guides.appendChild(drawYellowGuideOnBoard(l, m));
     }
     
 }
