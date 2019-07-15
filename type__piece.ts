@@ -1,14 +1,16 @@
-enum Color { 
+namespace type__piece {
+    
+export enum Color { 
     Kok1, // Red, 赤
     Huok2 // Black, 黒
 }
 
-enum Side {
+export enum Side {
     Upward,  // Pieces that points upward. Denoted by @^@ in the ASCII notation.
     Downward // Pieces that points downward. Denoted by @_@ in the ASCII notation.
 }
 
-enum Profession {
+export enum Profession {
     Nuak1, // Vessel, 船, felkana
     Kauk2, // Pawn, 兵, elmer
     Gua2, // Rook, 弓, gustuer
@@ -21,15 +23,25 @@ enum Profession {
     Io, // King, 王, ales
 }
 
-interface NonTam2Piece {
+export interface NonTam2Piece {
     color: Color; // The color of the piece
     prof: Profession; // The profession of the piece
     side: Side; // The side that the piece belongs to
 }
 
-type Piece = "Tam2" | NonTam2Piece;
+export type Piece = "Tam2" | NonTam2Piece;
 
-type Tuple9<T> = [T, T, T, T, T, T, T, T, T]
+export type Tuple9<T> = [T, T, T, T, T, T, T, T, T]
 
-type Board = Tuple9<Row>;
-type Row = Tuple9<Piece | null>;
+export type Board = Tuple9<Row>;
+export type Row = Tuple9<Piece | null>;
+
+export type BoardIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+
+export type Coord = Readonly<[BoardIndex, BoardIndex]>;
+
+export function coordEq(a: Coord, b: Coord): boolean {
+    return a[0] === b[0] && a[1] === b[1];
+}
+
+}

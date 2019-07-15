@@ -1,3 +1,11 @@
+namespace calculate_movable{
+import Profession = type__piece.Profession;
+import Side = type__piece.Side;
+import Board = type__piece.Board;
+import Piece = type__piece.Piece;
+import Coord = type__piece.Coord;
+import coordEq = type__piece.coordEq;
+
 function applyDeltas(coord: Coord, deltas: Array<[number, number]>): Array<Coord> {
     const [i, j] = coord;
     const assertCoord: (k: number[]) => Coord = ([l, m]) => ([l, m] as Coord);
@@ -63,7 +71,7 @@ function applyDeltasIfSingleIntervention(coord: Coord, deltas: Array<[number, nu
 }
 
 
-function eightNeighborhood(coord: Coord): Array<Coord> {
+export function eightNeighborhood(coord: Coord): Array<Coord> {
     return applyDeltas(coord, [
         [-1, -1], [-1, 0], [-1, 1],
         [0, -1], [0, 1],
@@ -71,7 +79,24 @@ function eightNeighborhood(coord: Coord): Array<Coord> {
     ]);
 }
 
-function calculateMovablePositions(coord: Coord, sq: Piece, board: Board): Array<Coord> {
+function isTamHue(coord: Coord, board: Readonly<Board>): boolean
+{
+    // unconditionally TamHue
+    if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) || 
+        coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) || 
+        coordEq(coord, [4, 4]) || 
+        coordEq(coord, [5, 3]) || coordEq(coord, [5, 5]) || 
+        coordEq(coord, [6, 2]) || coordEq(coord, [6, 6])
+    ) {
+        return true;
+    }
+
+    // is Tam2 available at any neighborhood?
+    return eightNeighborhood(coord).some(([i, j]) => board[i][j] === "Tam2");
+}
+
+
+export function calculateMovablePositions(coord: Coord, sq: Piece, board: Board): Array<Coord> {
     if (sq === "Tam2") {
         return eightNeighborhood(coord);
     }
@@ -215,4 +240,6 @@ function calculateMovablePositions(coord: Coord, sq: Piece, board: Board): Array
                 return _should_not_reach_here;
         }
     }
+}
+
 }

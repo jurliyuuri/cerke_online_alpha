@@ -1,15 +1,20 @@
-enum AbsoluteRow {
+
+namespace type__message {
+import Color = type__piece.Color;
+import Profession = type__piece.Profession;
+
+export enum AbsoluteRow {
     A, E, I, U, O, Y, AI, AU, IA
 }
 
-enum AbsoluteColumn {
+export enum AbsoluteColumn {
     K, L, N, T, Z, X, C, M, P
 }
 
-type AbsoluteCoord = [AbsoluteRow, AbsoluteColumn];
+export type AbsoluteCoord = [AbsoluteRow, AbsoluteColumn];
 
 
-interface NormalNonTamMove {
+export interface NormalNonTamMove {
     type: 'NonTamMove';
     data: {
         type: 'FromHand';
@@ -28,7 +33,7 @@ interface NormalNonTamMove {
     };
 }
 
-interface TamMove {
+export interface TamMove {
     type: 'TamMove'
     stepStyle: 'NoStep' | 'StepsDuringFormer' | 'StepsDuringLatter';
     src: AbsoluteCoord;
@@ -36,4 +41,6 @@ interface TamMove {
     secondDest: AbsoluteCoord;
 }
 
-type NormalMove = NormalNonTamMove | TamMove;
+export type NormalMove = NormalNonTamMove | TamMove;
+
+}

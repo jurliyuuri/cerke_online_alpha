@@ -1,4 +1,10 @@
 "use strict";
+var Profession = type__piece.Profession;
+var Side = type__piece.Side;
+var Color = type__piece.Color;
+var AbsoluteColumn = type__message.AbsoluteColumn;
+var AbsoluteRow = type__message.AbsoluteRow;
+var calculateMovablePositions = calculate_movable.calculateMovablePositions;
 var BOX_SIZE = 70;
 var MAX_PIECE_SIZE = BOX_SIZE - 1;
 var PIECE_SIZE = 60;
@@ -109,24 +115,6 @@ function drawSelectednessOnBoard(coord) {
         UI_STATE.selectedCoord = null;
     });
     return i;
-}
-function coordEq(a, b) {
-    return a[0] === b[0] && a[1] === b[1];
-}
-function isTamHue(coord, board) {
-    // unconditionally TamHue
-    if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) ||
-        coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) ||
-        coordEq(coord, [4, 4]) ||
-        coordEq(coord, [5, 3]) || coordEq(coord, [5, 5]) ||
-        coordEq(coord, [6, 2]) || coordEq(coord, [6, 6])) {
-        return true;
-    }
-    // is Tam2 available at any neighborhood?
-    return eightNeighborhood(coord).some(function (_a) {
-        var i = _a[0], j = _a[1];
-        return board[i][j] === "Tam2";
-    });
 }
 function toAbsoluteCoord(_a) {
     var row = _a[0], col = _a[1];

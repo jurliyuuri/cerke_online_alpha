@@ -1,9 +1,20 @@
+import Profession = type__piece.Profession;
+import Side = type__piece.Side;
+import Color = type__piece.Color;
+import NonTam2Piece = type__piece.NonTam2Piece;
+import Board = type__piece.Board;
+import Piece = type__piece.Piece;
+import Coord = type__piece.Coord;
+import BoardIndex = type__piece.BoardIndex
+import AbsoluteColumn = type__message.AbsoluteColumn;
+import AbsoluteCoord = type__message.AbsoluteCoord;
+import AbsoluteRow = type__message.AbsoluteRow;
+import NormalMove = type__message.NormalMove
+import calculateMovablePositions = calculate_movable.calculateMovablePositions;
 
 const BOX_SIZE = 70;
 const MAX_PIECE_SIZE = BOX_SIZE - 1;
 const PIECE_SIZE = 60;
-
-type BoardIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 function drawPieceOnBoard(coord: Coord, path: string) {
     let [row_index, column_index] = coord;
@@ -124,33 +135,6 @@ function drawSelectednessOnBoard(coord: Coord) {
     });
     return i;
 }
-
-
-
-function coordEq(a: Coord, b: Coord): boolean {
-    return a[0] === b[0] && a[1] === b[1];
-}
-
-
-function isTamHue(coord: Coord, board: Readonly<Board>): boolean
-{
-    // unconditionally TamHue
-    if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) || 
-        coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) || 
-        coordEq(coord, [4, 4]) || 
-        coordEq(coord, [5, 3]) || coordEq(coord, [5, 5]) || 
-        coordEq(coord, [6, 2]) || coordEq(coord, [6, 6])
-    ) {
-        return true;
-    }
-
-    // is Tam2 available at any neighborhood?
-    return eightNeighborhood(coord).some(([i, j]) => board[i][j] === "Tam2");
-}
-
-
-
-type Coord = Readonly<[BoardIndex, BoardIndex]>;
 
 function toAbsoluteCoord([row, col]: Coord): AbsoluteCoord {
     return [
