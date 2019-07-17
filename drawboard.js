@@ -150,6 +150,10 @@ function getThingsGoing(ev, sq, from, to) {
     var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (dest == null) { // dest is empty square; try to simply move
         var message = void 0;
+        if (from[0] === "Hop1zuo1") { // moving from Hop1zuo1 to the empty square
+            alert("implement parachuting");
+            return;
+        }
         if (sq !== "Tam2") {
             var abs_src = toAbsoluteCoord(from);
             var abs_dst = toAbsoluteCoord(to);
@@ -172,6 +176,10 @@ function getThingsGoing(ev, sq, from, to) {
             return;
         }
     }
+    if (from[0] === "Hop1zuo1") { // moving from Hop1zuo1 to the empty square
+        alert("Cannot parachute onto an occupied square");
+        throw new Error("Cannot parachute onto an occupied square");
+    }
     if (dest === "Tam2" || dest.side === Side.Upward) { // can step, but cannot take
         alert("implement stepping");
         return;
@@ -185,23 +193,27 @@ function getThingsGoing(ev, sq, from, to) {
         return;
     }
 }
-function showGuideOf(coord, sq) {
+function createYellowGuideImageAt(coord) {
+    var row_index = coord[0], column_index = coord[1];
+    var img = document.createElement("img");
+    img.classList.add("guide");
+    img.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
+    img.style.left = 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
+    img.src = "image/ct.png";
+    img.width = MAX_PIECE_SIZE;
+    img.height = MAX_PIECE_SIZE;
+    img.style.cursor = "pointer";
+    img.style.opacity = "0.3";
+    return img;
+}
+function showGuideOfBoardPiece(coord, sq) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
     var guideList = calculateMovablePositions(coord, sq, GAME_STATE.f.currentBoard);
     var _loop_1 = function (ind) {
         // draw the yellow guides
-        var _a = guideList[ind], row_index = _a[0], column_index = _a[1];
-        var img = document.createElement("img");
-        img.classList.add("guide");
-        img.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
-        img.style.left = 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
-        img.src = "image/ct.png";
-        img.width = MAX_PIECE_SIZE;
-        img.height = MAX_PIECE_SIZE;
-        img.style.cursor = "pointer";
-        img.style.opacity = "0.3";
+        var img = createYellowGuideImageAt(guideList[ind]);
         // click on it to get things going
         img.addEventListener('click', function (ev) {
             getThingsGoing(ev, sq, coord, guideList[ind]);
@@ -215,11 +227,11 @@ function showGuideOf(coord, sq) {
 function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
     var i = coord[0], j = coord[1];
     console.log(ev, i, j, sq);
-    /* If the piece that was originally selected were Hop1zuo1, nevertheless erase the guide, since the guide contains both */
+    /* If the sq that was originally selected were Hop1zuo1, nevertheless erase the guide, since the guide contains both */
     if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === "Hop1zuo1") {
         eraseGuide();
         UI_STATE.selectedCoord = coord;
-        showGuideOf(coord, sq);
+        showGuideOfBoardPiece(coord, sq);
         return;
     }
     /* Clicking what was originally selected will make it deselect */
@@ -230,7 +242,7 @@ function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
     else {
         eraseGuide();
         UI_STATE.selectedCoord = coord;
-        showGuideOf(coord, sq);
+        showGuideOfBoardPiece(coord, sq);
     }
 }
 function drawSelectednessOnHop1zuo1At(ind) {
@@ -249,14 +261,33 @@ function drawSelectednessOnHop1zuo1At(ind) {
     });
     return i;
 }
-function showSelectednessOnHop1zuo1At(ind) {
-    var contains_guides = document.getElementById("contains_guides_on_upward");
+function showGuideOnHop1zuo1At(ind, sq) {
+    var contains_guides_on_upward = document.getElementById("contains_guides_on_upward");
     var centralNode = drawSelectednessOnHop1zuo1At(ind);
-    contains_guides.appendChild(centralNode);
+    contains_guides_on_upward.appendChild(centralNode);
+    var contains_guides = document.getElementById("contains_guides");
+    for (var i = 0; i < 9; i++) {
+        var _loop_2 = function (j) {
+            var ij = [i, j];
+            if (GAME_STATE.f.currentBoard[i][j] != null) {
+                return "continue";
+            }
+            // draw the yellow guides
+            var img = createYellowGuideImageAt(ij);
+            // click on it to get things going
+            img.addEventListener('click', function (ev) {
+                getThingsGoing(ev, sq, ["Hop1zuo1", ind], ij);
+            });
+            contains_guides.appendChild(img);
+        };
+        for (var j = 0; j < 9; j++) {
+            _loop_2(j);
+        }
+    }
 }
 function selectOwnPieceOnHop1zuo1(ev, ind, sq, imgNode) {
     console.log(ev, ind, sq);
-    /* If the piece that was originally selected were Hop1zuo1 */
+    /* If the sq that was originally selected were Hop1zuo1 */
     if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === "Hop1zuo1") {
         if (UI_STATE.selectedCoord[1] === ind) { /* re-click: deselect */
             eraseGuide();
@@ -265,13 +296,13 @@ function selectOwnPieceOnHop1zuo1(ev, ind, sq, imgNode) {
         }
         else {
             eraseGuide();
-            showSelectednessOnHop1zuo1At(ind);
+            showGuideOnHop1zuo1At(ind, sq);
             UI_STATE.selectedCoord = ["Hop1zuo1", ind];
             return;
         }
     }
     eraseGuide();
-    showSelectednessOnHop1zuo1At(ind);
+    showGuideOnHop1zuo1At(ind, sq);
     UI_STATE.selectedCoord = ["Hop1zuo1", ind];
 }
 function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
@@ -291,7 +322,7 @@ function drawHop1zuo1OfUpward(list) {
     while (contains_pieces_on_upward.firstChild) {
         contains_pieces_on_upward.removeChild(contains_pieces_on_upward.firstChild);
     }
-    var _loop_2 = function (i) {
+    var _loop_3 = function (i) {
         var sq = list[i];
         var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(sq));
         var selectable = true;
@@ -304,7 +335,7 @@ function drawHop1zuo1OfUpward(list) {
         contains_pieces_on_upward.appendChild(imgNode);
     };
     for (var i = 0; i < list.length; i++) {
-        _loop_2(i);
+        _loop_3(i);
     }
 }
 function drawHop1zuo1OfDownward(list) {
@@ -322,7 +353,7 @@ function drawBoard(board) {
         contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
     }
     for (var i = 0; i < board.length; i++) {
-        var _loop_3 = function (j) {
+        var _loop_4 = function (j) {
             var sq = board[i][j];
             if (sq == null) {
                 return "continue";
@@ -347,7 +378,7 @@ function drawBoard(board) {
             contains_pieces_on_board.appendChild(imgNode);
         };
         for (var j = 0; j < board[i].length; j++) {
-            _loop_3(j);
+            _loop_4(j);
         }
     }
 }
