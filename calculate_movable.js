@@ -62,22 +62,22 @@ var calculate_movable;
             return [];
         }
     }
-    function applySingleDeltaIfSingleIntervention(coord, delta, board) {
+    function applySingleDeltaIfZeroOrOneIntervention(coord, delta, board) {
         var blocker = applyDeltas(coord, getBlockerDeltas(delta));
-        // if a single piece is blocking the way
+        // if no piece or a single piece is blocking the way
         if (blocker.filter(function (_a) {
             var i = _a[0], j = _a[1];
             return board[i][j] != null;
-        }).length === 1) {
+        }).length <= 1) {
             return applyDeltas(coord, [delta]);
         }
         else {
             return [];
         }
     }
-    function applyDeltasIfSingleIntervention(coord, deltas, board) {
+    function applyDeltasIfZeroOrOneIntervention(coord, deltas, board) {
         var _a;
-        return (_a = []).concat.apply(_a, deltas.map(function (delta) { return applySingleDeltaIfSingleIntervention(coord, delta, board); }));
+        return (_a = []).concat.apply(_a, deltas.map(function (delta) { return applySingleDeltaIfZeroOrOneIntervention(coord, delta, board); }));
     }
     function eightNeighborhood(coord) {
         return applyDeltas(coord, [
@@ -146,7 +146,7 @@ var calculate_movable;
                 case Profession.Kua2: // Clerk, 筆, kua
                     return applyDeltasIfNoIntervention(coord, UP.concat(DOWN, LEFT, RIGHT), board);
                 case Profession.Tuk2: // Shaman, 巫, terlsk
-                    return applyDeltasIfSingleIntervention(coord, UP.concat(DOWN, LEFT, RIGHT, UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT), board);
+                    return applyDeltasIfZeroOrOneIntervention(coord, UP.concat(DOWN, LEFT, RIGHT, UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT), board);
                 default:
                     var _should_not_reach_here = sq.prof;
                     return _should_not_reach_here;

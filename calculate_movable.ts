@@ -55,19 +55,19 @@ function applySingleDeltaIfNoIntervention(coord: Coord, delta: [number, number],
     }
 }
 
-function applySingleDeltaIfSingleIntervention(coord: Coord, delta: [number, number], board: Board): Array<Coord> {
+function applySingleDeltaIfZeroOrOneIntervention(coord: Coord, delta: [number, number], board: Board): Array<Coord> {
     let blocker: Array<Coord> = applyDeltas(coord, getBlockerDeltas(delta));
 
-    // if a single piece is blocking the way
-    if (blocker.filter(([i, j]) => board[i][j] != null).length === 1) {
+    // if no piece or a single piece is blocking the way
+    if (blocker.filter(([i, j]) => board[i][j] != null).length <= 1) {
         return applyDeltas(coord, [delta]);
     } else {
         return [];
     }
 }
 
-function applyDeltasIfSingleIntervention(coord: Coord, deltas: Array<[number, number]>, board: Board): Array<Coord> {
-    return ([] as Coord[]).concat(...deltas.map(delta => applySingleDeltaIfSingleIntervention(coord, delta, board)));
+function applyDeltasIfZeroOrOneIntervention(coord: Coord, deltas: Array<[number, number]>, board: Board): Array<Coord> {
+    return ([] as Coord[]).concat(...deltas.map(delta => applySingleDeltaIfZeroOrOneIntervention(coord, delta, board)));
 }
 
 
@@ -169,7 +169,7 @@ export function calculateMovablePositions(coord: Coord, sq: Piece, board: Board)
                 ], board);
             
             case Profession.Tuk2: // Shaman, 巫, terlsk
-                return applyDeltasIfSingleIntervention(coord, [
+                return applyDeltasIfZeroOrOneIntervention(coord, [
                     ...UP,
                     ...DOWN,
                     ...LEFT,
