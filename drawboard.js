@@ -149,11 +149,28 @@ function toAbsoluteCoord(_a) {
 function getThingsGoing(ev, piece, from, to) {
     var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (dest == null) { // dest is empty square; try to simply move
-        var message = void 0;
         if (from[0] === "Hop1zuo1") { // moving from Hop1zuo1 to the empty square
-            alert("implement parachuting");
+            if (piece === "Tam2") {
+                alert("Cannot parachute Tam2");
+                throw new Error("Cannot parachute onto an occupied square");
+            }
+            var abs_dst = toAbsoluteCoord(to);
+            var message_1 = {
+                type: "NonTamMove",
+                data: {
+                    type: "FromHand",
+                    color: piece.color,
+                    prof: piece.prof,
+                    dest: abs_dst
+                }
+            };
+            console.log("sending normal move:", JSON.stringify(message_1));
+            eraseGuide();
+            UI_STATE.selectedCoord = null;
+            alert("message sent.");
             return;
         }
+        var message = void 0;
         if (piece !== "Tam2") {
             var abs_src = toAbsoluteCoord(from);
             var abs_dst = toAbsoluteCoord(to);

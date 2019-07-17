@@ -14,6 +14,7 @@ import AbsoluteRow = type__message.AbsoluteRow;
 import NormalMove = type__message.NormalMove
 import calculateMovablePositions = calculate_movable.calculateMovablePositions;
 import coordEq = type__piece.coordEq;
+import NormalNonTamMove = type__message.NormalNonTamMove;
 
 const BOX_SIZE = 70;
 const MAX_PIECE_SIZE = BOX_SIZE - 1;
@@ -183,12 +184,34 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord | ["Hop1zuo1",
     let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (dest == null) { // dest is empty square; try to simply move
-        let message: NormalMove;
-
+        
         if (from[0] === "Hop1zuo1") { // moving from Hop1zuo1 to the empty square
-            alert("implement parachuting");
+            if (piece === "Tam2") {
+                alert("Cannot parachute Tam2");
+                throw new Error("Cannot parachute onto an occupied square");
+            }
+
+            let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
+            let message: NormalNonTamMove = {
+                type: "NonTamMove",
+                data: {
+                    type: "FromHand",
+                    color: piece.color,
+                    prof: piece.prof,
+                    dest: abs_dst
+                }
+            };
+
+            console.log("sending normal move:", JSON.stringify(message));
+            
+            eraseGuide();
+            UI_STATE.selectedCoord = null;
+    
+            alert("message sent.");
             return;
         }
+
+        let message: NormalMove;
 
         if (piece !== "Tam2") {
             let abs_src: AbsoluteCoord = toAbsoluteCoord(from);
