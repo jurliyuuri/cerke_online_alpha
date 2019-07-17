@@ -18,15 +18,15 @@ function toPath(p: NonTam2Piece): string {
     const sideToPath = function (side: Side): string {
         if (side === Side.Downward) return "piece_rev";
         if (side === Side.Upward) return "piece";
-    
-        let _should_not_reach_here : never = side;
+
+        let _should_not_reach_here: never = side;
         return _should_not_reach_here;
     }
 
     const colorToPath = function (color: Color): string {
         if (color === Color.Huok2) return "b";
         if (color === Color.Kok1) return "r";
-    
+
         let _should_not_reach_here: never = color;
         return _should_not_reach_here;
     }
@@ -42,11 +42,11 @@ function toPath(p: NonTam2Piece): string {
         if (prof === Profession.Nuak1) return "nuak";
         if (prof === Profession.Tuk2) return "tuk";
         if (prof === Profession.Uai1) return "uai";
-        
-        let _should_not_reach_here : never = prof;
+
+        let _should_not_reach_here: never = prof;
         return _should_not_reach_here;
     }
-    
+
     return `${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`
 }
 
@@ -120,7 +120,7 @@ function drawSelectednessOnBoard(coord: Coord) {
     i.style.cursor = "pointer";
 
     // click on it to erase
-    i.addEventListener('click', function() {
+    i.addEventListener('click', function () {
         eraseGuide();
         UI_STATE.selectedCoord = null;
     });
@@ -130,13 +130,13 @@ function drawSelectednessOnBoard(coord: Coord) {
 function toAbsoluteCoord([row, col]: Coord): AbsoluteCoord {
     return [
         [
-            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I, 
-            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y, 
+            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
+            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
             AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA
         ][GAME_STATE.IA_is_down ? row : 8 - row],
         [
-            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N, 
-            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X, 
+            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
+            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
             AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
         ][GAME_STATE.IA_is_down ? col : 8 - col]
     ];
@@ -151,7 +151,7 @@ function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: Piece, from: ["Hop1zu
         alert("Cannot parachute onto an occupied square");
         throw new Error("Cannot parachute onto an occupied square");
     }
-    
+
     if (piece === "Tam2") {
         alert("Cannot parachute Tam2");
         throw new Error("Cannot parachute Tam2");
@@ -169,7 +169,7 @@ function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: Piece, from: ["Hop1zu
     };
 
     console.log("sending normal move:", JSON.stringify(message));
-    
+
     eraseGuide();
     UI_STATE.selectedCoord = null;
 
@@ -200,7 +200,7 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
 
             eraseGuide();
             UI_STATE.selectedCoord = null;
-    
+
             alert("message sent.");
             return;
         } else {
@@ -248,16 +248,16 @@ function showGuideOfBoardPiece(coord: Coord, piece: Piece) {
 
         // draw the yellow guides
         let img = createYellowGuideImageAt(guideList[ind])
-    
+
         // click on it to get things going
         img.addEventListener('click', function (ev) {
             getThingsGoing(ev, piece, coord, guideList[ind]);
-            
+
         });
 
         contains_guides.appendChild(img);
     }
-    
+
 }
 
 function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, piece: Piece, imgNode: HTMLImageElement) {
@@ -281,7 +281,7 @@ function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, piece: Piece, imgNo
         UI_STATE.selectedCoord = coord;
         showGuideOfBoardPiece(coord, piece);
     }
-    
+
 }
 
 function drawSelectednessOnHop1zuo1At(ind: number) {
@@ -295,7 +295,7 @@ function drawSelectednessOnHop1zuo1At(ind: number) {
     i.style.cursor = "pointer";
 
     // click on it to erase
-    i.addEventListener('click', function() {
+    i.addEventListener('click', function () {
         eraseGuide();
         UI_STATE.selectedCoord = null;
     });
@@ -314,14 +314,14 @@ function showGuideOnHop1zuo1At(ind: number, piece: Piece) {
             if (GAME_STATE.f.currentBoard[i][j] != null) {
                 continue;
             }
-        
+
             // draw the yellow guides
             let img = createYellowGuideImageAt(ij)
-        
+
             // click on it to get things going
             img.addEventListener('click', function (ev) {
                 getThingsGoingFromHop1zuo1(ev, piece, ["Hop1zuo1", ind], ij);
-                
+
             });
 
             contains_guides.appendChild(img);
@@ -378,10 +378,10 @@ function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
         const piece: NonTam2PieceUpward = list[i];
         let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
         let selectable = true;
-        
+
         if (selectable) {
             imgNode.style.cursor = "pointer";
-            imgNode.addEventListener('click', function(ev){
+            imgNode.addEventListener('click', function (ev) {
                 selectOwnPieceOnHop1zuo1(ev, i, piece, imgNode)
             });
         }
@@ -426,8 +426,8 @@ function drawBoard(board: Board) {
             const piece: Piece | null = board[i][j];
             if (piece == null) {
                 continue;
-            } 
-            
+            }
+
             const coord: Coord = [i as BoardIndex, j as BoardIndex];
             let imgNode: HTMLImageElement;
             let selectable;
@@ -441,7 +441,7 @@ function drawBoard(board: Board) {
 
             if (selectable) {
                 imgNode.style.cursor = "pointer";
-                imgNode.addEventListener('click', function(ev){
+                imgNode.addEventListener('click', function (ev) {
                     selectOwnPieceOnBoard(ev, coord, piece, imgNode)
                 });
             }
