@@ -180,36 +180,46 @@ function toAbsoluteCoord([row, col]: Coord): AbsoluteCoord {
     ];
 }
 
-function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord | ["Hop1zuo1", number], to: Coord) {
+
+function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: Piece, from: ["Hop1zuo1", number], to: Coord) {
+    let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+
+    if (dest != null) {
+        alert("Cannot parachute onto an occupied square");
+        throw new Error("Cannot parachute onto an occupied square");
+    }
+    
+    // moving from Hop1zuo1 to the empty square
+    if (piece === "Tam2") {
+        alert("Cannot parachute Tam2");
+        throw new Error("Cannot parachute onto an occupied square");
+    }
+
+    let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
+    let message: NormalNonTamMove = {
+        type: "NonTamMove",
+        data: {
+            type: "FromHand",
+            color: piece.color,
+            prof: piece.prof,
+            dest: abs_dst
+        }
+    };
+
+    console.log("sending normal move:", JSON.stringify(message));
+    
+    eraseGuide();
+    UI_STATE.selectedCoord = null;
+
+    alert("message sent.");
+    return;
+}
+
+
+function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
     let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (dest == null) { // dest is empty square; try to simply move
-        
-        if (from[0] === "Hop1zuo1") { // moving from Hop1zuo1 to the empty square
-            if (piece === "Tam2") {
-                alert("Cannot parachute Tam2");
-                throw new Error("Cannot parachute onto an occupied square");
-            }
-
-            let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
-            let message: NormalNonTamMove = {
-                type: "NonTamMove",
-                data: {
-                    type: "FromHand",
-                    color: piece.color,
-                    prof: piece.prof,
-                    dest: abs_dst
-                }
-            };
-
-            console.log("sending normal move:", JSON.stringify(message));
-            
-            eraseGuide();
-            UI_STATE.selectedCoord = null;
-    
-            alert("message sent.");
-            return;
-        }
 
         let message: NormalMove;
 
@@ -235,11 +245,6 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord | ["Hop1zuo1",
             alert("implement Tam2 movement");
             return;
         }
-    }
-
-    if (from[0] === "Hop1zuo1") { // moving from Hop1zuo1 to the empty square
-        alert("Cannot parachute onto an occupied square");
-        throw new Error("Cannot parachute onto an occupied square");
     }
 
     if (dest === "Tam2" || dest.side === Side.Upward) { // can step, but cannot take
@@ -353,7 +358,7 @@ function showGuideOnHop1zuo1At(ind: number, piece: Piece) {
         
             // click on it to get things going
             img.addEventListener('click', function (ev) {
-                getThingsGoing(ev, piece, ["Hop1zuo1", ind], ij);
+                getThingsGoingFromHop1zuo1(ev, piece, ["Hop1zuo1", ind], ij);
                 
             });
 
