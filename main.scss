@@ -1,0 +1,44 @@
+$hop1zuo1_height: 140px;
+
+#field {
+    border: 1px solid rgb(0, 255, 55); width: 631px; height: 631px + $hop1zuo1_height * 2;
+}
+
+#hop1zuo1_of_downward {
+    border: 1px solid rgb(0, 255, 200); background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; 
+}
+
+#hop1zuo1_of_upward {
+    border: 1px solid rgb(0, 255, 200);background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; 
+}
+
+#board_containment {
+    border: 1px solid blue; width: 631px; height: 631px; position: relative;
+}
+#board {
+    position: absolute; top: 0px; left: 0px;
+}
+
+img.selection {
+    position: absolute;
+    animation: anime1 0.81s ease -2s infinite alternate;
+}
+
+img.guide {
+    position: absolute;
+    animation: anime2 0.81s ease -2s infinite alternate;
+}
+
+@keyframes anime1 {
+0% {opacity: 0.5;}
+100% {opacity: 1.0;}
+}
+
+@keyframes anime2 {
+0% {opacity: 0.3;}
+100% {opacity: 0.7;}
+}
+
+img.piece_image_on_board {
+    position: absolute;
+}

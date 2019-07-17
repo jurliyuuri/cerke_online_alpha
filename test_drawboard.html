@@ -1,50 +1,29 @@
 <head>
-<style>
-    #board_containment {
-        border: 1px solid blue; width: 631px; height: 631px; position: relative;
-    }
-    #board {
-        position: absolute; top: 0px; left: 0px;
-    }
-
-    img.selection {
-        position: absolute;
-        animation: anime1 0.81s ease -2s infinite alternate;
-    }
-
-    img.guide {
-        position: absolute;
-        animation: anime2 0.81s ease -2s infinite alternate;
-    }
-
-    @keyframes anime1 {
-    0% {opacity: 0.5;}
-    100% {opacity: 1.0;}
-    }
-
-    @keyframes anime2 {
-    0% {opacity: 0.3;}
-    100% {opacity: 0.7;}
-    }
-
-    img.piece_image_on_board {
-        position: absolute;
-    }
-</style>
+<link rel="stylesheet" type="text/css" href="main.css">
 <script src="type__piece.js"></script>
 <script src="type__message.js"></script>
 <script src="calculate_movable.js"></script>
 <script src="drawboard.js"></script>
 </head>
 <body>
+    <div id="field">
+    <div id="hop1zuo1_of_downward">
+        
+    </div>
     <div id="board_containment">
         <div id="board">
             <img src="image/field.png" width="631" height="631" />
         </div>
         <div id="contains_pieces_on_board">
         </div>
+        <div id="contains_phantom">
+        </div>
         <div id="contains_guides">
         </div>
+    </div>
+    <div id="hop1zuo1_of_upward">
+        
+    </div>
     </div>
     
     <script>
