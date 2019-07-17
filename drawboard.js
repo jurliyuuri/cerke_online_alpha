@@ -146,7 +146,7 @@ function toAbsoluteCoord(_a) {
         ][GAME_STATE.IA_is_down ? col : 8 - col]
     ];
 }
-function getThingsGoing(ev, sq, from, to) {
+function getThingsGoing(ev, piece, from, to) {
     var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (dest == null) { // dest is empty square; try to simply move
         var message = void 0;
@@ -154,7 +154,7 @@ function getThingsGoing(ev, sq, from, to) {
             alert("implement parachuting");
             return;
         }
-        if (sq !== "Tam2") {
+        if (piece !== "Tam2") {
             var abs_src = toAbsoluteCoord(from);
             var abs_dst = toAbsoluteCoord(to);
             message = {
@@ -206,17 +206,17 @@ function createYellowGuideImageAt(coord) {
     img.style.opacity = "0.3";
     return img;
 }
-function showGuideOfBoardPiece(coord, sq) {
+function showGuideOfBoardPiece(coord, piece) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
-    var guideList = calculateMovablePositions(coord, sq, GAME_STATE.f.currentBoard);
+    var guideList = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard);
     var _loop_1 = function (ind) {
         // draw the yellow guides
         var img = createYellowGuideImageAt(guideList[ind]);
         // click on it to get things going
         img.addEventListener('click', function (ev) {
-            getThingsGoing(ev, sq, coord, guideList[ind]);
+            getThingsGoing(ev, piece, coord, guideList[ind]);
         });
         contains_guides.appendChild(img);
     };
@@ -224,14 +224,14 @@ function showGuideOfBoardPiece(coord, sq) {
         _loop_1(ind);
     }
 }
-function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
+function selectOwnPieceOnBoard(ev, coord, piece, imgNode) {
     var i = coord[0], j = coord[1];
-    console.log(ev, i, j, sq);
-    /* If the sq that was originally selected were Hop1zuo1, nevertheless erase the guide, since the guide contains both */
+    console.log(ev, i, j, piece);
+    /* If the piece that was originally selected were Hop1zuo1, nevertheless erase the guide, since the guide contains both */
     if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === "Hop1zuo1") {
         eraseGuide();
         UI_STATE.selectedCoord = coord;
-        showGuideOfBoardPiece(coord, sq);
+        showGuideOfBoardPiece(coord, piece);
         return;
     }
     /* Clicking what was originally selected will make it deselect */
@@ -242,7 +242,7 @@ function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
     else {
         eraseGuide();
         UI_STATE.selectedCoord = coord;
-        showGuideOfBoardPiece(coord, sq);
+        showGuideOfBoardPiece(coord, piece);
     }
 }
 function drawSelectednessOnHop1zuo1At(ind) {
@@ -261,7 +261,7 @@ function drawSelectednessOnHop1zuo1At(ind) {
     });
     return i;
 }
-function showGuideOnHop1zuo1At(ind, sq) {
+function showGuideOnHop1zuo1At(ind, piece) {
     var contains_guides_on_upward = document.getElementById("contains_guides_on_upward");
     var centralNode = drawSelectednessOnHop1zuo1At(ind);
     contains_guides_on_upward.appendChild(centralNode);
@@ -276,7 +276,7 @@ function showGuideOnHop1zuo1At(ind, sq) {
             var img = createYellowGuideImageAt(ij);
             // click on it to get things going
             img.addEventListener('click', function (ev) {
-                getThingsGoing(ev, sq, ["Hop1zuo1", ind], ij);
+                getThingsGoing(ev, piece, ["Hop1zuo1", ind], ij);
             });
             contains_guides.appendChild(img);
         };
@@ -285,9 +285,9 @@ function showGuideOnHop1zuo1At(ind, sq) {
         }
     }
 }
-function selectOwnPieceOnHop1zuo1(ev, ind, sq, imgNode) {
-    console.log(ev, ind, sq);
-    /* If the sq that was originally selected were Hop1zuo1 */
+function selectOwnPieceOnHop1zuo1(ev, ind, piece, imgNode) {
+    console.log(ev, ind, piece);
+    /* If the piece that was originally selected were Hop1zuo1 */
     if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === "Hop1zuo1") {
         if (UI_STATE.selectedCoord[1] === ind) { /* re-click: deselect */
             eraseGuide();
@@ -296,13 +296,13 @@ function selectOwnPieceOnHop1zuo1(ev, ind, sq, imgNode) {
         }
         else {
             eraseGuide();
-            showGuideOnHop1zuo1At(ind, sq);
+            showGuideOnHop1zuo1At(ind, piece);
             UI_STATE.selectedCoord = ["Hop1zuo1", ind];
             return;
         }
     }
     eraseGuide();
-    showGuideOnHop1zuo1At(ind, sq);
+    showGuideOnHop1zuo1At(ind, piece);
     UI_STATE.selectedCoord = ["Hop1zuo1", ind];
 }
 function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
@@ -323,13 +323,13 @@ function drawHop1zuo1OfUpward(list) {
         contains_pieces_on_upward.removeChild(contains_pieces_on_upward.firstChild);
     }
     var _loop_3 = function (i) {
-        var sq = list[i];
-        var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(sq));
+        var piece = list[i];
+        var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
         var selectable = true;
         if (selectable) {
             imgNode.style.cursor = "pointer";
             imgNode.addEventListener('click', function (ev) {
-                selectOwnPieceOnHop1zuo1(ev, i, sq, imgNode);
+                selectOwnPieceOnHop1zuo1(ev, i, piece, imgNode);
             });
         }
         contains_pieces_on_upward.appendChild(imgNode);
@@ -354,25 +354,25 @@ function drawBoard(board) {
     }
     for (var i = 0; i < board.length; i++) {
         var _loop_4 = function (j) {
-            var sq = board[i][j];
-            if (sq == null) {
+            var piece = board[i][j];
+            if (piece == null) {
                 return "continue";
             }
             var coord = [i, j];
             var imgNode;
             var selectable = void 0;
-            if (sq === "Tam2") {
+            if (piece === "Tam2") {
                 imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
                 selectable = true;
             }
             else {
-                imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(sq));
-                selectable = (sq.side === Side.Upward);
+                imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
+                selectable = (piece.side === Side.Upward);
             }
             if (selectable) {
                 imgNode.style.cursor = "pointer";
                 imgNode.addEventListener('click', function (ev) {
-                    selectOwnPieceOnBoard(ev, coord, sq, imgNode);
+                    selectOwnPieceOnBoard(ev, coord, piece, imgNode);
                 });
             }
             contains_pieces_on_board.appendChild(imgNode);

@@ -179,7 +179,7 @@ function toAbsoluteCoord([row, col]: Coord): AbsoluteCoord {
     ];
 }
 
-function getThingsGoing(ev: MouseEvent, sq: Piece, from: Coord | ["Hop1zuo1", number], to: Coord) {
+function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord | ["Hop1zuo1", number], to: Coord) {
     let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (dest == null) { // dest is empty square; try to simply move
@@ -190,7 +190,7 @@ function getThingsGoing(ev: MouseEvent, sq: Piece, from: Coord | ["Hop1zuo1", nu
             return;
         }
 
-        if (sq !== "Tam2") {
+        if (piece !== "Tam2") {
             let abs_src: AbsoluteCoord = toAbsoluteCoord(from);
             let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
             message = {
@@ -247,12 +247,12 @@ function createYellowGuideImageAt(coord: Coord) {
     return img;
 }
 
-function showGuideOfBoardPiece(coord: Coord, sq: Piece) {
+function showGuideOfBoardPiece(coord: Coord, piece: Piece) {
     const contains_guides = document.getElementById("contains_guides")!;
     const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
 
-    const guideList: Array<Coord> = calculateMovablePositions(coord, sq, GAME_STATE.f.currentBoard);
+    const guideList: Array<Coord> = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard);
 
     for (let ind = 0; ind < guideList.length; ind++) {
 
@@ -261,7 +261,7 @@ function showGuideOfBoardPiece(coord: Coord, sq: Piece) {
     
         // click on it to get things going
         img.addEventListener('click', function (ev) {
-            getThingsGoing(ev, sq, coord, guideList[ind]);
+            getThingsGoing(ev, piece, coord, guideList[ind]);
             
         });
 
@@ -270,15 +270,15 @@ function showGuideOfBoardPiece(coord: Coord, sq: Piece) {
     
 }
 
-function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Piece, imgNode: HTMLImageElement) {
+function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, piece: Piece, imgNode: HTMLImageElement) {
     const [i, j] = coord;
-    console.log(ev, i, j, sq);
+    console.log(ev, i, j, piece);
 
     /* If the piece that was originally selected were Hop1zuo1, nevertheless erase the guide, since the guide contains both */
     if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === "Hop1zuo1") {
         eraseGuide();
         UI_STATE.selectedCoord = coord;
-        showGuideOfBoardPiece(coord, sq);
+        showGuideOfBoardPiece(coord, piece);
         return;
     }
 
@@ -289,7 +289,7 @@ function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Piece, imgNode:
     } else {
         eraseGuide();
         UI_STATE.selectedCoord = coord;
-        showGuideOfBoardPiece(coord, sq);
+        showGuideOfBoardPiece(coord, piece);
     }
     
 }
@@ -312,7 +312,7 @@ function drawSelectednessOnHop1zuo1At(ind: number) {
     return i;
 }
 
-function showGuideOnHop1zuo1At(ind: number, sq: Piece) {
+function showGuideOnHop1zuo1At(ind: number, piece: Piece) {
     const contains_guides_on_upward = document.getElementById("contains_guides_on_upward")!;
     const centralNode: HTMLImageElement = drawSelectednessOnHop1zuo1At(ind);
     contains_guides_on_upward.appendChild(centralNode);
@@ -330,7 +330,7 @@ function showGuideOnHop1zuo1At(ind: number, sq: Piece) {
         
             // click on it to get things going
             img.addEventListener('click', function (ev) {
-                getThingsGoing(ev, sq, ["Hop1zuo1", ind], ij);
+                getThingsGoing(ev, piece, ["Hop1zuo1", ind], ij);
                 
             });
 
@@ -341,8 +341,8 @@ function showGuideOnHop1zuo1At(ind: number, sq: Piece) {
 
 
 
-function selectOwnPieceOnHop1zuo1(ev: MouseEvent, ind: number, sq: Piece, imgNode: HTMLImageElement) {
-    console.log(ev, ind, sq);
+function selectOwnPieceOnHop1zuo1(ev: MouseEvent, ind: number, piece: Piece, imgNode: HTMLImageElement) {
+    console.log(ev, ind, piece);
 
     /* If the piece that was originally selected were Hop1zuo1 */
     if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === "Hop1zuo1") {
@@ -352,14 +352,14 @@ function selectOwnPieceOnHop1zuo1(ev: MouseEvent, ind: number, sq: Piece, imgNod
             return;
         } else {
             eraseGuide();
-            showGuideOnHop1zuo1At(ind, sq);
+            showGuideOnHop1zuo1At(ind, piece);
             UI_STATE.selectedCoord = ["Hop1zuo1", ind];
             return;
         }
     }
 
     eraseGuide();
-    showGuideOnHop1zuo1At(ind, sq);
+    showGuideOnHop1zuo1At(ind, piece);
     UI_STATE.selectedCoord = ["Hop1zuo1", ind];
 }
 
@@ -385,14 +385,14 @@ function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
     }
 
     for (let i = 0; i < list.length; i++) {
-        const sq: NonTam2PieceUpward = list[i];
-        let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(sq));
+        const piece: NonTam2PieceUpward = list[i];
+        let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
         let selectable = true;
         
         if (selectable) {
             imgNode.style.cursor = "pointer";
             imgNode.addEventListener('click', function(ev){
-                selectOwnPieceOnHop1zuo1(ev, i, sq, imgNode)
+                selectOwnPieceOnHop1zuo1(ev, i, piece, imgNode)
             });
         }
 
@@ -421,26 +421,26 @@ function drawBoard(board: Board) {
 
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
-            const sq: Piece | null = board[i][j];
-            if (sq == null) {
+            const piece: Piece | null = board[i][j];
+            if (piece == null) {
                 continue;
             } 
             
             const coord: Coord = [i as BoardIndex, j as BoardIndex];
             let imgNode: HTMLImageElement;
             let selectable;
-            if (sq === "Tam2") {
+            if (piece === "Tam2") {
                 imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
                 selectable = true;
             } else {
-                imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(sq));
-                selectable = (sq.side === Side.Upward);
+                imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
+                selectable = (piece.side === Side.Upward);
             }
 
             if (selectable) {
                 imgNode.style.cursor = "pointer";
                 imgNode.addEventListener('click', function(ev){
-                    selectOwnPieceOnBoard(ev, coord, sq, imgNode)
+                    selectOwnPieceOnBoard(ev, coord, piece, imgNode)
                 });
             }
 
