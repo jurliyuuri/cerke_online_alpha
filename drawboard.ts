@@ -196,19 +196,6 @@ function getThingsGoing(ev: MouseEvent, sq: Piece, from: Coord, to: Coord) {
     }
 }
 
-type DictElem = {
-    whetherToTake: string;
-}
-
-type Dictionary = {
-    ja: DictElem
-}
-
-const DICTIONARY: Dictionary = {
-    ja: {
-        whetherToTake: "駒を取りますか？"
-    }
-}
 
 function showGuideOf(coord: Coord, sq: Piece) {
     const contains_guides = document.getElementById("contains_guides")!;

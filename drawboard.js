@@ -171,11 +171,6 @@ function getThingsGoing(ev, sq, from, to) {
         return;
     }
 }
-var DICTIONARY = {
-    ja: {
-        whetherToTake: "駒を取りますか？"
-    }
-};
 function showGuideOf(coord, sq) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);
