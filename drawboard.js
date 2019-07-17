@@ -19,47 +19,47 @@ function drawPieceOnBoard(coord, path) {
     i.height = PIECE_SIZE;
     return i;
 }
-function profToPath(prof) {
-    if (prof === Profession.Dau2)
-        return "dau";
-    if (prof === Profession.Gua2)
-        return "gua";
-    if (prof === Profession.Io)
-        return "io";
-    if (prof === Profession.Kauk2)
-        return "kauk";
-    if (prof === Profession.Kaun1)
-        return "kaun";
-    if (prof === Profession.Kua2)
-        return "kua";
-    if (prof === Profession.Maun1)
-        return "maun";
-    if (prof === Profession.Nuak1)
-        return "nuak";
-    if (prof === Profession.Tuk2)
-        return "tuk";
-    if (prof === Profession.Uai1)
-        return "uai";
-    var _should_not_reach_here = prof;
-    return _should_not_reach_here;
-}
-function sideToPath(side) {
-    if (side === Side.Downward)
-        return "piece_rev";
-    if (side === Side.Upward)
-        return "piece";
-    var _should_not_reach_here = side;
-    return _should_not_reach_here;
-}
-function colorToPath(color) {
-    if (color === Color.Huok2)
-        return "b";
-    if (color === Color.Kok1)
-        return "r";
-    var _should_not_reach_here = color;
-    return _should_not_reach_here;
-}
 function toPath(p) {
+    var sideToPath = function (side) {
+        if (side === Side.Downward)
+            return "piece_rev";
+        if (side === Side.Upward)
+            return "piece";
+        var _should_not_reach_here = side;
+        return _should_not_reach_here;
+    };
+    var colorToPath = function (color) {
+        if (color === Color.Huok2)
+            return "b";
+        if (color === Color.Kok1)
+            return "r";
+        var _should_not_reach_here = color;
+        return _should_not_reach_here;
+    };
+    var profToPath = function (prof) {
+        if (prof === Profession.Dau2)
+            return "dau";
+        if (prof === Profession.Gua2)
+            return "gua";
+        if (prof === Profession.Io)
+            return "io";
+        if (prof === Profession.Kauk2)
+            return "kauk";
+        if (prof === Profession.Kaun1)
+            return "kaun";
+        if (prof === Profession.Kua2)
+            return "kua";
+        if (prof === Profession.Maun1)
+            return "maun";
+        if (prof === Profession.Nuak1)
+            return "nuak";
+        if (prof === Profession.Tuk2)
+            return "tuk";
+        if (prof === Profession.Uai1)
+            return "uai";
+        var _should_not_reach_here = prof;
+        return _should_not_reach_here;
+    };
     return sideToPath(p.side) + "/" + colorToPath(p.color) + profToPath(p.prof);
 }
 var sampleBoard = [
@@ -161,8 +161,20 @@ function getThingsGoing(ev, sq, from, to) {
         alert("implement stepping");
         return;
     }
-    alert("implement me");
+    if (confirm(DICTIONARY.ja.whetherToTake)) {
+        alert("implement taking");
+        return;
+    }
+    else {
+        alert("implement stepping");
+        return;
+    }
 }
+var DICTIONARY = {
+    ja: {
+        whetherToTake: "駒を取りますか？"
+    }
+};
 function showGuideOf(coord, sq) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);

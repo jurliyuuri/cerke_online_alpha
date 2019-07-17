@@ -28,39 +28,39 @@ function drawPieceOnBoard(coord: Coord, path: string) {
     return i;
 }
 
-function profToPath(prof: Profession): string {
-    if (prof === Profession.Dau2) return "dau";
-    if (prof === Profession.Gua2) return "gua";
-    if (prof === Profession.Io) return "io";
-    if (prof === Profession.Kauk2) return "kauk";
-    if (prof === Profession.Kaun1) return "kaun";
-    if (prof === Profession.Kua2) return "kua";
-    if (prof === Profession.Maun1) return "maun";
-    if (prof === Profession.Nuak1) return "nuak";
-    if (prof === Profession.Tuk2) return "tuk";
-    if (prof === Profession.Uai1) return "uai";
-    
-    let _should_not_reach_here : never = prof;
-    return _should_not_reach_here;
-}
-
-function sideToPath(side: Side): string {
-    if (side === Side.Downward) return "piece_rev";
-    if (side === Side.Upward) return "piece";
-
-    let _should_not_reach_here : never = side;
-    return _should_not_reach_here;
-}
-
-function colorToPath(color: Color): string {
-    if (color === Color.Huok2) return "b";
-    if (color === Color.Kok1) return "r";
-
-    let _should_not_reach_here: never = color;
-    return _should_not_reach_here;
-}
-
 function toPath(p: NonTam2Piece): string {
+    const sideToPath = function (side: Side): string {
+        if (side === Side.Downward) return "piece_rev";
+        if (side === Side.Upward) return "piece";
+    
+        let _should_not_reach_here : never = side;
+        return _should_not_reach_here;
+    }
+
+    const colorToPath = function (color: Color): string {
+        if (color === Color.Huok2) return "b";
+        if (color === Color.Kok1) return "r";
+    
+        let _should_not_reach_here: never = color;
+        return _should_not_reach_here;
+    }
+
+    const profToPath = function (prof: Profession): string {
+        if (prof === Profession.Dau2) return "dau";
+        if (prof === Profession.Gua2) return "gua";
+        if (prof === Profession.Io) return "io";
+        if (prof === Profession.Kauk2) return "kauk";
+        if (prof === Profession.Kaun1) return "kaun";
+        if (prof === Profession.Kua2) return "kua";
+        if (prof === Profession.Maun1) return "maun";
+        if (prof === Profession.Nuak1) return "nuak";
+        if (prof === Profession.Tuk2) return "tuk";
+        if (prof === Profession.Uai1) return "uai";
+        
+        let _should_not_reach_here : never = prof;
+        return _should_not_reach_here;
+    }
+    
     return `${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`
 }
 
@@ -186,8 +186,27 @@ function getThingsGoing(ev: MouseEvent, sq: Piece, from: Coord, to: Coord) {
         return;
     }
 
+    if (confirm(DICTIONARY.ja.whetherToTake)) {
+        alert("implement taking");
+        return;
+    } else {
+        alert("implement stepping");
+        return;
+    }
+}
 
-    alert("implement me");
+type DictElem = {
+    whetherToTake: string;
+}
+
+type Dictionary = {
+    ja: DictElem
+}
+
+const DICTIONARY: Dictionary = {
+    ja: {
+        whetherToTake: "駒を取りますか？"
+    }
 }
 
 function showGuideOf(coord: Coord, sq: Piece) {
