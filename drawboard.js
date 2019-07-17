@@ -78,7 +78,7 @@ var sampleBoard = [
 ];
 var sampleField = {
     currentBoard: sampleBoard,
-    hop1zuo1OfDownward: [],
+    hop1zuo1OfDownward: [{ color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Downward }],
     hop1zuo1OfUpward: [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }]
 };
 var GAME_STATE = {
@@ -358,6 +358,17 @@ function drawHop1zuo1OfUpward(list) {
     }
 }
 function drawHop1zuo1OfDownward(list) {
+    var contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward");
+    GAME_STATE.f.hop1zuo1OfDownward = list;
+    // delete everything
+    while (contains_pieces_on_downward.firstChild) {
+        contains_pieces_on_downward.removeChild(contains_pieces_on_downward.firstChild);
+    }
+    for (var i = 0; i < list.length; i++) {
+        var piece = list[i];
+        var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+        contains_pieces_on_downward.appendChild(imgNode);
+    }
 }
 function drawField(field) {
     drawBoard(field.currentBoard);

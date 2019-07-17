@@ -84,7 +84,7 @@ const sampleBoard: Board = [
 
 const sampleField: Field = {
     currentBoard: sampleBoard,
-    hop1zuo1OfDownward: [],
+    hop1zuo1OfDownward: [{ color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Downward }],
     hop1zuo1OfUpward: [{color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward}, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward } ]
 }
 
@@ -429,7 +429,19 @@ function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
 }
 
 function drawHop1zuo1OfDownward(list: NonTam2PieceDownward[]) {
+    const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward")!;
+    GAME_STATE.f.hop1zuo1OfDownward = list;
 
+    // delete everything
+    while (contains_pieces_on_downward.firstChild) {
+        contains_pieces_on_downward.removeChild(contains_pieces_on_downward.firstChild);
+    }
+
+    for (let i = 0; i < list.length; i++) {
+        const piece: NonTam2PieceDownward = list[i];
+        let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+        contains_pieces_on_downward.appendChild(imgNode);
+    }
 }
 
 function drawField(field: Field) {
