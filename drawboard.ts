@@ -11,6 +11,7 @@ import AbsoluteCoord = type__message.AbsoluteCoord;
 import AbsoluteRow = type__message.AbsoluteRow;
 import NormalMove = type__message.NormalMove
 import calculateMovablePositions = calculate_movable.calculateMovablePositions;
+import coordEq = type__piece.coordEq;
 
 const BOX_SIZE = 70;
 const MAX_PIECE_SIZE = BOX_SIZE - 1;
@@ -245,7 +246,7 @@ function selectOwnPieceOnBoard(ev: MouseEvent, coord: Coord, sq: Piece, imgNode:
     const [i, j] = coord;
     console.log(ev, i, j, sq);
 
-    if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === i && UI_STATE.selectedCoord[1] === j) {
+    if (UI_STATE.selectedCoord != null && coordEq(UI_STATE.selectedCoord, coord)) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
     } else {

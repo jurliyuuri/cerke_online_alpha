@@ -5,6 +5,7 @@ var Color = type__piece.Color;
 var AbsoluteColumn = type__message.AbsoluteColumn;
 var AbsoluteRow = type__message.AbsoluteRow;
 var calculateMovablePositions = calculate_movable.calculateMovablePositions;
+var coordEq = type__piece.coordEq;
 var BOX_SIZE = 70;
 var MAX_PIECE_SIZE = BOX_SIZE - 1;
 var PIECE_SIZE = 60;
@@ -205,7 +206,7 @@ function showGuideOf(coord, sq) {
 function selectOwnPieceOnBoard(ev, coord, sq, imgNode) {
     var i = coord[0], j = coord[1];
     console.log(ev, i, j, sq);
-    if (UI_STATE.selectedCoord != null && UI_STATE.selectedCoord[0] === i && UI_STATE.selectedCoord[1] === j) {
+    if (UI_STATE.selectedCoord != null && coordEq(UI_STATE.selectedCoord, coord)) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
     }
