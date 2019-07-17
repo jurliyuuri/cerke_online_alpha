@@ -1,11 +1,4 @@
 "use strict";
-var Profession = type__piece.Profession;
-var Side = type__piece.Side;
-var Color = type__piece.Color;
-var AbsoluteColumn = type__message.AbsoluteColumn;
-var AbsoluteRow = type__message.AbsoluteRow;
-var calculateMovablePositions = calculate_movable.calculateMovablePositions;
-var coordEq = type__piece.coordEq;
 var BOX_SIZE = 70;
 var MAX_PIECE_SIZE = BOX_SIZE - 1;
 var PIECE_SIZE = 60;
@@ -63,24 +56,6 @@ function toPath(p) {
     };
     return sideToPath(p.side) + "/" + colorToPath(p.color) + profToPath(p.prof);
 }
-var sampleBoard = [
-    [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
-        null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null, null],
-    [null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, null, null, null, null, null, null],
-    [{ color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2", "Tam2", null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
-    [null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, "Tam2", null, null, null, null, null, null],
-    [null, null, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null],
-    [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
-        null, null, null, null, null, null, null, null],
-    [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null],
-    [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, null],
-    [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"]
-];
-var sampleField = {
-    currentBoard: sampleBoard,
-    hop1zuo1OfDownward: [{ color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Downward }],
-    hop1zuo1OfUpward: [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }]
-};
 var GAME_STATE = {
     f: {
         currentBoard: [
@@ -148,14 +123,14 @@ function toAbsoluteCoord(_a) {
 }
 function getThingsGoingFromHop1zuo1(ev, piece, from, to) {
     var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+    // must parachute onto an empty square
     if (dest != null) {
         alert("Cannot parachute onto an occupied square");
         throw new Error("Cannot parachute onto an occupied square");
     }
-    // moving from Hop1zuo1 to the empty square
     if (piece === "Tam2") {
         alert("Cannot parachute Tam2");
-        throw new Error("Cannot parachute onto an occupied square");
+        throw new Error("Cannot parachute Tam2");
     }
     var abs_dst = toAbsoluteCoord(to);
     var message = {
