@@ -9,6 +9,7 @@
   background-color: #00ffc8;
   width: 631px;
   height: 140px;
+  position: relative;
 }
 
 #hop1zuo1_of_upward {
@@ -16,6 +17,7 @@
   background-color: #00ffc8;
   width: 631px;
   height: 140px;
+  position: relative;
 }
 
 #board_containment {
@@ -58,6 +60,10 @@ img.guide {
   }
 }
 img.piece_image_on_board {
+  position: absolute;
+}
+
+img.piece_image_on_hop1zuo1 {
   position: absolute;
 }
 

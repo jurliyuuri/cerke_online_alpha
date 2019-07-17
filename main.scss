@@ -5,11 +5,11 @@ $hop1zuo1_height: 140px;
 }
 
 #hop1zuo1_of_downward {
-    border: 1px solid rgb(0, 255, 200); background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; 
+    border: 1px solid rgb(0, 255, 200); background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
 }
 
 #hop1zuo1_of_upward {
-    border: 1px solid rgb(0, 255, 200);background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; 
+    border: 1px solid rgb(0, 255, 200);background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
 }
 
 #board_containment {
@@ -40,5 +40,9 @@ img.guide {
 }
 
 img.piece_image_on_board {
+    position: absolute;
+}
+
+img.piece_image_on_hop1zuo1 {
     position: absolute;
 }

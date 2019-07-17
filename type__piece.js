@@ -24,6 +24,31 @@ var type__piece;
         Profession[Profession["Uai1"] = 8] = "Uai1";
         Profession[Profession["Io"] = 9] = "Io";
     })(Profession = type__piece.Profession || (type__piece.Profession = {}));
+    function fromUpOrDown(u_or_d) {
+        return {
+            color: u_or_d.color,
+            prof: u_or_d.prof,
+            side: u_or_d.side
+        };
+    }
+    type__piece.fromUpOrDown = fromUpOrDown;
+    function toUpOrDown(nontam) {
+        if (nontam.side === Side.Downward) {
+            return {
+                color: nontam.color,
+                prof: nontam.prof,
+                side: nontam.side
+            };
+        }
+        else {
+            return {
+                color: nontam.color,
+                prof: nontam.prof,
+                side: nontam.side
+            };
+        }
+    }
+    type__piece.toUpOrDown = toUpOrDown;
     function coordEq(a, b) {
         return a[0] === b[0] && a[1] === b[1];
     }

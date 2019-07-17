@@ -29,6 +29,42 @@ export interface NonTam2Piece {
     side: Side; // The side that the piece belongs to
 }
 
+export function fromUpOrDown(u_or_d: NonTam2PieceDownward | NonTam2PieceUpward): NonTam2Piece {
+    return {
+        color: u_or_d.color,
+        prof: u_or_d.prof,
+        side: u_or_d.side
+    };
+}
+
+export function toUpOrDown(nontam: NonTam2Piece): NonTam2PieceDownward | NonTam2PieceUpward {
+    if (nontam.side === Side.Downward) {
+        return {
+            color: nontam.color,
+            prof: nontam.prof,
+            side: nontam.side
+        };
+    } else {
+        return {
+            color: nontam.color,
+            prof: nontam.prof,
+            side: nontam.side
+        };
+    }
+}
+
+export interface NonTam2PieceDownward {
+    color: Color; // The color of the piece
+    prof: Profession; // The profession of the piece
+    side: Side.Downward; // The side that the piece belongs to
+}
+
+export interface NonTam2PieceUpward {
+    color: Color; // The color of the piece
+    prof: Profession; // The profession of the piece
+    side: Side.Upward; // The side that the piece belongs to
+}
+
 export type Piece = "Tam2" | NonTam2Piece;
 
 export type Tuple9<T> = [T, T, T, T, T, T, T, T, T]
