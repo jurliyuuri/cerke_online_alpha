@@ -209,13 +209,29 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
         }
     }
 
-    if (dest === "Tam2" || dest.side === Side.Upward) { // can step, but cannot take
+    if (dest === "Tam2" || dest.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
         alert("implement stepping");
         return;
     }
 
     if (confirm(DICTIONARY.ja.whetherToTake)) {
-        alert("implement taking");
+        let abs_src: AbsoluteCoord = toAbsoluteCoord(from);
+        let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
+        let message: NormalNonTamMove = {
+            type: "NonTamMove",
+            data: {
+                type: "SrcDst",
+                src: abs_src,
+                dest: abs_dst
+            }
+        }
+        
+        console.log("sending normal move:", JSON.stringify(message));
+
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+
+        alert("message sent.");
         return;
     } else {
         alert("implement stepping");

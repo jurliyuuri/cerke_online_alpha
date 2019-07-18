@@ -174,12 +174,25 @@ function getThingsGoing(ev, piece, from, to) {
             return;
         }
     }
-    if (dest === "Tam2" || dest.side === Side.Upward) { // can step, but cannot take
+    if (dest === "Tam2" || dest.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
         alert("implement stepping");
         return;
     }
     if (confirm(DICTIONARY.ja.whetherToTake)) {
-        alert("implement taking");
+        var abs_src = toAbsoluteCoord(from);
+        var abs_dst = toAbsoluteCoord(to);
+        var message = {
+            type: "NonTamMove",
+            data: {
+                type: "SrcDst",
+                src: abs_src,
+                dest: abs_dst
+            }
+        };
+        console.log("sending normal move:", JSON.stringify(message));
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        alert("message sent.");
         return;
     }
     else {
