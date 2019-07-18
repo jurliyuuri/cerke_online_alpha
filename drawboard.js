@@ -273,13 +273,13 @@ function getThingsGoing(ev, piece, from, to) {
         return;
     }
 }
-function createYellowGuideImageAt(coord) {
+function createYellowGuideImageAt(coord, path) {
     var row_index = coord[0], column_index = coord[1];
     var img = document.createElement("img");
     img.classList.add("guide");
     img.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
     img.style.left = 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
-    img.src = "image/ct.png";
+    img.src = "image/" + path + ".png";
     img.width = MAX_PIECE_SIZE;
     img.height = MAX_PIECE_SIZE;
     img.style.cursor = "pointer";
@@ -290,10 +290,11 @@ function showGuideOfBoardPiece(coord, piece) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
-    var guideList = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
+    var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListYellow = _a.finite, guideListGreen = _a.infinite;
+    var guideList = guideListYellow.concat(guideListGreen);
     var _loop_1 = function (ind) {
         // draw the yellow guides
-        var img = createYellowGuideImageAt(guideList[ind]);
+        var img = createYellowGuideImageAt(guideList[ind], "ct");
         // click on it to get things going
         img.addEventListener('click', function (ev) {
             getThingsGoing(ev, piece, coord, guideList[ind]);
@@ -353,7 +354,7 @@ function showGuideOnHop1zuo1At(ind, piece) {
                 return "continue";
             }
             // draw the yellow guides
-            var img = createYellowGuideImageAt(ij);
+            var img = createYellowGuideImageAt(ij, "ct");
             // click on it to get things going
             img.addEventListener('click', function (ev) {
                 getThingsGoingFromHop1zuo1(ev, piece, ["Hop1zuo1", ind], ij);

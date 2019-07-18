@@ -335,13 +335,13 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
     }
 }
 
-function createYellowGuideImageAt(coord: Coord) {
+function createYellowGuideImageAt(coord: Coord, path: string) {
     const [row_index, column_index] = coord;
     let img = document.createElement("img");
     img.classList.add("guide");
     img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
     img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
-    img.src = `image/ct.png`;
+    img.src = `image/${path}.png`;
     img.width = MAX_PIECE_SIZE;
     img.height = MAX_PIECE_SIZE;
     img.style.cursor = "pointer";
@@ -354,16 +354,18 @@ function showGuideOfBoardPiece(coord: Coord, piece: Piece) {
     const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
 
-    const guideList: Array<Coord> = calculateMovablePositions(
+    const {finite: guideListYellow, infinite: guideListGreen} = calculateMovablePositions(
         coord,
         piece,
         GAME_STATE.f.currentBoard,
         GAME_STATE.tam_itself_is_tam_hue);
 
+    const guideList = [...guideListYellow, ...guideListGreen]
+
     for (let ind = 0; ind < guideList.length; ind++) {
 
         // draw the yellow guides
-        let img = createYellowGuideImageAt(guideList[ind])
+        let img = createYellowGuideImageAt(guideList[ind], "ct");
 
         // click on it to get things going
         img.addEventListener('click', function (ev) {
@@ -432,7 +434,7 @@ function showGuideOnHop1zuo1At(ind: number, piece: Piece) {
             }
 
             // draw the yellow guides
-            let img = createYellowGuideImageAt(ij)
+            let img = createYellowGuideImageAt(ij, "ct");
 
             // click on it to get things going
             img.addEventListener('click', function (ev) {
