@@ -2,7 +2,7 @@ const BOX_SIZE = 70;
 const MAX_PIECE_SIZE = BOX_SIZE - 1;
 const PIECE_SIZE = 60;
 
-function createPieceImgToBePlacedOnBoard(coord: Coord, path: string): HTMLImageElement {
+function createPieceImgToBePlacedOnBoardByPath(coord: Coord, path: string): HTMLImageElement {
     let [row_index, column_index] = coord;
     let i = document.createElement("img");
     i.classList.add("piece_image_on_board");
@@ -177,11 +177,65 @@ function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: Piece, from: ["Hop1zu
     return;
 }
 
+function erasePhantom() {
+    let contains_phantom = document.getElementById("contains_phantom")!;
+    while (contains_phantom.firstChild) {
+        contains_phantom.removeChild(contains_phantom.firstChild);
+    }
+}
+
+function drawHoverAt(coord: Coord, piece: Piece) {
+    let contains_phantom = document.getElementById("contains_phantom")!;
+
+    let [row_index, column_index] = coord;
+    let img = document.createElement("img");
+    img.classList.add("piece_image_on_board");
+    img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) }px`;
+    img.style.left = `${1 + column_index * BOX_SIZE}px`;
+    img.src = `image/${toPath_(piece)}.png`;
+    img.width = PIECE_SIZE;
+    img.height = PIECE_SIZE;
+    
+    img.style.zIndex = "100";
+    img.style.cursor = "pointer";
+
+    // TODO: draw as being already selected
+    img.addEventListener('click', function (ev) {
+        alert("foo");
+    });
+    contains_phantom.appendChild(img);
+}
+
+function drawPhantomAt(coord: Coord, piece: Piece) {
+    let contains_phantom = document.getElementById("contains_phantom")!;
+    erasePhantom();
+
+    const phantom: HTMLImageElement = createPieceImgToBePlacedOnBoard(coord, piece);
+    phantom.style.opacity = "0.1";
+    contains_phantom.appendChild(phantom);
+}
+
+function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
+    eraseGuide();
+    document.getElementById("protective_cover_over_field")!.classList.remove("nocover");
+
+    // delete the original one
+    GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
+
+    // draw
+    drawField(GAME_STATE.f);
+
+    drawPhantomAt(from, piece);
+
+    drawHoverAt(to, piece);
+    alert("implement stepping");
+
+}
 
 function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
-    let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+    let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
-    if (dest == null) { // dest is empty square; try to simply move
+    if (destPiece == null) { // dest is empty square; try to simply move
 
         let message: NormalMove;
 
@@ -209,8 +263,8 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
         }
     }
 
-    if (dest === "Tam2" || dest.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
-        alert("implement stepping");
+    if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
+        stepping(from, piece, to, destPiece);
         return;
     }
 
@@ -234,7 +288,7 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
         alert("message sent.");
         return;
     } else {
-        alert("implement stepping");
+        stepping(from, piece, to, destPiece);
         return;
     }
 }
@@ -378,6 +432,17 @@ function createPieceImgToBePlacedOnHop1zuo1(ind: number, path: string): HTMLImag
     return img;
 }
 
+function toPath_(piece: Piece) {
+    if (piece === "Tam2") {
+        return "piece/tam";
+    } else {
+        return toPath(piece);
+    }
+}
+
+function createPieceImgToBePlacedOnBoard(coord: Coord, piece: Piece) {
+    return createPieceImgToBePlacedOnBoardByPath(coord, toPath_(piece));
+}
 
 function drawField(field: Field) {
     const drawBoard = function (board: Board) {
@@ -399,11 +464,12 @@ function drawField(field: Field) {
                 const coord: Coord = [i as BoardIndex, j as BoardIndex];
                 let imgNode: HTMLImageElement;
                 let selectable;
+
+                imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
+
                 if (piece === "Tam2") {
-                    imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
                     selectable = true;
                 } else {
-                    imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
                     selectable = (piece.side === Side.Upward);
                 }
 

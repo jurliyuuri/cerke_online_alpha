@@ -2,7 +2,7 @@
 var BOX_SIZE = 70;
 var MAX_PIECE_SIZE = BOX_SIZE - 1;
 var PIECE_SIZE = 60;
-function createPieceImgToBePlacedOnBoard(coord, path) {
+function createPieceImgToBePlacedOnBoardByPath(coord, path) {
     var row_index = coord[0], column_index = coord[1];
     var i = document.createElement("img");
     i.classList.add("piece_image_on_board");
@@ -148,9 +148,51 @@ function getThingsGoingFromHop1zuo1(ev, piece, from, to) {
     alert("message sent.");
     return;
 }
+function erasePhantom() {
+    var contains_phantom = document.getElementById("contains_phantom");
+    while (contains_phantom.firstChild) {
+        contains_phantom.removeChild(contains_phantom.firstChild);
+    }
+}
+function drawHoverAt(coord, piece) {
+    var contains_phantom = document.getElementById("contains_phantom");
+    var row_index = coord[0], column_index = coord[1];
+    var img = document.createElement("img");
+    img.classList.add("piece_image_on_board");
+    img.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) + "px";
+    img.style.left = 1 + column_index * BOX_SIZE + "px";
+    img.src = "image/" + toPath_(piece) + ".png";
+    img.width = PIECE_SIZE;
+    img.height = PIECE_SIZE;
+    img.style.zIndex = "100";
+    img.style.cursor = "pointer";
+    // TODO: draw as being already selected
+    img.addEventListener('click', function (ev) {
+        alert("foo");
+    });
+    contains_phantom.appendChild(img);
+}
+function drawPhantomAt(coord, piece) {
+    var contains_phantom = document.getElementById("contains_phantom");
+    erasePhantom();
+    var phantom = createPieceImgToBePlacedOnBoard(coord, piece);
+    phantom.style.opacity = "0.1";
+    contains_phantom.appendChild(phantom);
+}
+function stepping(from, piece, to, destPiece) {
+    eraseGuide();
+    document.getElementById("protective_cover_over_field").classList.remove("nocover");
+    // delete the original one
+    GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
+    // draw
+    drawField(GAME_STATE.f);
+    drawPhantomAt(from, piece);
+    drawHoverAt(to, piece);
+    alert("implement stepping");
+}
 function getThingsGoing(ev, piece, from, to) {
-    var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
-    if (dest == null) { // dest is empty square; try to simply move
+    var destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
+    if (destPiece == null) { // dest is empty square; try to simply move
         var message = void 0;
         if (piece !== "Tam2") {
             var abs_src = toAbsoluteCoord(from);
@@ -174,8 +216,8 @@ function getThingsGoing(ev, piece, from, to) {
             return;
         }
     }
-    if (dest === "Tam2" || dest.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
-        alert("implement stepping");
+    if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
+        stepping(from, piece, to, destPiece);
         return;
     }
     if (confirm(DICTIONARY.ja.whetherToTake)) {
@@ -196,7 +238,7 @@ function getThingsGoing(ev, piece, from, to) {
         return;
     }
     else {
-        alert("implement stepping");
+        stepping(from, piece, to, destPiece);
         return;
     }
 }
@@ -322,6 +364,17 @@ function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
     img.height = PIECE_SIZE;
     return img;
 }
+function toPath_(piece) {
+    if (piece === "Tam2") {
+        return "piece/tam";
+    }
+    else {
+        return toPath(piece);
+    }
+}
+function createPieceImgToBePlacedOnBoard(coord, piece) {
+    return createPieceImgToBePlacedOnBoardByPath(coord, toPath_(piece));
+}
 function drawField(field) {
     var drawBoard = function (board) {
         var contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
@@ -339,12 +392,11 @@ function drawField(field) {
                 var coord = [i, j];
                 var imgNode;
                 var selectable = void 0;
+                imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
                 if (piece === "Tam2") {
-                    imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
                     selectable = true;
                 }
                 else {
-                    imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
                     selectable = (piece.side === Side.Upward);
                 }
                 if (selectable) {
