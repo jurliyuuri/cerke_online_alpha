@@ -72,7 +72,8 @@ var GAME_STATE = {
         hop1zuo1OfDownward: [],
         hop1zuo1OfUpward: [],
     },
-    IA_is_down: true
+    IA_is_down: true,
+    tam_itself_is_tam_hue: true
 };
 var UI_STATE = {
     selectedCoord: null
@@ -259,7 +260,7 @@ function showGuideOfBoardPiece(coord, piece) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
-    var guideList = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard);
+    var guideList = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
     var _loop_1 = function (ind) {
         // draw the yellow guides
         var img = createYellowGuideImageAt(guideList[ind]);

@@ -79,7 +79,7 @@ namespace calculate_movable {
         ]);
     }
 
-    function isTamHue(coord: Coord, board: Readonly<Board>): boolean {
+    function isTamHue(coord: Coord, board: Readonly<Board>, tam_itself_is_tam_hue: boolean): boolean {
         // unconditionally TamHue
         if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) ||
             coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) ||
@@ -90,12 +90,16 @@ namespace calculate_movable {
             return true;
         }
 
+        if (tam_itself_is_tam_hue && board[coord[0]][coord[1]] === "Tam2") {
+            return true;
+        }
+
         // is Tam2 available at any neighborhood?
         return eightNeighborhood(coord).some(([i, j]) => board[i][j] === "Tam2");
     }
 
 
-    export function calculateMovablePositions(coord: Coord, sq: Piece, board: Board): Array<Coord> {
+    export function calculateMovablePositions(coord: Coord, sq: Piece, board: Board, tam_itself_is_tam_hue: boolean): Array<Coord> {
         if (sq === "Tam2") {
             return eightNeighborhood(coord);
         }
@@ -118,7 +122,7 @@ namespace calculate_movable {
         const LEFT: Array<[number, number]> = [[0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7], [0, -8]];
         const RIGHT: Array<[number, number]> = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]];
 
-        if (isTamHue(coord, board)) {
+        if (isTamHue(coord, board, tam_itself_is_tam_hue)) {
             switch (sq.prof) {
                 case Profession.Uai1: // General, 将, varxle
                     return eightNeighborhood(coord);

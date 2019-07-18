@@ -87,7 +87,7 @@ var calculate_movable;
         ]);
     }
     calculate_movable.eightNeighborhood = eightNeighborhood;
-    function isTamHue(coord, board) {
+    function isTamHue(coord, board, tam_itself_is_tam_hue) {
         // unconditionally TamHue
         if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) ||
             coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) ||
@@ -96,13 +96,16 @@ var calculate_movable;
             coordEq(coord, [6, 2]) || coordEq(coord, [6, 6])) {
             return true;
         }
+        if (tam_itself_is_tam_hue && board[coord[0]][coord[1]] === "Tam2") {
+            return true;
+        }
         // is Tam2 available at any neighborhood?
         return eightNeighborhood(coord).some(function (_a) {
             var i = _a[0], j = _a[1];
             return board[i][j] === "Tam2";
         });
     }
-    function calculateMovablePositions(coord, sq, board) {
+    function calculateMovablePositions(coord, sq, board, tam_itself_is_tam_hue) {
         if (sq === "Tam2") {
             return eightNeighborhood(coord);
         }
@@ -121,7 +124,7 @@ var calculate_movable;
         var DOWN = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]];
         var LEFT = [[0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7], [0, -8]];
         var RIGHT = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]];
-        if (isTamHue(coord, board)) {
+        if (isTamHue(coord, board, tam_itself_is_tam_hue)) {
             switch (sq.prof) {
                 case Profession.Uai1: // General, 将, varxle
                     return eightNeighborhood(coord);

@@ -60,7 +60,8 @@ type Field = {
 
 type GAME_STATE = {
     f: Field,
-    IA_is_down: boolean
+    IA_is_down: boolean,
+    tam_itself_is_tam_hue: boolean
 };
 
 let GAME_STATE: GAME_STATE = {
@@ -79,7 +80,8 @@ let GAME_STATE: GAME_STATE = {
         hop1zuo1OfDownward: [],
         hop1zuo1OfUpward: [],
     },
-    IA_is_down: true
+    IA_is_down: true,
+    tam_itself_is_tam_hue: true
 }
 
 type UI_STATE = {
@@ -190,12 +192,12 @@ function drawHoverAt(coord: Coord, piece: Piece) {
     let [row_index, column_index] = coord;
     let img = document.createElement("img");
     img.classList.add("piece_image_on_board");
-    img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) }px`;
+    img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE)}px`;
     img.style.left = `${1 + column_index * BOX_SIZE}px`;
     img.src = `image/${toPath_(piece)}.png`;
     img.width = PIECE_SIZE;
     img.height = PIECE_SIZE;
-    
+
     img.style.zIndex = "100";
     img.style.cursor = "pointer";
 
@@ -312,7 +314,11 @@ function showGuideOfBoardPiece(coord: Coord, piece: Piece) {
     const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
 
-    const guideList: Array<Coord> = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard);
+    const guideList: Array<Coord> = calculateMovablePositions(
+        coord,
+        piece,
+        GAME_STATE.f.currentBoard,
+        GAME_STATE.tam_itself_is_tam_hue);
 
     for (let ind = 0; ind < guideList.length; ind++) {
 
