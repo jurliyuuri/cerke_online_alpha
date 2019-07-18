@@ -225,7 +225,7 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
                 dest: abs_dst
             }
         }
-        
+
         console.log("sending normal move:", JSON.stringify(message));
 
         eraseGuide();
@@ -345,8 +345,6 @@ function showGuideOnHop1zuo1At(ind: number, piece: Piece) {
     }
 }
 
-
-
 function selectOwnPieceOnHop1zuo1(ev: MouseEvent, ind: number, piece: Piece, imgNode: HTMLImageElement) {
     console.log(ev, ind, piece);
 
@@ -381,88 +379,88 @@ function createPieceImgToBePlacedOnHop1zuo1(ind: number, path: string): HTMLImag
 }
 
 
-function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
-    const contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward")!;
-    GAME_STATE.f.hop1zuo1OfUpward = list;
+function drawField(field: Field) {
+    const drawBoard = function (board: Board) {
+        const contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
+        GAME_STATE.f.currentBoard = board;
 
-    // delete everything
-    while (contains_pieces_on_upward.firstChild) {
-        contains_pieces_on_upward.removeChild(contains_pieces_on_upward.firstChild);
-    }
-
-    for (let i = 0; i < list.length; i++) {
-        const piece: NonTam2PieceUpward = list[i];
-        let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-        let selectable = true;
-
-        if (selectable) {
-            imgNode.style.cursor = "pointer";
-            imgNode.addEventListener('click', function (ev) {
-                selectOwnPieceOnHop1zuo1(ev, i, piece, imgNode)
-            });
+        // delete everything
+        while (contains_pieces_on_board.firstChild) {
+            contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
         }
 
-        contains_pieces_on_upward.appendChild(imgNode);
-    }
-}
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                const piece: Piece | null = board[i][j];
+                if (piece == null) {
+                    continue;
+                }
 
-function drawHop1zuo1OfDownward(list: NonTam2PieceDownward[]) {
-    const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward")!;
-    GAME_STATE.f.hop1zuo1OfDownward = list;
+                const coord: Coord = [i as BoardIndex, j as BoardIndex];
+                let imgNode: HTMLImageElement;
+                let selectable;
+                if (piece === "Tam2") {
+                    imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
+                    selectable = true;
+                } else {
+                    imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
+                    selectable = (piece.side === Side.Upward);
+                }
 
-    // delete everything
-    while (contains_pieces_on_downward.firstChild) {
-        contains_pieces_on_downward.removeChild(contains_pieces_on_downward.firstChild);
-    }
+                if (selectable) {
+                    imgNode.style.cursor = "pointer";
+                    imgNode.addEventListener('click', function (ev) {
+                        selectOwnPieceOnBoard(ev, coord, piece, imgNode)
+                    });
+                }
 
-    for (let i = 0; i < list.length; i++) {
-        const piece: NonTam2PieceDownward = list[i];
-        let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-        contains_pieces_on_downward.appendChild(imgNode);
-    }
-}
-
-function drawField(field: Field) {
-    drawBoard(field.currentBoard);
-    drawHop1zuo1OfUpward(field.hop1zuo1OfUpward);
-    drawHop1zuo1OfDownward(field.hop1zuo1OfDownward);
-}
-
-function drawBoard(board: Board) {
-    const contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
-    GAME_STATE.f.currentBoard = board;
-
-    // delete everything
-    while (contains_pieces_on_board.firstChild) {
-        contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
-    }
-
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[i].length; j++) {
-            const piece: Piece | null = board[i][j];
-            if (piece == null) {
-                continue;
+                contains_pieces_on_board.appendChild(imgNode);
             }
+        }
+    }
 
-            const coord: Coord = [i as BoardIndex, j as BoardIndex];
-            let imgNode: HTMLImageElement;
-            let selectable;
-            if (piece === "Tam2") {
-                imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
-                selectable = true;
-            } else {
-                imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
-                selectable = (piece.side === Side.Upward);
-            }
+    const drawHop1zuo1OfUpward = function (list: NonTam2PieceUpward[]) {
+        const contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward")!;
+        GAME_STATE.f.hop1zuo1OfUpward = list;
+
+        // delete everything
+        while (contains_pieces_on_upward.firstChild) {
+            contains_pieces_on_upward.removeChild(contains_pieces_on_upward.firstChild);
+        }
+
+        for (let i = 0; i < list.length; i++) {
+            const piece: NonTam2PieceUpward = list[i];
+            let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            let selectable = true;
 
             if (selectable) {
                 imgNode.style.cursor = "pointer";
                 imgNode.addEventListener('click', function (ev) {
-                    selectOwnPieceOnBoard(ev, coord, piece, imgNode)
+                    selectOwnPieceOnHop1zuo1(ev, i, piece, imgNode)
                 });
             }
 
-            contains_pieces_on_board.appendChild(imgNode);
+            contains_pieces_on_upward.appendChild(imgNode);
         }
     }
+
+    const drawHop1zuo1OfDownward = function (list: NonTam2PieceDownward[]) {
+        const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward")!;
+        GAME_STATE.f.hop1zuo1OfDownward = list;
+
+        // delete everything
+        while (contains_pieces_on_downward.firstChild) {
+            contains_pieces_on_downward.removeChild(contains_pieces_on_downward.firstChild);
+        }
+
+        for (let i = 0; i < list.length; i++) {
+            const piece: NonTam2PieceDownward = list[i];
+            let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            contains_pieces_on_downward.appendChild(imgNode);
+        }
+    }
+
+    drawBoard(field.currentBoard);
+    drawHop1zuo1OfUpward(field.hop1zuo1OfUpward);
+    drawHop1zuo1OfDownward(field.hop1zuo1OfDownward);
 }

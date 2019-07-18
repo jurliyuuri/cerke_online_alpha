@@ -322,81 +322,81 @@ function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
     img.height = PIECE_SIZE;
     return img;
 }
-function drawHop1zuo1OfUpward(list) {
-    var contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward");
-    GAME_STATE.f.hop1zuo1OfUpward = list;
-    // delete everything
-    while (contains_pieces_on_upward.firstChild) {
-        contains_pieces_on_upward.removeChild(contains_pieces_on_upward.firstChild);
-    }
-    var _loop_3 = function (i) {
-        var piece = list[i];
-        var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-        var selectable = true;
-        if (selectable) {
-            imgNode.style.cursor = "pointer";
-            imgNode.addEventListener('click', function (ev) {
-                selectOwnPieceOnHop1zuo1(ev, i, piece, imgNode);
-            });
-        }
-        contains_pieces_on_upward.appendChild(imgNode);
-    };
-    for (var i = 0; i < list.length; i++) {
-        _loop_3(i);
-    }
-}
-function drawHop1zuo1OfDownward(list) {
-    var contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward");
-    GAME_STATE.f.hop1zuo1OfDownward = list;
-    // delete everything
-    while (contains_pieces_on_downward.firstChild) {
-        contains_pieces_on_downward.removeChild(contains_pieces_on_downward.firstChild);
-    }
-    for (var i = 0; i < list.length; i++) {
-        var piece = list[i];
-        var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-        contains_pieces_on_downward.appendChild(imgNode);
-    }
-}
 function drawField(field) {
-    drawBoard(field.currentBoard);
-    drawHop1zuo1OfUpward(field.hop1zuo1OfUpward);
-    drawHop1zuo1OfDownward(field.hop1zuo1OfDownward);
-}
-function drawBoard(board) {
-    var contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
-    GAME_STATE.f.currentBoard = board;
-    // delete everything
-    while (contains_pieces_on_board.firstChild) {
-        contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
-    }
-    for (var i = 0; i < board.length; i++) {
-        var _loop_4 = function (j) {
-            var piece = board[i][j];
-            if (piece == null) {
-                return "continue";
+    var drawBoard = function (board) {
+        var contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
+        GAME_STATE.f.currentBoard = board;
+        // delete everything
+        while (contains_pieces_on_board.firstChild) {
+            contains_pieces_on_board.removeChild(contains_pieces_on_board.firstChild);
+        }
+        for (var i = 0; i < board.length; i++) {
+            var _loop_3 = function (j) {
+                var piece = board[i][j];
+                if (piece == null) {
+                    return "continue";
+                }
+                var coord = [i, j];
+                var imgNode;
+                var selectable = void 0;
+                if (piece === "Tam2") {
+                    imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
+                    selectable = true;
+                }
+                else {
+                    imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
+                    selectable = (piece.side === Side.Upward);
+                }
+                if (selectable) {
+                    imgNode.style.cursor = "pointer";
+                    imgNode.addEventListener('click', function (ev) {
+                        selectOwnPieceOnBoard(ev, coord, piece, imgNode);
+                    });
+                }
+                contains_pieces_on_board.appendChild(imgNode);
+            };
+            for (var j = 0; j < board[i].length; j++) {
+                _loop_3(j);
             }
-            var coord = [i, j];
-            var imgNode;
-            var selectable = void 0;
-            if (piece === "Tam2") {
-                imgNode = createPieceImgToBePlacedOnBoard(coord, "piece/tam");
-                selectable = true;
-            }
-            else {
-                imgNode = createPieceImgToBePlacedOnBoard(coord, toPath(piece));
-                selectable = (piece.side === Side.Upward);
-            }
+        }
+    };
+    var drawHop1zuo1OfUpward = function (list) {
+        var contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward");
+        GAME_STATE.f.hop1zuo1OfUpward = list;
+        // delete everything
+        while (contains_pieces_on_upward.firstChild) {
+            contains_pieces_on_upward.removeChild(contains_pieces_on_upward.firstChild);
+        }
+        var _loop_4 = function (i) {
+            var piece = list[i];
+            var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            var selectable = true;
             if (selectable) {
                 imgNode.style.cursor = "pointer";
                 imgNode.addEventListener('click', function (ev) {
-                    selectOwnPieceOnBoard(ev, coord, piece, imgNode);
+                    selectOwnPieceOnHop1zuo1(ev, i, piece, imgNode);
                 });
             }
-            contains_pieces_on_board.appendChild(imgNode);
+            contains_pieces_on_upward.appendChild(imgNode);
         };
-        for (var j = 0; j < board[i].length; j++) {
-            _loop_4(j);
+        for (var i = 0; i < list.length; i++) {
+            _loop_4(i);
         }
-    }
+    };
+    var drawHop1zuo1OfDownward = function (list) {
+        var contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward");
+        GAME_STATE.f.hop1zuo1OfDownward = list;
+        // delete everything
+        while (contains_pieces_on_downward.firstChild) {
+            contains_pieces_on_downward.removeChild(contains_pieces_on_downward.firstChild);
+        }
+        for (var i = 0; i < list.length; i++) {
+            var piece = list[i];
+            var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            contains_pieces_on_downward.appendChild(imgNode);
+        }
+    };
+    drawBoard(field.currentBoard);
+    drawHop1zuo1OfUpward(field.hop1zuo1OfUpward);
+    drawHop1zuo1OfDownward(field.hop1zuo1OfDownward);
 }
