@@ -73,7 +73,8 @@ var GAME_STATE = {
         hop1zuo1OfUpward: [],
     },
     IA_is_down: true,
-    tam_itself_is_tam_hue: true
+    tam_itself_is_tam_hue: true,
+    backupDuringStepping: null
 };
 var UI_STATE = {
     selectedCoord: null
@@ -173,6 +174,34 @@ function drawHoverAt(coord, piece) {
     });
     contains_phantom.appendChild(img);
 }
+function drawCancel() {
+    var contains_phantom = document.getElementById("contains_phantom");
+    var _a = [9, 7.5], row_index = _a[0], column_index = _a[1];
+    var img = document.createElement("img");
+    img.classList.add("piece_image_on_board");
+    img.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) + "px";
+    img.style.left = 1 + column_index * BOX_SIZE + "px";
+    img.src = "image/piece/bmun.png";
+    img.width = 80;
+    img.height = 80;
+    img.style.zIndex = "100";
+    img.style.cursor = "pointer";
+    // TODO: draw as being already selected
+    img.addEventListener('click', function (ev) {
+        eraseGuide();
+        erasePhantom();
+        document.getElementById("protective_cover_over_field").classList.add("nocover");
+        // resurrect the original one
+        var backup = GAME_STATE.backupDuringStepping;
+        var from = backup[0];
+        GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
+        GAME_STATE.backupDuringStepping = null;
+        UI_STATE.selectedCoord = null;
+        // draw
+        drawField(GAME_STATE.f);
+    });
+    contains_phantom.appendChild(img);
+}
 function drawPhantomAt(coord, piece) {
     var contains_phantom = document.getElementById("contains_phantom");
     erasePhantom();
@@ -184,12 +213,13 @@ function stepping(from, piece, to, destPiece) {
     eraseGuide();
     document.getElementById("protective_cover_over_field").classList.remove("nocover");
     // delete the original one
+    GAME_STATE.backupDuringStepping = [from, piece];
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     // draw
     drawField(GAME_STATE.f);
     drawPhantomAt(from, piece);
+    drawCancel();
     drawHoverAt(to, piece);
-    alert("implement stepping");
 }
 function getThingsGoing(ev, piece, from, to) {
     var destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];

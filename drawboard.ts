@@ -61,7 +61,8 @@ type Field = {
 type GAME_STATE = {
     f: Field,
     IA_is_down: boolean,
-    tam_itself_is_tam_hue: boolean
+    tam_itself_is_tam_hue: boolean,
+    backupDuringStepping: null | [Coord, Piece]
 };
 
 let GAME_STATE: GAME_STATE = {
@@ -81,7 +82,8 @@ let GAME_STATE: GAME_STATE = {
         hop1zuo1OfUpward: [],
     },
     IA_is_down: true,
-    tam_itself_is_tam_hue: true
+    tam_itself_is_tam_hue: true,
+    backupDuringStepping: null
 }
 
 type UI_STATE = {
@@ -208,6 +210,43 @@ function drawHoverAt(coord: Coord, piece: Piece) {
     contains_phantom.appendChild(img);
 }
 
+
+function drawCancel() {
+    let contains_phantom = document.getElementById("contains_phantom")!;
+
+    let [row_index, column_index] = [9, 7.5];
+    let img = document.createElement("img");
+    img.classList.add("piece_image_on_board");
+    img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE)}px`;
+    img.style.left = `${1 + column_index * BOX_SIZE}px`;
+    img.src = `image/piece/bmun.png`;
+    img.width = 80;
+    img.height = 80;
+
+    img.style.zIndex = "100";
+    img.style.cursor = "pointer";
+
+    // TODO: draw as being already selected
+    img.addEventListener('click', function (ev) {
+        eraseGuide();
+        erasePhantom();
+        document.getElementById("protective_cover_over_field")!.classList.add("nocover");
+
+        // resurrect the original one
+        const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
+        const from: Coord = backup[0];
+        GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
+        GAME_STATE.backupDuringStepping = null;
+
+        UI_STATE.selectedCoord = null;
+
+        // draw
+        drawField(GAME_STATE.f);
+    });
+    contains_phantom.appendChild(img);
+}
+
+
 function drawPhantomAt(coord: Coord, piece: Piece) {
     let contains_phantom = document.getElementById("contains_phantom")!;
     erasePhantom();
@@ -222,6 +261,7 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
     document.getElementById("protective_cover_over_field")!.classList.remove("nocover");
 
     // delete the original one
+    GAME_STATE.backupDuringStepping = [from, piece];
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
     // draw
@@ -229,9 +269,9 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
 
     drawPhantomAt(from, piece);
 
-    drawHoverAt(to, piece);
-    alert("implement stepping");
+    drawCancel();
 
+    drawHoverAt(to, piece);
 }
 
 function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
