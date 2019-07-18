@@ -1,11 +1,25 @@
 #field {
-  border: 1px solid #00ff37;
   width: 631px;
   height: 911px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+#protective_cover_over_field {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 631px;
+  height: 911px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.nocover {
+  display: none;
 }
 
 #hop1zuo1_of_downward {
-  border: 1px solid #00ffc8;
   background-color: #00ffc8;
   width: 631px;
   height: 140px;
@@ -13,7 +27,6 @@
 }
 
 #hop1zuo1_of_upward {
-  border: 1px solid #00ffc8;
   background-color: #00ffc8;
   width: 631px;
   height: 140px;
@@ -21,7 +34,6 @@
 }
 
 #board_containment {
-  border: 1px solid blue;
   width: 631px;
   height: 631px;
   position: relative;

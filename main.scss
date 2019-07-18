@@ -1,19 +1,30 @@
 $hop1zuo1_height: 140px;
 
 #field {
-    border: 1px solid rgb(0, 255, 55); width: 631px; height: 631px + $hop1zuo1_height * 2;
+    width: 631px; height: 631px + $hop1zuo1_height * 2;
+    position:absolute; top: 20px; left: 20px;
+}
+
+#protective_cover_over_field {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 631px; height: 631px + $hop1zuo1_height * 2;
+    position:absolute; top: 20px; left: 20px;
+}
+
+.nocover {
+    display: none;
 }
 
 #hop1zuo1_of_downward {
-    border: 1px solid rgb(0, 255, 200); background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
+    background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
 }
 
 #hop1zuo1_of_upward {
-    border: 1px solid rgb(0, 255, 200);background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
+    background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
 }
 
 #board_containment {
-    border: 1px solid blue; width: 631px; height: 631px; position: relative;
+    width: 631px; height: 631px; position: relative;
 }
 #board {
     position: absolute; top: 0px; left: 0px;
