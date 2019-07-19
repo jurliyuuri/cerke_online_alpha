@@ -170,7 +170,26 @@ function drawHoverAt(coord, piece) {
     img.style.cursor = "pointer";
     // TODO: draw as being already selected
     img.addEventListener('click', function (ev) {
-        alert("foo");
+        var contains_guides = document.getElementById("contains_guides");
+        var row_index = coord[0], column_index = coord[1];
+        var centralNode = document.createElement("img");
+        centralNode.classList.add("selection");
+        centralNode.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) + "px";
+        centralNode.style.left = 1 + column_index * BOX_SIZE + "px";
+        centralNode.src = "image/selection2.png";
+        centralNode.width = PIECE_SIZE;
+        centralNode.height = PIECE_SIZE;
+        centralNode.style.cursor = "pointer";
+        // click on it to erase
+        centralNode.addEventListener('click', function () {
+            eraseGuide();
+            UI_STATE.selectedCoord = null;
+        });
+        centralNode.style.zIndex = "200";
+        contains_guides.appendChild(centralNode);
+        var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListYellow = _a.finite, guideListGreen = _a.infinite;
+        display_guide_after_stepping(coord, piece, contains_guides, guideListYellow, "ct", "200");
+        display_guide_after_stepping(coord, piece, contains_guides, guideListGreen, "ct2", "200");
     });
     contains_phantom.appendChild(img);
 }
@@ -286,24 +305,38 @@ function createYellowGuideImageAt(coord, path) {
     img.style.opacity = "0.3";
     return img;
 }
+function display_guide_after_stepping(coord, piece, parent, list, path, zIndex) {
+    for (var ind = 0; ind < list.length; ind++) {
+        // draw the yellow guides
+        var img = createYellowGuideImageAt(list[ind], path);
+        // click on it to get things going
+        img.addEventListener('click', function (ev) {
+            alert("foo");
+        });
+        img.style.zIndex = zIndex || "auto";
+        parent.appendChild(img);
+    }
+}
+function display_guide(coord, piece, parent, list, path) {
+    var _loop_1 = function (ind) {
+        // draw the yellow guides
+        var img = createYellowGuideImageAt(list[ind], path);
+        // click on it to get things going
+        img.addEventListener('click', function (ev) {
+            getThingsGoing(ev, piece, coord, list[ind]);
+        });
+        parent.appendChild(img);
+    };
+    for (var ind = 0; ind < list.length; ind++) {
+        _loop_1(ind);
+    }
+}
 function showGuideOfBoardPiece(coord, piece) {
     var contains_guides = document.getElementById("contains_guides");
     var centralNode = drawSelectednessOnBoard(coord);
     contains_guides.appendChild(centralNode);
     var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListYellow = _a.finite, guideListGreen = _a.infinite;
-    var guideList = guideListYellow.concat(guideListGreen);
-    var _loop_1 = function (ind) {
-        // draw the yellow guides
-        var img = createYellowGuideImageAt(guideList[ind], "ct");
-        // click on it to get things going
-        img.addEventListener('click', function (ev) {
-            getThingsGoing(ev, piece, coord, guideList[ind]);
-        });
-        contains_guides.appendChild(img);
-    };
-    for (var ind = 0; ind < guideList.length; ind++) {
-        _loop_1(ind);
-    }
+    display_guide(coord, piece, contains_guides, guideListYellow.concat(guideListGreen), "ct");
 }
 function selectOwnPieceOnBoard(ev, coord, piece, imgNode) {
     var i = coord[0], j = coord[1];

@@ -205,7 +205,36 @@ function drawHoverAt(coord: Coord, piece: Piece) {
 
     // TODO: draw as being already selected
     img.addEventListener('click', function (ev) {
-        alert("foo");
+        const contains_guides = document.getElementById("contains_guides")!;
+
+        let [row_index, column_index] = coord;
+        let centralNode = document.createElement("img");
+        centralNode.classList.add("selection");
+        centralNode.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) }px`;
+        centralNode.style.left = `${1 + column_index * BOX_SIZE}px`;
+        centralNode.src = `image/selection2.png`;
+        centralNode.width = PIECE_SIZE;
+        centralNode.height = PIECE_SIZE;
+        centralNode.style.cursor = "pointer";
+
+        // click on it to erase
+        centralNode.addEventListener('click', function () {
+            eraseGuide();
+            UI_STATE.selectedCoord = null;
+        });
+        
+        centralNode.style.zIndex = "200";
+        contains_guides.appendChild(centralNode);
+
+        const {finite: guideListYellow, infinite: guideListGreen} = calculateMovablePositions(
+            coord,
+            piece,
+            GAME_STATE.f.currentBoard,
+            GAME_STATE.tam_itself_is_tam_hue);
+
+        display_guide_after_stepping(coord, piece, contains_guides, guideListYellow, "ct", "200");
+        
+        display_guide_after_stepping(coord, piece, contains_guides, guideListGreen, "ct2", "200");
     });
     contains_phantom.appendChild(img);
 }
@@ -349,6 +378,39 @@ function createYellowGuideImageAt(coord: Coord, path: string) {
     return img;
 }
 
+function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>, path: string, zIndex?: string) {
+    for (let ind = 0; ind < list.length; ind++) {
+
+        // draw the yellow guides
+        let img = createYellowGuideImageAt(list[ind], path);
+
+        // click on it to get things going
+        img.addEventListener('click', function (ev) {
+            alert("foo");
+        });
+
+        img.style.zIndex = zIndex || "auto";
+
+        parent.appendChild(img);
+    }
+}
+
+function display_guide(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>, path: string) {
+    for (let ind = 0; ind < list.length; ind++) {
+
+        // draw the yellow guides
+        let img = createYellowGuideImageAt(list[ind], path);
+
+        // click on it to get things going
+        img.addEventListener('click', function (ev) {
+            getThingsGoing(ev, piece, coord, list[ind]);
+
+        });
+
+        parent.appendChild(img);
+    }
+}
+
 function showGuideOfBoardPiece(coord: Coord, piece: Piece) {
     const contains_guides = document.getElementById("contains_guides")!;
     const centralNode: HTMLImageElement = drawSelectednessOnBoard(coord);
@@ -360,21 +422,7 @@ function showGuideOfBoardPiece(coord: Coord, piece: Piece) {
         GAME_STATE.f.currentBoard,
         GAME_STATE.tam_itself_is_tam_hue);
 
-    const guideList = [...guideListYellow, ...guideListGreen]
-
-    for (let ind = 0; ind < guideList.length; ind++) {
-
-        // draw the yellow guides
-        let img = createYellowGuideImageAt(guideList[ind], "ct");
-
-        // click on it to get things going
-        img.addEventListener('click', function (ev) {
-            getThingsGoing(ev, piece, coord, guideList[ind]);
-
-        });
-
-        contains_guides.appendChild(img);
-    }
+    display_guide(coord, piece, contains_guides, [...guideListYellow, ...guideListGreen], "ct");
 
 }
 
