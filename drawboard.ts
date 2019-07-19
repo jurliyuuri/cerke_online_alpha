@@ -264,6 +264,7 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
             alert("message sent.");
             return;
         } else {
+            // FIXME: implement me
             alert("implement Tam2 movement");
             return;
         }

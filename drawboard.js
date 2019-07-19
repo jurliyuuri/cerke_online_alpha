@@ -183,6 +183,7 @@ function getThingsGoing(ev, piece, from, to) {
             return;
         }
         else {
+            // FIXME: implement me
             alert("implement Tam2 movement");
             return;
         }
