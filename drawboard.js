@@ -228,6 +228,12 @@ function createCircleGuideImageAt(coord, path) {
 }
 function display_guide_after_stepping(coord, piece, parent, list, path) {
     for (var ind = 0; ind < list.length; ind++) {
+        var _a = list[ind], i = _a[0], j = _a[1];
+        var p = GAME_STATE.f.currentBoard[i][j];
+        // cannot step twice
+        if (p === "Tam2" || (p !== null && p.side === Side.Upward)) {
+            continue;
+        }
         var img = createCircleGuideImageAt(list[ind], path);
         // FIXME: implement me
         img.addEventListener('click', function (ev) {

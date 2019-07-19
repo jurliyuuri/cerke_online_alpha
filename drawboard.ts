@@ -315,6 +315,14 @@ function createCircleGuideImageAt(coord: Coord, path: string) {
 
 function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>, path: string) {
     for (let ind = 0; ind < list.length; ind++) {
+        const [i, j] = list[ind];
+        const p = GAME_STATE.f.currentBoard[i][j];
+
+        // cannot step twice
+        if (p === "Tam2" || (p !== null && p.side === Side.Upward)) {
+            continue;
+        }
+
         let img = createCircleGuideImageAt(list[ind], path);
 
         // FIXME: implement me
