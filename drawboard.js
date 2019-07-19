@@ -20,49 +20,6 @@ function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
     var row_index = coord[0], column_index = coord[1];
     return createPieceSizeImageOnBoardByPathAndXY(1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE), 1 + column_index * BOX_SIZE, path, className);
 }
-function toPath(p) {
-    var sideToPath = function (side) {
-        if (side === Side.Downward)
-            return "piece_rev";
-        if (side === Side.Upward)
-            return "piece";
-        var _should_not_reach_here = side;
-        return _should_not_reach_here;
-    };
-    var colorToPath = function (color) {
-        if (color === Color.Huok2)
-            return "b";
-        if (color === Color.Kok1)
-            return "r";
-        var _should_not_reach_here = color;
-        return _should_not_reach_here;
-    };
-    var profToPath = function (prof) {
-        if (prof === Profession.Dau2)
-            return "dau";
-        if (prof === Profession.Gua2)
-            return "gua";
-        if (prof === Profession.Io)
-            return "io";
-        if (prof === Profession.Kauk2)
-            return "kauk";
-        if (prof === Profession.Kaun1)
-            return "kaun";
-        if (prof === Profession.Kua2)
-            return "kua";
-        if (prof === Profession.Maun1)
-            return "maun";
-        if (prof === Profession.Nuak1)
-            return "nuak";
-        if (prof === Profession.Tuk2)
-            return "tuk";
-        if (prof === Profession.Uai1)
-            return "uai";
-        var _should_not_reach_here = prof;
-        return _should_not_reach_here;
-    };
-    return sideToPath(p.side) + "/" + colorToPath(p.color) + profToPath(p.prof);
-}
 var GAME_STATE = {
     f: {
         currentBoard: [
@@ -358,14 +315,6 @@ function selectOwnPieceOnHop1zuo1(ind, piece, imgNode) {
 }
 function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
     return createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, path, "piece_image_on_hop1zuo1");
-}
-function toPath_(piece) {
-    if (piece === "Tam2") {
-        return "piece/tam";
-    }
-    else {
-        return toPath(piece);
-    }
 }
 function createPieceImgToBePlacedOnBoard(coord, piece) {
     return createPieceSizeImageOnBoardByPath(coord, toPath_(piece), "piece_image_on_board");
