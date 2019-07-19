@@ -168,8 +168,7 @@ function drawHoverAt(coord, piece) {
     img.height = PIECE_SIZE;
     img.style.zIndex = "100";
     img.style.cursor = "pointer";
-    // TODO: draw as being already selected
-    img.addEventListener('click', function (ev) {
+    var select = function () {
         var contains_guides = document.getElementById("contains_guides");
         var row_index = coord[0], column_index = coord[1];
         var centralNode = document.createElement("img");
@@ -190,8 +189,11 @@ function drawHoverAt(coord, piece) {
         var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListYellow = _a.finite, guideListGreen = _a.infinite;
         display_guide_after_stepping(coord, piece, contains_guides, guideListYellow, "ct", "200");
         display_guide_after_stepping(coord, piece, contains_guides, guideListGreen, "ct2", "200");
-    });
+    };
+    img.addEventListener('click', select);
     contains_phantom.appendChild(img);
+    // draw as already selected
+    select();
 }
 function drawCancel() {
     var contains_phantom = document.getElementById("contains_phantom");
@@ -205,7 +207,6 @@ function drawCancel() {
     img.height = 80;
     img.style.zIndex = "100";
     img.style.cursor = "pointer";
-    // TODO: draw as being already selected
     img.addEventListener('click', function (ev) {
         eraseGuide();
         erasePhantom();

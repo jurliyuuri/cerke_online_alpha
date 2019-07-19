@@ -203,8 +203,7 @@ function drawHoverAt(coord: Coord, piece: Piece) {
     img.style.zIndex = "100";
     img.style.cursor = "pointer";
 
-    // TODO: draw as being already selected
-    img.addEventListener('click', function (ev) {
+    const select = function () {
         const contains_guides = document.getElementById("contains_guides")!;
 
         let [row_index, column_index] = coord;
@@ -235,8 +234,13 @@ function drawHoverAt(coord: Coord, piece: Piece) {
         display_guide_after_stepping(coord, piece, contains_guides, guideListYellow, "ct", "200");
         
         display_guide_after_stepping(coord, piece, contains_guides, guideListGreen, "ct2", "200");
-    });
+    }
+    
+    img.addEventListener('click', select);
     contains_phantom.appendChild(img);
+
+    // draw as already selected
+    select();
 }
 
 
@@ -255,7 +259,6 @@ function drawCancel() {
     img.style.zIndex = "100";
     img.style.cursor = "pointer";
 
-    // TODO: draw as being already selected
     img.addEventListener('click', function (ev) {
         eraseGuide();
         erasePhantom();
