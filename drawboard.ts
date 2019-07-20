@@ -558,6 +558,11 @@ async function sendInfAfterStep(message: InfAfterStep) {
     displayCiurlAndContinue(res.ciurl)
 }
 
+function displayCiurlAndContinue(ciurl: Ciurl) {
+    // FIXME: implement me
+    alert("FIXME: display ciurl and continue");
+}
+
 function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Piece, plannedDest: Coord) {
     console.log("stepped on", step);
     console.log("dest", plannedDest);

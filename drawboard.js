@@ -513,6 +513,10 @@ function sendInfAfterStep(message) {
         });
     });
 }
+function displayCiurlAndContinue(ciurl) {
+    // FIXME: implement me
+    alert("FIXME: display ciurl and continue");
+}
 function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
     console.log("stepped on", step);
     console.log("dest", plannedDest);
