@@ -380,13 +380,19 @@ function updateField(field: Field, message: NormalMove) {
                 }
             }
 
-            let destPiece : Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+            /* it's possible that you are returning to the original position, in which case you don't do anything */
+            if (coordEq([src_i, src_j], [dest_i, dest_j])) {
+                return;
+            }
+
             if (destPiece !== null) {
                 if (destPiece === "Tam2") {
                     throw new Error("dest is occupied by Tam2");
                 } else if (destPiece.side === Side.Upward) {
                     throw new Error("dest is occupied by an ally");
-                } else if (destPiece.side === Side.Downward){
+                } else if (destPiece.side === Side.Downward) {
                     const flipped: NonTam2PieceUpward = {
                         color: destPiece.color,
                         prof: destPiece.prof,
@@ -394,20 +400,40 @@ function updateField(field: Field, message: NormalMove) {
                     }
                     GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
                 } else {
-                    let _should_not_reach_here : never = destPiece.side;
+                    let _should_not_reach_here: never = destPiece.side;
                     throw new Error("should not reach here");
                 }
             }
 
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
 
         } else {
             let _should_not_reach_here: never = message.data;
         }
 
     } else if (message.type === "TamMove") {
-        alert("FIXME: implement updateField for Tam2");
+        const k = message;
+        const [src_i, src_j] = fromAbsoluteCoord(k.src);
+        const [secondDest_i, secondDest_j] = fromAbsoluteCoord(k.secondDest);
+
+        let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+        if (piece === null) {
+            throw new Error("src is unoccupied");
+        }
+
+        if (piece !== "Tam2") {
+            throw new Error("TamMove but not Tam2");
+        }
+
+        /* it's possible that you are returning to the original position, in which case you don't do anything */
+        if (coordEq([src_i, src_j], [secondDest_i, secondDest_j])) {
+            return;
+        }
+
+        GAME_STATE.f.currentBoard[src_i][src_j] = null;
+        GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
+
     } else {
         let _should_not_reach_here: never = message;
     }
@@ -480,21 +506,29 @@ function createCircleGuideImageAt(coord: Coord, path: string) {
     return img;
 }
 
-function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>, path: string) {
+function getThingsGoingAfterStepping(step: Coord, piece: Piece, dest: Coord, isFinite: boolean) {
+    console.log("stepped on", step);
+    console.log("dest", dest);
+    console.log("isFinite", isFinite);
+    // FIXME: implement me
+}
+
+function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>, path: "ct" | "ct2") {
     for (let ind = 0; ind < list.length; ind++) {
         const [i, j] = list[ind];
-        const p = GAME_STATE.f.currentBoard[i][j];
+        const destPiece = GAME_STATE.f.currentBoard[i][j];
 
         // cannot step twice
-        if (p === "Tam2" || (p !== null && p.side === Side.Upward)) {
+        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
             continue;
         }
 
         let img = createCircleGuideImageAt(list[ind], path);
 
+        const isFinite: boolean = path == "ct";
         // FIXME: implement me
         img.addEventListener('click', function (ev) {
-            alert("foo");
+            getThingsGoingAfterStepping(coord, piece, list[ind], isFinite);
         });
 
         img.style.zIndex = "200";

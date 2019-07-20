@@ -350,6 +350,10 @@ function updateField(field, message) {
                 }
             }
             var destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            /* it's possible that you are returning to the original position, in which case you don't do anything */
+            if (coordEq([src_i, src_j], [dest_i, dest_j])) {
+                return;
+            }
             if (destPiece !== null) {
                 if (destPiece === "Tam2") {
                     throw new Error("dest is occupied by Tam2");
@@ -370,15 +374,30 @@ function updateField(field, message) {
                     throw new Error("should not reach here");
                 }
             }
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         else {
             var _should_not_reach_here = message.data;
         }
     }
     else if (message.type === "TamMove") {
-        alert("FIXME: implement updateField for Tam2");
+        var k = message;
+        var _e = fromAbsoluteCoord(k.src), src_i = _e[0], src_j = _e[1];
+        var _f = fromAbsoluteCoord(k.secondDest), secondDest_i = _f[0], secondDest_j = _f[1];
+        var piece = GAME_STATE.f.currentBoard[src_i][src_j];
+        if (piece === null) {
+            throw new Error("src is unoccupied");
+        }
+        if (piece !== "Tam2") {
+            throw new Error("TamMove but not Tam2");
+        }
+        /* it's possible that you are returning to the original position, in which case you don't do anything */
+        if (coordEq([src_i, src_j], [secondDest_i, secondDest_j])) {
+            return;
+        }
+        GAME_STATE.f.currentBoard[src_i][src_j] = null;
+        GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
     }
     else {
         var _should_not_reach_here = message;
@@ -444,25 +463,35 @@ function createCircleGuideImageAt(coord, path) {
     img.style.opacity = "0.3";
     return img;
 }
+function getThingsGoingAfterStepping(step, piece, dest, isFinite) {
+    console.log("stepped on", step);
+    console.log("dest", dest);
+    console.log("isFinite", isFinite);
+    // FIXME: implement me
+}
 function display_guide_after_stepping(coord, piece, parent, list, path) {
-    for (var ind = 0; ind < list.length; ind++) {
+    var _loop_1 = function (ind) {
         var _a = list[ind], i = _a[0], j = _a[1];
-        var p = GAME_STATE.f.currentBoard[i][j];
+        var destPiece = GAME_STATE.f.currentBoard[i][j];
         // cannot step twice
-        if (p === "Tam2" || (p !== null && p.side === Side.Upward)) {
-            continue;
+        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+            return "continue";
         }
         var img = createCircleGuideImageAt(list[ind], path);
+        var isFinite_1 = path == "ct";
         // FIXME: implement me
         img.addEventListener('click', function (ev) {
-            alert("foo");
+            getThingsGoingAfterStepping(coord, piece, list[ind], isFinite_1);
         });
         img.style.zIndex = "200";
         parent.appendChild(img);
+    };
+    for (var ind = 0; ind < list.length; ind++) {
+        _loop_1(ind);
     }
 }
 function display_guide(coord, piece, parent, list) {
-    var _loop_1 = function (ind) {
+    var _loop_2 = function (ind) {
         // draw the yellow guides
         var img = createCircleGuideImageAt(list[ind], "ct");
         // click on it to get things going
@@ -472,7 +501,7 @@ function display_guide(coord, piece, parent, list) {
         parent.appendChild(img);
     };
     for (var ind = 0; ind < list.length; ind++) {
-        _loop_1(ind);
+        _loop_2(ind);
     }
 }
 function selectOwnPieceOnBoard(coord, piece, imgNode) {
@@ -513,7 +542,7 @@ function selectOwnPieceOnHop1zuo1(ind, piece, imgNode) {
         contains_guides_on_upward.appendChild(centralNode);
         var contains_guides = document.getElementById("contains_guides");
         for (var i = 0; i < 9; i++) {
-            var _loop_2 = function (j) {
+            var _loop_3 = function (j) {
                 var ij = [i, j];
                 // skip if already occupied
                 if (GAME_STATE.f.currentBoard[i][j] != null) {
@@ -528,7 +557,7 @@ function selectOwnPieceOnHop1zuo1(ind, piece, imgNode) {
                 contains_guides.appendChild(img);
             };
             for (var j = 0; j < 9; j++) {
-                _loop_2(j);
+                _loop_3(j);
             }
         }
     }
@@ -555,7 +584,7 @@ function drawField(field) {
         // delete everything
         removeChildren(contains_pieces_on_board);
         for (var i = 0; i < board.length; i++) {
-            var _loop_3 = function (j) {
+            var _loop_4 = function (j) {
                 var piece = board[i][j];
                 if (piece == null) {
                     return "continue";
@@ -572,7 +601,7 @@ function drawField(field) {
                 contains_pieces_on_board.appendChild(imgNode);
             };
             for (var j = 0; j < board[i].length; j++) {
-                _loop_3(j);
+                _loop_4(j);
             }
         }
     };
@@ -581,7 +610,7 @@ function drawField(field) {
         GAME_STATE.f.hop1zuo1OfUpward = list;
         // delete everything
         removeChildren(contains_pieces_on_upward);
-        var _loop_4 = function (i) {
+        var _loop_5 = function (i) {
             var piece = list[i];
             var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
             imgNode.style.cursor = "pointer";
@@ -591,7 +620,7 @@ function drawField(field) {
             contains_pieces_on_upward.appendChild(imgNode);
         };
         for (var i = 0; i < list.length; i++) {
-            _loop_4(i);
+            _loop_5(i);
         }
     };
     var drawHop1zuo1OfDownward = function (list) {
