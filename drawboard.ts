@@ -380,8 +380,23 @@ function updateField(field: Field, message: NormalMove) {
                 }
             }
 
-            if (GAME_STATE.f.currentBoard[dest_i][dest_j] !== null) {
-                throw new Error("dest is occupied");
+            let destPiece : Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            if (destPiece !== null) {
+                if (destPiece === "Tam2") {
+                    throw new Error("dest is occupied by Tam2");
+                } else if (destPiece.side === Side.Upward) {
+                    throw new Error("dest is occupied by an ally");
+                } else if (destPiece.side === Side.Downward){
+                    const flipped: NonTam2PieceUpward = {
+                        color: destPiece.color,
+                        prof: destPiece.prof,
+                        side: Side.Upward
+                    }
+                    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+                } else {
+                    let _should_not_reach_here : never = destPiece.side;
+                    throw new Error("should not reach here");
+                }
             }
 
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
