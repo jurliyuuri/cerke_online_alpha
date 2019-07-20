@@ -269,7 +269,7 @@ function stepping(from, piece, to, destPiece) {
     drawCancel();
     drawHoverAt(to, piece);
 }
-function sendMessage(message) {
+function sendNormalMessage(message) {
     return __awaiter(this, void 0, void 0, function () {
         var url, data, res;
         return __generator(this, function (_a) {
@@ -418,7 +418,7 @@ function getThingsGoing(ev, piece, from, to) {
                     dest: abs_dst
                 }
             };
-            sendMessage(message);
+            sendNormalMessage(message);
             return;
         }
         else {
@@ -442,7 +442,7 @@ function getThingsGoing(ev, piece, from, to) {
                 dest: abs_dst
             }
         };
-        sendMessage(message);
+        sendNormalMessage(message);
         return;
     }
     else {
@@ -463,13 +463,79 @@ function createCircleGuideImageAt(coord, path) {
     img.style.opacity = "0.3";
     return img;
 }
-function getThingsGoingAfterStepping(step, piece, dest, isFinite) {
+function getThingsGoingAfterStepping_Finite(step, piece, dest) {
     console.log("stepped on", step);
     console.log("dest", dest);
-    console.log("isFinite", isFinite);
     // FIXME: implement me
 }
+function sendInfAfterStep(message) {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("Sending normal move:", JSON.stringify(message));
+                    url = 'http://localhost:3000/movies';
+                    data = {
+                        "id": (Math.random() * 100000) | 0,
+                        "message": message
+                    };
+                    return [4 /*yield*/, fetch(url, {
+                            method: 'POST',
+                            body: JSON.stringify(data),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(function (res) { return res.json(); })
+                            .then(function (response) {
+                            console.log('Success:', JSON.stringify(response));
+                            return {
+                                ciurl: [
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5
+                                ],
+                                dat: [1, 2, 3]
+                            };
+                        })
+                            .catch(function (error) { return console.error('Error:', error); })];
+                case 1:
+                    res = _a.sent();
+                    console.log(res);
+                    if (!res) {
+                        throw new Error("network error!");
+                    }
+                    displayCiurlAndContinue(res.ciurl);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
+    console.log("stepped on", step);
+    console.log("dest", plannedDest);
+    if (piece === "Tam2") {
+        throw new Error("No, Tam2 should have no infinite movement");
+    }
+    sendInfAfterStep({
+        color: piece.color,
+        prof: piece.prof,
+        step: toAbsoluteCoord(step),
+        plannedDirection: toAbsoluteCoord(plannedDest),
+        src: toAbsoluteCoord(src)
+    });
+}
 function display_guide_after_stepping(coord, piece, parent, list, path) {
+    var isFinite = path == "ct";
+    var src = UI_STATE.selectedCoord;
+    if (src == null) {
+        throw new Error("though stepping, null startpoint!!!!!");
+    }
+    else if (src[0] === "Hop1zuo1") {
+        throw new Error("though stepping, hop1zuo1 startpoint!!!!!");
+    }
     var _loop_1 = function (ind) {
         var _a = list[ind], i = _a[0], j = _a[1];
         var destPiece = GAME_STATE.f.currentBoard[i][j];
@@ -478,10 +544,10 @@ function display_guide_after_stepping(coord, piece, parent, list, path) {
             return "continue";
         }
         var img = createCircleGuideImageAt(list[ind], path);
-        var isFinite_1 = path == "ct";
-        // FIXME: implement me
-        img.addEventListener('click', function (ev) {
-            getThingsGoingAfterStepping(coord, piece, list[ind], isFinite_1);
+        img.addEventListener('click', isFinite ? function (ev) {
+            getThingsGoingAfterStepping_Finite(coord, piece, list[ind]);
+        } : function (ev) {
+            getThingsGoingAfterStepping_Infinite(src, coord, piece, list[ind]);
         });
         img.style.zIndex = "200";
         parent.appendChild(img);

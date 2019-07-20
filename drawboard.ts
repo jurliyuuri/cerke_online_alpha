@@ -278,13 +278,13 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
     drawHoverAt(to, piece);
 }
 
-type MockData = {
+type MockReturnDataForNormalMove = {
     success: boolean,
     dat: number[]
 };
 
 
-async function sendMessage(message: NormalMove) {
+async function sendNormalMessage(message: NormalMove) {
     console.log("Sending normal move:", JSON.stringify(message));
     let url = 'http://localhost:3000/movies';
     const data = {
@@ -292,7 +292,7 @@ async function sendMessage(message: NormalMove) {
         "message": message
     };
 
-    const res: void | MockData = await fetch(url, {
+    const res: void | MockReturnDataForNormalMove = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data), // data can be `string` or {object}!
         headers: {
@@ -458,7 +458,7 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
                 }
             };
 
-            sendMessage(message);
+            sendNormalMessage(message);
             return;
         } else {
             // FIXME: implement me
@@ -484,7 +484,7 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
             }
         }
 
-        sendMessage(message);
+        sendNormalMessage(message);
         return;
     } else {
         stepping(from, piece, to, destPiece);
@@ -506,14 +506,85 @@ function createCircleGuideImageAt(coord: Coord, path: string) {
     return img;
 }
 
-function getThingsGoingAfterStepping(step: Coord, piece: Piece, dest: Coord, isFinite: boolean) {
+type Ciurl = [boolean, boolean, boolean, boolean, boolean];
+
+function getThingsGoingAfterStepping_Finite(step: Coord, piece: Piece, dest: Coord) {
     console.log("stepped on", step);
     console.log("dest", dest);
-    console.log("isFinite", isFinite);
     // FIXME: implement me
 }
 
+type MockReturnDataForInfAfterStep = {
+    ciurl: Ciurl,
+    dat: number[]
+}
+
+async function sendInfAfterStep(message: InfAfterStep) {
+    console.log("Sending normal move:", JSON.stringify(message));
+    let url = 'http://localhost:3000/movies';
+    const data = {
+        "id": (Math.random() * 100000) | 0,
+        "message": message
+    };
+
+    const res: void | MockReturnDataForInfAfterStep = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+        .then(response => {
+            console.log('Success:', JSON.stringify(response));
+            return {
+                ciurl: [
+                    Math.random() < 0.5,
+                    Math.random() < 0.5,
+                    Math.random() < 0.5,
+                    Math.random() < 0.5,
+                    Math.random() < 0.5
+                ] as Ciurl,
+                dat: [1, 2, 3]
+            };
+        })
+        .catch(error => console.error('Error:', error));
+
+    console.log(res);
+
+    if (!res) {
+        throw new Error("network error!");
+    }
+
+    displayCiurlAndContinue(res.ciurl)
+}
+
+function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Piece, plannedDest: Coord) {
+    console.log("stepped on", step);
+    console.log("dest", plannedDest);
+
+    if (piece === "Tam2") {
+        throw new Error("No, Tam2 should have no infinite movement");
+    }
+
+    sendInfAfterStep({
+        color: piece.color,
+        prof: piece.prof,
+        step: toAbsoluteCoord(step),
+        plannedDirection: toAbsoluteCoord(plannedDest),
+        src: toAbsoluteCoord(src)
+    });
+}
+
 function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>, path: "ct" | "ct2") {
+    const isFinite: boolean = path == "ct";
+    const src = UI_STATE.selectedCoord;
+
+    if (src == null) {
+        throw new Error("though stepping, null startpoint!!!!!")
+    } else if (src[0] === "Hop1zuo1") {
+        throw new Error("though stepping, hop1zuo1 startpoint!!!!!")
+    }
+
     for (let ind = 0; ind < list.length; ind++) {
         const [i, j] = list[ind];
         const destPiece = GAME_STATE.f.currentBoard[i][j];
@@ -525,10 +596,10 @@ function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLEl
 
         let img = createCircleGuideImageAt(list[ind], path);
 
-        const isFinite: boolean = path == "ct";
-        // FIXME: implement me
-        img.addEventListener('click', function (ev) {
-            getThingsGoingAfterStepping(coord, piece, list[ind], isFinite);
+        img.addEventListener('click', isFinite ? function (ev) {
+            getThingsGoingAfterStepping_Finite(coord, piece, list[ind]);
+        } : function (ev) {
+            getThingsGoingAfterStepping_Infinite(src, coord, piece, list[ind]);
         });
 
         img.style.zIndex = "200";

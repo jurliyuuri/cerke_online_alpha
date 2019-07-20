@@ -43,4 +43,11 @@ namespace type__message {
 
     export type NormalMove = NormalNonTamMove | TamMove;
 
+    export interface InfAfterStep {
+        color: Color,
+        prof: Profession,
+        src: AbsoluteCoord,
+        step: AbsoluteCoord,
+        plannedDirection: AbsoluteCoord
+    }
 }

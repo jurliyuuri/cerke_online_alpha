@@ -17,6 +17,7 @@ import NormalMove = type__message.NormalMove
 import calculateMovablePositions = calculate_movable.calculateMovablePositions;
 import coordEq = type__piece.coordEq;
 import NormalNonTamMove = type__message.NormalNonTamMove;
+import InfAfterStep = type__message.InfAfterStep;
 
 const sampleBoard: Board = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
