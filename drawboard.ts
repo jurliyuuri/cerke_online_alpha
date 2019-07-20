@@ -97,6 +97,46 @@ function toAbsoluteCoord([row, col]: Coord): AbsoluteCoord {
     ];
 }
 
+function fromAbsoluteCoord([absrow, abscol]: AbsoluteCoord): Coord {
+    let rowind: BoardIndex;
+
+    if (absrow === AbsoluteRow.A) { rowind = 0; }
+    else if (absrow === AbsoluteRow.E) { rowind = 1; }
+    else if (absrow === AbsoluteRow.I) { rowind = 2; }
+    else if (absrow === AbsoluteRow.U) { rowind = 3; }
+    else if (absrow === AbsoluteRow.O) { rowind = 4; }
+    else if (absrow === AbsoluteRow.Y) { rowind = 5; }
+    else if (absrow === AbsoluteRow.AI) { rowind = 6; }
+    else if (absrow === AbsoluteRow.AU) { rowind = 7; }
+    else if (absrow === AbsoluteRow.IA) { rowind = 8; }
+    else {
+        let _should_not_reach_here: never = absrow;
+        throw new Error("does not happen");
+    }
+
+    let colind: BoardIndex;
+
+    if (abscol === AbsoluteColumn.K) { colind = 0; }
+    else if (abscol === AbsoluteColumn.L) { colind = 1; }
+    else if (abscol === AbsoluteColumn.N) { colind = 2; }
+    else if (abscol === AbsoluteColumn.T) { colind = 3; }
+    else if (abscol === AbsoluteColumn.Z) { colind = 4; }
+    else if (abscol === AbsoluteColumn.X) { colind = 5; }
+    else if (abscol === AbsoluteColumn.C) { colind = 6; }
+    else if (abscol === AbsoluteColumn.M) { colind = 7; }
+    else if (abscol === AbsoluteColumn.P) { colind = 8; }
+    else {
+        let _should_not_reach_here: never = abscol;
+        throw new Error("does not happen");
+    }
+
+    if (GAME_STATE.IA_is_down) {
+        return [rowind, colind];
+    } else {
+        return [8 - rowind as BoardIndex, 8 - colind as BoardIndex];
+    }
+}
+
 function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: Piece, from: ["Hop1zuo1", number], to: Coord) {
     let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
@@ -238,6 +278,126 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
     drawHoverAt(to, piece);
 }
 
+type MockData = {
+    success: boolean,
+    dat: number[]
+};
+
+
+async function sendMessage(message: NormalMove) {
+    console.log("Sending normal move:", JSON.stringify(message));
+    let url = 'http://localhost:3000/movies';
+    const data = {
+        "id": (Math.random() * 100000) | 0,
+        "message": message
+    };
+
+    const res: void | MockData = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+        .then(response => {
+            console.log('Success:', JSON.stringify(response));
+            return {
+                success: Math.random() < 0.5,
+                dat: [1, 2, 3]
+            };
+        })
+        .catch(error => console.error('Error:', error));
+
+    console.log(res);
+
+    if (!res) {
+        throw new Error("network error!");
+    }
+
+    if (!res.success) {
+        alert(DICTIONARY.ja.failedWaterEntry);
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+    } else {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateField(GAME_STATE.f, message);
+        drawField(GAME_STATE.f);
+    }
+}
+
+function updateField(field: Field, message: NormalMove) {
+    if (message.type === "NonTamMove") {
+        if (message.data.type === "FromHand") {
+            const k: {
+                type: 'FromHand';
+                color: Color;
+                prof: Profession;
+                dest: AbsoluteCoord;
+            } = message.data;
+
+            // remove the corresponding one from hand
+            const ind = GAME_STATE.f.hop1zuo1OfUpward.findIndex(
+                piece => piece.color === k.color && piece.prof === k.prof
+            );
+            if (ind === -1) {
+                throw new Error("What should exist in the hand does not exist");
+            }
+            const [removed] = GAME_STATE.f.hop1zuo1OfUpward.splice(ind, 1);
+
+            // add the removed piece to the destination
+            const [i, j] = fromAbsoluteCoord(k.dest);
+            if (GAME_STATE.f.currentBoard[i][j] !== null) {
+                throw new Error("Trying to parachute the piece onto an occupied space");
+            }
+
+            GAME_STATE.f.currentBoard[i][j] = removed;
+
+        } else if (message.data.type === "SrcDst" || message.data.type === "SrcStepDstFinite") {
+            const k: {
+                type: 'SrcDst';
+                src: AbsoluteCoord;
+                dest: AbsoluteCoord;
+            } | {
+                type: 'SrcStepDstFinite';
+                src: AbsoluteCoord;
+                step: AbsoluteCoord;
+                dest: AbsoluteCoord;
+            } = message.data;
+
+            const [src_i, src_j] = fromAbsoluteCoord(k.src);
+            const [dest_i, dest_j] = fromAbsoluteCoord(k.dest);
+
+            let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+            if (piece === null) {
+                throw new Error("src is unoccupied");
+            }
+
+            if (k.type === "SrcStepDstFinite") {
+                const [step_i, step_j] = fromAbsoluteCoord(k.step);
+                if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
+                    throw new Error("step is unoccupied");
+                }
+            }
+
+            if (GAME_STATE.f.currentBoard[dest_i][dest_j] !== null) {
+                throw new Error("dest is occupied");
+            }
+
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+
+        } else {
+            let _should_not_reach_here: never = message.data;
+        }
+
+    } else if (message.type === "TamMove") {
+        alert("FIXME: implement updateField for Tam2");
+    } else {
+        let _should_not_reach_here: never = message;
+    }
+}
+
 function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
     let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
@@ -256,12 +416,8 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
                     dest: abs_dst
                 }
             };
-            console.log("sending normal move:", JSON.stringify(message));
 
-            eraseGuide();
-            UI_STATE.selectedCoord = null;
-
-            alert("message sent.");
+            sendMessage(message);
             return;
         } else {
             // FIXME: implement me
@@ -287,12 +443,7 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
             }
         }
 
-        console.log("sending normal move:", JSON.stringify(message));
-
-        eraseGuide();
-        UI_STATE.selectedCoord = null;
-
-        alert("message sent.");
+        sendMessage(message);
         return;
     } else {
         stepping(from, piece, to, destPiece);

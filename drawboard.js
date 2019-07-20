@@ -1,4 +1,39 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 var BOX_SIZE = 70;
 var MAX_PIECE_SIZE = BOX_SIZE - 1;
 var PIECE_SIZE = 60;
@@ -61,6 +96,79 @@ function toAbsoluteCoord(_a) {
             AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
         ][GAME_STATE.IA_is_down ? col : 8 - col]
     ];
+}
+function fromAbsoluteCoord(_a) {
+    var absrow = _a[0], abscol = _a[1];
+    var rowind;
+    if (absrow === AbsoluteRow.A) {
+        rowind = 0;
+    }
+    else if (absrow === AbsoluteRow.E) {
+        rowind = 1;
+    }
+    else if (absrow === AbsoluteRow.I) {
+        rowind = 2;
+    }
+    else if (absrow === AbsoluteRow.U) {
+        rowind = 3;
+    }
+    else if (absrow === AbsoluteRow.O) {
+        rowind = 4;
+    }
+    else if (absrow === AbsoluteRow.Y) {
+        rowind = 5;
+    }
+    else if (absrow === AbsoluteRow.AI) {
+        rowind = 6;
+    }
+    else if (absrow === AbsoluteRow.AU) {
+        rowind = 7;
+    }
+    else if (absrow === AbsoluteRow.IA) {
+        rowind = 8;
+    }
+    else {
+        var _should_not_reach_here = absrow;
+        throw new Error("does not happen");
+    }
+    var colind;
+    if (abscol === AbsoluteColumn.K) {
+        colind = 0;
+    }
+    else if (abscol === AbsoluteColumn.L) {
+        colind = 1;
+    }
+    else if (abscol === AbsoluteColumn.N) {
+        colind = 2;
+    }
+    else if (abscol === AbsoluteColumn.T) {
+        colind = 3;
+    }
+    else if (abscol === AbsoluteColumn.Z) {
+        colind = 4;
+    }
+    else if (abscol === AbsoluteColumn.X) {
+        colind = 5;
+    }
+    else if (abscol === AbsoluteColumn.C) {
+        colind = 6;
+    }
+    else if (abscol === AbsoluteColumn.M) {
+        colind = 7;
+    }
+    else if (abscol === AbsoluteColumn.P) {
+        colind = 8;
+    }
+    else {
+        var _should_not_reach_here = abscol;
+        throw new Error("does not happen");
+    }
+    if (GAME_STATE.IA_is_down) {
+        return [rowind, colind];
+    }
+    else {
+        return [8 - rowind, 8 - colind];
+    }
 }
 function getThingsGoingFromHop1zuo1(ev, piece, from, to) {
     var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
@@ -161,6 +269,103 @@ function stepping(from, piece, to, destPiece) {
     drawCancel();
     drawHoverAt(to, piece);
 }
+function sendMessage(message) {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("Sending normal move:", JSON.stringify(message));
+                    url = 'http://localhost:3000/movies';
+                    data = {
+                        "id": (Math.random() * 100000) | 0,
+                        "message": message
+                    };
+                    return [4 /*yield*/, fetch(url, {
+                            method: 'POST',
+                            body: JSON.stringify(data),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(function (res) { return res.json(); })
+                            .then(function (response) {
+                            console.log('Success:', JSON.stringify(response));
+                            return {
+                                success: Math.random() < 0.5,
+                                dat: [1, 2, 3]
+                            };
+                        })
+                            .catch(function (error) { return console.error('Error:', error); })];
+                case 1:
+                    res = _a.sent();
+                    console.log(res);
+                    if (!res) {
+                        throw new Error("network error!");
+                    }
+                    if (!res.success) {
+                        alert(DICTIONARY.ja.failedWaterEntry);
+                        eraseGuide();
+                        UI_STATE.selectedCoord = null;
+                    }
+                    else {
+                        eraseGuide();
+                        UI_STATE.selectedCoord = null;
+                        updateField(GAME_STATE.f, message);
+                        drawField(GAME_STATE.f);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function updateField(field, message) {
+    if (message.type === "NonTamMove") {
+        if (message.data.type === "FromHand") {
+            var k_1 = message.data;
+            // remove the corresponding one from hand
+            var ind = GAME_STATE.f.hop1zuo1OfUpward.findIndex(function (piece) { return piece.color === k_1.color && piece.prof === k_1.prof; });
+            if (ind === -1) {
+                throw new Error("What should exist in the hand does not exist");
+            }
+            var removed = GAME_STATE.f.hop1zuo1OfUpward.splice(ind, 1)[0];
+            // add the removed piece to the destination
+            var _a = fromAbsoluteCoord(k_1.dest), i = _a[0], j = _a[1];
+            if (GAME_STATE.f.currentBoard[i][j] !== null) {
+                throw new Error("Trying to parachute the piece onto an occupied space");
+            }
+            GAME_STATE.f.currentBoard[i][j] = removed;
+        }
+        else if (message.data.type === "SrcDst" || message.data.type === "SrcStepDstFinite") {
+            var k = message.data;
+            var _b = fromAbsoluteCoord(k.src), src_i = _b[0], src_j = _b[1];
+            var _c = fromAbsoluteCoord(k.dest), dest_i = _c[0], dest_j = _c[1];
+            var piece = GAME_STATE.f.currentBoard[src_i][src_j];
+            if (piece === null) {
+                throw new Error("src is unoccupied");
+            }
+            if (k.type === "SrcStepDstFinite") {
+                var _d = fromAbsoluteCoord(k.step), step_i = _d[0], step_j = _d[1];
+                if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
+                    throw new Error("step is unoccupied");
+                }
+            }
+            if (GAME_STATE.f.currentBoard[dest_i][dest_j] !== null) {
+                throw new Error("dest is occupied");
+            }
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+        }
+        else {
+            var _should_not_reach_here = message.data;
+        }
+    }
+    else if (message.type === "TamMove") {
+        alert("FIXME: implement updateField for Tam2");
+    }
+    else {
+        var _should_not_reach_here = message;
+    }
+}
 function getThingsGoing(ev, piece, from, to) {
     var destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (destPiece == null) { // dest is empty square; try to simply move
@@ -176,10 +381,7 @@ function getThingsGoing(ev, piece, from, to) {
                     dest: abs_dst
                 }
             };
-            console.log("sending normal move:", JSON.stringify(message));
-            eraseGuide();
-            UI_STATE.selectedCoord = null;
-            alert("message sent.");
+            sendMessage(message);
             return;
         }
         else {
@@ -203,10 +405,7 @@ function getThingsGoing(ev, piece, from, to) {
                 dest: abs_dst
             }
         };
-        console.log("sending normal move:", JSON.stringify(message));
-        eraseGuide();
-        UI_STATE.selectedCoord = null;
-        alert("message sent.");
+        sendMessage(message);
         return;
     }
     else {

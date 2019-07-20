@@ -1,6 +1,7 @@
 
 type DictElem = {
     whetherToTake: string;
+    failedWaterEntry: string;
 }
 
 type Dictionary = {
@@ -9,6 +10,7 @@ type Dictionary = {
 
 const DICTIONARY: Dictionary = {
     ja: {
-        whetherToTake: "駒を取りますか？"
+        whetherToTake: "駒を取りますか？",
+        failedWaterEntry: "入水判定に失敗しました。"
     }
 }
