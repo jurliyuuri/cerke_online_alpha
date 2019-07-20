@@ -513,6 +513,51 @@ function sendInfAfterStep(message) {
         });
     });
 }
+// copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
+// Standard Normal variate using Box-Muller transform.
+function randn_bm() {
+    var u = 0, v = 0;
+    while (u === 0)
+        u = Math.random(); //Converting [0,1) to (0,1)
+    while (v === 0)
+        v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+function displayCiurl(ciurl) {
+    var _a;
+    var contains_ciurl = document.getElementById("contains_ciurl");
+    clearCiurl();
+    // should always lie around 300 ~ 370, when BOX_SIZE is 70
+    var averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
+    var hop1zuo1_height = 140;
+    var board_height = 631;
+    var averageTop = 84 + hop1zuo1_height + board_height;
+    var imgs = [];
+    for (var ind = 0; ind < ciurl.length; ind++) {
+        var img = document.createElement("img");
+        img.src = "image/ciurl_" + ciurl[ind] + ".png";
+        img.width = 150;
+        img.height = 15;
+        img.classList.add("ciurl");
+        img.style.left = averageLeft + BOX_SIZE * 0.2 * randn_bm() + "px";
+        img.style.top = averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm() + "px";
+        img.style.zIndex = "300";
+        img.style.transform = "rotate(" + (Math.random() * 40 - 20) + "deg)";
+        img.style.position = "absolute";
+        imgs.push(img);
+    }
+    // Fisher-Yates
+    for (var i = imgs.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        _a = [imgs[j], imgs[i]], imgs[i] = _a[0], imgs[j] = _a[1];
+    }
+    for (var i = 0; i < imgs.length; i++) {
+        contains_ciurl.appendChild(imgs[i]);
+    }
+}
+function clearCiurl() {
+    removeChildren(document.getElementById("contains_ciurl"));
+}
 function displayCiurlAndContinue(ciurl) {
     // FIXME: implement me
     alert("FIXME: display ciurl and continue");

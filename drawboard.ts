@@ -558,6 +558,58 @@ async function sendInfAfterStep(message: InfAfterStep) {
     displayCiurlAndContinue(res.ciurl)
 }
 
+// copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
+// Standard Normal variate using Box-Muller transform.
+function randn_bm(): number {
+    var u = 0, v = 0;
+    while (u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+function displayCiurl(ciurl: Ciurl) {
+    const contains_ciurl = document.getElementById("contains_ciurl")!;
+
+    clearCiurl();
+
+    // should always lie around 300 ~ 370, when BOX_SIZE is 70
+    const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
+    const hop1zuo1_height = 140;
+    const board_height = 631;
+    const averageTop = 84 + hop1zuo1_height + board_height;
+
+    let imgs: HTMLImageElement[] = []
+    for (let ind = 0; ind < ciurl.length; ind++) {
+        let img = document.createElement("img");
+        img.src = `image/ciurl_${ciurl[ind]}.png`;
+        img.width = 150;
+        img.height = 15;
+        img.classList.add("ciurl");
+        img.style.left = `${averageLeft + BOX_SIZE * 0.2 * randn_bm()}px`;
+        img.style.top = `${averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm()}px`;
+        img.style.zIndex = "300";
+        img.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+        img.style.position = "absolute";
+        imgs.push(img);
+
+    }
+
+    // Fisher-Yates
+    for (let i = imgs.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [imgs[i], imgs[j]] = [imgs[j], imgs[i]];
+    }
+
+    for (let i = 0; i < imgs.length; i++) {
+        contains_ciurl.appendChild(imgs[i]);
+    }
+
+}
+
+function clearCiurl() {
+    removeChildren(document.getElementById("contains_ciurl")!);
+}
+
 function displayCiurlAndContinue(ciurl: Ciurl) {
     // FIXME: implement me
     alert("FIXME: display ciurl and continue");
