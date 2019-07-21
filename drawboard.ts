@@ -556,7 +556,65 @@ async function sendInfAfterStep(message: InfAfterStep) {
         throw new Error("network error!");
     }
 
-    displayCiurlAndContinueInfAfterStepping(res.ciurl)
+    displayCiurl(res.ciurl);
+
+    document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
+
+    eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+
+    let step: Coord = fromAbsoluteCoord(message.step);
+    let plannedDirection: Coord = fromAbsoluteCoord(message.plannedDirection);
+    // recreate the selection node, but this time it is not clickable and hence not deletable
+    let centralNode = createPieceSizeImageOnBoardByPath_Shifted(step, "selection2", "selection");
+    centralNode.style.zIndex = "200";
+
+    const contains_guides = document.getElementById("contains_guides")!;
+    contains_guides.appendChild(centralNode);
+
+    const piece: NonTam2PieceUpward = {
+        color: message.color,
+        prof: message.prof,
+        side: Side.Upward
+    };
+
+    // now re-add the green candidates in only one direction
+    const { infinite: guideListGreen } = calculateMovablePositions(
+        step,
+        piece,
+        GAME_STATE.f.currentBoard,
+        GAME_STATE.tam_itself_is_tam_hue);
+
+    // filter the result
+    const filteredList = guideListGreen.filter(function (c: Coord){
+        const subtractStep = function ([x, y]: Coord): [number, number] {
+            const [step_x, step_y] = step;
+            return [x - step_x, y - step_y];
+        }
+
+        const limit: number = res.ciurl.filter(x => x).length;
+
+        const [deltaC_x, deltaC_y] = subtractStep(c);
+        const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
+
+        return (
+            // 1. (c - step) crossed with (plannedDirection - step) gives zero
+            deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
+            
+            // 2.  (c - step) dotted with (plannedDirection - step) gives positive
+            deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
+
+            // 3. deltaC must not exceed the limit enforced by ciurl
+            Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit
+        );
+    });
+
+    // FIXME: different event handler
+    display_guide_after_stepping(step, piece, contains_guides, filteredList, "ct2");
+
+    // FIXME: implement me
+    alert("FIXME: continue `inf after stepping`");
+
+
 }
 
 // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
@@ -611,14 +669,7 @@ function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl")!);
 }
 
-function displayCiurlAndContinueInfAfterStepping(ciurl: Ciurl) {
-    displayCiurl(ciurl);
 
-    document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
-
-    // FIXME: implement me
-    alert("FIXME: continue `inf after stepping`");
-}
 
 function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Piece, plannedDest: Coord) {
     console.log("stepped on", step);

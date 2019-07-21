@@ -471,7 +471,7 @@ function getThingsGoingAfterStepping_Finite(step, piece, dest) {
 }
 function sendInfAfterStep(message) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, data, res;
+        var url, data, res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -508,7 +508,42 @@ function sendInfAfterStep(message) {
                     if (!res) {
                         throw new Error("network error!");
                     }
-                    displayCiurlAndContinueInfAfterStepping(res.ciurl);
+                    displayCiurl(res.ciurl);
+                    document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
+                    eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+                    step = fromAbsoluteCoord(message.step);
+                    plannedDirection = fromAbsoluteCoord(message.plannedDirection);
+                    centralNode = createPieceSizeImageOnBoardByPath_Shifted(step, "selection2", "selection");
+                    centralNode.style.zIndex = "200";
+                    contains_guides = document.getElementById("contains_guides");
+                    contains_guides.appendChild(centralNode);
+                    piece = {
+                        color: message.color,
+                        prof: message.prof,
+                        side: Side.Upward
+                    };
+                    guideListGreen = calculateMovablePositions(step, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue).infinite;
+                    filteredList = guideListGreen.filter(function (c) {
+                        var subtractStep = function (_a) {
+                            var x = _a[0], y = _a[1];
+                            var step_x = step[0], step_y = step[1];
+                            return [x - step_x, y - step_y];
+                        };
+                        var limit = res.ciurl.filter(function (x) { return x; }).length;
+                        var _a = subtractStep(c), deltaC_x = _a[0], deltaC_y = _a[1];
+                        var _b = subtractStep(plannedDirection), deltaPlan_x = _b[0], deltaPlan_y = _b[1];
+                        return (
+                        // 1. (c - step) crossed with (plannedDirection - step) gives zero
+                        deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
+                            // 2.  (c - step) dotted with (plannedDirection - step) gives positive
+                            deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
+                            // 3. deltaC must not exceed the limit enforced by ciurl
+                            Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit);
+                    });
+                    // FIXME: different event handler
+                    display_guide_after_stepping(step, piece, contains_guides, filteredList, "ct2");
+                    // FIXME: implement me
+                    alert("FIXME: continue `inf after stepping`");
                     return [2 /*return*/];
             }
         });
@@ -558,12 +593,6 @@ function displayCiurl(ciurl) {
 }
 function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl"));
-}
-function displayCiurlAndContinueInfAfterStepping(ciurl) {
-    displayCiurl(ciurl);
-    document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
-    // FIXME: implement me
-    alert("FIXME: continue `inf after stepping`");
 }
 function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
     console.log("stepped on", step);
