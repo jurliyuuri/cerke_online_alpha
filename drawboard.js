@@ -225,6 +225,7 @@ function stepping(from, piece, to, destPiece) {
         cancelButton.height = 80;
         cancelButton.style.zIndex = "100";
         cancelButton.style.cursor = "pointer";
+        cancelButton.setAttribute('id', 'cancelButton');
         cancelButton.addEventListener('click', function (ev) {
             eraseGuide();
             erasePhantom();
@@ -507,7 +508,7 @@ function sendInfAfterStep(message) {
                     if (!res) {
                         throw new Error("network error!");
                     }
-                    displayCiurlAndContinue(res.ciurl);
+                    displayCiurlAndContinueInfAfterStepping(res.ciurl);
                     return [2 /*return*/];
             }
         });
@@ -558,9 +559,11 @@ function displayCiurl(ciurl) {
 function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl"));
 }
-function displayCiurlAndContinue(ciurl) {
+function displayCiurlAndContinueInfAfterStepping(ciurl) {
+    displayCiurl(ciurl);
+    document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
     // FIXME: implement me
-    alert("FIXME: display ciurl and continue");
+    alert("FIXME: continue `inf after stepping`");
 }
 function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
     console.log("stepped on", step);

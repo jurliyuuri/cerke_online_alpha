@@ -207,6 +207,7 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
 
         cancelButton.style.zIndex = "100";
         cancelButton.style.cursor = "pointer";
+        cancelButton.setAttribute('id', 'cancelButton');
 
         cancelButton.addEventListener('click', function (ev) {
             eraseGuide();
@@ -555,7 +556,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
         throw new Error("network error!");
     }
 
-    displayCiurlAndContinue(res.ciurl)
+    displayCiurlAndContinueInfAfterStepping(res.ciurl)
 }
 
 // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
@@ -610,9 +611,13 @@ function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl")!);
 }
 
-function displayCiurlAndContinue(ciurl: Ciurl) {
+function displayCiurlAndContinueInfAfterStepping(ciurl: Ciurl) {
+    displayCiurl(ciurl);
+
+    document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
+
     // FIXME: implement me
-    alert("FIXME: display ciurl and continue");
+    alert("FIXME: continue `inf after stepping`");
 }
 
 function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Piece, plannedDest: Coord) {
