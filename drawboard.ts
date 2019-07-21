@@ -178,6 +178,23 @@ function erasePhantom() {
     }
 }
 
+function cancelStepping() {
+    eraseGuide();
+    erasePhantom();
+    document.getElementById("protective_cover_over_field")!.classList.add("nocover");
+
+    // resurrect the original one
+    const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
+    const from: Coord = backup[0];
+    GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
+    GAME_STATE.backupDuringStepping = null;
+
+    UI_STATE.selectedCoord = null;
+
+    // draw
+    drawField(GAME_STATE.f);
+}
+
 function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
     eraseGuide();
     document.getElementById("protective_cover_over_field")!.classList.remove("nocover");
@@ -209,22 +226,7 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
         cancelButton.style.cursor = "pointer";
         cancelButton.setAttribute('id', 'cancelButton');
 
-        cancelButton.addEventListener('click', function (ev) {
-            eraseGuide();
-            erasePhantom();
-            document.getElementById("protective_cover_over_field")!.classList.add("nocover");
-
-            // resurrect the original one
-            const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
-            const from: Coord = backup[0];
-            GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
-            GAME_STATE.backupDuringStepping = null;
-
-            UI_STATE.selectedCoord = null;
-
-            // draw
-            drawField(GAME_STATE.f);
-        });
+        cancelButton.addEventListener('click', cancelStepping);
         contains_phantom.appendChild(cancelButton);
     }
 
@@ -319,6 +321,11 @@ async function sendNormalMessage(message: NormalMove) {
         alert(DICTIONARY.ja.failedWaterEntry);
         eraseGuide();
         UI_STATE.selectedCoord = null;
+
+        if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
+            cancelStepping();
+            // FIXME: implement handing over the turn
+        }
     } else {
         eraseGuide();
         UI_STATE.selectedCoord = null;
@@ -354,15 +361,10 @@ function updateField(field: Field, message: NormalMove) {
 
             GAME_STATE.f.currentBoard[i][j] = removed;
 
-        } else if (message.data.type === "SrcDst" || message.data.type === "SrcStepDstFinite") {
+        } else if (message.data.type === "SrcDst") {
             const k: {
                 type: 'SrcDst';
                 src: AbsoluteCoord;
-                dest: AbsoluteCoord;
-            } | {
-                type: 'SrcStepDstFinite';
-                src: AbsoluteCoord;
-                step: AbsoluteCoord;
                 dest: AbsoluteCoord;
             } = message.data;
 
@@ -374,11 +376,54 @@ function updateField(field: Field, message: NormalMove) {
                 throw new Error("src is unoccupied");
             }
 
-            if (k.type === "SrcStepDstFinite") {
-                const [step_i, step_j] = fromAbsoluteCoord(k.step);
-                if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
-                    throw new Error("step is unoccupied");
+            let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+            /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
+
+            if (destPiece !== null) {
+                if (destPiece === "Tam2") {
+                    throw new Error("dest is occupied by Tam2");
+                } else if (destPiece.side === Side.Upward) {
+                    throw new Error("dest is occupied by an ally");
+                } else if (destPiece.side === Side.Downward) {
+                    const flipped: NonTam2PieceUpward = {
+                        color: destPiece.color,
+                        prof: destPiece.prof,
+                        side: Side.Upward
+                    }
+                    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+                } else {
+                    let _should_not_reach_here: never = destPiece.side;
+                    throw new Error("should not reach here");
                 }
+            }
+
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        } else if (message.data.type === "SrcStepDstFinite") {
+            const k: {
+                type: 'SrcStepDstFinite';
+                src: AbsoluteCoord;
+                step: AbsoluteCoord;
+                dest: AbsoluteCoord;
+            } = message.data;
+
+            const [src_i, src_j] = fromAbsoluteCoord(k.src);
+            const [dest_i, dest_j] = fromAbsoluteCoord(k.dest);
+
+            // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
+
+            const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
+
+            let piece: Piece = backup[1];
+
+            cancelStepping();
+
+            // this will now restore GAME_STATE.f.currentBoard[src_i][src_j]
+
+            const [step_i, step_j] = fromAbsoluteCoord(k.step);
+            if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
+                throw new Error("step is unoccupied");
             }
 
             let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
@@ -510,9 +555,37 @@ function createCircleGuideImageAt(coord: Coord, path: string) {
 type Ciurl = [boolean, boolean, boolean, boolean, boolean];
 
 function getThingsGoingAfterStepping_Finite(step: Coord, piece: Piece, dest: Coord) {
+    console.log("src", UI_STATE.selectedCoord);
     console.log("stepped on", step);
     console.log("dest", dest);
-    // FIXME: implement me
+
+    if (piece === "Tam2") {
+        alert("FIXME: implement Tam2's movement, who initially stepped");
+        return;
+    }
+
+    if (UI_STATE.selectedCoord == null) {
+        alert("stepping, but initial is NULL!!!!!!!");
+        throw new Error("stepping, but initial is NULL!!!!!!!");
+    }
+
+    if (UI_STATE.selectedCoord[0] === "Hop1zuo1") {
+        alert("stepping, but initial is Hop1zuo1!!!!!!!");
+        throw new Error("stepping, but initial is Hop1zuo1!!!!!!!");
+    }
+
+    const message: NormalNonTamMove = {
+        type: "NonTamMove",
+        data: {
+            type: "SrcStepDstFinite",
+            step: toAbsoluteCoord(step),
+            dest: toAbsoluteCoord(dest),
+            src: toAbsoluteCoord(UI_STATE.selectedCoord)
+        }
+    }
+
+    sendNormalMessage(message);
+    return;
 }
 
 type MockReturnDataForInfAfterStep = {
@@ -585,7 +658,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
         GAME_STATE.tam_itself_is_tam_hue);
 
     // filter the result
-    const filteredList = guideListGreen.filter(function (c: Coord){
+    const filteredList = guideListGreen.filter(function (c: Coord) {
         const subtractStep = function ([x, y]: Coord): [number, number] {
             const [step_x, step_y] = step;
             return [x - step_x, y - step_y];
@@ -599,7 +672,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
         return (
             // 1. (c - step) crossed with (plannedDirection - step) gives zero
             deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
-            
+
             // 2.  (c - step) dotted with (plannedDirection - step) gives positive
             deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
 
@@ -608,13 +681,36 @@ async function sendInfAfterStep(message: InfAfterStep) {
         );
     });
 
-    // FIXME: different event handler
-    display_guide_after_stepping(step, piece, contains_guides, filteredList, "ct2");
 
-    // FIXME: implement me
-    alert("FIXME: continue `inf after stepping`");
+    {
+        const src = UI_STATE.selectedCoord;
 
+        if (src == null) {
+            throw new Error("though stepping, null startpoint!!!!!")
+        } else if (src[0] === "Hop1zuo1") {
+            throw new Error("though stepping, hop1zuo1 startpoint!!!!!")
+        }
 
+        for (let ind = 0; ind < filteredList.length; ind++) {
+            const [i, j] = filteredList[ind];
+            const destPiece = GAME_STATE.f.currentBoard[i][j];
+
+            // cannot step twice
+            if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+                continue;
+            }
+
+            let img = createCircleGuideImageAt(filteredList[ind], "ct2");
+
+            img.addEventListener('click', function (ev) {
+                // FIXME: event handler
+                alert("FIXME: implement me");
+            });
+
+            img.style.zIndex = "200";
+            contains_guides.appendChild(img);
+        }
+    }
 }
 
 // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
