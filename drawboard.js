@@ -310,7 +310,7 @@ function sendNormalMessage(message) {
                         UI_STATE.selectedCoord = null;
                         if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
                             cancelStepping();
-                            // FIXME: hand over the turn
+                            // FIXME: implement handing over the turn
                         }
                     }
                     else {
@@ -531,7 +531,7 @@ function getThingsGoingAfterStepping_Finite(step, piece, dest) {
 }
 function sendInfAfterStep(message) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, data, res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, ind, _a, i, j, destPiece, img;
+        var url, data, res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, passer, ind, _a, i, j, destPiece, img;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -600,29 +600,31 @@ function sendInfAfterStep(message) {
                             // 3. deltaC must not exceed the limit enforced by ciurl
                             Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit);
                     });
-                    {
-                        src = UI_STATE.selectedCoord;
-                        if (src == null) {
-                            throw new Error("though stepping, null startpoint!!!!!");
+                    src = fromAbsoluteCoord(message.src);
+                    passer = createCircleGuideImageAt(src, "ct");
+                    passer.addEventListener('click', function (ev) {
+                        // FIXME: event handler to pass the turn
+                        alert("FIXME: implement passing by stepinf");
+                    });
+                    passer.style.zIndex = "200";
+                    contains_guides.appendChild(passer);
+                    for (ind = 0; ind < filteredList.length; ind++) {
+                        _a = filteredList[ind], i = _a[0], j = _a[1];
+                        if (coordEq(src, [i, j])) {
+                            continue; // yellow takes precedence over green
                         }
-                        else if (src[0] === "Hop1zuo1") {
-                            throw new Error("though stepping, hop1zuo1 startpoint!!!!!");
+                        destPiece = GAME_STATE.f.currentBoard[i][j];
+                        // cannot step twice
+                        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+                            continue;
                         }
-                        for (ind = 0; ind < filteredList.length; ind++) {
-                            _a = filteredList[ind], i = _a[0], j = _a[1];
-                            destPiece = GAME_STATE.f.currentBoard[i][j];
-                            // cannot step twice
-                            if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
-                                continue;
-                            }
-                            img = createCircleGuideImageAt(filteredList[ind], "ct2");
-                            img.addEventListener('click', function (ev) {
-                                // FIXME: event handler
-                                alert("FIXME: implement me");
-                            });
-                            img.style.zIndex = "200";
-                            contains_guides.appendChild(img);
-                        }
+                        img = createCircleGuideImageAt(filteredList[ind], "ct2");
+                        img.addEventListener('click', function (ev) {
+                            // FIXME: event handler
+                            alert("FIXME: implement me");
+                        });
+                        img.style.zIndex = "200";
+                        contains_guides.appendChild(img);
                     }
                     return [2 /*return*/];
             }

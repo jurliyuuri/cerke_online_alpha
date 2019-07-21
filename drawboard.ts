@@ -681,36 +681,39 @@ async function sendInfAfterStep(message: InfAfterStep) {
         );
     });
 
+    const src: Coord = fromAbsoluteCoord(message.src);
 
-    {
-        const src = UI_STATE.selectedCoord;
+    let passer = createCircleGuideImageAt(src, "ct");
+    passer.addEventListener('click', function (ev) {
+        // FIXME: event handler to pass the turn
+        alert("FIXME: implement passing by stepinf");
+    });
+    passer.style.zIndex = "200";
+    contains_guides.appendChild(passer);
 
-        if (src == null) {
-            throw new Error("though stepping, null startpoint!!!!!")
-        } else if (src[0] === "Hop1zuo1") {
-            throw new Error("though stepping, hop1zuo1 startpoint!!!!!")
+    for (let ind = 0; ind < filteredList.length; ind++) {
+        const [i, j] = filteredList[ind];
+        if (coordEq(src, [i,j])) {
+            continue; // yellow takes precedence over green
+        }
+        const destPiece = GAME_STATE.f.currentBoard[i][j];
+
+        // cannot step twice
+        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+            continue;
         }
 
-        for (let ind = 0; ind < filteredList.length; ind++) {
-            const [i, j] = filteredList[ind];
-            const destPiece = GAME_STATE.f.currentBoard[i][j];
+        let img = createCircleGuideImageAt(filteredList[ind], "ct2");
 
-            // cannot step twice
-            if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
-                continue;
-            }
+        img.addEventListener('click', function (ev) {
+            // FIXME: event handler
+            alert("FIXME: implement me");
+        });
 
-            let img = createCircleGuideImageAt(filteredList[ind], "ct2");
-
-            img.addEventListener('click', function (ev) {
-                // FIXME: event handler
-                alert("FIXME: implement me");
-            });
-
-            img.style.zIndex = "200";
-            contains_guides.appendChild(img);
-        }
+        img.style.zIndex = "200";
+        contains_guides.appendChild(img);
     }
+
 }
 
 // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
