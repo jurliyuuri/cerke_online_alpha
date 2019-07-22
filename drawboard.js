@@ -314,7 +314,7 @@ function sendAfterHalfAcceptance(message, src, step) {
                     else {
                         eraseGuide();
                         UI_STATE.selectedCoord = null;
-                        updateFieldAfterHalfAcceptance(GAME_STATE.f, message, src, step);
+                        updateFieldAfterHalfAcceptance(message, src, step);
                         drawField(GAME_STATE.f);
                     }
                     return [2 /*return*/];
@@ -367,7 +367,7 @@ function sendNormalMessage(message) {
                     else {
                         eraseGuide();
                         UI_STATE.selectedCoord = null;
-                        updateField(GAME_STATE.f, message);
+                        updateField(message);
                         drawField(GAME_STATE.f);
                     }
                     return [2 /*return*/];
@@ -375,7 +375,7 @@ function sendNormalMessage(message) {
         });
     });
 }
-function updateFieldAfterHalfAcceptance(field, message, src, step) {
+function updateFieldAfterHalfAcceptance(message, src, step) {
     if (message.dest === null) {
         cancelStepping();
         return;
@@ -418,7 +418,7 @@ function updateFieldAfterHalfAcceptance(field, message, src, step) {
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
 }
-function updateField(field, message) {
+function updateField(message) {
     if (message.type === "NonTamMove") {
         if (message.data.type === "FromHand") {
             var k_1 = message.data;

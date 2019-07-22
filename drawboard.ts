@@ -331,7 +331,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
     } else {
         eraseGuide();
         UI_STATE.selectedCoord = null;
-        updateFieldAfterHalfAcceptance(GAME_STATE.f, message, src, step);
+        updateFieldAfterHalfAcceptance(message, src, step);
         drawField(GAME_STATE.f);
     }
 }
@@ -379,12 +379,12 @@ async function sendNormalMessage(message: NormalMove) {
     } else {
         eraseGuide();
         UI_STATE.selectedCoord = null;
-        updateField(GAME_STATE.f, message);
+        updateField(message);
         drawField(GAME_STATE.f);
     }
 }
 
-function updateFieldAfterHalfAcceptance(field: Field, message: AfterHalfAcceptance, src: Coord, step: Coord) {
+function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
     if (message.dest === null) {
         cancelStepping();
         return;
@@ -433,8 +433,7 @@ function updateFieldAfterHalfAcceptance(field: Field, message: AfterHalfAcceptan
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
 }
 
-
-function updateField(field: Field, message: NormalMove) {
+function updateField(message: NormalMove) {
     if (message.type === "NonTamMove") {
         if (message.data.type === "FromHand") {
             const k: {
@@ -589,7 +588,6 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
     let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (destPiece == null) { // dest is empty square; try to simply move
-
         let message: NormalMove;
 
         if (piece !== "Tam2") {
@@ -871,8 +869,6 @@ function displayCiurl(ciurl: Ciurl) {
 function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl")!);
 }
-
-
 
 function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Piece, plannedDest: Coord) {
     console.log("stepped on", step);
