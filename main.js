@@ -170,11 +170,7 @@ function getThingsGoingFromHop1zuo1(ev, piece, from, to) {
             dest: abs_dst
         }
     };
-    console.log("sending normal move:", JSON.stringify(message));
-    eraseGuide();
-    UI_STATE.selectedCoord = null;
-    alert("message sent.");
-    return;
+    sendNormalMessage(message);
 }
 function erasePhantom() {
     var contains_phantom = document.getElementById("contains_phantom");

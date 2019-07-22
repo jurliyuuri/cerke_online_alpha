@@ -127,13 +127,7 @@ function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: Piece, from: ["Hop1zu
         }
     };
 
-    console.log("sending normal move:", JSON.stringify(message));
-
-    eraseGuide();
-    UI_STATE.selectedCoord = null;
-
-    alert("message sent.");
-    return;
+    sendNormalMessage(message);
 }
 
 function erasePhantom() {
