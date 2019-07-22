@@ -203,34 +203,18 @@ type MockReturnDataForAfterHalfAcceptance = {
 };
 
 async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
-    console.log("Sending `after half acceptance`:", JSON.stringify(message));
-    let url = 'http://localhost:3000/movies';
-    const data = {
-        "id": (Math.random() * 100000) | 0,
-        "message": message
-    };
-
-    const res: void | MockReturnDataForAfterHalfAcceptance = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(res => res.json())
-        .then(response => {
-            console.log('Success:', JSON.stringify(response));
-            return {
-                success: Math.random() < 0.5,
-                dat: [1, 2, 3]
-            };
-        })
-        .catch(error => console.error('Error:', error));
-
-    console.log(res);
-
-    if (!res) {
-        throw new Error("network error!");
-    }
+    const res: MockReturnDataForAfterHalfAcceptance =
+        await sendStuff<AfterHalfAcceptance, MockReturnDataForAfterHalfAcceptance>(
+            "`after half acceptance`",
+            message,
+            response => {
+                console.log('Success:', JSON.stringify(response));
+                return {
+                    success: Math.random() < 0.5,
+                    dat: [1, 2, 3]
+                };
+            }
+        );
 
     if (!res.success) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -247,29 +231,22 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
     }
 }
 
-
-async function sendNormalMessage(message: NormalMove) {
-    console.log("Sending normal move:", JSON.stringify(message));
+async function sendStuff<T, U>(log: string, message: T, createDummy: (response: any) => U): Promise<U> {
+    console.log(`Sending ${log}:`, JSON.stringify(message));
     let url = 'http://localhost:3000/movies';
     const data = {
         "id": (Math.random() * 100000) | 0,
         "message": message
     };
 
-    const res: void | MockReturnDataForNormalMove = await fetch(url, {
+    const res: void | U = await fetch(url, {
         method: 'POST',
         body: JSON.stringify(data), // data can be `string` or {object}!
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(res => res.json())
-        .then(response => {
-            console.log('Success:', JSON.stringify(response));
-            return {
-                success: Math.random() < 0.5,
-                dat: [1, 2, 3]
-            };
-        })
+        .then(createDummy)
         .catch(error => console.error('Error:', error));
 
     console.log(res);
@@ -277,6 +254,17 @@ async function sendNormalMessage(message: NormalMove) {
     if (!res) {
         throw new Error("network error!");
     }
+    return res;
+}
+
+async function sendNormalMessage(message: NormalMove) {
+    const res: MockReturnDataForNormalMove = await sendStuff<NormalMove, MockReturnDataForNormalMove>("normal move", message, response => {
+        console.log('Success:', JSON.stringify(response));
+        return {
+            success: Math.random() < 0.5,
+            dat: [1, 2, 3]
+        };
+    });
 
     if (!res.success) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -575,21 +563,10 @@ type MockReturnDataForInfAfterStep = {
 }
 
 async function sendInfAfterStep(message: InfAfterStep) {
-    console.log("Sending normal move:", JSON.stringify(message));
-    let url = 'http://localhost:3000/movies';
-    const data = {
-        "id": (Math.random() * 100000) | 0,
-        "message": message
-    };
-
-    const res: void | MockReturnDataForInfAfterStep = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(res => res.json())
-        .then(response => {
+    const res = await sendStuff<InfAfterStep, MockReturnDataForInfAfterStep>(
+        "inf after step",
+        message,
+        response => {
             console.log('Success:', JSON.stringify(response));
             return {
                 ciurl: [
@@ -601,14 +578,8 @@ async function sendInfAfterStep(message: InfAfterStep) {
                 ] as Ciurl,
                 dat: [1, 2, 3]
             };
-        })
-        .catch(error => console.error('Error:', error));
-
-    console.log(res);
-
-    if (!res) {
-        throw new Error("network error!");
-    }
+        }
+    );
 
     displayCiurl(res.ciurl);
 
@@ -703,7 +674,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
 function displayCiurl(ciurl: Ciurl) {
     // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
     // Standard Normal variate using Box-Muller transform.
-    const randn_bm = function(): number {
+    const randn_bm = function (): number {
         var u = 0, v = 0;
         while (u === 0) u = Math.random(); //Converting [0,1) to (0,1)
         while (v === 0) v = Math.random();

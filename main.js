@@ -168,37 +168,18 @@ function stepping(from, piece, to, destPiece) {
 }
 function sendAfterHalfAcceptance(message, src, step) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, data, res;
+        var res;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    console.log("Sending `after half acceptance`:", JSON.stringify(message));
-                    url = 'http://localhost:3000/movies';
-                    data = {
-                        "id": (Math.random() * 100000) | 0,
-                        "message": message
-                    };
-                    return [4 /*yield*/, fetch(url, {
-                            method: 'POST',
-                            body: JSON.stringify(data),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }).then(function (res) { return res.json(); })
-                            .then(function (response) {
-                            console.log('Success:', JSON.stringify(response));
-                            return {
-                                success: Math.random() < 0.5,
-                                dat: [1, 2, 3]
-                            };
-                        })
-                            .catch(function (error) { return console.error('Error:', error); })];
+                case 0: return [4 /*yield*/, sendStuff("`after half acceptance`", message, function (response) {
+                        console.log('Success:', JSON.stringify(response));
+                        return {
+                            success: Math.random() < 0.5,
+                            dat: [1, 2, 3]
+                        };
+                    })];
                 case 1:
                     res = _a.sent();
-                    console.log(res);
-                    if (!res) {
-                        throw new Error("network error!");
-                    }
                     if (!res.success) {
                         alert(DICTIONARY.ja.failedWaterEntry);
                         eraseGuide();
@@ -217,13 +198,13 @@ function sendAfterHalfAcceptance(message, src, step) {
         });
     });
 }
-function sendNormalMessage(message) {
+function sendStuff(log, message, createDummy) {
     return __awaiter(this, void 0, void 0, function () {
         var url, data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log("Sending normal move:", JSON.stringify(message));
+                    console.log("Sending " + log + ":", JSON.stringify(message));
                     url = 'http://localhost:3000/movies';
                     data = {
                         "id": (Math.random() * 100000) | 0,
@@ -236,13 +217,7 @@ function sendNormalMessage(message) {
                                 'Content-Type': 'application/json'
                             }
                         }).then(function (res) { return res.json(); })
-                            .then(function (response) {
-                            console.log('Success:', JSON.stringify(response));
-                            return {
-                                success: Math.random() < 0.5,
-                                dat: [1, 2, 3]
-                            };
-                        })
+                            .then(createDummy)
                             .catch(function (error) { return console.error('Error:', error); })];
                 case 1:
                     res = _a.sent();
@@ -250,6 +225,25 @@ function sendNormalMessage(message) {
                     if (!res) {
                         throw new Error("network error!");
                     }
+                    return [2 /*return*/, res];
+            }
+        });
+    });
+}
+function sendNormalMessage(message) {
+    return __awaiter(this, void 0, void 0, function () {
+        var res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, sendStuff("normal move", message, function (response) {
+                        console.log('Success:', JSON.stringify(response));
+                        return {
+                            success: Math.random() < 0.5,
+                            dat: [1, 2, 3]
+                        };
+                    })];
+                case 1:
+                    res = _a.sent();
                     if (!res.success) {
                         alert(DICTIONARY.ja.failedWaterEntry);
                         eraseGuide();
@@ -496,43 +490,24 @@ function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
 }
 function sendInfAfterStep(message) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, data, res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, passer, _loop_1, ind;
+        var res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, passer, _loop_1, ind;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    console.log("Sending normal move:", JSON.stringify(message));
-                    url = 'http://localhost:3000/movies';
-                    data = {
-                        "id": (Math.random() * 100000) | 0,
-                        "message": message
-                    };
-                    return [4 /*yield*/, fetch(url, {
-                            method: 'POST',
-                            body: JSON.stringify(data),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }).then(function (res) { return res.json(); })
-                            .then(function (response) {
-                            console.log('Success:', JSON.stringify(response));
-                            return {
-                                ciurl: [
-                                    Math.random() < 0.5,
-                                    Math.random() < 0.5,
-                                    Math.random() < 0.5,
-                                    Math.random() < 0.5,
-                                    Math.random() < 0.5
-                                ],
-                                dat: [1, 2, 3]
-                            };
-                        })
-                            .catch(function (error) { return console.error('Error:', error); })];
+                case 0: return [4 /*yield*/, sendStuff("inf after step", message, function (response) {
+                        console.log('Success:', JSON.stringify(response));
+                        return {
+                            ciurl: [
+                                Math.random() < 0.5,
+                                Math.random() < 0.5,
+                                Math.random() < 0.5,
+                                Math.random() < 0.5,
+                                Math.random() < 0.5
+                            ],
+                            dat: [1, 2, 3]
+                        };
+                    })];
                 case 1:
                     res = _a.sent();
-                    console.log(res);
-                    if (!res) {
-                        throw new Error("network error!");
-                    }
                     displayCiurl(res.ciurl);
                     document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
                     eraseGuide(); // this removes the central guide, as well as the yellow and green ones
