@@ -156,10 +156,6 @@ function getThingsGoingFromHop1zuo1(ev, piece, from, to) {
         alert("Cannot parachute onto an occupied square");
         throw new Error("Cannot parachute onto an occupied square");
     }
-    if (piece === "Tam2") {
-        alert("Cannot parachute Tam2");
-        throw new Error("Cannot parachute Tam2");
-    }
     var abs_dst = toAbsoluteCoord(to);
     var message = {
         type: "NonTamMove",
@@ -563,18 +559,10 @@ function getThingsGoing(ev, piece, from, to) {
         return;
     }
 }
-function getThingsGoingAfterStepping_Finite(step, piece, dest) {
+function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     if (piece === "Tam2") {
         alert("FIXME: implement Tam2's movement, who initially stepped");
         return;
-    }
-    if (UI_STATE.selectedCoord == null) {
-        alert("stepping, but initial is NULL!!!!!!!");
-        throw new Error("stepping, but initial is NULL!!!!!!!");
-    }
-    if (UI_STATE.selectedCoord[0] === "Hop1zuo1") {
-        alert("stepping, but initial is Hop1zuo1!!!!!!!");
-        throw new Error("stepping, but initial is Hop1zuo1!!!!!!!");
     }
     var message = {
         type: "NonTamMove",
@@ -582,7 +570,7 @@ function getThingsGoingAfterStepping_Finite(step, piece, dest) {
             type: "SrcStepDstFinite",
             step: toAbsoluteCoord(step),
             dest: toAbsoluteCoord(dest),
-            src: toAbsoluteCoord(UI_STATE.selectedCoord)
+            src: toAbsoluteCoord(src)
         }
     };
     sendNormalMessage(message);
@@ -750,7 +738,7 @@ function display_guide_after_stepping(coord, q, parent, list) {
         }
         var img = createCircleGuideImageAt(list[ind], q.path);
         img.addEventListener('click', q.path === "ct" ? function (ev) {
-            getThingsGoingAfterStepping_Finite(coord, q.piece, list[ind]);
+            getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
         } : function (ev) {
             sendInfAfterStep({
                 type: "InfAfterStep",

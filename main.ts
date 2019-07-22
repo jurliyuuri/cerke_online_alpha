@@ -102,18 +102,13 @@ function fromAbsoluteCoord([absrow, abscol]: AbsoluteCoord): Coord {
     }
 }
 
-function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: Piece, from: ["Hop1zuo1", number], to: Coord) {
+function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: NonTam2Piece, from: ["Hop1zuo1", number], to: Coord) {
     let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     // must parachute onto an empty square
     if (dest != null) {
         alert("Cannot parachute onto an occupied square");
         throw new Error("Cannot parachute onto an occupied square");
-    }
-
-    if (piece === "Tam2") {
-        alert("Cannot parachute Tam2");
-        throw new Error("Cannot parachute Tam2");
     }
 
     let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
@@ -882,7 +877,7 @@ function selectOwnPieceOnBoard(coord: Coord, piece: Piece, imgNode: HTMLImageEle
     }
 }
 
-function selectOwnPieceOnHop1zuo1(ind: number, piece: Piece, imgNode: HTMLImageElement) {
+function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece, imgNode: HTMLImageElement) {
     // erase the existing guide in all circumstances
     eraseGuide();
 
