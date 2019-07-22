@@ -47,62 +47,15 @@ function eraseGuide(): void {
     removeChildren(document.getElementById("contains_guides_on_upward")!);
 }
 
-function toAbsoluteCoord([row, col]: Coord): AbsoluteCoord {
-    return [
-        [
-            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
-            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
-            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA
-        ][GAME_STATE.IA_is_down ? row : 8 - row],
-        [
-            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
-            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
-            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
-        ][GAME_STATE.IA_is_down ? col : 8 - col]
-    ];
+function toAbsoluteCoord(coord: Coord): AbsoluteCoord {
+    return toAbsoluteCoord_(coord, GAME_STATE.IA_is_down)
 }
 
-function fromAbsoluteCoord([absrow, abscol]: AbsoluteCoord): Coord {
-    let rowind: BoardIndex;
-
-    if (absrow === AbsoluteRow.A) { rowind = 0; }
-    else if (absrow === AbsoluteRow.E) { rowind = 1; }
-    else if (absrow === AbsoluteRow.I) { rowind = 2; }
-    else if (absrow === AbsoluteRow.U) { rowind = 3; }
-    else if (absrow === AbsoluteRow.O) { rowind = 4; }
-    else if (absrow === AbsoluteRow.Y) { rowind = 5; }
-    else if (absrow === AbsoluteRow.AI) { rowind = 6; }
-    else if (absrow === AbsoluteRow.AU) { rowind = 7; }
-    else if (absrow === AbsoluteRow.IA) { rowind = 8; }
-    else {
-        let _should_not_reach_here: never = absrow;
-        throw new Error("does not happen");
-    }
-
-    let colind: BoardIndex;
-
-    if (abscol === AbsoluteColumn.K) { colind = 0; }
-    else if (abscol === AbsoluteColumn.L) { colind = 1; }
-    else if (abscol === AbsoluteColumn.N) { colind = 2; }
-    else if (abscol === AbsoluteColumn.T) { colind = 3; }
-    else if (abscol === AbsoluteColumn.Z) { colind = 4; }
-    else if (abscol === AbsoluteColumn.X) { colind = 5; }
-    else if (abscol === AbsoluteColumn.C) { colind = 6; }
-    else if (abscol === AbsoluteColumn.M) { colind = 7; }
-    else if (abscol === AbsoluteColumn.P) { colind = 8; }
-    else {
-        let _should_not_reach_here: never = abscol;
-        throw new Error("does not happen");
-    }
-
-    if (GAME_STATE.IA_is_down) {
-        return [rowind, colind];
-    } else {
-        return [8 - rowind as BoardIndex, 8 - colind as BoardIndex];
-    }
+function fromAbsoluteCoord(abs: AbsoluteCoord): Coord {
+    return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
 }
 
-function getThingsGoingFromHop1zuo1(ev: MouseEvent, piece: NonTam2Piece, from: ["Hop1zuo1", number], to: Coord) {
+function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, from: ["Hop1zuo1", number], to: Coord) {
     let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     // must parachute onto an empty square
@@ -542,7 +495,7 @@ function updateField(message: NormalMove) {
     }
 }
 
-function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
+function getThingsGoing(piece: Piece, from: Coord, to: Coord) {
     let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (destPiece == null) { // dest is empty square; try to simply move
@@ -745,19 +698,18 @@ async function sendInfAfterStep(message: InfAfterStep) {
         img.style.zIndex = "200";
         contains_guides.appendChild(img);
     }
-
-}
-
-// copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
-// Standard Normal variate using Box-Muller transform.
-function randn_bm(): number {
-    var u = 0, v = 0;
-    while (u === 0) u = Math.random(); //Converting [0,1) to (0,1)
-    while (v === 0) v = Math.random();
-    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
 }
 
 function displayCiurl(ciurl: Ciurl) {
+    // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
+    // Standard Normal variate using Box-Muller transform.
+    const randn_bm = function(): number {
+        var u = 0, v = 0;
+        while (u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+        while (v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
     const contains_ciurl = document.getElementById("contains_ciurl")!;
 
     clearCiurl();
@@ -810,9 +762,9 @@ function display_guide_after_stepping(coord: Coord, q: { piece: Piece, path: "ct
 
         let img = createCircleGuideImageAt(list[ind], q.path);
 
-        img.addEventListener('click', q.path === "ct" ? function (ev) {
+        img.addEventListener('click', q.path === "ct" ? function () {
             getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
-        } : function (ev) {
+        } : function () {
             sendInfAfterStep({
                 type: "InfAfterStep",
                 color: q.piece.color,
@@ -828,22 +780,21 @@ function display_guide_after_stepping(coord: Coord, q: { piece: Piece, path: "ct
     }
 }
 
-function display_guide(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>) {
+function display_guides(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>) {
     for (let ind = 0; ind < list.length; ind++) {
         // draw the yellow guides
         let img = createCircleGuideImageAt(list[ind], "ct");
 
         // click on it to get things going
-        img.addEventListener('click', function (ev) {
-            getThingsGoing(ev, piece, coord, list[ind]);
-
+        img.addEventListener('click', function () {
+            getThingsGoing(piece, coord, list[ind]);
         });
 
         parent.appendChild(img);
     }
 }
 
-function selectOwnPieceOnBoard(coord: Coord, piece: Piece, imgNode: HTMLImageElement) {
+function selectOwnPieceOnBoard(coord: Coord, piece: Piece) {
     /* erase the guide in all cases, since the guide also contains the selectedness of Hop1zuo1 */
     eraseGuide();
 
@@ -869,7 +820,7 @@ function selectOwnPieceOnBoard(coord: Coord, piece: Piece, imgNode: HTMLImageEle
             GAME_STATE.f.currentBoard,
             GAME_STATE.tam_itself_is_tam_hue);
 
-        display_guide(coord, piece, contains_guides, [...guideListFinite, ...guideListInfinite]);
+        display_guides(coord, piece, contains_guides, [...guideListFinite, ...guideListInfinite]);
 
     } else {
         /* Clicking what was originally selected will make it deselect */
@@ -877,7 +828,7 @@ function selectOwnPieceOnBoard(coord: Coord, piece: Piece, imgNode: HTMLImageEle
     }
 }
 
-function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece, imgNode: HTMLImageElement) {
+function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
     // erase the existing guide in all circumstances
     eraseGuide();
 
@@ -916,8 +867,8 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece, imgNode: HTM
                 let img = createCircleGuideImageAt(ij, "ct");
 
                 // click on it to get things going
-                img.addEventListener('click', function (ev) {
-                    getThingsGoingFromHop1zuo1(ev, piece, ["Hop1zuo1", ind], ij);
+                img.addEventListener('click', function () {
+                    getThingsGoingFromHop1zuo1(piece, ["Hop1zuo1", ind], ij);
                 });
 
                 contains_guides.appendChild(img);
@@ -971,7 +922,7 @@ function drawField(field: Field) {
                 if (selectable) {
                     imgNode.style.cursor = "pointer";
                     imgNode.addEventListener('click', function () {
-                        selectOwnPieceOnBoard(coord, piece, imgNode)
+                        selectOwnPieceOnBoard(coord, piece)
                     });
                 }
 
@@ -993,7 +944,7 @@ function drawField(field: Field) {
 
             imgNode.style.cursor = "pointer";
             imgNode.addEventListener('click', function () {
-                selectOwnPieceOnHop1zuo1(i, piece, imgNode)
+                selectOwnPieceOnHop1zuo1(i, piece)
             });
 
             contains_pieces_on_upward.appendChild(imgNode);

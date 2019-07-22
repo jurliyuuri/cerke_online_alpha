@@ -61,95 +61,13 @@ function eraseGuide() {
     removeChildren(document.getElementById("contains_guides"));
     removeChildren(document.getElementById("contains_guides_on_upward"));
 }
-function toAbsoluteCoord(_a) {
-    var row = _a[0], col = _a[1];
-    return [
-        [
-            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
-            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
-            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA
-        ][GAME_STATE.IA_is_down ? row : 8 - row],
-        [
-            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
-            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
-            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
-        ][GAME_STATE.IA_is_down ? col : 8 - col]
-    ];
+function toAbsoluteCoord(coord) {
+    return toAbsoluteCoord_(coord, GAME_STATE.IA_is_down);
 }
-function fromAbsoluteCoord(_a) {
-    var absrow = _a[0], abscol = _a[1];
-    var rowind;
-    if (absrow === AbsoluteRow.A) {
-        rowind = 0;
-    }
-    else if (absrow === AbsoluteRow.E) {
-        rowind = 1;
-    }
-    else if (absrow === AbsoluteRow.I) {
-        rowind = 2;
-    }
-    else if (absrow === AbsoluteRow.U) {
-        rowind = 3;
-    }
-    else if (absrow === AbsoluteRow.O) {
-        rowind = 4;
-    }
-    else if (absrow === AbsoluteRow.Y) {
-        rowind = 5;
-    }
-    else if (absrow === AbsoluteRow.AI) {
-        rowind = 6;
-    }
-    else if (absrow === AbsoluteRow.AU) {
-        rowind = 7;
-    }
-    else if (absrow === AbsoluteRow.IA) {
-        rowind = 8;
-    }
-    else {
-        var _should_not_reach_here = absrow;
-        throw new Error("does not happen");
-    }
-    var colind;
-    if (abscol === AbsoluteColumn.K) {
-        colind = 0;
-    }
-    else if (abscol === AbsoluteColumn.L) {
-        colind = 1;
-    }
-    else if (abscol === AbsoluteColumn.N) {
-        colind = 2;
-    }
-    else if (abscol === AbsoluteColumn.T) {
-        colind = 3;
-    }
-    else if (abscol === AbsoluteColumn.Z) {
-        colind = 4;
-    }
-    else if (abscol === AbsoluteColumn.X) {
-        colind = 5;
-    }
-    else if (abscol === AbsoluteColumn.C) {
-        colind = 6;
-    }
-    else if (abscol === AbsoluteColumn.M) {
-        colind = 7;
-    }
-    else if (abscol === AbsoluteColumn.P) {
-        colind = 8;
-    }
-    else {
-        var _should_not_reach_here = abscol;
-        throw new Error("does not happen");
-    }
-    if (GAME_STATE.IA_is_down) {
-        return [rowind, colind];
-    }
-    else {
-        return [8 - rowind, 8 - colind];
-    }
+function fromAbsoluteCoord(abs) {
+    return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
 }
-function getThingsGoingFromHop1zuo1(ev, piece, from, to) {
+function getThingsGoingFromHop1zuo1(piece, from, to) {
     var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
     // must parachute onto an empty square
     if (dest != null) {
@@ -512,7 +430,7 @@ function updateField(message) {
         var _should_not_reach_here = message;
     }
 }
-function getThingsGoing(ev, piece, from, to) {
+function getThingsGoing(piece, from, to) {
     var destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (destPiece == null) { // dest is empty square; try to simply move
         var message = void 0;
@@ -685,18 +603,18 @@ function sendInfAfterStep(message) {
         });
     });
 }
-// copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
-// Standard Normal variate using Box-Muller transform.
-function randn_bm() {
-    var u = 0, v = 0;
-    while (u === 0)
-        u = Math.random(); //Converting [0,1) to (0,1)
-    while (v === 0)
-        v = Math.random();
-    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-}
 function displayCiurl(ciurl) {
     var _a;
+    // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
+    // Standard Normal variate using Box-Muller transform.
+    var randn_bm = function () {
+        var u = 0, v = 0;
+        while (u === 0)
+            u = Math.random(); //Converting [0,1) to (0,1)
+        while (v === 0)
+            v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    };
     var contains_ciurl = document.getElementById("contains_ciurl");
     clearCiurl();
     // should always lie around 300 ~ 370, when BOX_SIZE is 70
@@ -737,9 +655,9 @@ function display_guide_after_stepping(coord, q, parent, list) {
             return "continue";
         }
         var img = createCircleGuideImageAt(list[ind], q.path);
-        img.addEventListener('click', q.path === "ct" ? function (ev) {
+        img.addEventListener('click', q.path === "ct" ? function () {
             getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
-        } : function (ev) {
+        } : function () {
             sendInfAfterStep({
                 type: "InfAfterStep",
                 color: q.piece.color,
@@ -756,13 +674,13 @@ function display_guide_after_stepping(coord, q, parent, list) {
         _loop_2(ind);
     }
 }
-function display_guide(coord, piece, parent, list) {
+function display_guides(coord, piece, parent, list) {
     var _loop_3 = function (ind) {
         // draw the yellow guides
         var img = createCircleGuideImageAt(list[ind], "ct");
         // click on it to get things going
-        img.addEventListener('click', function (ev) {
-            getThingsGoing(ev, piece, coord, list[ind]);
+        img.addEventListener('click', function () {
+            getThingsGoing(piece, coord, list[ind]);
         });
         parent.appendChild(img);
     };
@@ -770,7 +688,7 @@ function display_guide(coord, piece, parent, list) {
         _loop_3(ind);
     }
 }
-function selectOwnPieceOnBoard(coord, piece, imgNode) {
+function selectOwnPieceOnBoard(coord, piece) {
     /* erase the guide in all cases, since the guide also contains the selectedness of Hop1zuo1 */
     eraseGuide();
     if (UI_STATE.selectedCoord == null || UI_STATE.selectedCoord[0] === "Hop1zuo1" || !coordEq(UI_STATE.selectedCoord, coord)) {
@@ -785,14 +703,14 @@ function selectOwnPieceOnBoard(coord, piece, imgNode) {
         });
         contains_guides.appendChild(centralNode);
         var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListFinite = _a.finite, guideListInfinite = _a.infinite;
-        display_guide(coord, piece, contains_guides, guideListFinite.concat(guideListInfinite));
+        display_guides(coord, piece, contains_guides, guideListFinite.concat(guideListInfinite));
     }
     else {
         /* Clicking what was originally selected will make it deselect */
         UI_STATE.selectedCoord = null;
     }
 }
-function selectOwnPieceOnHop1zuo1(ind, piece, imgNode) {
+function selectOwnPieceOnHop1zuo1(ind, piece) {
     // erase the existing guide in all circumstances
     eraseGuide();
     if (UI_STATE.selectedCoord == null || UI_STATE.selectedCoord[0] !== "Hop1zuo1" || UI_STATE.selectedCoord[1] !== ind) {
@@ -817,8 +735,8 @@ function selectOwnPieceOnHop1zuo1(ind, piece, imgNode) {
                 // draw the yellow guides
                 var img = createCircleGuideImageAt(ij, "ct");
                 // click on it to get things going
-                img.addEventListener('click', function (ev) {
-                    getThingsGoingFromHop1zuo1(ev, piece, ["Hop1zuo1", ind], ij);
+                img.addEventListener('click', function () {
+                    getThingsGoingFromHop1zuo1(piece, ["Hop1zuo1", ind], ij);
                 });
                 contains_guides.appendChild(img);
             };
@@ -861,7 +779,7 @@ function drawField(field) {
                 if (selectable) {
                     imgNode.style.cursor = "pointer";
                     imgNode.addEventListener('click', function () {
-                        selectOwnPieceOnBoard(coord, piece, imgNode);
+                        selectOwnPieceOnBoard(coord, piece);
                     });
                 }
                 contains_pieces_on_board.appendChild(imgNode);
@@ -881,7 +799,7 @@ function drawField(field) {
             var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
             imgNode.style.cursor = "pointer";
             imgNode.addEventListener('click', function () {
-                selectOwnPieceOnHop1zuo1(i, piece, imgNode);
+                selectOwnPieceOnHop1zuo1(i, piece);
             });
             contains_pieces_on_upward.appendChild(imgNode);
         };
