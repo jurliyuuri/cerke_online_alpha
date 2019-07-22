@@ -1,38 +1,3 @@
-const BOX_SIZE = 70;
-const MAX_PIECE_SIZE = BOX_SIZE - 1;
-const PIECE_SIZE = 60;
-
-function createPieceSizeImageOnBoardByPathAndXY(top: number, left: number, path: string, className: string): HTMLImageElement {
-    let i = document.createElement("img");
-    i.classList.add(className);
-    i.style.top = `${top}px`;
-    i.style.left = `${left}px`;
-    i.src = `image/${path}.png`;
-    i.width = PIECE_SIZE;
-    i.height = PIECE_SIZE;
-    return i;
-}
-
-function createPieceSizeImageOnBoardByPath(coord: Coord, path: string, className: string): HTMLImageElement {
-    let [row_index, column_index] = coord;
-    return createPieceSizeImageOnBoardByPathAndXY(
-        1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-        1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-        path,
-        className
-    );
-}
-
-function createPieceSizeImageOnBoardByPath_Shifted(coord: readonly [number, number], path: string, className: string): HTMLImageElement {
-    let [row_index, column_index] = coord;
-    return createPieceSizeImageOnBoardByPathAndXY(
-        1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
-        1 + column_index * BOX_SIZE,
-        path,
-        className
-    );
-}
-
 type Hop1Zuo1 = NonTam2Piece[];
 
 type Field = {
@@ -636,20 +601,6 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
     }
 }
 
-function createCircleGuideImageAt(coord: Coord, path: string) {
-    const [row_index, column_index] = coord;
-    let img = document.createElement("img");
-    img.classList.add("guide");
-    img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
-    img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
-    img.src = `image/${path}.png`;
-    img.width = MAX_PIECE_SIZE;
-    img.height = MAX_PIECE_SIZE;
-    img.style.cursor = "pointer";
-    img.style.opacity = "0.3";
-    return img;
-}
-
 type Ciurl = [boolean, boolean, boolean, boolean, boolean];
 
 function getThingsGoingAfterStepping_Finite(step: Coord, piece: Piece, dest: Coord) {
@@ -838,21 +789,11 @@ function displayCiurl(ciurl: Ciurl) {
     const board_height = 631;
     const averageTop = 84 + hop1zuo1_height + board_height;
 
-    let imgs: HTMLImageElement[] = []
-    for (let ind = 0; ind < ciurl.length; ind++) {
-        let img = document.createElement("img");
-        img.src = `image/ciurl_${ciurl[ind]}.png`;
-        img.width = 150;
-        img.height = 15;
-        img.classList.add("ciurl");
-        img.style.left = `${averageLeft + BOX_SIZE * 0.2 * randn_bm()}px`;
-        img.style.top = `${averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm()}px`;
-        img.style.zIndex = "300";
-        img.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
-        img.style.position = "absolute";
-        imgs.push(img);
-
-    }
+    let imgs: HTMLImageElement[] = ciurl.map((side, ind) => createCiurl(side, {
+        left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
+        top: averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm(),
+        rotateDeg: Math.random() * 40 - 20
+    }));
 
     // Fisher-Yates
     for (let i = imgs.length - 1; i > 0; i--) {

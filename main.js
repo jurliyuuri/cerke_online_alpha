@@ -34,27 +34,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var BOX_SIZE = 70;
-var MAX_PIECE_SIZE = BOX_SIZE - 1;
-var PIECE_SIZE = 60;
-function createPieceSizeImageOnBoardByPathAndXY(top, left, path, className) {
-    var i = document.createElement("img");
-    i.classList.add(className);
-    i.style.top = top + "px";
-    i.style.left = left + "px";
-    i.src = "image/" + path + ".png";
-    i.width = PIECE_SIZE;
-    i.height = PIECE_SIZE;
-    return i;
-}
-function createPieceSizeImageOnBoardByPath(coord, path, className) {
-    var row_index = coord[0], column_index = coord[1];
-    return createPieceSizeImageOnBoardByPathAndXY(1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, path, className);
-}
-function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
-    var row_index = coord[0], column_index = coord[1];
-    return createPieceSizeImageOnBoardByPathAndXY(1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE), 1 + column_index * BOX_SIZE, path, className);
-}
 var GAME_STATE = {
     f: {
         currentBoard: [
@@ -582,19 +561,6 @@ function getThingsGoing(ev, piece, from, to) {
         return;
     }
 }
-function createCircleGuideImageAt(coord, path) {
-    var row_index = coord[0], column_index = coord[1];
-    var img = document.createElement("img");
-    img.classList.add("guide");
-    img.style.top = 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
-    img.style.left = 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2 + "px";
-    img.src = "image/" + path + ".png";
-    img.width = MAX_PIECE_SIZE;
-    img.height = MAX_PIECE_SIZE;
-    img.style.cursor = "pointer";
-    img.style.opacity = "0.3";
-    return img;
-}
 function getThingsGoingAfterStepping_Finite(step, piece, dest) {
     console.log("src", UI_STATE.selectedCoord);
     console.log("stepped on", step);
@@ -751,20 +717,11 @@ function displayCiurl(ciurl) {
     var hop1zuo1_height = 140;
     var board_height = 631;
     var averageTop = 84 + hop1zuo1_height + board_height;
-    var imgs = [];
-    for (var ind = 0; ind < ciurl.length; ind++) {
-        var img = document.createElement("img");
-        img.src = "image/ciurl_" + ciurl[ind] + ".png";
-        img.width = 150;
-        img.height = 15;
-        img.classList.add("ciurl");
-        img.style.left = averageLeft + BOX_SIZE * 0.2 * randn_bm() + "px";
-        img.style.top = averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm() + "px";
-        img.style.zIndex = "300";
-        img.style.transform = "rotate(" + (Math.random() * 40 - 20) + "deg)";
-        img.style.position = "absolute";
-        imgs.push(img);
-    }
+    var imgs = ciurl.map(function (side, ind) { return createCiurl(side, {
+        left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
+        top: averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm(),
+        rotateDeg: Math.random() * 40 - 20
+    }); });
     // Fisher-Yates
     for (var i = imgs.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
