@@ -223,13 +223,13 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
                 GAME_STATE.f.currentBoard,
                 GAME_STATE.tam_itself_is_tam_hue);
 
-            display_guide_after_stepping(coord, {piece: piece, path: "ct"}, contains_guides, guideListYellow);
+            display_guide_after_stepping(coord, { piece: piece, path: "ct" }, contains_guides, guideListYellow);
 
             if (piece === "Tam2") {
                 if (guideListGreen.length > 0) { throw new Error("should not happen"); }
                 return;
             }
-            display_guide_after_stepping(coord, {piece: piece, path: "ct2"}, contains_guides, guideListGreen);
+            display_guide_after_stepping(coord, { piece: piece, path: "ct2" }, contains_guides, guideListGreen);
         }
 
         img.addEventListener('click', selectHover);
@@ -601,20 +601,10 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
 
 type Ciurl = [boolean, boolean, boolean, boolean, boolean];
 
-function getThingsGoingAfterStepping_Finite(step: Coord, piece: Piece, dest: Coord) {
+function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piece, dest: Coord) {
     if (piece === "Tam2") {
         alert("FIXME: implement Tam2's movement, who initially stepped");
         return;
-    }
-
-    if (UI_STATE.selectedCoord == null) {
-        alert("stepping, but initial is NULL!!!!!!!");
-        throw new Error("stepping, but initial is NULL!!!!!!!");
-    }
-
-    if (UI_STATE.selectedCoord[0] === "Hop1zuo1") {
-        alert("stepping, but initial is Hop1zuo1!!!!!!!");
-        throw new Error("stepping, but initial is Hop1zuo1!!!!!!!");
     }
 
     const message: NormalNonTamMove = {
@@ -623,7 +613,7 @@ function getThingsGoingAfterStepping_Finite(step: Coord, piece: Piece, dest: Coo
             type: "SrcStepDstFinite",
             step: toAbsoluteCoord(step),
             dest: toAbsoluteCoord(dest),
-            src: toAbsoluteCoord(UI_STATE.selectedCoord)
+            src: toAbsoluteCoord(src)
         }
     }
 
@@ -805,17 +795,6 @@ function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl")!);
 }
 
-function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: NonTam2Piece, plannedDest: Coord) {
-    sendInfAfterStep({
-        type: "InfAfterStep",
-        color: piece.color,
-        prof: piece.prof,
-        step: toAbsoluteCoord(step),
-        plannedDirection: toAbsoluteCoord(plannedDest),
-        src: toAbsoluteCoord(src)
-    });
-}
-
 function display_guide_after_stepping(coord: Coord, q: { piece: Piece, path: "ct" } | { piece: NonTam2Piece, path: "ct2" }, parent: HTMLElement, list: Array<Coord>): void {
     const src = UI_STATE.selectedCoord;
 
@@ -837,9 +816,16 @@ function display_guide_after_stepping(coord: Coord, q: { piece: Piece, path: "ct
         let img = createCircleGuideImageAt(list[ind], q.path);
 
         img.addEventListener('click', q.path === "ct" ? function (ev) {
-            getThingsGoingAfterStepping_Finite(coord, q.piece, list[ind]);
+            getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
         } : function (ev) {
-            getThingsGoingAfterStepping_Infinite(src, coord, q.piece, list[ind]);
+            sendInfAfterStep({
+                type: "InfAfterStep",
+                color: q.piece.color,
+                prof: q.piece.prof,
+                step: toAbsoluteCoord(coord),
+                plannedDirection: toAbsoluteCoord(list[ind]),
+                src: toAbsoluteCoord(src)
+            });
         });
 
         img.style.zIndex = "200";

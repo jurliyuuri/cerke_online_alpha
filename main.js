@@ -733,16 +733,6 @@ function displayCiurl(ciurl) {
 function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl"));
 }
-function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
-    sendInfAfterStep({
-        type: "InfAfterStep",
-        color: piece.color,
-        prof: piece.prof,
-        step: toAbsoluteCoord(step),
-        plannedDirection: toAbsoluteCoord(plannedDest),
-        src: toAbsoluteCoord(src)
-    });
-}
 function display_guide_after_stepping(coord, q, parent, list) {
     var src = UI_STATE.selectedCoord;
     if (src == null) {
@@ -762,7 +752,14 @@ function display_guide_after_stepping(coord, q, parent, list) {
         img.addEventListener('click', q.path === "ct" ? function (ev) {
             getThingsGoingAfterStepping_Finite(coord, q.piece, list[ind]);
         } : function (ev) {
-            getThingsGoingAfterStepping_Infinite(src, coord, q.piece, list[ind]);
+            sendInfAfterStep({
+                type: "InfAfterStep",
+                color: q.piece.color,
+                prof: q.piece.prof,
+                step: toAbsoluteCoord(coord),
+                plannedDirection: toAbsoluteCoord(list[ind]),
+                src: toAbsoluteCoord(src)
+            });
         });
         img.style.zIndex = "200";
         parent.appendChild(img);
