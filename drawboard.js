@@ -271,6 +271,57 @@ function stepping(from, piece, to, destPiece) {
     drawCancel();
     drawHoverAt(to, piece);
 }
+function sendAfterHalfAcceptance(message, src, step) {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, data, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("Sending `after half acceptance`:", JSON.stringify(message));
+                    url = 'http://localhost:3000/movies';
+                    data = {
+                        "id": (Math.random() * 100000) | 0,
+                        "message": message
+                    };
+                    return [4 /*yield*/, fetch(url, {
+                            method: 'POST',
+                            body: JSON.stringify(data),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(function (res) { return res.json(); })
+                            .then(function (response) {
+                            console.log('Success:', JSON.stringify(response));
+                            return {
+                                success: Math.random() < 0.5,
+                                dat: [1, 2, 3]
+                            };
+                        })
+                            .catch(function (error) { return console.error('Error:', error); })];
+                case 1:
+                    res = _a.sent();
+                    console.log(res);
+                    if (!res) {
+                        throw new Error("network error!");
+                    }
+                    if (!res.success) {
+                        alert(DICTIONARY.ja.failedWaterEntry);
+                        eraseGuide();
+                        UI_STATE.selectedCoord = null;
+                        cancelStepping();
+                        // now it's opponent's turn
+                    }
+                    else {
+                        eraseGuide();
+                        UI_STATE.selectedCoord = null;
+                        updateFieldAfterHalfAcceptance(GAME_STATE.f, message, src, step);
+                        drawField(GAME_STATE.f);
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function sendNormalMessage(message) {
     return __awaiter(this, void 0, void 0, function () {
         var url, data, res;
@@ -323,6 +374,49 @@ function sendNormalMessage(message) {
             }
         });
     });
+}
+function updateFieldAfterHalfAcceptance(field, message, src, step) {
+    if (message.dest === null) {
+        cancelStepping();
+        return;
+    }
+    var _a = fromAbsoluteCoord(message.dest), dest_i = _a[0], dest_j = _a[1];
+    // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
+    var backup = GAME_STATE.backupDuringStepping;
+    var piece = backup[1];
+    cancelStepping(); // this will now restore GAME_STATE.f.currentBoard[src_i][src_j]
+    var src_i = src[0], src_j = src[1];
+    var step_i = step[0], step_j = step[1];
+    if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
+        throw new Error("step is unoccupied");
+    }
+    var destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+    /* it's possible that you are returning to the original position, in which case you don't do anything */
+    if (coordEq([src_i, src_j], [dest_i, dest_j])) {
+        return;
+    }
+    if (destPiece !== null) {
+        if (destPiece === "Tam2") {
+            throw new Error("dest is occupied by Tam2");
+        }
+        else if (destPiece.side === Side.Upward) {
+            throw new Error("dest is occupied by an ally");
+        }
+        else if (destPiece.side === Side.Downward) {
+            var flipped = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Upward
+            };
+            GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+        }
+        else {
+            var _should_not_reach_here = destPiece.side;
+            throw new Error("should not reach here");
+        }
+    }
+    GAME_STATE.f.currentBoard[src_i][src_j] = null;
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
 }
 function updateField(field, message) {
     if (message.type === "NonTamMove") {
@@ -531,9 +625,9 @@ function getThingsGoingAfterStepping_Finite(step, piece, dest) {
 }
 function sendInfAfterStep(message) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, data, res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, passer, ind, _a, i, j, destPiece, img;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var url, data, res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, passer, _loop_1, ind;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     console.log("Sending normal move:", JSON.stringify(message));
                     url = 'http://localhost:3000/movies';
@@ -563,7 +657,7 @@ function sendInfAfterStep(message) {
                         })
                             .catch(function (error) { return console.error('Error:', error); })];
                 case 1:
-                    res = _b.sent();
+                    res = _a.sent();
                     console.log(res);
                     if (!res) {
                         throw new Error("network error!");
@@ -603,28 +697,35 @@ function sendInfAfterStep(message) {
                     src = fromAbsoluteCoord(message.src);
                     passer = createCircleGuideImageAt(src, "ct");
                     passer.addEventListener('click', function (ev) {
-                        // FIXME: event handler to pass the turn
-                        alert("FIXME: implement passing by stepinf");
+                        sendAfterHalfAcceptance({
+                            type: "AfterHalfAcceptance",
+                            dest: null
+                        }, src, step);
                     });
                     passer.style.zIndex = "200";
                     contains_guides.appendChild(passer);
-                    for (ind = 0; ind < filteredList.length; ind++) {
-                        _a = filteredList[ind], i = _a[0], j = _a[1];
+                    _loop_1 = function (ind) {
+                        var _a = filteredList[ind], i = _a[0], j = _a[1];
                         if (coordEq(src, [i, j])) {
-                            continue; // yellow takes precedence over green
+                            return "continue";
                         }
-                        destPiece = GAME_STATE.f.currentBoard[i][j];
+                        var destPiece = GAME_STATE.f.currentBoard[i][j];
                         // cannot step twice
                         if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
-                            continue;
+                            return "continue";
                         }
-                        img = createCircleGuideImageAt(filteredList[ind], "ct2");
+                        var img = createCircleGuideImageAt(filteredList[ind], "ct2");
                         img.addEventListener('click', function (ev) {
-                            // FIXME: event handler
-                            alert("FIXME: implement me");
+                            sendAfterHalfAcceptance({
+                                type: "AfterHalfAcceptance",
+                                dest: [i, j]
+                            }, src, step);
                         });
                         img.style.zIndex = "200";
                         contains_guides.appendChild(img);
+                    };
+                    for (ind = 0; ind < filteredList.length; ind++) {
+                        _loop_1(ind);
                     }
                     return [2 /*return*/];
             }
@@ -683,6 +784,7 @@ function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
         throw new Error("No, Tam2 should have no infinite movement");
     }
     sendInfAfterStep({
+        type: "InfAfterStep",
         color: piece.color,
         prof: piece.prof,
         step: toAbsoluteCoord(step),
@@ -699,7 +801,7 @@ function display_guide_after_stepping(coord, piece, parent, list, path) {
     else if (src[0] === "Hop1zuo1") {
         throw new Error("though stepping, hop1zuo1 startpoint!!!!!");
     }
-    var _loop_1 = function (ind) {
+    var _loop_2 = function (ind) {
         var _a = list[ind], i = _a[0], j = _a[1];
         var destPiece = GAME_STATE.f.currentBoard[i][j];
         // cannot step twice
@@ -716,11 +818,11 @@ function display_guide_after_stepping(coord, piece, parent, list, path) {
         parent.appendChild(img);
     };
     for (var ind = 0; ind < list.length; ind++) {
-        _loop_1(ind);
+        _loop_2(ind);
     }
 }
 function display_guide(coord, piece, parent, list) {
-    var _loop_2 = function (ind) {
+    var _loop_3 = function (ind) {
         // draw the yellow guides
         var img = createCircleGuideImageAt(list[ind], "ct");
         // click on it to get things going
@@ -730,7 +832,7 @@ function display_guide(coord, piece, parent, list) {
         parent.appendChild(img);
     };
     for (var ind = 0; ind < list.length; ind++) {
-        _loop_2(ind);
+        _loop_3(ind);
     }
 }
 function selectOwnPieceOnBoard(coord, piece, imgNode) {
@@ -771,7 +873,7 @@ function selectOwnPieceOnHop1zuo1(ind, piece, imgNode) {
         contains_guides_on_upward.appendChild(centralNode);
         var contains_guides = document.getElementById("contains_guides");
         for (var i = 0; i < 9; i++) {
-            var _loop_3 = function (j) {
+            var _loop_4 = function (j) {
                 var ij = [i, j];
                 // skip if already occupied
                 if (GAME_STATE.f.currentBoard[i][j] != null) {
@@ -786,7 +888,7 @@ function selectOwnPieceOnHop1zuo1(ind, piece, imgNode) {
                 contains_guides.appendChild(img);
             };
             for (var j = 0; j < 9; j++) {
-                _loop_3(j);
+                _loop_4(j);
             }
         }
     }
@@ -813,7 +915,7 @@ function drawField(field) {
         // delete everything
         removeChildren(contains_pieces_on_board);
         for (var i = 0; i < board.length; i++) {
-            var _loop_4 = function (j) {
+            var _loop_5 = function (j) {
                 var piece = board[i][j];
                 if (piece == null) {
                     return "continue";
@@ -830,7 +932,7 @@ function drawField(field) {
                 contains_pieces_on_board.appendChild(imgNode);
             };
             for (var j = 0; j < board[i].length; j++) {
-                _loop_4(j);
+                _loop_5(j);
             }
         }
     };
@@ -839,7 +941,7 @@ function drawField(field) {
         GAME_STATE.f.hop1zuo1OfUpward = list;
         // delete everything
         removeChildren(contains_pieces_on_upward);
-        var _loop_5 = function (i) {
+        var _loop_6 = function (i) {
             var piece = list[i];
             var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
             imgNode.style.cursor = "pointer";
@@ -849,7 +951,7 @@ function drawField(field) {
             contains_pieces_on_upward.appendChild(imgNode);
         };
         for (var i = 0; i < list.length; i++) {
-            _loop_5(i);
+            _loop_6(i);
         }
     };
     var drawHop1zuo1OfDownward = function (list) {

@@ -44,10 +44,17 @@ namespace type__message {
     export type NormalMove = NormalNonTamMove | TamMove;
 
     export interface InfAfterStep {
+        type: 'InfAfterStep',
         color: Color,
         prof: Profession,
         src: AbsoluteCoord,
         step: AbsoluteCoord,
         plannedDirection: AbsoluteCoord
+    }
+
+    export interface AfterHalfAcceptance {
+        type: 'AfterHalfAcceptance',
+        dest: AbsoluteCoord | null
+        /* null: hands over the turn to the opponent */
     }
 }

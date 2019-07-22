@@ -286,6 +286,56 @@ type MockReturnDataForNormalMove = {
     dat: number[]
 };
 
+type MockReturnDataForAfterHalfAcceptance = {
+    success: boolean,
+    dat: number[]
+};
+
+async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
+    console.log("Sending `after half acceptance`:", JSON.stringify(message));
+    let url = 'http://localhost:3000/movies';
+    const data = {
+        "id": (Math.random() * 100000) | 0,
+        "message": message
+    };
+
+    const res: void | MockReturnDataForAfterHalfAcceptance = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+        .then(response => {
+            console.log('Success:', JSON.stringify(response));
+            return {
+                success: Math.random() < 0.5,
+                dat: [1, 2, 3]
+            };
+        })
+        .catch(error => console.error('Error:', error));
+
+    console.log(res);
+
+    if (!res) {
+        throw new Error("network error!");
+    }
+
+    if (!res.success) {
+        alert(DICTIONARY.ja.failedWaterEntry);
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+
+        cancelStepping();
+        // now it's opponent's turn
+    } else {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateFieldAfterHalfAcceptance(GAME_STATE.f, message, src, step);
+        drawField(GAME_STATE.f);
+    }
+}
+
 
 async function sendNormalMessage(message: NormalMove) {
     console.log("Sending normal move:", JSON.stringify(message));
@@ -333,6 +383,56 @@ async function sendNormalMessage(message: NormalMove) {
         drawField(GAME_STATE.f);
     }
 }
+
+function updateFieldAfterHalfAcceptance(field: Field, message: AfterHalfAcceptance, src: Coord, step: Coord) {
+    if (message.dest === null) {
+        cancelStepping();
+        return;
+    }
+
+    let [dest_i, dest_j] = fromAbsoluteCoord(message.dest);
+
+    // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
+    const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
+    let piece: Piece = backup[1];
+
+    cancelStepping();   // this will now restore GAME_STATE.f.currentBoard[src_i][src_j]
+
+    const [src_i, src_j] = src;
+    const [step_i, step_j] = step;
+    if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
+        throw new Error("step is unoccupied");
+    }
+
+    let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+    /* it's possible that you are returning to the original position, in which case you don't do anything */
+    if (coordEq([src_i, src_j], [dest_i, dest_j])) {
+        return;
+    }
+
+    if (destPiece !== null) {
+        if (destPiece === "Tam2") {
+            throw new Error("dest is occupied by Tam2");
+        } else if (destPiece.side === Side.Upward) {
+            throw new Error("dest is occupied by an ally");
+        } else if (destPiece.side === Side.Downward) {
+            const flipped: NonTam2PieceUpward = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Upward
+            }
+            GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+        } else {
+            let _should_not_reach_here: never = destPiece.side;
+            throw new Error("should not reach here");
+        }
+    }
+
+    GAME_STATE.f.currentBoard[src_i][src_j] = null;
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+}
+
 
 function updateField(field: Field, message: NormalMove) {
     if (message.type === "NonTamMove") {
@@ -685,15 +785,17 @@ async function sendInfAfterStep(message: InfAfterStep) {
 
     let passer = createCircleGuideImageAt(src, "ct");
     passer.addEventListener('click', function (ev) {
-        // FIXME: event handler to pass the turn
-        alert("FIXME: implement passing by stepinf");
+        sendAfterHalfAcceptance({
+            type: "AfterHalfAcceptance",
+            dest: null
+        }, src, step);
     });
     passer.style.zIndex = "200";
     contains_guides.appendChild(passer);
 
     for (let ind = 0; ind < filteredList.length; ind++) {
         const [i, j] = filteredList[ind];
-        if (coordEq(src, [i,j])) {
+        if (coordEq(src, [i, j])) {
             continue; // yellow takes precedence over green
         }
         const destPiece = GAME_STATE.f.currentBoard[i][j];
@@ -706,8 +808,10 @@ async function sendInfAfterStep(message: InfAfterStep) {
         let img = createCircleGuideImageAt(filteredList[ind], "ct2");
 
         img.addEventListener('click', function (ev) {
-            // FIXME: event handler
-            alert("FIXME: implement me");
+            sendAfterHalfAcceptance({
+                type: "AfterHalfAcceptance",
+                dest: [i, j]
+            }, src, step);
         });
 
         img.style.zIndex = "200";
@@ -779,6 +883,7 @@ function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Pi
     }
 
     sendInfAfterStep({
+        type: "InfAfterStep",
         color: piece.color,
         prof: piece.prof,
         step: toAbsoluteCoord(step),
