@@ -234,8 +234,14 @@ function stepping(from, piece, to, destPiece) {
             centralNode.style.zIndex = "200";
             contains_guides.appendChild(centralNode);
             var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListYellow = _a.finite, guideListGreen = _a.infinite;
-            display_guide_after_stepping(coord, piece, contains_guides, guideListYellow, "ct");
-            display_guide_after_stepping(coord, piece, contains_guides, guideListGreen, "ct2");
+            display_guide_after_stepping(coord, { piece: piece, path: "ct" }, contains_guides, guideListYellow);
+            if (piece === "Tam2") {
+                if (guideListGreen.length > 0) {
+                    throw new Error("should not happen");
+                }
+                return;
+            }
+            display_guide_after_stepping(coord, { piece: piece, path: "ct2" }, contains_guides, guideListGreen);
         };
         img.addEventListener('click', selectHover);
         contains_phantom.appendChild(img);
@@ -558,9 +564,6 @@ function getThingsGoing(ev, piece, from, to) {
     }
 }
 function getThingsGoingAfterStepping_Finite(step, piece, dest) {
-    console.log("src", UI_STATE.selectedCoord);
-    console.log("stepped on", step);
-    console.log("dest", dest);
     if (piece === "Tam2") {
         alert("FIXME: implement Tam2's movement, who initially stepped");
         return;
@@ -731,11 +734,6 @@ function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl"));
 }
 function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
-    console.log("stepped on", step);
-    console.log("dest", plannedDest);
-    if (piece === "Tam2") {
-        throw new Error("No, Tam2 should have no infinite movement");
-    }
     sendInfAfterStep({
         type: "InfAfterStep",
         color: piece.color,
@@ -745,8 +743,7 @@ function getThingsGoingAfterStepping_Infinite(src, step, piece, plannedDest) {
         src: toAbsoluteCoord(src)
     });
 }
-function display_guide_after_stepping(coord, piece, parent, list, path) {
-    var isFinite = path == "ct";
+function display_guide_after_stepping(coord, q, parent, list) {
     var src = UI_STATE.selectedCoord;
     if (src == null) {
         throw new Error("though stepping, null startpoint!!!!!");
@@ -761,11 +758,11 @@ function display_guide_after_stepping(coord, piece, parent, list, path) {
         if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
             return "continue";
         }
-        var img = createCircleGuideImageAt(list[ind], path);
-        img.addEventListener('click', isFinite ? function (ev) {
-            getThingsGoingAfterStepping_Finite(coord, piece, list[ind]);
+        var img = createCircleGuideImageAt(list[ind], q.path);
+        img.addEventListener('click', q.path === "ct" ? function (ev) {
+            getThingsGoingAfterStepping_Finite(coord, q.piece, list[ind]);
         } : function (ev) {
-            getThingsGoingAfterStepping_Infinite(src, coord, piece, list[ind]);
+            getThingsGoingAfterStepping_Infinite(src, coord, q.piece, list[ind]);
         });
         img.style.zIndex = "200";
         parent.appendChild(img);

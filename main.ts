@@ -223,9 +223,13 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
                 GAME_STATE.f.currentBoard,
                 GAME_STATE.tam_itself_is_tam_hue);
 
-            display_guide_after_stepping(coord, piece, contains_guides, guideListYellow, "ct");
+            display_guide_after_stepping(coord, {piece: piece, path: "ct"}, contains_guides, guideListYellow);
 
-            display_guide_after_stepping(coord, piece, contains_guides, guideListGreen, "ct2");
+            if (piece === "Tam2") {
+                if (guideListGreen.length > 0) { throw new Error("should not happen"); }
+                return;
+            }
+            display_guide_after_stepping(coord, {piece: piece, path: "ct2"}, contains_guides, guideListGreen);
         }
 
         img.addEventListener('click', selectHover);
@@ -598,10 +602,6 @@ function getThingsGoing(ev: MouseEvent, piece: Piece, from: Coord, to: Coord) {
 type Ciurl = [boolean, boolean, boolean, boolean, boolean];
 
 function getThingsGoingAfterStepping_Finite(step: Coord, piece: Piece, dest: Coord) {
-    console.log("src", UI_STATE.selectedCoord);
-    console.log("stepped on", step);
-    console.log("dest", dest);
-
     if (piece === "Tam2") {
         alert("FIXME: implement Tam2's movement, who initially stepped");
         return;
@@ -805,14 +805,7 @@ function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl")!);
 }
 
-function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Piece, plannedDest: Coord) {
-    console.log("stepped on", step);
-    console.log("dest", plannedDest);
-
-    if (piece === "Tam2") {
-        throw new Error("No, Tam2 should have no infinite movement");
-    }
-
+function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: NonTam2Piece, plannedDest: Coord) {
     sendInfAfterStep({
         type: "InfAfterStep",
         color: piece.color,
@@ -823,8 +816,7 @@ function getThingsGoingAfterStepping_Infinite(src: Coord, step: Coord, piece: Pi
     });
 }
 
-function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>, path: "ct" | "ct2") {
-    const isFinite: boolean = path == "ct";
+function display_guide_after_stepping(coord: Coord, q: { piece: Piece, path: "ct" } | { piece: NonTam2Piece, path: "ct2" }, parent: HTMLElement, list: Array<Coord>): void {
     const src = UI_STATE.selectedCoord;
 
     if (src == null) {
@@ -842,12 +834,12 @@ function display_guide_after_stepping(coord: Coord, piece: Piece, parent: HTMLEl
             continue;
         }
 
-        let img = createCircleGuideImageAt(list[ind], path);
+        let img = createCircleGuideImageAt(list[ind], q.path);
 
-        img.addEventListener('click', isFinite ? function (ev) {
-            getThingsGoingAfterStepping_Finite(coord, piece, list[ind]);
+        img.addEventListener('click', q.path === "ct" ? function (ev) {
+            getThingsGoingAfterStepping_Finite(coord, q.piece, list[ind]);
         } : function (ev) {
-            getThingsGoingAfterStepping_Infinite(src, coord, piece, list[ind]);
+            getThingsGoingAfterStepping_Infinite(src, coord, q.piece, list[ind]);
         });
 
         img.style.zIndex = "200";
