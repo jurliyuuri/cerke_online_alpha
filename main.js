@@ -223,6 +223,7 @@ function sendStuff(log, message, createDummy) {
                     res = _a.sent();
                     console.log(res);
                     if (!res) {
+                        alert("network error!");
                         throw new Error("network error!");
                     }
                     return [2 /*return*/, res];

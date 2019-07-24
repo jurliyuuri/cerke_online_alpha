@@ -252,6 +252,7 @@ async function sendStuff<T, U>(log: string, message: T, createDummy: (response: 
     console.log(res);
 
     if (!res) {
+        alert("network error!");
         throw new Error("network error!");
     }
     return res;
