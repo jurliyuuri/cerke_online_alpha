@@ -10,6 +10,7 @@ import Board = type__piece.Board;
 import Piece = type__piece.Piece;
 import Coord = type__piece.Coord;
 import BoardIndex = type__piece.BoardIndex
+import toUpOrDown = type__piece.toUpOrDown
 import AbsoluteColumn = type__message.AbsoluteColumn;
 import AbsoluteCoord = type__message.AbsoluteCoord;
 import AbsoluteRow = type__message.AbsoluteRow;

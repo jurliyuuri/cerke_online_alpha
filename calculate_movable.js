@@ -2,7 +2,6 @@
 var calculate_movable;
 (function (calculate_movable) {
     var Profession = type__piece.Profession;
-    var Side = type__piece.Side;
     var coordEq = type__piece.coordEq;
     function applyDeltas(coord, deltas) {
         var i = coord[0], j = coord[1];
@@ -108,10 +107,6 @@ var calculate_movable;
     function calculateMovablePositions(coord, sq, board, tam_itself_is_tam_hue) {
         if (sq === "Tam2") {
             return { finite: eightNeighborhood(coord), infinite: [] };
-        }
-        if (sq.side === Side.Downward) {
-            alert("We do not expect a downward stuff!!!");
-            throw new Error("We do not expect a downward stuff!!!");
         }
         if (sq.prof === Profession.Io) {
             return { finite: eightNeighborhood(coord), infinite: [] };

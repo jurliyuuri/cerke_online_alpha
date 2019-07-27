@@ -99,15 +99,10 @@ namespace calculate_movable {
     }
 
 
-    export function calculateMovablePositions(coord: Coord, sq: Piece, board: Board, tam_itself_is_tam_hue: boolean): 
+    export function calculateMovablePositions(coord: Coord, sq: "Tam2" | NonTam2PieceUpward, board: Board, tam_itself_is_tam_hue: boolean): 
         {finite: Array<Coord>, infinite: Array<Coord>} {
         if (sq === "Tam2") {
             return {finite: eightNeighborhood(coord), infinite:[]};
-        }
-
-        if (sq.side === Side.Downward) {
-            alert("We do not expect a downward stuff!!!");
-            throw new Error("We do not expect a downward stuff!!!");
         }
 
         if (sq.prof === Profession.Io) {

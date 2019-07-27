@@ -4,6 +4,7 @@ var Side = type__piece.Side;
 var Color = type__piece.Color;
 var toPath = type__piece.toPath;
 var toPath_ = type__piece.toPath_;
+var toUpOrDown = type__piece.toUpOrDown;
 var AbsoluteColumn = type__message.AbsoluteColumn;
 var AbsoluteRow = type__message.AbsoluteRow;
 var calculateMovablePositions = calculate_movable.calculateMovablePositions;

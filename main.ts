@@ -102,7 +102,7 @@ function cancelStepping() {
     drawField(GAME_STATE.f);
 }
 
-function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
+function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord, destPiece: Piece) {
     eraseGuide();
     document.getElementById("protective_cover_over_field")!.classList.remove("nocover");
 
@@ -137,7 +137,7 @@ function stepping(from: Coord, piece: Piece, to: Coord, destPiece: Piece) {
         contains_phantom.appendChild(cancelButton);
     }
 
-    const drawHoverAt = function (coord: Coord, piece: Piece) {
+    const drawHoverAt = function (coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
         let contains_phantom = document.getElementById("contains_phantom")!;
 
         let img = createPieceSizeImageOnBoardByPath_Shifted(
@@ -484,7 +484,7 @@ function updateField(message: NormalMove) {
     }
 }
 
-function getThingsGoing(piece: Piece, from: Coord, to: Coord) {
+function getThingsGoing(piece: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coord) {
     let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (destPiece == null) { // dest is empty square; try to simply move
@@ -752,7 +752,7 @@ function display_guide_after_stepping(coord: Coord, q: { piece: Piece, path: "ct
     }
 }
 
-function display_guides(coord: Coord, piece: Piece, parent: HTMLElement, list: Array<Coord>) {
+function display_guides(coord: Coord, piece: "Tam2" | NonTam2PieceUpward, parent: HTMLElement, list: Array<Coord>) {
     for (let ind = 0; ind < list.length; ind++) {
         // draw the yellow guides
         let img = createCircleGuideImageAt(list[ind], "ct");
@@ -766,7 +766,7 @@ function display_guides(coord: Coord, piece: Piece, parent: HTMLElement, list: A
     }
 }
 
-function selectOwnPieceOnBoard(coord: Coord, piece: Piece) {
+function selectOwnPieceOnBoard(coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
     /* erase the guide in all cases, since the guide also contains the selectedness of Hop1zuo1 */
     eraseGuide();
 
@@ -889,12 +889,20 @@ function drawField(field: Field) {
                 const coord: Coord = [i as BoardIndex, j as BoardIndex];
                 let imgNode: HTMLImageElement = createPieceImgToBePlacedOnBoard(coord, piece);
 
-                const selectable = (piece === "Tam2") ? true : (piece.side === Side.Upward);
-
-                if (selectable) {
+                if (piece === "Tam2") {
                     imgNode.style.cursor = "pointer";
                     imgNode.addEventListener('click', function () {
                         selectOwnPieceOnBoard(coord, piece)
+                    });
+                } else if (piece.side === Side.Upward) {
+                    let q: NonTam2PieceUpward = {
+                        prof: piece.prof,
+                        side: Side.Upward,
+                        color: piece.color
+                    };
+                    imgNode.style.cursor = "pointer";
+                    imgNode.addEventListener('click', function () {
+                        selectOwnPieceOnBoard(coord, q)
                     });
                 }
 

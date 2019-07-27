@@ -751,11 +751,21 @@ function drawField(field) {
                 }
                 var coord = [i, j];
                 var imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
-                var selectable = (piece === "Tam2") ? true : (piece.side === Side.Upward);
-                if (selectable) {
+                if (piece === "Tam2") {
                     imgNode.style.cursor = "pointer";
                     imgNode.addEventListener('click', function () {
                         selectOwnPieceOnBoard(coord, piece);
+                    });
+                }
+                else if (piece.side === Side.Upward) {
+                    var q_1 = {
+                        prof: piece.prof,
+                        side: Side.Upward,
+                        color: piece.color
+                    };
+                    imgNode.style.cursor = "pointer";
+                    imgNode.addEventListener('click', function () {
+                        selectOwnPieceOnBoard(coord, q_1);
                     });
                 }
                 contains_pieces_on_board.appendChild(imgNode);
