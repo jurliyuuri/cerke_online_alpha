@@ -55,7 +55,7 @@ function fromAbsoluteCoord(abs: AbsoluteCoord): Coord {
     return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
 }
 
-function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, from: ["Hop1zuo1", number], to: Coord) {
+function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, to: Coord) {
     let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     // must parachute onto an empty square
@@ -102,7 +102,7 @@ function cancelStepping() {
     drawField(GAME_STATE.f);
 }
 
-function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord, destPiece: Piece) {
+function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     eraseGuide();
     document.getElementById("protective_cover_over_field")!.classList.remove("nocover");
 
@@ -512,7 +512,7 @@ function getThingsGoing(piece: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coo
     }
 
     if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
-        stepping(from, piece, to, destPiece);
+        stepping(from, piece, to);
         return;
     }
 
@@ -531,7 +531,7 @@ function getThingsGoing(piece: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coo
         sendNormalMessage(message);
         return;
     } else {
-        stepping(from, piece, to, destPiece);
+        stepping(from, piece, to);
         return;
     }
 }
@@ -714,7 +714,12 @@ function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl")!);
 }
 
-function display_guide_after_stepping(coord: Coord, q: { piece: Piece, path: "ct" } | { piece: NonTam2Piece, path: "ct2" }, parent: HTMLElement, list: Array<Coord>): void {
+function display_guide_after_stepping(
+    coord: Coord,
+    q: { piece: Piece, path: "ct" } | { piece: NonTam2Piece, path: "ct2" },
+    parent: HTMLElement,
+    list: Array<Coord>
+): void {
     const src = UI_STATE.selectedCoord;
 
     if (src == null) {
@@ -840,7 +845,7 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
 
                 // click on it to get things going
                 img.addEventListener('click', function () {
-                    getThingsGoingFromHop1zuo1(piece, ["Hop1zuo1", ind], ij);
+                    getThingsGoingFromHop1zuo1(piece, ij);
                 });
 
                 contains_guides.appendChild(img);

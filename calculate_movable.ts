@@ -1,8 +1,6 @@
 namespace calculate_movable {
     import Profession = type__piece.Profession;
-    import Side = type__piece.Side;
     import Board = type__piece.Board;
-    import Piece = type__piece.Piece;
     import Coord = type__piece.Coord;
     import coordEq = type__piece.coordEq;
 
@@ -99,14 +97,13 @@ namespace calculate_movable {
     }
 
 
-    export function calculateMovablePositions(coord: Coord, sq: "Tam2" | NonTam2PieceUpward, board: Board, tam_itself_is_tam_hue: boolean): 
-        {finite: Array<Coord>, infinite: Array<Coord>} {
+    export function calculateMovablePositions(coord: Coord, sq: "Tam2" | NonTam2PieceUpward, board: Board, tam_itself_is_tam_hue: boolean): { finite: Array<Coord>, infinite: Array<Coord> } {
         if (sq === "Tam2") {
-            return {finite: eightNeighborhood(coord), infinite:[]};
+            return { finite: eightNeighborhood(coord), infinite: [] };
         }
 
         if (sq.prof === Profession.Io) {
-            return {finite:eightNeighborhood(coord), infinite:[]};
+            return { finite: eightNeighborhood(coord), infinite: [] };
         }
 
         const UPLEFT: Array<[number, number]> = [[-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2], [-1, -1]];
@@ -121,24 +118,27 @@ namespace calculate_movable {
         if (isTamHue(coord, board, tam_itself_is_tam_hue)) {
             switch (sq.prof) {
                 case Profession.Uai1: // General, 将, varxle
-                    return {finite: eightNeighborhood(coord), infinite: []};
+                    return { finite: eightNeighborhood(coord), infinite: [] };
 
                 case Profession.Kaun1:
-                    return {finite: applyDeltas(coord, [[-2, -2], [-2, 2], [2, 2], [2, -2]]), infinite: []};// 車, vadyrd
+                    return { finite: applyDeltas(coord, [[-2, -2], [-2, 2], [2, 2], [2, -2]]), infinite: [] };// 車, vadyrd
 
                 case Profession.Kauk2: // Pawn, 兵, elmer
-                    return {finite:[
-                        ...applyDeltas(coord, [[-1, 0], [0, -1], [0, 1], [1, 0]]),
-                        ...applySingleDeltaIfNoIntervention(coord, [-2, 0], board)
-                    ], infinite: []};
+                    return {
+                        finite: [
+                            ...applyDeltas(coord, [[-1, 0], [0, -1], [0, 1], [1, 0]]),
+                            ...applySingleDeltaIfNoIntervention(coord, [-2, 0], board)
+                        ], infinite: []
+                    };
 
                 case Profession.Nuak1:  // Vessel, 船, felkana
-                    return {finite: [
-                        ...applyDeltas(coord, [ [0, -1], [0, 1]]),
-                        ...applyDeltasIfNoIntervention(coord, [
-                            [0, -2], [0, 2]
-                        ], board)
-                    ], infinite: applyDeltasIfNoIntervention(coord, [
+                    return {
+                        finite: [
+                            ...applyDeltas(coord, [[0, -1], [0, 1]]),
+                            ...applyDeltasIfNoIntervention(coord, [
+                                [0, -2], [0, 2]
+                            ], board)
+                        ], infinite: applyDeltasIfNoIntervention(coord, [
                             ...UP,
                             ...DOWN
                         ], board)
@@ -146,40 +146,48 @@ namespace calculate_movable {
 
                 case Profession.Gua2: // Rook, 弓, gustuer
                 case Profession.Dau2: // Tiger, 虎, stistyst
-                    return {finite:[], infinite: applyDeltasIfNoIntervention(coord, [
-                        ...UPLEFT,
-                        ...UPRIGHT,
-                        ...DOWNLEFT,
-                        ...DOWNRIGHT
-                    ], board)};
+                    return {
+                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UPLEFT,
+                            ...UPRIGHT,
+                            ...DOWNLEFT,
+                            ...DOWNRIGHT
+                        ], board)
+                    };
 
                 case Profession.Maun1: // Horse, 馬, dodor
-                    return {finite:[], infinite: applyDeltasIfNoIntervention(coord, [
-                        [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
-                        [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
-                        [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
-                        [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2]
-                    ], board)};
+                    return {
+                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
+                            [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
+                            [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
+                            [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
+                            [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2]
+                        ], board)
+                    };
 
                 case Profession.Kua2: // Clerk, 筆, kua
-                    return {finite:[], infinite: applyDeltasIfNoIntervention(coord, [
-                        ...UP,
-                        ...DOWN,
-                        ...LEFT,
-                        ...RIGHT
-                    ], board)};
+                    return {
+                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UP,
+                            ...DOWN,
+                            ...LEFT,
+                            ...RIGHT
+                        ], board)
+                    };
 
                 case Profession.Tuk2: // Shaman, 巫, terlsk
-                    return {finite:[], infinite: applyDeltasIfZeroOrOneIntervention(coord, [
-                        ...UP,
-                        ...DOWN,
-                        ...LEFT,
-                        ...RIGHT,
-                        ...UPLEFT,
-                        ...UPRIGHT,
-                        ...DOWNLEFT,
-                        ...DOWNRIGHT
-                    ], board)};
+                    return {
+                        finite: [], infinite: applyDeltasIfZeroOrOneIntervention(coord, [
+                            ...UP,
+                            ...DOWN,
+                            ...LEFT,
+                            ...RIGHT,
+                            ...UPLEFT,
+                            ...UPRIGHT,
+                            ...DOWNLEFT,
+                            ...DOWNRIGHT
+                        ], board)
+                    };
 
                 default:
                     let _should_not_reach_here: never = sq.prof;
@@ -188,31 +196,34 @@ namespace calculate_movable {
         } else {
             switch (sq.prof) {
                 case Profession.Kauk2:
-                    return {finite: applyDeltas(coord, [[-1, 0]]), infinite: []}; // Pawn, 兵, elmer
+                    return { finite: applyDeltas(coord, [[-1, 0]]), infinite: [] }; // Pawn, 兵, elmer
 
                 case Profession.Kaun1:
-                    return {finite: applyDeltas(coord, [[-2, 0], [2, 0], [0, -2], [0, 2]]), infinite: []}; // 車, vadyrd
+                    return { finite: applyDeltas(coord, [[-2, 0], [2, 0], [0, -2], [0, 2]]), infinite: [] }; // 車, vadyrd
 
                 case Profession.Dau2: // Tiger, 虎, stistyst
-                    return {finite: applyDeltas(coord, [[-1, -1], [-1, 1], [1, -1], [1, 1]]), infinite: []};
-                
+                    return { finite: applyDeltas(coord, [[-1, -1], [-1, 1], [1, -1], [1, 1]]), infinite: [] };
+
                 case Profession.Maun1: // Horse, 馬, dodor
-                    return {finite: applyDeltas(coord, [[-2, -2], [-2, 2], [2, 2], [2, -2]]), infinite: []};
+                    return { finite: applyDeltas(coord, [[-2, -2], [-2, 2], [2, 2], [2, -2]]), infinite: [] };
 
 
                 case Profession.Nuak1:  // Vessel, 船, felkana
-                    return {finite: [], infinite: applyDeltasIfNoIntervention(coord, UP, board)};
+                    return { finite: [], infinite: applyDeltasIfNoIntervention(coord, UP, board) };
 
                 case Profession.Gua2: // Rook, 弓, gustuer
-                    return {finite: [], infinite: applyDeltasIfNoIntervention(coord, [
-                        ...UP,
-                        ...DOWN,
-                        ...LEFT,
-                        ...RIGHT
-                    ], board)};
+                    return {
+                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UP,
+                            ...DOWN,
+                            ...LEFT,
+                            ...RIGHT
+                        ], board)
+                    };
 
                 case Profession.Kua2: // Clerk, 筆, kua
-                    return {finite: applyDeltas(coord, [ [0, -1], [0, 1]]),
+                    return {
+                        finite: applyDeltas(coord, [[0, -1], [0, 1]]),
                         infinite: applyDeltasIfNoIntervention(coord, [
                             ...UP,
                             ...DOWN
@@ -220,7 +231,8 @@ namespace calculate_movable {
                     };
 
                 case Profession.Tuk2: // Shaman, 巫, terlsk
-                    return {finite: applyDeltas(coord, [[-1, 0], [1, 0]]),
+                    return {
+                        finite: applyDeltas(coord, [[-1, 0], [1, 0]]),
                         infinite: applyDeltasIfNoIntervention(coord, [
                             ...LEFT,
                             ...RIGHT
@@ -228,11 +240,13 @@ namespace calculate_movable {
                     };
 
                 case Profession.Uai1: // General, 将, varxle
-                    return {finite: applyDeltas(coord, [
-                        [-1, -1], [-1, 0], [-1, 1],
-                        [0, -1], [0, 1],
-                        [1, -1], [1, 1]
-                    ]), infinite: []};
+                    return {
+                        finite: applyDeltas(coord, [
+                            [-1, -1], [-1, 0], [-1, 1],
+                            [0, -1], [0, 1],
+                            [1, -1], [1, 1]
+                        ]), infinite: []
+                    };
 
                 default:
                     let _should_not_reach_here: never = sq.prof;
@@ -240,5 +254,4 @@ namespace calculate_movable {
             }
         }
     }
-
 }

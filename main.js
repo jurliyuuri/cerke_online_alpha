@@ -67,7 +67,7 @@ function toAbsoluteCoord(coord) {
 function fromAbsoluteCoord(abs) {
     return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
 }
-function getThingsGoingFromHop1zuo1(piece, from, to) {
+function getThingsGoingFromHop1zuo1(piece, to) {
     var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
     // must parachute onto an empty square
     if (dest != null) {
@@ -105,7 +105,7 @@ function cancelStepping() {
     // draw
     drawField(GAME_STATE.f);
 }
-function stepping(from, piece, to, destPiece) {
+function stepping(from, piece, to) {
     eraseGuide();
     document.getElementById("protective_cover_over_field").classList.remove("nocover");
     // delete the original one
@@ -450,7 +450,7 @@ function getThingsGoing(piece, from, to) {
         }
     }
     if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
-        stepping(from, piece, to, destPiece);
+        stepping(from, piece, to);
         return;
     }
     if (confirm(DICTIONARY.ja.whetherToTake)) {
@@ -468,7 +468,7 @@ function getThingsGoing(piece, from, to) {
         return;
     }
     else {
-        stepping(from, piece, to, destPiece);
+        stepping(from, piece, to);
         return;
     }
 }
@@ -712,7 +712,7 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
                 var img = createCircleGuideImageAt(ij, "ct");
                 // click on it to get things going
                 img.addEventListener('click', function () {
-                    getThingsGoingFromHop1zuo1(piece, ["Hop1zuo1", ind], ij);
+                    getThingsGoingFromHop1zuo1(piece, ij);
                 });
                 contains_guides.appendChild(img);
             };
