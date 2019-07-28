@@ -198,8 +198,17 @@ type MockReturnDataForNormalMove = {
 };
 
 type MockReturnDataForAfterHalfAcceptance = {
-    success: boolean,
-    dat: number[]
+    legal: false,
+    whyIllegal: string
+}
+| {
+    legal: true,
+    dat: {
+        waterEntryHappened: true,
+        success: boolean
+    } | {
+        waterEntryHappened: false
+    }
 };
 
 async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
@@ -213,7 +222,12 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
             }
         );
 
-    if (!res.success) {
+    if (!res.legal) {
+        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
+        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
+
+    if (res.dat.waterEntryHappened && !res.dat.success) {
         alert(DICTIONARY.ja.failedWaterEntry);
         eraseGuide();
         UI_STATE.selectedCoord = null;

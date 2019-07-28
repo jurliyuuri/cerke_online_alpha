@@ -177,7 +177,11 @@ function sendAfterHalfAcceptance(message, src, step) {
                     })];
                 case 1:
                     res = _a.sent();
-                    if (!res.success) {
+                    if (!res.legal) {
+                        alert("Illegal API sent, the reason being " + res.whyIllegal);
+                        throw new Error("Illegal API sent, the reason being " + res.whyIllegal);
+                    }
+                    if (res.dat.waterEntryHappened && !res.dat.success) {
                         alert(DICTIONARY.ja.failedWaterEntry);
                         eraseGuide();
                         UI_STATE.selectedCoord = null;
