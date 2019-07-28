@@ -171,7 +171,10 @@ function sendAfterHalfAcceptance(message, src, step) {
         var res;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, sendStuff("`after half acceptance`", message)];
+                case 0: return [4 /*yield*/, sendStuff("`after half acceptance`", message, function (response) {
+                        console.log('Success:', JSON.stringify(response));
+                        return response;
+                    })];
                 case 1:
                     res = _a.sent();
                     if (!res.success) {
@@ -192,16 +195,12 @@ function sendAfterHalfAcceptance(message, src, step) {
         });
     });
 }
-function sendStuff(log, message) {
+function sendStuff(log, message, createDummy) {
     return __awaiter(this, void 0, void 0, function () {
-        var identity, url, data, res;
+        var url, data, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    identity = function (response) {
-                        console.log('Success:', JSON.stringify(response));
-                        return response;
-                    };
                     console.log("Sending " + log + ":", JSON.stringify(message));
                     url = 'http://localhost:5000/';
                     data = {
@@ -215,7 +214,7 @@ function sendStuff(log, message) {
                                 'Content-Type': 'application/json'
                             }
                         }).then(function (res) { return res.json(); })
-                            .then(identity)
+                            .then(createDummy)
                             .catch(function (error) { return console.error('Error:', error); })];
                 case 1:
                     res = _a.sent();
@@ -234,7 +233,10 @@ function sendNormalMessage(message) {
         var res;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, sendStuff("normal move", message)];
+                case 0: return [4 /*yield*/, sendStuff("normal move", message, function (response) {
+                        console.log('Success:', JSON.stringify(response));
+                        return response;
+                    })];
                 case 1:
                     res = _a.sent();
                     if (!res.success) {
@@ -486,7 +488,10 @@ function sendInfAfterStep(message) {
         var res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, passer, _loop_1, ind;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, sendStuff("inf after step", message)];
+                case 0: return [4 /*yield*/, sendStuff("inf after step", message, function (response) {
+                        console.log('Success:', JSON.stringify(response));
+                        return response;
+                    })];
                 case 1:
                     res = _a.sent();
                     displayCiurl(res.ciurl);
