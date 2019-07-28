@@ -601,13 +601,16 @@ function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piec
     return;
 }
 
-type MockReturnDataForInfAfterStep = {
-    ciurl: Ciurl,
-    dat: number[]
+type Ret_InfAfterStep = {
+    legal: false,
+    whyIllegal: string
+} | {
+    legal: true,
+    ciurl: Ciurl
 }
 
 async function sendInfAfterStep(message: InfAfterStep) {
-    const res = await sendStuff<InfAfterStep, MockReturnDataForInfAfterStep>(
+    const res = await sendStuff<InfAfterStep, Ret_InfAfterStep>(
         "inf after step",
         message,
         response => {
@@ -615,6 +618,11 @@ async function sendInfAfterStep(message: InfAfterStep) {
             return response;
         }
     );
+
+    if (!res.legal) {
+        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
+        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
 
     displayCiurl(res.ciurl);
 

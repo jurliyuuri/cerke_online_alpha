@@ -532,6 +532,10 @@ function sendInfAfterStep(message) {
                     })];
                 case 1:
                     res = _a.sent();
+                    if (!res.legal) {
+                        alert("Illegal API sent, the reason being " + res.whyIllegal);
+                        throw new Error("Illegal API sent, the reason being " + res.whyIllegal);
+                    }
                     displayCiurl(res.ciurl);
                     document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
                     eraseGuide(); // this removes the central guide, as well as the yellow and green ones
