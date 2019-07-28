@@ -208,7 +208,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
             "`after half acceptance`",
             message,
             response => {
-                console.log('Success:', JSON.stringify(response));
+                console.log('Success; the server returned:', JSON.stringify(response));
                 return response;
             }
         );
@@ -228,7 +228,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
     }
 }
 
-async function sendStuff<T, U>(log: string, message: T, createDummy: (response: any) => U): Promise<U> {
+async function sendStuff<T, U>(log: string, message: T, validateInput: (response: any) => U): Promise<U> {
     console.log(`Sending ${log}:`, JSON.stringify(message));
     let url = 'http://localhost:5000/';
     const data = {
@@ -243,7 +243,7 @@ async function sendStuff<T, U>(log: string, message: T, createDummy: (response: 
             'Content-Type': 'application/json'
         }
     }).then(res => res.json())
-        .then(createDummy)
+        .then(validateInput)
         .catch(error => console.error('Error:', error));
 
     console.log(res);
@@ -257,7 +257,7 @@ async function sendStuff<T, U>(log: string, message: T, createDummy: (response: 
 
 async function sendNormalMessage(message: NormalMove) {
     const res: MockReturnDataForNormalMove = await sendStuff<NormalMove, MockReturnDataForNormalMove>("normal move", message, response => {
-        console.log('Success:', JSON.stringify(response));
+        console.log('Success; the server returned:', JSON.stringify(response));
         return response;
     });
 
@@ -562,7 +562,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
         "inf after step",
         message,
         response => {
-            console.log('Success:', JSON.stringify(response));
+            console.log('Success; the server returned:', JSON.stringify(response));
             return response;
         }
     );
