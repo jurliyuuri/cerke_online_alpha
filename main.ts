@@ -192,28 +192,32 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     drawHoverAt(to, piece);
 }
 
-type MockReturnDataForNormalMove = {
-    success: boolean,
-    dat: number[]
+type WhetherWaterEntryHappened = {
+    waterEntryHappened: true,
+    ciurl: Ciurl
+} | {
+    waterEntryHappened: false
 };
 
-type MockReturnDataForAfterHalfAcceptance = {
+type Ret_NormalMove = {
     legal: false,
     whyIllegal: string
-}
-    | {
-        legal: true,
-        dat: {
-            waterEntryHappened: true,
-            ciurl: Ciurl
-        } | {
-            waterEntryHappened: false
-        }
-    };
+} | {
+    legal: true,
+    dat: WhetherWaterEntryHappened
+};
+
+type Ret_AfterHalfAcceptance = {
+    legal: false,
+    whyIllegal: string
+} | {
+    legal: true,
+    dat: WhetherWaterEntryHappened
+};
 
 async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
-    const res: MockReturnDataForAfterHalfAcceptance =
-        await sendStuff<AfterHalfAcceptance, MockReturnDataForAfterHalfAcceptance>(
+    const res: Ret_AfterHalfAcceptance =
+        await sendStuff<AfterHalfAcceptance, Ret_AfterHalfAcceptance>(
             "`after half acceptance`",
             message,
             response => {
@@ -283,12 +287,30 @@ async function sendStuff<T, U>(log: string, message: T, validateInput: (response
 }
 
 async function sendNormalMessage(message: NormalMove) {
-    const res: MockReturnDataForNormalMove = await sendStuff<NormalMove, MockReturnDataForNormalMove>("normal move", message, response => {
+    const res: Ret_NormalMove = await sendStuff<NormalMove, Ret_NormalMove>("normal move", message, response => {
         console.log('Success; the server returned:', JSON.stringify(response));
         return response;
     });
 
-    if (!res.success) {
+    if (!res.legal) {
+        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
+        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
+
+    // no water entry
+    if (!res.dat.waterEntryHappened) {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateField(message);
+        drawField(GAME_STATE.f);
+        return;
+    }
+
+    await displayWaterEntryLogo();
+    displayCiurl(res.dat.ciurl);
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    if (res.dat.ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
         eraseGuide();
         UI_STATE.selectedCoord = null;
