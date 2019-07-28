@@ -206,11 +206,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
     const res: MockReturnDataForAfterHalfAcceptance =
         await sendStuff<AfterHalfAcceptance, MockReturnDataForAfterHalfAcceptance>(
             "`after half acceptance`",
-            message,
-            response => {
-                console.log('Success:', JSON.stringify(response));
-                return response;
-            }
+            message
         );
 
     if (!res.success) {
@@ -228,7 +224,12 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
     }
 }
 
-async function sendStuff<T, U>(log: string, message: T, createDummy: (response: any) => U): Promise<U> {
+async function sendStuff<T, U>(log: string, message: T): Promise<U> {
+    const identity: (response: any) => U = response => {
+        console.log('Success:', JSON.stringify(response));
+        return response;
+    };
+
     console.log(`Sending ${log}:`, JSON.stringify(message));
     let url = 'http://localhost:5000/';
     const data = {
@@ -243,7 +244,7 @@ async function sendStuff<T, U>(log: string, message: T, createDummy: (response: 
             'Content-Type': 'application/json'
         }
     }).then(res => res.json())
-        .then(createDummy)
+        .then(identity)
         .catch(error => console.error('Error:', error));
 
     console.log(res);
@@ -256,10 +257,7 @@ async function sendStuff<T, U>(log: string, message: T, createDummy: (response: 
 }
 
 async function sendNormalMessage(message: NormalMove) {
-    const res: MockReturnDataForNormalMove = await sendStuff<NormalMove, MockReturnDataForNormalMove>("normal move", message, response => {
-        console.log('Success:', JSON.stringify(response));
-        return response;
-    });
+    const res: MockReturnDataForNormalMove = await sendStuff<NormalMove, MockReturnDataForNormalMove>("normal move", message);
 
     if (!res.success) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -560,11 +558,7 @@ type MockReturnDataForInfAfterStep = {
 async function sendInfAfterStep(message: InfAfterStep) {
     const res = await sendStuff<InfAfterStep, MockReturnDataForInfAfterStep>(
         "inf after step",
-        message,
-        response => {
-            console.log('Success:', JSON.stringify(response));
-            return response;
-        }
+        message
     );
 
     displayCiurl(res.ciurl);
