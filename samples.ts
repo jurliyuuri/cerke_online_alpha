@@ -22,6 +22,10 @@ import InfAfterStep = type__message.InfAfterStep;
 import AfterHalfAcceptance = type__message.AfterHalfAcceptance;
 import toAbsoluteCoord_ = type__message.toAbsoluteCoord_;
 import fromAbsoluteCoord_ = type__message.fromAbsoluteCoord_;
+import Ciurl = type__message.Ciurl;
+import Ret_InfAfterStep = type__message.Ret_InfAfterStep;
+import Ret_NormalMove = type__message.Ret_NormalMove;
+import Ret_AfterHalfAcceptance = type__message.Ret_AfterHalfAcceptance;
 
 const sampleBoard: Board = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },

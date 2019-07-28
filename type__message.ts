@@ -111,4 +111,38 @@ namespace type__message {
         dest: AbsoluteCoord | null
         /* null: hands over the turn to the opponent */
     }
+
+    export type Ciurl = [boolean, boolean, boolean, boolean, boolean];
+
+    export type Ret_InfAfterStep = {
+        legal: false,
+        whyIllegal: string
+    } | {
+        legal: true,
+        ciurl: Ciurl
+    }
+
+    export type WhetherWaterEntryHappened = {
+        waterEntryHappened: true,
+        ciurl: Ciurl
+    } | {
+        waterEntryHappened: false
+    };
+    
+    export type Ret_NormalMove = {
+        legal: false,
+        whyIllegal: string
+    } | {
+        legal: true,
+        dat: WhetherWaterEntryHappened
+    };
+    
+    export type Ret_AfterHalfAcceptance = {
+        legal: false,
+        whyIllegal: string
+    } | {
+        legal: true,
+        dat: WhetherWaterEntryHappened
+    };
+    
 }

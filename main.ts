@@ -192,29 +192,6 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     drawHoverAt(to, piece);
 }
 
-type WhetherWaterEntryHappened = {
-    waterEntryHappened: true,
-    ciurl: Ciurl
-} | {
-    waterEntryHappened: false
-};
-
-type Ret_NormalMove = {
-    legal: false,
-    whyIllegal: string
-} | {
-    legal: true,
-    dat: WhetherWaterEntryHappened
-};
-
-type Ret_AfterHalfAcceptance = {
-    legal: false,
-    whyIllegal: string
-} | {
-    legal: true,
-    dat: WhetherWaterEntryHappened
-};
-
 async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
     const res: Ret_AfterHalfAcceptance =
         await sendStuff<AfterHalfAcceptance, Ret_AfterHalfAcceptance>(
@@ -579,7 +556,6 @@ function getThingsGoing(piece: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coo
     }
 }
 
-type Ciurl = [boolean, boolean, boolean, boolean, boolean];
 
 function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piece, dest: Coord) {
     if (piece === "Tam2") {
@@ -599,14 +575,6 @@ function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piec
 
     sendNormalMessage(message);
     return;
-}
-
-type Ret_InfAfterStep = {
-    legal: false,
-    whyIllegal: string
-} | {
-    legal: true,
-    ciurl: Ciurl
 }
 
 async function sendInfAfterStep(message: InfAfterStep) {
