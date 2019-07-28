@@ -205,7 +205,7 @@ type MockReturnDataForAfterHalfAcceptance = {
         legal: true,
         dat: {
             waterEntryHappened: true,
-            success: boolean
+            ciurl: Ciurl
         } | {
             waterEntryHappened: false
         }
@@ -227,7 +227,21 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
 
-    if (res.dat.waterEntryHappened && !res.dat.success) {
+    // no water entry
+    if (!res.dat.waterEntryHappened) {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateFieldAfterHalfAcceptance(message, src, step);
+        drawField(GAME_STATE.f);
+        return;
+    }
+
+    displayWaterEntryLogo();
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    displayCiurl(res.dat.ciurl);
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    if (res.dat.ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
         eraseGuide();
         UI_STATE.selectedCoord = null;

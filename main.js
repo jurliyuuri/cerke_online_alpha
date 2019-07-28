@@ -181,7 +181,23 @@ function sendAfterHalfAcceptance(message, src, step) {
                         alert("Illegal API sent, the reason being " + res.whyIllegal);
                         throw new Error("Illegal API sent, the reason being " + res.whyIllegal);
                     }
-                    if (res.dat.waterEntryHappened && !res.dat.success) {
+                    // no water entry
+                    if (!res.dat.waterEntryHappened) {
+                        eraseGuide();
+                        UI_STATE.selectedCoord = null;
+                        updateFieldAfterHalfAcceptance(message, src, step);
+                        drawField(GAME_STATE.f);
+                        return [2 /*return*/];
+                    }
+                    displayWaterEntryLogo();
+                    return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, 1000); })];
+                case 2:
+                    _a.sent();
+                    displayCiurl(res.dat.ciurl);
+                    return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, 500); })];
+                case 3:
+                    _a.sent();
+                    if (res.dat.ciurl.filter(function (a) { return a; }).length < 3) {
                         alert(DICTIONARY.ja.failedWaterEntry);
                         eraseGuide();
                         UI_STATE.selectedCoord = null;
