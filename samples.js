@@ -9,8 +9,6 @@ var AbsoluteColumn = type__message.AbsoluteColumn;
 var AbsoluteRow = type__message.AbsoluteRow;
 var calculateMovablePositions = calculate_movable.calculateMovablePositions;
 var coordEq = type__piece.coordEq;
-var toAbsoluteCoord_ = type__message.toAbsoluteCoord_;
-var fromAbsoluteCoord_ = type__message.fromAbsoluteCoord_;
 var sampleBoard = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
         null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null, null],
