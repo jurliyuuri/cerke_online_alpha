@@ -201,15 +201,15 @@ type MockReturnDataForAfterHalfAcceptance = {
     legal: false,
     whyIllegal: string
 }
-| {
-    legal: true,
-    dat: {
-        waterEntryHappened: true,
-        success: boolean
-    } | {
-        waterEntryHappened: false
-    }
-};
+    | {
+        legal: true,
+        dat: {
+            waterEntryHappened: true,
+            success: boolean
+        } | {
+            waterEntryHappened: false
+        }
+    };
 
 async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
     const res: MockReturnDataForAfterHalfAcceptance =
@@ -675,7 +675,7 @@ function displayWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo")!;
     water_entry_logo.style.display = "block";
     water_entry_logo.classList.add("water_entry");
-    setTimeout(function(){
+    setTimeout(function () {
         water_entry_logo.style.display = "none";
     }, 1200);
 }
@@ -715,6 +715,13 @@ function displayCiurl(ciurl: Ciurl) {
     for (let i = 0; i < imgs.length; i++) {
         contains_ciurl.appendChild(imgs[i]);
     }
+
+
+    const audioContext = new AudioContext();
+    const audioElement = document.querySelector('audio')!;
+    const track = audioContext.createMediaElementSource(audioElement);
+    track.connect(audioContext.destination);
+    audioElement.play();
 
 }
 

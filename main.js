@@ -608,6 +608,11 @@ function displayCiurl(ciurl) {
     for (var i = 0; i < imgs.length; i++) {
         contains_ciurl.appendChild(imgs[i]);
     }
+    var audioContext = new AudioContext();
+    var audioElement = document.querySelector('audio');
+    var track = audioContext.createMediaElementSource(audioElement);
+    track.connect(audioContext.destination);
+    audioElement.play();
 }
 function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl"));
