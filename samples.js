@@ -9,7 +9,7 @@ var AbsoluteColumn = type__message.AbsoluteColumn;
 var AbsoluteRow = type__message.AbsoluteRow;
 var calculateMovablePositions = calculate_movable.calculateMovablePositions;
 var coordEq = type__piece.coordEq;
-var sampleBoard = [
+const sampleBoard = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
         null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, null, null, null],
     [null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, null, null, null, null, null, null],
@@ -22,7 +22,7 @@ var sampleBoard = [
     [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, null],
     [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"]
 ];
-var sampleField = {
+const sampleField = {
     currentBoard: sampleBoard,
     hop1zuo1OfDownward: [{ color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Downward }],
     hop1zuo1OfUpward: [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }]

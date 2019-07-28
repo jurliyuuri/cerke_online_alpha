@@ -1,40 +1,5 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-var GAME_STATE = {
+let GAME_STATE = {
     f: {
         currentBoard: [
             [null, null, null, null, null, null, null, null, "Tam2"],
@@ -54,15 +19,14 @@ var GAME_STATE = {
     tam_itself_is_tam_hue: true,
     backupDuringStepping: null
 };
-var UI_STATE = {
+let UI_STATE = {
     selectedCoord: null
 };
 function eraseGuide() {
     removeChildren(document.getElementById("contains_guides"));
     removeChildren(document.getElementById("contains_guides_on_upward"));
 }
-function toAbsoluteCoord_(_a, IA_is_down) {
-    var row = _a[0], col = _a[1];
+function toAbsoluteCoord_([row, col], IA_is_down) {
     return [
         [
             AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
@@ -76,9 +40,8 @@ function toAbsoluteCoord_(_a, IA_is_down) {
         ][IA_is_down ? col : 8 - col]
     ];
 }
-function fromAbsoluteCoord_(_a, IA_is_down) {
-    var absrow = _a[0], abscol = _a[1];
-    var rowind;
+function fromAbsoluteCoord_([absrow, abscol], IA_is_down) {
+    let rowind;
     if (absrow === AbsoluteRow.A) {
         rowind = 0;
     }
@@ -107,10 +70,10 @@ function fromAbsoluteCoord_(_a, IA_is_down) {
         rowind = 8;
     }
     else {
-        var _should_not_reach_here = absrow;
+        let _should_not_reach_here = absrow;
         throw new Error("does not happen");
     }
-    var colind;
+    let colind;
     if (abscol === AbsoluteColumn.K) {
         colind = 0;
     }
@@ -139,7 +102,7 @@ function fromAbsoluteCoord_(_a, IA_is_down) {
         colind = 8;
     }
     else {
-        var _should_not_reach_here = abscol;
+        let _should_not_reach_here = abscol;
         throw new Error("does not happen");
     }
     if (IA_is_down) {
@@ -156,14 +119,14 @@ function fromAbsoluteCoord(abs) {
     return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
 }
 function getThingsGoingFromHop1zuo1(piece, to) {
-    var dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+    let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
     // must parachute onto an empty square
     if (dest != null) {
         alert("Cannot parachute onto an occupied square");
         throw new Error("Cannot parachute onto an occupied square");
     }
-    var abs_dst = toAbsoluteCoord(to);
-    var message = {
+    let abs_dst = toAbsoluteCoord(to);
+    let message = {
         type: "NonTamMove",
         data: {
             type: "FromHand",
@@ -175,7 +138,7 @@ function getThingsGoingFromHop1zuo1(piece, to) {
     sendNormalMessage(message);
 }
 function erasePhantom() {
-    var contains_phantom = document.getElementById("contains_phantom");
+    let contains_phantom = document.getElementById("contains_phantom");
     while (contains_phantom.firstChild) {
         contains_phantom.removeChild(contains_phantom.firstChild);
     }
@@ -185,8 +148,8 @@ function cancelStepping() {
     erasePhantom();
     document.getElementById("protective_cover_over_field").classList.add("nocover");
     // resurrect the original one
-    var backup = GAME_STATE.backupDuringStepping;
-    var from = backup[0];
+    const backup = GAME_STATE.backupDuringStepping;
+    const from = backup[0];
     GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
     GAME_STATE.backupDuringStepping = null;
     UI_STATE.selectedCoord = null;
@@ -201,16 +164,16 @@ function stepping(from, piece, to) {
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     // draw
     drawField(GAME_STATE.f);
-    var drawPhantomAt = function (coord, piece) {
-        var contains_phantom = document.getElementById("contains_phantom");
+    const drawPhantomAt = function (coord, piece) {
+        let contains_phantom = document.getElementById("contains_phantom");
         erasePhantom();
-        var phantom = createPieceImgToBePlacedOnBoard(coord, piece);
+        const phantom = createPieceImgToBePlacedOnBoard(coord, piece);
         phantom.style.opacity = "0.1";
         contains_phantom.appendChild(phantom);
     };
-    var drawCancel = function () {
-        var contains_phantom = document.getElementById("contains_phantom");
-        var cancelButton = createPieceSizeImageOnBoardByPath_Shifted([9, 7.5], "piece/bmun", "piece_image_on_board");
+    const drawCancel = function () {
+        let contains_phantom = document.getElementById("contains_phantom");
+        let cancelButton = createPieceSizeImageOnBoardByPath_Shifted([9, 7.5], "piece/bmun", "piece_image_on_board");
         cancelButton.width = 80;
         cancelButton.height = 80;
         cancelButton.style.zIndex = "100";
@@ -219,14 +182,14 @@ function stepping(from, piece, to) {
         cancelButton.addEventListener('click', cancelStepping);
         contains_phantom.appendChild(cancelButton);
     };
-    var drawHoverAt = function (coord, piece) {
-        var contains_phantom = document.getElementById("contains_phantom");
-        var img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
+    const drawHoverAt = function (coord, piece) {
+        let contains_phantom = document.getElementById("contains_phantom");
+        let img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
         img.style.zIndex = "100";
         img.style.cursor = "pointer";
-        var selectHover = function () {
-            var contains_guides = document.getElementById("contains_guides");
-            var centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
+        const selectHover = function () {
+            const contains_guides = document.getElementById("contains_guides");
+            let centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
             centralNode.style.cursor = "pointer";
             // click on it to erase
             centralNode.addEventListener('click', function () {
@@ -235,7 +198,7 @@ function stepping(from, piece, to) {
             });
             centralNode.style.zIndex = "200";
             contains_guides.appendChild(centralNode);
-            var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListYellow = _a.finite, guideListGreen = _a.infinite;
+            const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
             display_guide_after_stepping(coord, { piece: piece, path: "ct" }, contains_guides, guideListYellow);
             if (piece === "Tam2") {
                 if (guideListGreen.length > 0) {
@@ -254,153 +217,115 @@ function stepping(from, piece, to) {
     drawCancel();
     drawHoverAt(to, piece);
 }
-function sendAfterHalfAcceptance(message, src, step) {
-    return __awaiter(this, void 0, void 0, function () {
-        var res;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, sendStuff("`after half acceptance`", message, function (response) {
-                        console.log('Success; the server returned:', JSON.stringify(response));
-                        return response;
-                    })];
-                case 1:
-                    res = _a.sent();
-                    if (!res.legal) {
-                        alert("Illegal API sent, the reason being " + res.whyIllegal);
-                        throw new Error("Illegal API sent, the reason being " + res.whyIllegal);
-                    }
-                    // no water entry
-                    if (!res.dat.waterEntryHappened) {
-                        eraseGuide();
-                        UI_STATE.selectedCoord = null;
-                        updateFieldAfterHalfAcceptance(message, src, step);
-                        drawField(GAME_STATE.f);
-                        return [2 /*return*/];
-                    }
-                    return [4 /*yield*/, displayWaterEntryLogo()];
-                case 2:
-                    _a.sent();
-                    displayCiurl(res.dat.ciurl);
-                    return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, 500); })];
-                case 3:
-                    _a.sent();
-                    if (res.dat.ciurl.filter(function (a) { return a; }).length < 3) {
-                        alert(DICTIONARY.ja.failedWaterEntry);
-                        eraseGuide();
-                        UI_STATE.selectedCoord = null;
-                        cancelStepping();
-                        // now it's opponent's turn
-                    }
-                    else {
-                        eraseGuide();
-                        UI_STATE.selectedCoord = null;
-                        updateFieldAfterHalfAcceptance(message, src, step);
-                        drawField(GAME_STATE.f);
-                    }
-                    return [2 /*return*/];
-            }
-        });
+async function sendAfterHalfAcceptance(message, src, step) {
+    const res = await sendStuff("`after half acceptance`", message, response => {
+        console.log('Success; the server returned:', JSON.stringify(response));
+        return response;
     });
+    if (!res.legal) {
+        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
+        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
+    // no water entry
+    if (!res.dat.waterEntryHappened) {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateFieldAfterHalfAcceptance(message, src, step);
+        drawField(GAME_STATE.f);
+        return;
+    }
+    await displayWaterEntryLogo();
+    displayCiurl(res.dat.ciurl);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    if (res.dat.ciurl.filter(a => a).length < 3) {
+        alert(DICTIONARY.ja.failedWaterEntry);
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        cancelStepping();
+        // now it's opponent's turn
+    }
+    else {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateFieldAfterHalfAcceptance(message, src, step);
+        drawField(GAME_STATE.f);
+    }
 }
-function sendStuff(log, message, validateInput) {
-    return __awaiter(this, void 0, void 0, function () {
-        var url, data, res;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    console.log("Sending " + log + ":", JSON.stringify(message));
-                    url = 'http://localhost:5000/';
-                    data = {
-                        "id": (Math.random() * 100000) | 0,
-                        "message": message
-                    };
-                    return [4 /*yield*/, fetch(url, {
-                            method: 'POST',
-                            body: JSON.stringify(data),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }).then(function (res) { return res.json(); })
-                            .then(validateInput)
-                            .catch(function (error) { return console.error('Error:', error); })];
-                case 1:
-                    res = _a.sent();
-                    console.log(res);
-                    if (!res) {
-                        alert("network error!");
-                        throw new Error("network error!");
-                    }
-                    return [2 /*return*/, res];
-            }
-        });
-    });
+async function sendStuff(log, message, validateInput) {
+    console.log(`Sending ${log}:`, JSON.stringify(message));
+    let url = 'http://localhost:5000/';
+    const data = {
+        "id": (Math.random() * 100000) | 0,
+        "message": message
+    };
+    const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+        .then(validateInput)
+        .catch(error => console.error('Error:', error));
+    console.log(res);
+    if (!res) {
+        alert("network error!");
+        throw new Error("network error!");
+    }
+    return res;
 }
-function sendNormalMessage(message) {
-    return __awaiter(this, void 0, void 0, function () {
-        var res;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, sendStuff("normal move", message, function (response) {
-                        console.log('Success; the server returned:', JSON.stringify(response));
-                        return response;
-                    })];
-                case 1:
-                    res = _a.sent();
-                    if (!res.legal) {
-                        alert("Illegal API sent, the reason being " + res.whyIllegal);
-                        throw new Error("Illegal API sent, the reason being " + res.whyIllegal);
-                    }
-                    // no water entry
-                    if (!res.dat.waterEntryHappened) {
-                        eraseGuide();
-                        UI_STATE.selectedCoord = null;
-                        updateField(message);
-                        drawField(GAME_STATE.f);
-                        return [2 /*return*/];
-                    }
-                    return [4 /*yield*/, displayWaterEntryLogo()];
-                case 2:
-                    _a.sent();
-                    displayCiurl(res.dat.ciurl);
-                    return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, 500); })];
-                case 3:
-                    _a.sent();
-                    if (res.dat.ciurl.filter(function (a) { return a; }).length < 3) {
-                        alert(DICTIONARY.ja.failedWaterEntry);
-                        eraseGuide();
-                        UI_STATE.selectedCoord = null;
-                        if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
-                            cancelStepping();
-                            // FIXME: implement handing over the turn
-                        }
-                    }
-                    else {
-                        eraseGuide();
-                        UI_STATE.selectedCoord = null;
-                        updateField(message);
-                        drawField(GAME_STATE.f);
-                    }
-                    return [2 /*return*/];
-            }
-        });
+async function sendNormalMessage(message) {
+    const res = await sendStuff("normal move", message, response => {
+        console.log('Success; the server returned:', JSON.stringify(response));
+        return response;
     });
+    if (!res.legal) {
+        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
+        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
+    // no water entry
+    if (!res.dat.waterEntryHappened) {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateField(message);
+        drawField(GAME_STATE.f);
+        return;
+    }
+    await displayWaterEntryLogo();
+    displayCiurl(res.dat.ciurl);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    if (res.dat.ciurl.filter(a => a).length < 3) {
+        alert(DICTIONARY.ja.failedWaterEntry);
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
+            cancelStepping();
+            // FIXME: implement handing over the turn
+        }
+    }
+    else {
+        eraseGuide();
+        UI_STATE.selectedCoord = null;
+        updateField(message);
+        drawField(GAME_STATE.f);
+    }
 }
 function updateFieldAfterHalfAcceptance(message, src, step) {
     if (message.dest === null) {
         cancelStepping();
         return;
     }
-    var _a = fromAbsoluteCoord(message.dest), dest_i = _a[0], dest_j = _a[1];
+    let [dest_i, dest_j] = fromAbsoluteCoord(message.dest);
     // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
-    var backup = GAME_STATE.backupDuringStepping;
-    var piece = backup[1];
+    const backup = GAME_STATE.backupDuringStepping;
+    let piece = backup[1];
     cancelStepping(); // this will now restore GAME_STATE.f.currentBoard[src_i][src_j]
-    var src_i = src[0], src_j = src[1];
-    var step_i = step[0], step_j = step[1];
+    const [src_i, src_j] = src;
+    const [step_i, step_j] = step;
     if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
         throw new Error("step is unoccupied");
     }
-    var destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+    let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
     /* it's possible that you are returning to the original position, in which case you don't do anything */
     if (coordEq([src_i, src_j], [dest_i, dest_j])) {
         return;
@@ -413,7 +338,7 @@ function updateFieldAfterHalfAcceptance(message, src, step) {
             throw new Error("dest is occupied by an ally");
         }
         else if (destPiece.side === Side.Downward) {
-            var flipped = {
+            const flipped = {
                 color: destPiece.color,
                 prof: destPiece.prof,
                 side: Side.Upward
@@ -421,7 +346,7 @@ function updateFieldAfterHalfAcceptance(message, src, step) {
             GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
         }
         else {
-            var _should_not_reach_here = destPiece.side;
+            let _should_not_reach_here = destPiece.side;
             throw new Error("should not reach here");
         }
     }
@@ -431,29 +356,29 @@ function updateFieldAfterHalfAcceptance(message, src, step) {
 function updateField(message) {
     if (message.type === "NonTamMove") {
         if (message.data.type === "FromHand") {
-            var k_1 = message.data;
+            const k = message.data;
             // remove the corresponding one from hand
-            var ind = GAME_STATE.f.hop1zuo1OfUpward.findIndex(function (piece) { return piece.color === k_1.color && piece.prof === k_1.prof; });
+            const ind = GAME_STATE.f.hop1zuo1OfUpward.findIndex(piece => piece.color === k.color && piece.prof === k.prof);
             if (ind === -1) {
                 throw new Error("What should exist in the hand does not exist");
             }
-            var removed = GAME_STATE.f.hop1zuo1OfUpward.splice(ind, 1)[0];
+            const [removed] = GAME_STATE.f.hop1zuo1OfUpward.splice(ind, 1);
             // add the removed piece to the destination
-            var _a = fromAbsoluteCoord(k_1.dest), i = _a[0], j = _a[1];
+            const [i, j] = fromAbsoluteCoord(k.dest);
             if (GAME_STATE.f.currentBoard[i][j] !== null) {
                 throw new Error("Trying to parachute the piece onto an occupied space");
             }
             GAME_STATE.f.currentBoard[i][j] = removed;
         }
         else if (message.data.type === "SrcDst") {
-            var k = message.data;
-            var _b = fromAbsoluteCoord(k.src), src_i = _b[0], src_j = _b[1];
-            var _c = fromAbsoluteCoord(k.dest), dest_i = _c[0], dest_j = _c[1];
-            var piece = GAME_STATE.f.currentBoard[src_i][src_j];
+            const k = message.data;
+            const [src_i, src_j] = fromAbsoluteCoord(k.src);
+            const [dest_i, dest_j] = fromAbsoluteCoord(k.dest);
+            let piece = GAME_STATE.f.currentBoard[src_i][src_j];
             if (piece === null) {
                 throw new Error("src is unoccupied");
             }
-            var destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
             /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
             if (destPiece !== null) {
                 if (destPiece === "Tam2") {
@@ -463,7 +388,7 @@ function updateField(message) {
                     throw new Error("dest is occupied by an ally");
                 }
                 else if (destPiece.side === Side.Downward) {
-                    var flipped = {
+                    const flipped = {
                         color: destPiece.color,
                         prof: destPiece.prof,
                         side: Side.Upward
@@ -471,7 +396,7 @@ function updateField(message) {
                     GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
                 }
                 else {
-                    var _should_not_reach_here = destPiece.side;
+                    let _should_not_reach_here = destPiece.side;
                     throw new Error("should not reach here");
                 }
             }
@@ -479,19 +404,19 @@ function updateField(message) {
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         else if (message.data.type === "SrcStepDstFinite") {
-            var k = message.data;
-            var _d = fromAbsoluteCoord(k.src), src_i = _d[0], src_j = _d[1];
-            var _e = fromAbsoluteCoord(k.dest), dest_i = _e[0], dest_j = _e[1];
+            const k = message.data;
+            const [src_i, src_j] = fromAbsoluteCoord(k.src);
+            const [dest_i, dest_j] = fromAbsoluteCoord(k.dest);
             // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
-            var backup = GAME_STATE.backupDuringStepping;
-            var piece = backup[1];
+            const backup = GAME_STATE.backupDuringStepping;
+            let piece = backup[1];
             cancelStepping();
             // this will now restore GAME_STATE.f.currentBoard[src_i][src_j]
-            var _f = fromAbsoluteCoord(k.step), step_i = _f[0], step_j = _f[1];
+            const [step_i, step_j] = fromAbsoluteCoord(k.step);
             if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
                 throw new Error("step is unoccupied");
             }
-            var destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
             /* it's possible that you are returning to the original position, in which case you don't do anything */
             if (coordEq([src_i, src_j], [dest_i, dest_j])) {
                 return;
@@ -504,7 +429,7 @@ function updateField(message) {
                     throw new Error("dest is occupied by an ally");
                 }
                 else if (destPiece.side === Side.Downward) {
-                    var flipped = {
+                    const flipped = {
                         color: destPiece.color,
                         prof: destPiece.prof,
                         side: Side.Upward
@@ -512,7 +437,7 @@ function updateField(message) {
                     GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
                 }
                 else {
-                    var _should_not_reach_here = destPiece.side;
+                    let _should_not_reach_here = destPiece.side;
                     throw new Error("should not reach here");
                 }
             }
@@ -520,14 +445,14 @@ function updateField(message) {
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         else {
-            var _should_not_reach_here = message.data;
+            let _should_not_reach_here = message.data;
         }
     }
     else if (message.type === "TamMove") {
-        var k = message;
-        var _g = fromAbsoluteCoord(k.src), src_i = _g[0], src_j = _g[1];
-        var _h = fromAbsoluteCoord(k.secondDest), secondDest_i = _h[0], secondDest_j = _h[1];
-        var piece = GAME_STATE.f.currentBoard[src_i][src_j];
+        const k = message;
+        const [src_i, src_j] = fromAbsoluteCoord(k.src);
+        const [secondDest_i, secondDest_j] = fromAbsoluteCoord(k.secondDest);
+        let piece = GAME_STATE.f.currentBoard[src_i][src_j];
         if (piece === null) {
             throw new Error("src is unoccupied");
         }
@@ -542,16 +467,16 @@ function updateField(message) {
         GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
     }
     else {
-        var _should_not_reach_here = message;
+        let _should_not_reach_here = message;
     }
 }
 function getThingsGoing(piece, from, to) {
-    var destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
+    let destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (destPiece == null) { // dest is empty square; try to simply move
-        var message = void 0;
+        let message;
         if (piece !== "Tam2") {
-            var abs_src = toAbsoluteCoord(from);
-            var abs_dst = toAbsoluteCoord(to);
+            let abs_src = toAbsoluteCoord(from);
+            let abs_dst = toAbsoluteCoord(to);
             message = {
                 type: "NonTamMove",
                 data: {
@@ -574,9 +499,9 @@ function getThingsGoing(piece, from, to) {
         return;
     }
     if (confirm(DICTIONARY.ja.whetherToTake)) {
-        var abs_src = toAbsoluteCoord(from);
-        var abs_dst = toAbsoluteCoord(to);
-        var message = {
+        let abs_src = toAbsoluteCoord(from);
+        let abs_dst = toAbsoluteCoord(to);
+        let message = {
             type: "NonTamMove",
             data: {
                 type: "SrcDst",
@@ -597,7 +522,7 @@ function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
         alert("FIXME: implement Tam2's movement, who initially stepped");
         return;
     }
-    var message = {
+    const message = {
         type: "NonTamMove",
         data: {
             type: "SrcStepDstFinite",
@@ -609,116 +534,93 @@ function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     sendNormalMessage(message);
     return;
 }
-function sendInfAfterStep(message) {
-    return __awaiter(this, void 0, void 0, function () {
-        var res, step, plannedDirection, centralNode, contains_guides, piece, guideListGreen, filteredList, src, passer, _loop_1, ind;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, sendStuff("inf after step", message, function (response) {
-                        console.log('Success; the server returned:', JSON.stringify(response));
-                        return response;
-                    })];
-                case 1:
-                    res = _a.sent();
-                    if (!res.legal) {
-                        alert("Illegal API sent, the reason being " + res.whyIllegal);
-                        throw new Error("Illegal API sent, the reason being " + res.whyIllegal);
-                    }
-                    displayCiurl(res.ciurl);
-                    document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
-                    eraseGuide(); // this removes the central guide, as well as the yellow and green ones
-                    step = fromAbsoluteCoord(message.step);
-                    plannedDirection = fromAbsoluteCoord(message.plannedDirection);
-                    centralNode = createPieceSizeImageOnBoardByPath_Shifted(step, "selection2", "selection");
-                    centralNode.style.zIndex = "200";
-                    contains_guides = document.getElementById("contains_guides");
-                    contains_guides.appendChild(centralNode);
-                    piece = {
-                        color: message.color,
-                        prof: message.prof,
-                        side: Side.Upward
-                    };
-                    guideListGreen = calculateMovablePositions(step, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue).infinite;
-                    filteredList = guideListGreen.filter(function (c) {
-                        var subtractStep = function (_a) {
-                            var x = _a[0], y = _a[1];
-                            var step_x = step[0], step_y = step[1];
-                            return [x - step_x, y - step_y];
-                        };
-                        var limit = res.ciurl.filter(function (x) { return x; }).length;
-                        var _a = subtractStep(c), deltaC_x = _a[0], deltaC_y = _a[1];
-                        var _b = subtractStep(plannedDirection), deltaPlan_x = _b[0], deltaPlan_y = _b[1];
-                        return (
-                        // 1. (c - step) crossed with (plannedDirection - step) gives zero
-                        deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
-                            // 2.  (c - step) dotted with (plannedDirection - step) gives positive
-                            deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
-                            // 3. deltaC must not exceed the limit enforced by ciurl
-                            Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit);
-                    });
-                    src = fromAbsoluteCoord(message.src);
-                    passer = createCircleGuideImageAt(src, "ct");
-                    passer.addEventListener('click', function (ev) {
-                        sendAfterHalfAcceptance({
-                            type: "AfterHalfAcceptance",
-                            dest: null
-                        }, src, step);
-                    });
-                    passer.style.zIndex = "200";
-                    contains_guides.appendChild(passer);
-                    _loop_1 = function (ind) {
-                        var _a = filteredList[ind], i = _a[0], j = _a[1];
-                        if (coordEq(src, [i, j])) {
-                            return "continue";
-                        }
-                        var destPiece = GAME_STATE.f.currentBoard[i][j];
-                        // cannot step twice
-                        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
-                            return "continue";
-                        }
-                        var img = createCircleGuideImageAt(filteredList[ind], "ct2");
-                        img.addEventListener('click', function (ev) {
-                            sendAfterHalfAcceptance({
-                                type: "AfterHalfAcceptance",
-                                dest: [i, j]
-                            }, src, step);
-                        });
-                        img.style.zIndex = "200";
-                        contains_guides.appendChild(img);
-                    };
-                    for (ind = 0; ind < filteredList.length; ind++) {
-                        _loop_1(ind);
-                    }
-                    return [2 /*return*/];
-            }
-        });
+async function sendInfAfterStep(message) {
+    const res = await sendStuff("inf after step", message, response => {
+        console.log('Success; the server returned:', JSON.stringify(response));
+        return response;
     });
+    if (!res.legal) {
+        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
+        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
+    displayCiurl(res.ciurl);
+    document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
+    eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+    let step = fromAbsoluteCoord(message.step);
+    let plannedDirection = fromAbsoluteCoord(message.plannedDirection);
+    // recreate the selection node, but this time it is not clickable and hence not deletable
+    let centralNode = createPieceSizeImageOnBoardByPath_Shifted(step, "selection2", "selection");
+    centralNode.style.zIndex = "200";
+    const contains_guides = document.getElementById("contains_guides");
+    contains_guides.appendChild(centralNode);
+    const piece = {
+        color: message.color,
+        prof: message.prof,
+        side: Side.Upward
+    };
+    // now re-add the green candidates in only one direction
+    const { infinite: guideListGreen } = calculateMovablePositions(step, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
+    // filter the result
+    const filteredList = guideListGreen.filter(function (c) {
+        const subtractStep = function ([x, y]) {
+            const [step_x, step_y] = step;
+            return [x - step_x, y - step_y];
+        };
+        const limit = res.ciurl.filter(x => x).length;
+        const [deltaC_x, deltaC_y] = subtractStep(c);
+        const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
+        return (
+        // 1. (c - step) crossed with (plannedDirection - step) gives zero
+        deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
+            // 2.  (c - step) dotted with (plannedDirection - step) gives positive
+            deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
+            // 3. deltaC must not exceed the limit enforced by ciurl
+            Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit);
+    });
+    const src = fromAbsoluteCoord(message.src);
+    let passer = createCircleGuideImageAt(src, "ct");
+    passer.addEventListener('click', function (ev) {
+        sendAfterHalfAcceptance({
+            type: "AfterHalfAcceptance",
+            dest: null
+        }, src, step);
+    });
+    passer.style.zIndex = "200";
+    contains_guides.appendChild(passer);
+    for (let ind = 0; ind < filteredList.length; ind++) {
+        const [i, j] = filteredList[ind];
+        if (coordEq(src, [i, j])) {
+            continue; // yellow takes precedence over green
+        }
+        const destPiece = GAME_STATE.f.currentBoard[i][j];
+        // cannot step twice
+        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+            continue;
+        }
+        let img = createCircleGuideImageAt(filteredList[ind], "ct2");
+        img.addEventListener('click', function (ev) {
+            sendAfterHalfAcceptance({
+                type: "AfterHalfAcceptance",
+                dest: [i, j]
+            }, src, step);
+        });
+        img.style.zIndex = "200";
+        contains_guides.appendChild(img);
+    }
 }
-function displayWaterEntryLogo() {
-    return __awaiter(this, void 0, void 0, function () {
-        var water_entry_logo;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    water_entry_logo = document.getElementById("water_entry_logo");
-                    water_entry_logo.style.display = "block";
-                    water_entry_logo.classList.add("water_entry");
-                    setTimeout(function () {
-                        water_entry_logo.style.display = "none";
-                    }, 1200);
-                    return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, 1000); })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
+async function displayWaterEntryLogo() {
+    const water_entry_logo = document.getElementById("water_entry_logo");
+    water_entry_logo.style.display = "block";
+    water_entry_logo.classList.add("water_entry");
+    setTimeout(function () {
+        water_entry_logo.style.display = "none";
+    }, 1200);
+    await new Promise(resolve => setTimeout(resolve, 1000));
 }
 function displayCiurl(ciurl) {
-    var _a;
     // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
     // Standard Normal variate using Box-Muller transform.
-    var randn_bm = function () {
+    const randn_bm = function () {
         var u = 0, v = 0;
         while (u === 0)
             u = Math.random(); //Converting [0,1) to (0,1)
@@ -726,29 +628,29 @@ function displayCiurl(ciurl) {
             v = Math.random();
         return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     };
-    var contains_ciurl = document.getElementById("contains_ciurl");
+    const contains_ciurl = document.getElementById("contains_ciurl");
     clearCiurl();
     // should always lie around 300 ~ 370, when BOX_SIZE is 70
-    var averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
-    var hop1zuo1_height = 140;
-    var board_height = 631;
-    var averageTop = 84 + hop1zuo1_height + board_height;
-    var imgs = ciurl.map(function (side, ind) { return createCiurl(side, {
+    const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
+    const hop1zuo1_height = 140;
+    const board_height = 631;
+    const averageTop = 84 + hop1zuo1_height + board_height;
+    let imgs = ciurl.map((side, ind) => createCiurl(side, {
         left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
         top: averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm(),
         rotateDeg: Math.random() * 40 - 20
-    }); });
+    }));
     // Fisher-Yates
-    for (var i = imgs.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        _a = [imgs[j], imgs[i]], imgs[i] = _a[0], imgs[j] = _a[1];
+    for (let i = imgs.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [imgs[i], imgs[j]] = [imgs[j], imgs[i]];
     }
-    for (var i = 0; i < imgs.length; i++) {
+    for (let i = 0; i < imgs.length; i++) {
         contains_ciurl.appendChild(imgs[i]);
     }
-    var audioContext = new AudioContext();
-    var audioElement = document.querySelector('audio');
-    var track = audioContext.createMediaElementSource(audioElement);
+    const audioContext = new AudioContext();
+    const audioElement = document.querySelector('audio');
+    const track = audioContext.createMediaElementSource(audioElement);
     track.connect(audioContext.destination);
     audioElement.play();
 }
@@ -756,21 +658,21 @@ function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl"));
 }
 function display_guide_after_stepping(coord, q, parent, list) {
-    var src = UI_STATE.selectedCoord;
+    const src = UI_STATE.selectedCoord;
     if (src == null) {
         throw new Error("though stepping, null startpoint!!!!!");
     }
     else if (src[0] === "Hop1zuo1") {
         throw new Error("though stepping, hop1zuo1 startpoint!!!!!");
     }
-    var _loop_2 = function (ind) {
-        var _a = list[ind], i = _a[0], j = _a[1];
-        var destPiece = GAME_STATE.f.currentBoard[i][j];
+    for (let ind = 0; ind < list.length; ind++) {
+        const [i, j] = list[ind];
+        const destPiece = GAME_STATE.f.currentBoard[i][j];
         // cannot step twice
         if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
-            return "continue";
+            continue;
         }
-        var img = createCircleGuideImageAt(list[ind], q.path);
+        let img = createCircleGuideImageAt(list[ind], q.path);
         img.addEventListener('click', q.path === "ct" ? function () {
             getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
         } : function () {
@@ -785,23 +687,17 @@ function display_guide_after_stepping(coord, q, parent, list) {
         });
         img.style.zIndex = "200";
         parent.appendChild(img);
-    };
-    for (var ind = 0; ind < list.length; ind++) {
-        _loop_2(ind);
     }
 }
 function display_guides(coord, piece, parent, list) {
-    var _loop_3 = function (ind) {
+    for (let ind = 0; ind < list.length; ind++) {
         // draw the yellow guides
-        var img = createCircleGuideImageAt(list[ind], "ct");
+        let img = createCircleGuideImageAt(list[ind], "ct");
         // click on it to get things going
         img.addEventListener('click', function () {
             getThingsGoing(piece, coord, list[ind]);
         });
         parent.appendChild(img);
-    };
-    for (var ind = 0; ind < list.length; ind++) {
-        _loop_3(ind);
     }
 }
 function selectOwnPieceOnBoard(coord, piece) {
@@ -809,8 +705,8 @@ function selectOwnPieceOnBoard(coord, piece) {
     eraseGuide();
     if (UI_STATE.selectedCoord == null || UI_STATE.selectedCoord[0] === "Hop1zuo1" || !coordEq(UI_STATE.selectedCoord, coord)) {
         UI_STATE.selectedCoord = coord;
-        var contains_guides = document.getElementById("contains_guides");
-        var centralNode = createPieceSizeImageOnBoardByPath(coord, "selection2", "selection");
+        const contains_guides = document.getElementById("contains_guides");
+        let centralNode = createPieceSizeImageOnBoardByPath(coord, "selection2", "selection");
         centralNode.style.cursor = "pointer";
         // click on it to erase
         centralNode.addEventListener('click', function () {
@@ -818,8 +714,8 @@ function selectOwnPieceOnBoard(coord, piece) {
             UI_STATE.selectedCoord = null;
         });
         contains_guides.appendChild(centralNode);
-        var _a = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue), guideListFinite = _a.finite, guideListInfinite = _a.infinite;
-        display_guides(coord, piece, contains_guides, guideListFinite.concat(guideListInfinite));
+        const { finite: guideListFinite, infinite: guideListInfinite } = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
+        display_guides(coord, piece, contains_guides, [...guideListFinite, ...guideListInfinite]);
     }
     else {
         /* Clicking what was originally selected will make it deselect */
@@ -831,8 +727,8 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
     eraseGuide();
     if (UI_STATE.selectedCoord == null || UI_STATE.selectedCoord[0] !== "Hop1zuo1" || UI_STATE.selectedCoord[1] !== ind) {
         UI_STATE.selectedCoord = ["Hop1zuo1", ind];
-        var contains_guides_on_upward = document.getElementById("contains_guides_on_upward");
-        var centralNode = createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, "selection2", "selection");
+        const contains_guides_on_upward = document.getElementById("contains_guides_on_upward");
+        let centralNode = createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, "selection2", "selection");
         centralNode.style.cursor = "pointer";
         // click on it to erase
         centralNode.addEventListener('click', function () {
@@ -840,24 +736,21 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
             UI_STATE.selectedCoord = null;
         });
         contains_guides_on_upward.appendChild(centralNode);
-        var contains_guides = document.getElementById("contains_guides");
-        for (var i = 0; i < 9; i++) {
-            var _loop_4 = function (j) {
-                var ij = [i, j];
+        const contains_guides = document.getElementById("contains_guides");
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                let ij = [i, j];
                 // skip if already occupied
                 if (GAME_STATE.f.currentBoard[i][j] != null) {
-                    return "continue";
+                    continue;
                 }
                 // draw the yellow guides
-                var img = createCircleGuideImageAt(ij, "ct");
+                let img = createCircleGuideImageAt(ij, "ct");
                 // click on it to get things going
                 img.addEventListener('click', function () {
                     getThingsGoingFromHop1zuo1(piece, ij);
                 });
                 contains_guides.appendChild(img);
-            };
-            for (var j = 0; j < 9; j++) {
-                _loop_4(j);
             }
         }
     }
@@ -878,19 +771,19 @@ function removeChildren(parent) {
     }
 }
 function drawField(field) {
-    var drawBoard = function (board) {
-        var contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
+    const drawBoard = function (board) {
+        const contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
         GAME_STATE.f.currentBoard = board;
         // delete everything
         removeChildren(contains_pieces_on_board);
-        for (var i = 0; i < board.length; i++) {
-            var _loop_5 = function (j) {
-                var piece = board[i][j];
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                const piece = board[i][j];
                 if (piece == null) {
-                    return "continue";
+                    continue;
                 }
-                var coord = [i, j];
-                var imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
+                const coord = [i, j];
+                let imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
                 if (piece === "Tam2") {
                     imgNode.style.cursor = "pointer";
                     imgNode.addEventListener('click', function () {
@@ -898,49 +791,43 @@ function drawField(field) {
                     });
                 }
                 else if (piece.side === Side.Upward) {
-                    var q_1 = {
+                    let q = {
                         prof: piece.prof,
                         side: Side.Upward,
                         color: piece.color
                     };
                     imgNode.style.cursor = "pointer";
                     imgNode.addEventListener('click', function () {
-                        selectOwnPieceOnBoard(coord, q_1);
+                        selectOwnPieceOnBoard(coord, q);
                     });
                 }
                 contains_pieces_on_board.appendChild(imgNode);
-            };
-            for (var j = 0; j < board[i].length; j++) {
-                _loop_5(j);
             }
         }
     };
-    var drawHop1zuo1OfUpward = function (list) {
-        var contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward");
+    const drawHop1zuo1OfUpward = function (list) {
+        const contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward");
         GAME_STATE.f.hop1zuo1OfUpward = list;
         // delete everything
         removeChildren(contains_pieces_on_upward);
-        var _loop_6 = function (i) {
-            var piece = list[i];
-            var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+        for (let i = 0; i < list.length; i++) {
+            const piece = list[i];
+            let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
             imgNode.style.cursor = "pointer";
             imgNode.addEventListener('click', function () {
                 selectOwnPieceOnHop1zuo1(i, piece);
             });
             contains_pieces_on_upward.appendChild(imgNode);
-        };
-        for (var i = 0; i < list.length; i++) {
-            _loop_6(i);
         }
     };
-    var drawHop1zuo1OfDownward = function (list) {
-        var contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward");
+    const drawHop1zuo1OfDownward = function (list) {
+        const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward");
         GAME_STATE.f.hop1zuo1OfDownward = list;
         // delete everything
         removeChildren(contains_pieces_on_downward);
-        for (var i = 0; i < list.length; i++) {
-            var piece = list[i];
-            var imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+        for (let i = 0; i < list.length; i++) {
+            const piece = list[i];
+            let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
             contains_pieces_on_downward.appendChild(imgNode);
         }
     };

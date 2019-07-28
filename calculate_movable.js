@@ -4,19 +4,10 @@ var calculate_movable;
     var Profession = type__message.Profession;
     var coordEq = type__piece.coordEq;
     function applyDeltas(coord, deltas) {
-        var i = coord[0], j = coord[1];
-        var assertCoord = function (_a) {
-            var l = _a[0], m = _a[1];
-            return [l, m];
-        };
-        return deltas.map(function (_a) {
-            var delta_x = _a[0], delta_y = _a[1];
-            return [i + delta_x, j + delta_y];
-        })
-            .filter(function (_a) {
-            var l = _a[0], m = _a[1];
-            return (0 <= l && l <= 8 && 0 <= m && m <= 8);
-        })
+        const [i, j] = coord;
+        const assertCoord = ([l, m]) => [l, m];
+        return deltas.map(([delta_x, delta_y]) => [i + delta_x, j + delta_y])
+            .filter(([l, m]) => (0 <= l && l <= 8 && 0 <= m && m <= 8))
             .map(assertCoord);
     }
     console.assert(JSON.stringify(getBlockerDeltas([-6, 3])) === "[[-4,2],[-2,1]]");
@@ -28,10 +19,10 @@ var calculate_movable;
         - the cross product with [dx, dy] is zero
         - abs(dx_block, dy_block) < abs(dx, dy)
         */
-        var dx = delta[0], dy = delta[1];
-        var ans = [];
-        for (var dx_block = -8; dx_block <= 8; dx_block++) {
-            for (var dy_block = -8; dy_block <= 8; dy_block++) {
+        const [dx, dy] = delta;
+        let ans = [];
+        for (let dx_block = -8; dx_block <= 8; dx_block++) {
+            for (let dy_block = -8; dy_block <= 8; dy_block++) {
                 if (dx * dy_block - dy * dx_block !== 0)
                     continue; // cross product must be zero
                 if (dx * dx_block + dy * dy_block <= 0)
@@ -45,16 +36,12 @@ var calculate_movable;
         return ans;
     }
     function applyDeltasIfNoIntervention(coord, deltas, board) {
-        var _a;
-        return (_a = []).concat.apply(_a, deltas.map(function (delta) { return applySingleDeltaIfNoIntervention(coord, delta, board); }));
+        return [].concat(...deltas.map(delta => applySingleDeltaIfNoIntervention(coord, delta, board)));
     }
     function applySingleDeltaIfNoIntervention(coord, delta, board) {
-        var blocker = applyDeltas(coord, getBlockerDeltas(delta));
+        let blocker = applyDeltas(coord, getBlockerDeltas(delta));
         // if nothing is blocking the way
-        if (blocker.every(function (_a) {
-            var i = _a[0], j = _a[1];
-            return board[i][j] == null;
-        })) {
+        if (blocker.every(([i, j]) => board[i][j] == null)) {
             return applyDeltas(coord, [delta]);
         }
         else {
@@ -62,12 +49,9 @@ var calculate_movable;
         }
     }
     function applySingleDeltaIfZeroOrOneIntervention(coord, delta, board) {
-        var blocker = applyDeltas(coord, getBlockerDeltas(delta));
+        let blocker = applyDeltas(coord, getBlockerDeltas(delta));
         // if no piece or a single piece is blocking the way
-        if (blocker.filter(function (_a) {
-            var i = _a[0], j = _a[1];
-            return board[i][j] != null;
-        }).length <= 1) {
+        if (blocker.filter(([i, j]) => board[i][j] != null).length <= 1) {
             return applyDeltas(coord, [delta]);
         }
         else {
@@ -75,8 +59,7 @@ var calculate_movable;
         }
     }
     function applyDeltasIfZeroOrOneIntervention(coord, deltas, board) {
-        var _a;
-        return (_a = []).concat.apply(_a, deltas.map(function (delta) { return applySingleDeltaIfZeroOrOneIntervention(coord, delta, board); }));
+        return [].concat(...deltas.map(delta => applySingleDeltaIfZeroOrOneIntervention(coord, delta, board)));
     }
     function eightNeighborhood(coord) {
         return applyDeltas(coord, [
@@ -99,10 +82,7 @@ var calculate_movable;
             return true;
         }
         // is Tam2 available at any neighborhood?
-        return eightNeighborhood(coord).some(function (_a) {
-            var i = _a[0], j = _a[1];
-            return board[i][j] === "Tam2";
-        });
+        return eightNeighborhood(coord).some(([i, j]) => board[i][j] === "Tam2");
     }
     function calculateMovablePositions(coord, sq, board, tam_itself_is_tam_hue) {
         if (sq === "Tam2") {
@@ -111,14 +91,14 @@ var calculate_movable;
         if (sq.prof === Profession.Io) {
             return { finite: eightNeighborhood(coord), infinite: [] };
         }
-        var UPLEFT = [[-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2], [-1, -1]];
-        var UPRIGHT = [[-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2], [-1, 1]];
-        var DOWNLEFT = [[8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2], [1, -1]];
-        var DOWNRIGHT = [[8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2], [1, 1]];
-        var UP = [[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0], [-6, 0], [-7, 0], [-8, 0]];
-        var DOWN = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]];
-        var LEFT = [[0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7], [0, -8]];
-        var RIGHT = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]];
+        const UPLEFT = [[-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2], [-1, -1]];
+        const UPRIGHT = [[-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2], [-1, 1]];
+        const DOWNLEFT = [[8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2], [1, -1]];
+        const DOWNRIGHT = [[8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2], [1, 1]];
+        const UP = [[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0], [-6, 0], [-7, 0], [-8, 0]];
+        const DOWN = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]];
+        const LEFT = [[0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7], [0, -8]];
+        const RIGHT = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]];
         if (isTamHue(coord, board, tam_itself_is_tam_hue)) {
             switch (sq.prof) {
                 case Profession.Uai1: // General, 将, varxle
@@ -127,18 +107,32 @@ var calculate_movable;
                     return { finite: applyDeltas(coord, [[-2, -2], [-2, 2], [2, 2], [2, -2]]), infinite: [] }; // 車, vadyrd
                 case Profession.Kauk2: // Pawn, 兵, elmer
                     return {
-                        finite: applyDeltas(coord, [[-1, 0], [0, -1], [0, 1], [1, 0]]).concat(applySingleDeltaIfNoIntervention(coord, [-2, 0], board)), infinite: []
+                        finite: [
+                            ...applyDeltas(coord, [[-1, 0], [0, -1], [0, 1], [1, 0]]),
+                            ...applySingleDeltaIfNoIntervention(coord, [-2, 0], board)
+                        ], infinite: []
                     };
                 case Profession.Nuak1: // Vessel, 船, felkana
                     return {
-                        finite: applyDeltas(coord, [[0, -1], [0, 1]]).concat(applyDeltasIfNoIntervention(coord, [
-                            [0, -2], [0, 2]
-                        ], board)), infinite: applyDeltasIfNoIntervention(coord, UP.concat(DOWN), board)
+                        finite: [
+                            ...applyDeltas(coord, [[0, -1], [0, 1]]),
+                            ...applyDeltasIfNoIntervention(coord, [
+                                [0, -2], [0, 2]
+                            ], board)
+                        ], infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UP,
+                            ...DOWN
+                        ], board)
                     };
                 case Profession.Gua2: // Rook, 弓, gustuer
                 case Profession.Dau2: // Tiger, 虎, stistyst
                     return {
-                        finite: [], infinite: applyDeltasIfNoIntervention(coord, UPLEFT.concat(UPRIGHT, DOWNLEFT, DOWNRIGHT), board)
+                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UPLEFT,
+                            ...UPRIGHT,
+                            ...DOWNLEFT,
+                            ...DOWNRIGHT
+                        ], board)
                     };
                 case Profession.Maun1: // Horse, 馬, dodor
                     return {
@@ -151,14 +145,28 @@ var calculate_movable;
                     };
                 case Profession.Kua2: // Clerk, 筆, kua
                     return {
-                        finite: [], infinite: applyDeltasIfNoIntervention(coord, UP.concat(DOWN, LEFT, RIGHT), board)
+                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UP,
+                            ...DOWN,
+                            ...LEFT,
+                            ...RIGHT
+                        ], board)
                     };
                 case Profession.Tuk2: // Shaman, 巫, terlsk
                     return {
-                        finite: [], infinite: applyDeltasIfZeroOrOneIntervention(coord, UP.concat(DOWN, LEFT, RIGHT, UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT), board)
+                        finite: [], infinite: applyDeltasIfZeroOrOneIntervention(coord, [
+                            ...UP,
+                            ...DOWN,
+                            ...LEFT,
+                            ...RIGHT,
+                            ...UPLEFT,
+                            ...UPRIGHT,
+                            ...DOWNLEFT,
+                            ...DOWNRIGHT
+                        ], board)
                     };
                 default:
-                    var _should_not_reach_here = sq.prof;
+                    let _should_not_reach_here = sq.prof;
                     return _should_not_reach_here;
             }
         }
@@ -176,17 +184,28 @@ var calculate_movable;
                     return { finite: [], infinite: applyDeltasIfNoIntervention(coord, UP, board) };
                 case Profession.Gua2: // Rook, 弓, gustuer
                     return {
-                        finite: [], infinite: applyDeltasIfNoIntervention(coord, UP.concat(DOWN, LEFT, RIGHT), board)
+                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UP,
+                            ...DOWN,
+                            ...LEFT,
+                            ...RIGHT
+                        ], board)
                     };
                 case Profession.Kua2: // Clerk, 筆, kua
                     return {
                         finite: applyDeltas(coord, [[0, -1], [0, 1]]),
-                        infinite: applyDeltasIfNoIntervention(coord, UP.concat(DOWN), board)
+                        infinite: applyDeltasIfNoIntervention(coord, [
+                            ...UP,
+                            ...DOWN
+                        ], board)
                     };
                 case Profession.Tuk2: // Shaman, 巫, terlsk
                     return {
                         finite: applyDeltas(coord, [[-1, 0], [1, 0]]),
-                        infinite: applyDeltasIfNoIntervention(coord, LEFT.concat(RIGHT), board)
+                        infinite: applyDeltasIfNoIntervention(coord, [
+                            ...LEFT,
+                            ...RIGHT
+                        ], board)
                     };
                 case Profession.Uai1: // General, 将, varxle
                     return {
@@ -197,7 +216,7 @@ var calculate_movable;
                         ]), infinite: []
                     };
                 default:
-                    var _should_not_reach_here = sq.prof;
+                    let _should_not_reach_here = sq.prof;
                     return _should_not_reach_here;
             }
         }
