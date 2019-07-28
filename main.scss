@@ -3,7 +3,7 @@ $hop1zuo1_height: 140px;
 img.water_entry {
   z-index: 500;
   position: absolute;
-  top: 330px;
+  top: 190px + $hop1zuo1_height;
   left: -500px;
   animation: water1 1s ease;
 }
