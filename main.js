@@ -173,10 +173,7 @@ function sendAfterHalfAcceptance(message, src, step) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, sendStuff("`after half acceptance`", message, function (response) {
                         console.log('Success:', JSON.stringify(response));
-                        return {
-                            success: Math.random() < 0.5,
-                            dat: [1, 2, 3]
-                        };
+                        return response;
                     })];
                 case 1:
                     res = _a.sent();
@@ -205,7 +202,7 @@ function sendStuff(log, message, createDummy) {
             switch (_a.label) {
                 case 0:
                     console.log("Sending " + log + ":", JSON.stringify(message));
-                    url = 'http://localhost:3000/movies';
+                    url = 'http://localhost:5000/';
                     data = {
                         "id": (Math.random() * 100000) | 0,
                         "message": message
@@ -238,10 +235,7 @@ function sendNormalMessage(message) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, sendStuff("normal move", message, function (response) {
                         console.log('Success:', JSON.stringify(response));
-                        return {
-                            success: Math.random() < 0.5,
-                            dat: [1, 2, 3]
-                        };
+                        return response;
                     })];
                 case 1:
                     res = _a.sent();
@@ -496,16 +490,7 @@ function sendInfAfterStep(message) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, sendStuff("inf after step", message, function (response) {
                         console.log('Success:', JSON.stringify(response));
-                        return {
-                            ciurl: [
-                                Math.random() < 0.5,
-                                Math.random() < 0.5,
-                                Math.random() < 0.5,
-                                Math.random() < 0.5,
-                                Math.random() < 0.5
-                            ],
-                            dat: [1, 2, 3]
-                        };
+                        return response;
                     })];
                 case 1:
                     res = _a.sent();

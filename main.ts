@@ -209,10 +209,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
             message,
             response => {
                 console.log('Success:', JSON.stringify(response));
-                return {
-                    success: Math.random() < 0.5,
-                    dat: [1, 2, 3]
-                };
+                return response;
             }
         );
 
@@ -233,7 +230,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
 
 async function sendStuff<T, U>(log: string, message: T, createDummy: (response: any) => U): Promise<U> {
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    let url = 'http://localhost:3000/movies';
+    let url = 'http://localhost:5000/';
     const data = {
         "id": (Math.random() * 100000) | 0,
         "message": message
@@ -261,10 +258,7 @@ async function sendStuff<T, U>(log: string, message: T, createDummy: (response: 
 async function sendNormalMessage(message: NormalMove) {
     const res: MockReturnDataForNormalMove = await sendStuff<NormalMove, MockReturnDataForNormalMove>("normal move", message, response => {
         console.log('Success:', JSON.stringify(response));
-        return {
-            success: Math.random() < 0.5,
-            dat: [1, 2, 3]
-        };
+        return response;
     });
 
     if (!res.success) {
@@ -569,16 +563,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
         message,
         response => {
             console.log('Success:', JSON.stringify(response));
-            return {
-                ciurl: [
-                    Math.random() < 0.5,
-                    Math.random() < 0.5,
-                    Math.random() < 0.5,
-                    Math.random() < 0.5,
-                    Math.random() < 0.5
-                ] as Ciurl,
-                dat: [1, 2, 3]
-            };
+            return response;
         }
     );
 
