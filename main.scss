@@ -1,59 +1,106 @@
 $hop1zuo1_height: 140px;
 
+img.water_entry {
+  z-index: 500;
+  position: absolute;
+  top: 330px;
+  left: -500px;
+  animation: water1 1s ease;
+}
+
+@keyframes water1 {
+  0% {
+    left: 700px;
+  }
+  33% {
+    left: 100px;
+  }
+  66% {
+    left: 100px;
+  }
+  100% {
+    left: -500px;
+  }
+}
+
 #field {
-    width: 631px; height: 631px + $hop1zuo1_height * 2;
-    position:absolute; top: 20px; left: 20px;
+  width: 631px;
+  height: 631px + $hop1zuo1_height * 2;
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 
 #protective_cover_over_field {
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 631px; height: 631px + $hop1zuo1_height * 2;
-    position:absolute; top: 20px; left: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 631px;
+  height: 631px + $hop1zuo1_height * 2;
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 
 .nocover {
-    display: none;
+  display: none;
 }
 
 #hop1zuo1_of_downward {
-    background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
+  background-color: rgb(0, 255, 200);
+  width: 631px;
+  height: $hop1zuo1_height;
+  position: relative;
 }
 
 #hop1zuo1_of_upward {
-    background-color: rgb(0,255,200); width: 631px; height: $hop1zuo1_height; position: relative;
+  background-color: rgb(0, 255, 200);
+  width: 631px;
+  height: $hop1zuo1_height;
+  position: relative;
 }
 
 #board_containment {
-    width: 631px; height: 631px; position: relative;
+  width: 631px;
+  height: 631px;
+  position: relative;
 }
 #board {
-    position: absolute; top: 0px; left: 0px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 img.selection {
-    position: absolute;
-    animation: anime1 0.81s ease -2s infinite alternate;
+  position: absolute;
+  animation: anime1 0.81s ease -2s infinite alternate;
 }
 
 img.guide {
-    position: absolute;
-    animation: anime2 0.81s ease -2s infinite alternate;
+  position: absolute;
+  animation: anime2 0.81s ease -2s infinite alternate;
 }
 
 @keyframes anime1 {
-0% {opacity: 0.5;}
-100% {opacity: 1.0;}
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes anime2 {
-0% {opacity: 0.3;}
-100% {opacity: 0.7;}
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.7;
+  }
 }
 
 img.piece_image_on_board {
-    position: absolute;
+  position: absolute;
 }
 
 img.piece_image_on_hop1zuo1 {
-    position: absolute;
+  position: absolute;
 }

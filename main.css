@@ -1,3 +1,25 @@
+img.water_entry {
+  z-index: 500;
+  position: absolute;
+  top: 330px;
+  left: -500px;
+  animation: water1 1s ease;
+}
+
+@keyframes water1 {
+  0% {
+    left: 700px;
+  }
+  33% {
+    left: 100px;
+  }
+  66% {
+    left: 100px;
+  }
+  100% {
+    left: -500px;
+  }
+}
 #field {
   width: 631px;
   height: 911px;

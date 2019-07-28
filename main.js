@@ -568,6 +568,14 @@ function sendInfAfterStep(message) {
         });
     });
 }
+function displayWaterEntryLogo() {
+    var water_entry_logo = document.getElementById("water_entry_logo");
+    water_entry_logo.style.display = "block";
+    water_entry_logo.classList.add("water_entry");
+    setTimeout(function () {
+        water_entry_logo.style.display = "none";
+    }, 1200);
+}
 function displayCiurl(ciurl) {
     var _a;
     // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
