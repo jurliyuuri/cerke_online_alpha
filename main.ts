@@ -236,8 +236,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         return;
     }
 
-    displayWaterEntryLogo();
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await displayWaterEntryLogo();
     displayCiurl(res.dat.ciurl);
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -685,13 +684,14 @@ async function sendInfAfterStep(message: InfAfterStep) {
     }
 }
 
-function displayWaterEntryLogo() {
+async function displayWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo")!;
     water_entry_logo.style.display = "block";
     water_entry_logo.classList.add("water_entry");
     setTimeout(function () {
         water_entry_logo.style.display = "none";
     }, 1200);
+    await new Promise(resolve => setTimeout(resolve, 1000));
 }
 
 function displayCiurl(ciurl: Ciurl) {

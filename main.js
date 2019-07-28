@@ -189,8 +189,7 @@ function sendAfterHalfAcceptance(message, src, step) {
                         drawField(GAME_STATE.f);
                         return [2 /*return*/];
                     }
-                    displayWaterEntryLogo();
-                    return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, 1000); })];
+                    return [4 /*yield*/, displayWaterEntryLogo()];
                 case 2:
                     _a.sent();
                     displayCiurl(res.dat.ciurl);
@@ -585,12 +584,24 @@ function sendInfAfterStep(message) {
     });
 }
 function displayWaterEntryLogo() {
-    var water_entry_logo = document.getElementById("water_entry_logo");
-    water_entry_logo.style.display = "block";
-    water_entry_logo.classList.add("water_entry");
-    setTimeout(function () {
-        water_entry_logo.style.display = "none";
-    }, 1200);
+    return __awaiter(this, void 0, void 0, function () {
+        var water_entry_logo;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    water_entry_logo = document.getElementById("water_entry_logo");
+                    water_entry_logo.style.display = "block";
+                    water_entry_logo.classList.add("water_entry");
+                    setTimeout(function () {
+                        water_entry_logo.style.display = "none";
+                    }, 1200);
+                    return [4 /*yield*/, new Promise(function (resolve) { return setTimeout(resolve, 1000); })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
 function displayCiurl(ciurl) {
     var _a;
