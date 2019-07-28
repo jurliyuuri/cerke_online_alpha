@@ -1,7 +1,7 @@
 "use strict";
 var calculate_movable;
 (function (calculate_movable) {
-    var Profession = type__piece.Profession;
+    var Profession = type__message.Profession;
     var coordEq = type__piece.coordEq;
     function applyDeltas(coord, deltas) {
         var i = coord[0], j = coord[1];

@@ -1,7 +1,7 @@
 "use strict";
-var Profession = type__piece.Profession;
+var Profession = type__message.Profession;
 var Side = type__piece.Side;
-var Color = type__piece.Color;
+var Color = type__message.Color;
 var toPath = type__piece.toPath;
 var toPath_ = type__piece.toPath_;
 var toUpOrDown = type__piece.toUpOrDown;

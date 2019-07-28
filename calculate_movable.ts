@@ -1,5 +1,5 @@
 namespace calculate_movable {
-    import Profession = type__piece.Profession;
+    import Profession = type__message.Profession;
     import Board = type__piece.Board;
     import Coord = type__piece.Coord;
     import coordEq = type__piece.coordEq;
