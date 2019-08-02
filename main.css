@@ -3,7 +3,7 @@ img.water_entry {
   position: absolute;
   top: 330px;
   left: -500px;
-  animation: water1 1s ease;
+  animation: water1 0.8093s ease;
 }
 
 @keyframes water1 {
@@ -69,12 +69,12 @@ img.water_entry {
 
 img.selection {
   position: absolute;
-  animation: anime1 0.81s ease -2s infinite alternate;
+  animation: anime1 0.8093s ease -1.6186s infinite alternate;
 }
 
 img.guide {
   position: absolute;
-  animation: anime2 0.81s ease -2s infinite alternate;
+  animation: anime2 0.8093s ease -1.6186s infinite alternate;
 }
 
 @keyframes anime1 {

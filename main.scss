@@ -1,11 +1,12 @@
 $hop1zuo1_height: 140px;
+$stususn: 0.8093s;
 
 img.water_entry {
   z-index: 500;
   position: absolute;
   top: 190px + $hop1zuo1_height;
   left: -500px;
-  animation: water1 1s ease;
+  animation: water1 1 * $stususn ease;
 }
 
 @keyframes water1 {
@@ -71,12 +72,12 @@ img.water_entry {
 
 img.selection {
   position: absolute;
-  animation: anime1 0.81s ease -2s infinite alternate;
+  animation: anime1 $stususn ease -2 * $stususn infinite alternate;
 }
 
 img.guide {
   position: absolute;
-  animation: anime2 0.81s ease -2s infinite alternate;
+  animation: anime2 $stususn ease -2 * $stususn infinite alternate;
 }
 
 @keyframes anime1 {

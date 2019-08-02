@@ -274,7 +274,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
 
     await displayWaterEntryLogo();
     displayCiurl(res.dat.ciurl);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
 
     if (res.dat.ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -340,7 +340,7 @@ async function sendNormalMessage(message: NormalMove) {
 
     await displayWaterEntryLogo();
     displayCiurl(res.dat.ciurl);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
 
     if (res.dat.ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -743,8 +743,8 @@ async function displayWaterEntryLogo() {
     water_entry_logo.classList.add("water_entry");
     setTimeout(function () {
         water_entry_logo.style.display = "none";
-    }, 1200);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    }, 1200 * 0.8093);
+    await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
 }
 
 function displayCiurl(ciurl: Ciurl) {
