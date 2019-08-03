@@ -156,6 +156,83 @@ function cancelStepping() {
     // draw
     drawField(GAME_STATE.f);
 }
+function afterFirstTamMove(from, to, hasAlreadyStepped) {
+    eraseGuide();
+    document.getElementById("protective_tam_cover_over_field").classList.remove("nocover");
+    GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
+    GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
+    drawField(GAME_STATE.f);
+    const drawTam2HoverNonshiftedAt = function (coord) {
+        let contains_phantom = document.getElementById("contains_phantom");
+        let img = createPieceSizeImageOnBoardByPath(coord, toPath_("Tam2"), "piece_image_on_board");
+        img.style.zIndex = "100";
+        img.style.cursor = "pointer";
+        const selectTam2Hover = function () {
+            const contains_guides = document.getElementById("contains_guides");
+            let centralNode = createPieceSizeImageOnBoardByPath(coord, "selection2", "selection");
+            centralNode.style.cursor = "pointer";
+            centralNode.style.zIndex = "200";
+            contains_guides.appendChild(centralNode);
+            const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(coord, "Tam2", GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
+            if (guideListGreen.length > 0) {
+                throw new Error("should not happen");
+            }
+            for (let ind = 0; ind < guideListYellow.length; ind++) {
+                const [i, j] = guideListYellow[ind];
+                const destPiece = GAME_STATE.f.currentBoard[i][j];
+                // cannot step twice
+                if (hasAlreadyStepped) {
+                    if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+                        continue;
+                    }
+                }
+                let img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
+                img.addEventListener('click', function () {
+                    alert("implement me");
+                    console.log("used to be getThingsGoingAfterStepping_Finite", coord, guideListYellow[ind]);
+                });
+                img.style.zIndex = "200";
+                contains_guides.appendChild(img);
+            }
+        };
+        img.addEventListener('click', selectTam2Hover);
+        contains_phantom.appendChild(img);
+        // draw as already selected
+        selectTam2Hover();
+    };
+    drawPhantomAt(from, "Tam2");
+    drawCancel(function cancelTam2FirstMove() {
+        eraseGuide();
+        erasePhantom();
+        document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
+        document.getElementById("protective_cover_over_field").classList.add("nocover");
+        // resurrect the original one
+        GAME_STATE.f.currentBoard[to[0]][to[1]] = null;
+        GAME_STATE.f.currentBoard[from[0]][from[1]] = "Tam2";
+        UI_STATE.selectedCoord = null;
+        // draw
+        drawField(GAME_STATE.f);
+    });
+    drawTam2HoverNonshiftedAt(to);
+}
+function drawPhantomAt(coord, piece) {
+    let contains_phantom = document.getElementById("contains_phantom");
+    erasePhantom();
+    const phantom = createPieceImgToBePlacedOnBoard(coord, piece);
+    phantom.style.opacity = "0.1";
+    contains_phantom.appendChild(phantom);
+}
+function drawCancel(fn) {
+    let contains_phantom = document.getElementById("contains_phantom");
+    let cancelButton = createPieceSizeImageOnBoardByPath_Shifted([9, 7.5], "piece/bmun", "piece_image_on_board");
+    cancelButton.width = 80;
+    cancelButton.height = 80;
+    cancelButton.style.zIndex = "100";
+    cancelButton.style.cursor = "pointer";
+    cancelButton.setAttribute('id', 'cancelButton');
+    cancelButton.addEventListener('click', fn);
+    contains_phantom.appendChild(cancelButton);
+}
 function stepping(from, piece, to) {
     eraseGuide();
     document.getElementById("protective_cover_over_field").classList.remove("nocover");
@@ -164,24 +241,6 @@ function stepping(from, piece, to) {
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     // draw
     drawField(GAME_STATE.f);
-    const drawPhantomAt = function (coord, piece) {
-        let contains_phantom = document.getElementById("contains_phantom");
-        erasePhantom();
-        const phantom = createPieceImgToBePlacedOnBoard(coord, piece);
-        phantom.style.opacity = "0.1";
-        contains_phantom.appendChild(phantom);
-    };
-    const drawCancel = function () {
-        let contains_phantom = document.getElementById("contains_phantom");
-        let cancelButton = createPieceSizeImageOnBoardByPath_Shifted([9, 7.5], "piece/bmun", "piece_image_on_board");
-        cancelButton.width = 80;
-        cancelButton.height = 80;
-        cancelButton.style.zIndex = "100";
-        cancelButton.style.cursor = "pointer";
-        cancelButton.setAttribute('id', 'cancelButton');
-        cancelButton.addEventListener('click', cancelStepping);
-        contains_phantom.appendChild(cancelButton);
-    };
     const drawHoverAt = function (coord, piece) {
         let contains_phantom = document.getElementById("contains_phantom");
         let img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
@@ -209,7 +268,7 @@ function stepping(from, piece, to) {
         selectHover();
     };
     drawPhantomAt(from, piece);
-    drawCancel();
+    drawCancel(cancelStepping);
     drawHoverAt(to, piece);
 }
 async function sendAfterHalfAcceptance(message, src, step) {
@@ -484,8 +543,7 @@ function getThingsGoing(piece, from, to) {
             return;
         }
         else {
-            // FIXME: implement me
-            alert("implement Tam2 movement");
+            afterFirstTamMove(from, to, false);
             return;
         }
     }
@@ -514,7 +572,7 @@ function getThingsGoing(piece, from, to) {
 }
 function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     if (piece === "Tam2") {
-        alert("FIXME: implement Tam2's movement, who initially stepped");
+        afterFirstTamMove(src, dest, true);
         return;
     }
     const message = {
