@@ -211,12 +211,6 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
 
             centralNode.style.cursor = "pointer";
 
-            // click on it to erase
-            centralNode.addEventListener('click', function () {
-                eraseGuide();
-                UI_STATE.selectedCoord = null;
-            });
-
             centralNode.style.zIndex = "200";
             contains_guides.appendChild(centralNode);
 

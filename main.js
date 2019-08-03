@@ -191,11 +191,6 @@ function stepping(from, piece, to) {
             const contains_guides = document.getElementById("contains_guides");
             let centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
             centralNode.style.cursor = "pointer";
-            // click on it to erase
-            centralNode.addEventListener('click', function () {
-                eraseGuide();
-                UI_STATE.selectedCoord = null;
-            });
             centralNode.style.zIndex = "200";
             contains_guides.appendChild(centralNode);
             const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
