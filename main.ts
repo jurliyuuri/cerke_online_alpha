@@ -110,29 +110,6 @@ function fromAbsoluteCoord(abs: AbsoluteCoord): Coord {
     return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
 }
 
-function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, to: Coord) {
-    let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
-
-    // must parachute onto an empty square
-    if (dest != null) {
-        alert("Cannot parachute onto an occupied square");
-        throw new Error("Cannot parachute onto an occupied square");
-    }
-
-    let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
-    let message: NormalNonTamMove = {
-        type: "NonTamMove",
-        data: {
-            type: "FromHand",
-            color: piece.color,
-            prof: piece.prof,
-            dest: abs_dst
-        }
-    };
-
-    sendNormalMessage(message);
-}
-
 function erasePhantom() {
     let contains_phantom = document.getElementById("contains_phantom")!;
     while (contains_phantom.firstChild) {
@@ -157,26 +134,6 @@ function cancelStepping() {
     drawField(GAME_STATE.f);
 }
 
-function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, to: Coord, hasAlreadyStepped: boolean) {
-    console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
-
-    let message: NormalMove = {
-        type: "TamMove",
-        stepStyle: hasAlreadyStepped ? 'StepsDuringFormer' : 'NoStep',
-        src: toAbsoluteCoord(theVerySrc),
-        firstDest: toAbsoluteCoord(firstDest),
-        secondDest: toAbsoluteCoord(to)
-    };
-
-    sendNormalMessage(message);
-
-    document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
-    erasePhantom();
-    document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
-    eraseGuide(); // this removes the central guide, as well as the yellow and green ones
-
-    return;
-}
 
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, stepsOn: Coord) {
     eraseGuide();
@@ -340,7 +297,26 @@ function afterFirstTamMove(from: Coord, to: Coord, hasAlreadyStepped: boolean) {
 
                 if (destPiece === null) {
                     img.addEventListener('click', function () {
-                        getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(from, coord, guideListYellow[ind], hasAlreadyStepped);
+                        (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, to: Coord, hasAlreadyStepped: boolean) {
+                            console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
+
+                            let message: NormalMove = {
+                                type: "TamMove",
+                                stepStyle: hasAlreadyStepped ? 'StepsDuringFormer' : 'NoStep',
+                                src: toAbsoluteCoord(theVerySrc),
+                                firstDest: toAbsoluteCoord(firstDest),
+                                secondDest: toAbsoluteCoord(to)
+                            };
+
+                            sendNormalMessage(message);
+
+                            document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
+                            erasePhantom();
+                            document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
+                            eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+
+                            return;
+                        })(from, coord, guideListYellow[ind], hasAlreadyStepped);
                     });
                 } else {
                     img.addEventListener('click', function () {
@@ -833,7 +809,6 @@ function getThingsGoing(piece: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coo
     }
 }
 
-
 function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piece, dest: Coord) {
     if (piece === "Tam2") {
         afterFirstTamMove(src, dest, true);
@@ -1149,7 +1124,28 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
 
                 // click on it to get things going
                 img.addEventListener('click', function () {
-                    getThingsGoingFromHop1zuo1(piece, ij);
+                    (function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, to: Coord) {
+                        let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+
+                        // must parachute onto an empty square
+                        if (dest != null) {
+                            alert("Cannot parachute onto an occupied square");
+                            throw new Error("Cannot parachute onto an occupied square");
+                        }
+
+                        let abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
+                        let message: NormalNonTamMove = {
+                            type: "NonTamMove",
+                            data: {
+                                type: "FromHand",
+                                color: piece.color,
+                                prof: piece.prof,
+                                dest: abs_dst
+                            }
+                        };
+
+                        sendNormalMessage(message);
+                    })(piece, ij);
                 });
 
                 contains_guides.appendChild(img);
