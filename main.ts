@@ -157,9 +157,102 @@ function cancelStepping() {
     drawField(GAME_STATE.f);
 }
 
+function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, to: Coord, hasAlreadyStepped: boolean) {
+    let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
+
+    if (destPiece == null) { // dest is empty square; simple Tam2 move
+        let message: NormalMove;
+
+        let abs_src: AbsoluteCoord = toAbsoluteCoord(theVerySrc);
+        let abs_firstDest: AbsoluteCoord = toAbsoluteCoord(firstDest);
+        let abs_secondDest: AbsoluteCoord = toAbsoluteCoord(to);
+        message = {
+            type: "TamMove",
+            stepStyle: hasAlreadyStepped ? 'StepsDuringFormer' : 'NoStep',
+            src: abs_src,
+            firstDest: abs_firstDest,
+            secondDest: abs_secondDest
+        };
+
+        sendNormalMessage(message);
+
+        document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
+        erasePhantom();
+        document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
+        eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+
+        return;
+    }
+
+    alert("FIXME: not yet tested");
+
+    (function steppingInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, piece: "Tam2", to: Coord) {
+        eraseGuide();
+        document.getElementById("protective_cover_over_field")!.classList.remove("nocover");
+        document.getElementById("protective_tam_cover_over_field")!.classList.remove("nocover");
+
+        // delete the original one
+        GAME_STATE.backupDuringStepping = [firstDest, piece];
+        GAME_STATE.f.currentBoard[firstDest[0]][firstDest[1]] = null;
+
+        // draw
+        drawField(GAME_STATE.f);
+
+        const drawHoverAt = function (coord: Coord, piece: "Tam2") {
+            let contains_phantom = document.getElementById("contains_phantom")!;
+
+            let img = createPieceSizeImageOnBoardByPath_Shifted(
+                coord,
+                toPath_(piece),
+                "piece_image_on_board"
+            );
+
+            img.style.zIndex = "100";
+            img.style.cursor = "pointer";
+
+            const selectHover = function () {
+                const contains_guides = document.getElementById("contains_guides")!;
+
+                let centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
+
+                centralNode.style.cursor = "pointer";
+
+                centralNode.style.zIndex = "200";
+                contains_guides.appendChild(centralNode);
+
+                const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
+                    coord,
+                    piece,
+                    GAME_STATE.f.currentBoard,
+                    GAME_STATE.tam_itself_is_tam_hue);
+
+                display_guide_after_stepping(coord, { piece: piece, path: "ct" }, contains_guides, guideListYellow);
+
+                if (guideListGreen.length > 0) { throw new Error("should not happen"); }
+                return;
+            }
+
+            img.addEventListener('click', selectHover);
+            contains_phantom.appendChild(img);
+
+            // draw as already selected
+            selectHover();
+        }
+
+        drawPhantomAt(firstDest, piece);
+        drawCancel(cancelStepping);
+        drawHoverAt(to, piece);
+    })(theVerySrc, firstDest, "Tam2", to);
+    return;
+
+}
+
 function afterFirstTamMove(from: Coord, to: Coord, hasAlreadyStepped: boolean) {
     eraseGuide();
     document.getElementById("protective_tam_cover_over_field")!.classList.remove("nocover");
+
+    // stepping should now have been completed
+    document.getElementById("protective_cover_over_field")!.classList.add("nocover");
 
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
@@ -209,8 +302,7 @@ function afterFirstTamMove(from: Coord, to: Coord, hasAlreadyStepped: boolean) {
                 let img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
 
                 img.addEventListener('click', function () {
-                    alert("implement me");
-                    console.log("used to be getThingsGoingAfterStepping_Finite", coord, guideListYellow[ind]);
+                    getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(from, coord, guideListYellow[ind], hasAlreadyStepped);
                 });
 
                 img.style.zIndex = "200";
@@ -616,13 +708,15 @@ function updateField(message: NormalMove) {
         }
 
     } else if (message.type === "TamMove") {
+
+        // We decided that the piece should actually be located in firstDest after the first move
         const k = message;
-        const [src_i, src_j] = fromAbsoluteCoord(k.src);
+        const [firstDest_i, firstDest_j] = fromAbsoluteCoord(k.firstDest);
         const [secondDest_i, secondDest_j] = fromAbsoluteCoord(k.secondDest);
 
-        let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+        let piece: Piece | null = GAME_STATE.f.currentBoard[firstDest_i][firstDest_j]
         if (piece === null) {
-            throw new Error("src is unoccupied");
+            throw new Error("firstDest is unoccupied");
         }
 
         if (piece !== "Tam2") {
@@ -630,11 +724,11 @@ function updateField(message: NormalMove) {
         }
 
         /* it's possible that you are returning to the original position, in which case you don't do anything */
-        if (coordEq([src_i, src_j], [secondDest_i, secondDest_j])) {
+        if (coordEq([firstDest_i, firstDest_j], [secondDest_i, secondDest_j])) {
             return;
         }
 
-        GAME_STATE.f.currentBoard[src_i][src_j] = null;
+        GAME_STATE.f.currentBoard[firstDest_i][firstDest_j] = null;
         GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
 
     } else {
