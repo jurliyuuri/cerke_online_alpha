@@ -220,47 +220,40 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
                 GAME_STATE.f.currentBoard,
                 GAME_STATE.tam_itself_is_tam_hue);
 
-
             if (guideListGreen.length > 0) { throw new Error("should not happen"); }
 
-            (function display_guide_after_stepping(
-                q: { piece: Piece, path: "ctam" },
-                parent: HTMLElement,
-                list: Array<Coord>
-            ): void {
-                for (let ind = 0; ind < list.length; ind++) {
-                    const [i, j] = list[ind];
-                    const destPiece = GAME_STATE.f.currentBoard[i][j];
+            for (let ind = 0; ind < guideListYellow.length; ind++) {
+                const [i, j] = guideListYellow[ind];
+                const destPiece = GAME_STATE.f.currentBoard[i][j];
 
-                    // cannot step twice
-                    if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
-                        continue;
+                // cannot step twice
+                if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+                    continue;
+                }
+
+                let img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
+
+                img.addEventListener('click', function () {
+                    const message: NormalMove = {
+                        type: "TamMove",
+                        stepStyle: "StepsDuringLatter",
+                        src: toAbsoluteCoord(theVerySrc),
+                        firstDest: toAbsoluteCoord(firstDest),
+                        secondDest: toAbsoluteCoord(guideListYellow[ind])
                     }
 
-                    let img = createCircleGuideImageAt(list[ind], q.path);
+                    sendNormalMessage(message);
 
-                    img.addEventListener('click', function () {
-                        const message: NormalMove = {
-                            type: "TamMove",
-                            stepStyle: "StepsDuringLatter",
-                            src: toAbsoluteCoord(theVerySrc),
-                            firstDest: toAbsoluteCoord(firstDest),
-                            secondDest: toAbsoluteCoord(list[ind])
-                        }
+                    eraseGuide();
+                    erasePhantom();
+                    document.getElementById("protective_cover_over_field")!.classList.add("nocover");
+                    document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
+                    return;
+                });
 
-                        sendNormalMessage(message);
-
-                        eraseGuide();
-                        erasePhantom();
-                        document.getElementById("protective_cover_over_field")!.classList.add("nocover");
-                        document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
-                        return;
-                    });
-
-                    img.style.zIndex = "200";
-                    parent.appendChild(img);
-                }
-            })({ piece: "Tam2", path: "ctam" }, contains_guides, guideListYellow);
+                img.style.zIndex = "200";
+                contains_guides.appendChild(img);
+            }
 
             return;
         }

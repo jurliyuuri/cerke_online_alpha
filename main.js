@@ -197,22 +197,22 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
             if (guideListGreen.length > 0) {
                 throw new Error("should not happen");
             }
-            (function display_guide_after_stepping(q, parent, list) {
-                for (let ind = 0; ind < list.length; ind++) {
-                    const [i, j] = list[ind];
+            {
+                for (let ind = 0; ind < guideListYellow.length; ind++) {
+                    const [i, j] = guideListYellow[ind];
                     const destPiece = GAME_STATE.f.currentBoard[i][j];
                     // cannot step twice
                     if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
                         continue;
                     }
-                    let img = createCircleGuideImageAt(list[ind], q.path);
+                    let img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
                     img.addEventListener('click', function () {
                         const message = {
                             type: "TamMove",
                             stepStyle: "StepsDuringLatter",
                             src: toAbsoluteCoord(theVerySrc),
                             firstDest: toAbsoluteCoord(firstDest),
-                            secondDest: toAbsoluteCoord(list[ind])
+                            secondDest: toAbsoluteCoord(guideListYellow[ind])
                         };
                         sendNormalMessage(message);
                         eraseGuide();
@@ -222,9 +222,9 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
                         return;
                     });
                     img.style.zIndex = "200";
-                    parent.appendChild(img);
+                    contains_guides.appendChild(img);
                 }
-            })({ piece: "Tam2", path: "ctam" }, contains_guides, guideListYellow);
+            }
             return;
         };
         img.addEventListener('click', selectHover);
