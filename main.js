@@ -173,7 +173,6 @@ function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVeryS
     return;
 }
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, firstDest, to) {
-    alert("FIXME: not yet tested");
     eraseGuide();
     document.getElementById("protective_cover_over_field").classList.remove("nocover");
     document.getElementById("protective_tam_cover_over_field").classList.remove("nocover");
@@ -224,7 +223,16 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     };
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function () {
-        alert("FIXME: cancellation from getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf to nothing");
+        eraseGuide();
+        erasePhantom();
+        document.getElementById("protective_cover_over_field").classList.add("nocover");
+        document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
+        // resurrect the original one
+        GAME_STATE.f.currentBoard[theVerySrc[0]][theVerySrc[1]] = "Tam2";
+        GAME_STATE.backupDuringStepping = null;
+        UI_STATE.selectedCoord = null;
+        // draw
+        drawField(GAME_STATE.f);
     });
     drawHoverAt(to, "Tam2");
     return;
