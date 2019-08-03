@@ -172,7 +172,7 @@ function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVeryS
     eraseGuide(); // this removes the central guide, as well as the yellow and green ones
     return;
 }
-function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, firstDest, to) {
+function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, firstDest, stepsOn) {
     eraseGuide();
     document.getElementById("protective_cover_over_field").classList.remove("nocover");
     document.getElementById("protective_tam_cover_over_field").classList.remove("nocover");
@@ -207,8 +207,19 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
                     }
                     let img = createCircleGuideImageAt(list[ind], q.path);
                     img.addEventListener('click', function () {
-                        alert("FIXME");
-                        console.log("used to be getThingsGoingAfterStepping_Finite", coord, q.piece, list[ind]);
+                        const message = {
+                            type: "TamMove",
+                            stepStyle: "StepsDuringLatter",
+                            src: toAbsoluteCoord(theVerySrc),
+                            firstDest: toAbsoluteCoord(firstDest),
+                            secondDest: toAbsoluteCoord(list[ind])
+                        };
+                        sendNormalMessage(message);
+                        eraseGuide();
+                        erasePhantom();
+                        document.getElementById("protective_cover_over_field").classList.add("nocover");
+                        document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
+                        return;
                     });
                     img.style.zIndex = "200";
                     parent.appendChild(img);
@@ -234,7 +245,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
         // draw
         drawField(GAME_STATE.f);
     });
-    drawHoverAt(to, "Tam2");
+    drawHoverAt(stepsOn, "Tam2");
     return;
 }
 function afterFirstTamMove(from, to, hasAlreadyStepped) {
@@ -590,10 +601,15 @@ function updateField(message) {
         }
     }
     else if (message.type === "TamMove") {
-        // We decided that the piece should actually be located in firstDest after the first move
         const k = message;
         const [firstDest_i, firstDest_j] = fromAbsoluteCoord(k.firstDest);
         const [secondDest_i, secondDest_j] = fromAbsoluteCoord(k.secondDest);
+        if (message.stepStyle === "StepsDuringLatter") {
+            // We decided that Tam2 should not be present on the board if it is StepsDuringLatter
+            GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = "Tam2";
+            return;
+        }
+        // If not StepsDuringLatter, we decided that the piece should actually be located in firstDest after the first move
         let piece = GAME_STATE.f.currentBoard[firstDest_i][firstDest_j];
         if (piece === null) {
             throw new Error("firstDest is unoccupied");

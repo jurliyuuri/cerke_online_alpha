@@ -178,7 +178,7 @@ function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVeryS
     return;
 }
 
-function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, to: Coord) {
+function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, stepsOn: Coord) {
     eraseGuide();
     document.getElementById("protective_cover_over_field")!.classList.remove("nocover");
     document.getElementById("protective_tam_cover_over_field")!.classList.remove("nocover");
@@ -240,8 +240,21 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
                     let img = createCircleGuideImageAt(list[ind], q.path);
 
                     img.addEventListener('click', function () {
-                        alert("FIXME");
-                        console.log("used to be getThingsGoingAfterStepping_Finite", coord, q.piece, list[ind]);
+                        const message: NormalMove = {
+                            type: "TamMove",
+                            stepStyle: "StepsDuringLatter",
+                            src: toAbsoluteCoord(theVerySrc),
+                            firstDest: toAbsoluteCoord(firstDest),
+                            secondDest: toAbsoluteCoord(list[ind])
+                        }
+
+                        sendNormalMessage(message);
+
+                        eraseGuide();
+                        erasePhantom();
+                        document.getElementById("protective_cover_over_field")!.classList.add("nocover");
+                        document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
+                        return;
                     });
 
                     img.style.zIndex = "200";
@@ -260,7 +273,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
     }
 
     drawPhantomAt(firstDest, "Tam2");
-    drawCancel(function() {
+    drawCancel(function () {
         eraseGuide();
         erasePhantom();
         document.getElementById("protective_cover_over_field")!.classList.add("nocover");
@@ -275,7 +288,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
         // draw
         drawField(GAME_STATE.f);
     });
-    drawHoverAt(to, "Tam2");
+    drawHoverAt(stepsOn, "Tam2");
     return;
 
 }
@@ -745,12 +758,16 @@ function updateField(message: NormalMove) {
         }
 
     } else if (message.type === "TamMove") {
-
-        // We decided that the piece should actually be located in firstDest after the first move
         const k = message;
         const [firstDest_i, firstDest_j] = fromAbsoluteCoord(k.firstDest);
         const [secondDest_i, secondDest_j] = fromAbsoluteCoord(k.secondDest);
+        if (message.stepStyle === "StepsDuringLatter") {
+            // We decided that Tam2 should not be present on the board if it is StepsDuringLatter
+            GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = "Tam2";
+            return;
+        }
 
+        // If not StepsDuringLatter, we decided that the piece should actually be located in firstDest after the first move
         let piece: Piece | null = GAME_STATE.f.currentBoard[firstDest_i][firstDest_j]
         if (piece === null) {
             throw new Error("firstDest is unoccupied");
@@ -767,7 +784,6 @@ function updateField(message: NormalMove) {
 
         GAME_STATE.f.currentBoard[firstDest_i][firstDest_j] = null;
         GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
-
     } else {
         let _should_not_reach_here: never = message;
     }
