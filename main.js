@@ -147,7 +147,20 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     document.getElementById("cancelButton").remove();
     // draw
     drawField(GAME_STATE.f);
-    const selectHover_ = function (coord, piece) {
+    drawPhantomAt(firstDest, "Tam2");
+    drawCancel(function () {
+        eraseGuide();
+        erasePhantom();
+        document.getElementById("protective_cover_over_field").classList.add("nocover");
+        document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
+        // resurrect the original one
+        GAME_STATE.f.currentBoard[theVerySrc[0]][theVerySrc[1]] = "Tam2";
+        GAME_STATE.backupDuringStepping = null;
+        UI_STATE.selectedCoord = null;
+        // draw
+        drawField(GAME_STATE.f);
+    });
+    drawHoverAt_(stepsOn, "Tam2", function (coord, piece) {
         const contains_guides = document.getElementById("contains_guides");
         let centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
         centralNode.style.cursor = "pointer";
@@ -184,34 +197,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
             contains_guides.appendChild(img);
         }
         return;
-    };
-    const drawHoverAt = function (coord, piece, selectHover_) {
-        let contains_phantom = document.getElementById("contains_phantom");
-        let img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
-        img.style.zIndex = "100";
-        img.style.cursor = "pointer";
-        const selectHover = function () {
-            selectHover_(coord, piece);
-        };
-        img.addEventListener('click', selectHover);
-        contains_phantom.appendChild(img);
-        // draw as already selected
-        selectHover();
-    };
-    drawPhantomAt(firstDest, "Tam2");
-    drawCancel(function () {
-        eraseGuide();
-        erasePhantom();
-        document.getElementById("protective_cover_over_field").classList.add("nocover");
-        document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
-        // resurrect the original one
-        GAME_STATE.f.currentBoard[theVerySrc[0]][theVerySrc[1]] = "Tam2";
-        GAME_STATE.backupDuringStepping = null;
-        UI_STATE.selectedCoord = null;
-        // draw
-        drawField(GAME_STATE.f);
     });
-    drawHoverAt(stepsOn, "Tam2", selectHover_);
     return;
 }
 function afterFirstTamMove(from, to, hasAlreadyStepped) {
@@ -312,6 +298,19 @@ function drawCancel(fn) {
     cancelButton.addEventListener('click', fn);
     contains_phantom.appendChild(cancelButton);
 }
+function drawHoverAt_(coord, piece, selectHover_) {
+    let contains_phantom = document.getElementById("contains_phantom");
+    let img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
+    img.style.zIndex = "100";
+    img.style.cursor = "pointer";
+    const selectHover = function () {
+        selectHover_(coord, piece);
+    };
+    img.addEventListener('click', selectHover);
+    contains_phantom.appendChild(img);
+    // draw as already selected
+    selectHover();
+}
 function stepping(from, piece, to) {
     eraseGuide();
     document.getElementById("protective_cover_over_field").classList.remove("nocover");
@@ -320,7 +319,9 @@ function stepping(from, piece, to) {
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     // draw
     drawField(GAME_STATE.f);
-    const selectHover_ = function (coord, piece) {
+    drawPhantomAt(from, piece);
+    drawCancel(cancelStepping);
+    drawHoverAt_(to, piece, function (coord, piece) {
         const contains_guides = document.getElementById("contains_guides");
         let centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
         centralNode.style.cursor = "pointer";
@@ -335,23 +336,7 @@ function stepping(from, piece, to) {
             return;
         }
         display_guide_after_stepping(coord, { piece: piece, path: "ct2" }, contains_guides, guideListGreen);
-    };
-    const drawHoverAt = function (coord, piece, selectHover_) {
-        let contains_phantom = document.getElementById("contains_phantom");
-        let img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
-        img.style.zIndex = "100";
-        img.style.cursor = "pointer";
-        const selectHover = function () {
-            selectHover_(coord, piece);
-        };
-        img.addEventListener('click', selectHover);
-        contains_phantom.appendChild(img);
-        // draw as already selected
-        selectHover();
-    };
-    drawPhantomAt(from, piece);
-    drawCancel(cancelStepping);
-    drawHoverAt(to, piece, selectHover_);
+    });
 }
 async function sendAfterHalfAcceptance(message, src, step) {
     const res = await sendStuff("`after half acceptance`", message, response => {
@@ -753,8 +738,13 @@ async function displayWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo");
     water_entry_logo.style.display = "block";
     water_entry_logo.classList.add("water_entry");
+    const protective_cover_over_field = document.getElementById("protective_cover_over_field");
+    protective_cover_over_field.classList.remove("nocover");
+    protective_cover_over_field.style.backgroundColor = "rgba(0, 0, 0, 0)";
     setTimeout(function () {
         water_entry_logo.style.display = "none";
+        protective_cover_over_field.classList.add("nocover");
+        protective_cover_over_field.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
     }, 1200 * 0.8093);
     await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
 }

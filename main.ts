@@ -916,8 +916,14 @@ async function displayWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo")!;
     water_entry_logo.style.display = "block";
     water_entry_logo.classList.add("water_entry");
+    const protective_cover_over_field = document.getElementById("protective_cover_over_field")!;
+    protective_cover_over_field.classList.remove("nocover");
+    protective_cover_over_field.style.backgroundColor = "rgba(0, 0, 0, 0)";
+   
     setTimeout(function () {
         water_entry_logo.style.display = "none";
+        protective_cover_over_field.classList.add("nocover");
+        protective_cover_over_field.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
     }, 1200 * 0.8093);
     await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
 }
