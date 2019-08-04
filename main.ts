@@ -736,6 +736,16 @@ function updateField(message: NormalMove) {
     }
 }
 
+/* Intentionally does not verify whether the piece itself is downward */
+function isProtectedByDownwardTamHueAUai(coord: Coord): boolean {
+    return eightNeighborhood(coord).filter(([a, b]) => {
+        let piece = GAME_STATE.f.currentBoard[a][b];
+        if (piece == null) { return false; }
+        if (piece === "Tam2") { return false; }
+        return piece.prof === Profession.Uai1 && piece.side === Side.Downward
+    }).length > 0;
+}
+
 function getThingsGoing(piece: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coord) {
     let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
@@ -762,7 +772,8 @@ function getThingsGoing(piece: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coo
         }
     }
 
-    if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
+    if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2"
+        || isProtectedByDownwardTamHueAUai(to)) { // can step, but cannot take
         stepping(from, piece, to);
         return;
     }
@@ -919,7 +930,7 @@ async function displayWaterEntryLogo() {
     const protective_cover_over_field = document.getElementById("protective_cover_over_field")!;
     protective_cover_over_field.classList.remove("nocover");
     protective_cover_over_field.style.backgroundColor = "rgba(0, 0, 0, 0)";
-   
+
     setTimeout(function () {
         water_entry_logo.style.display = "none";
         protective_cover_over_field.classList.add("nocover");
@@ -996,7 +1007,12 @@ function display_guide_after_stepping(
         const destPiece = GAME_STATE.f.currentBoard[i][j];
 
         // cannot step twice
-        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+        if (destPiece === "Tam2"
+            || (
+                destPiece !== null
+                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(list[ind]))
+            )
+        ) {
             continue;
         }
 

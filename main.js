@@ -597,6 +597,19 @@ function updateField(message) {
         let _should_not_reach_here = message;
     }
 }
+/* Intentionally does not verify whether the piece itself is downward */
+function isProtectedByDownwardTamHueAUai(coord) {
+    return eightNeighborhood(coord).filter(([a, b]) => {
+        let piece = GAME_STATE.f.currentBoard[a][b];
+        if (piece == null) {
+            return false;
+        }
+        if (piece === "Tam2") {
+            return false;
+        }
+        return piece.prof === Profession.Uai1 && piece.side === Side.Downward;
+    }).length > 0;
+}
 function getThingsGoing(piece, from, to) {
     let destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (destPiece == null) { // dest is empty square; try to simply move
@@ -620,7 +633,8 @@ function getThingsGoing(piece, from, to) {
             return;
         }
     }
-    if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2") { // can step, but cannot take
+    if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2"
+        || isProtectedByDownwardTamHueAUai(to)) { // can step, but cannot take
         stepping(from, piece, to);
         return;
     }
@@ -800,7 +814,9 @@ function display_guide_after_stepping(coord, q, parent, list) {
         const [i, j] = list[ind];
         const destPiece = GAME_STATE.f.currentBoard[i][j];
         // cannot step twice
-        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+        if (destPiece === "Tam2"
+            || (destPiece !== null
+                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(list[ind])))) {
             continue;
         }
         let img = createCircleGuideImageAt(list[ind], q.path);
