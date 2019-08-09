@@ -464,8 +464,13 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
 }
 
 async function sendStuff<T, U>(log: string, message: T, validateInput: (response: any) => U): Promise<U> {
+
+    // cover up the UI
+    const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait")!;
+    cover_while_asyncawait.classList.remove("nocover");
+
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    let url = 'http://localhost:5000/';
+    let url = 'http://localhost:5000/slow';
     const data = {
         "id": (Math.random() * 100000) | 0,
         "message": message
@@ -477,14 +482,22 @@ async function sendStuff<T, U>(log: string, message: T, validateInput: (response
         headers: {
             'Content-Type': 'application/json'
         }
-    }).then(res => res.json())
-        .then(validateInput)
-        .catch(error => console.error('Error:', error));
+    }).then(function (res) {
+        cover_while_asyncawait.classList.add("nocover");
+        return res.json();
+    }).then(validateInput)
+        .catch(function (error) {
+            cover_while_asyncawait.classList.add("nocover");
+            console.error('Error:', error);
+            return;
+        });
 
     console.log(res);
+    cover_while_asyncawait.classList.add("nocover");
 
     if (!res) {
         alert("network error!");
+        cover_while_asyncawait.classList.add("nocover");
         throw new Error("network error!");
     }
     return res;
@@ -927,14 +940,12 @@ async function displayWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo")!;
     water_entry_logo.style.display = "block";
     water_entry_logo.classList.add("water_entry");
-    const protective_cover_over_field = document.getElementById("protective_cover_over_field")!;
-    protective_cover_over_field.classList.remove("nocover");
-    protective_cover_over_field.style.backgroundColor = "rgba(0, 0, 0, 0)";
+    const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait")!;
+    cover_while_asyncawait.classList.remove("nocover");
 
     setTimeout(function () {
         water_entry_logo.style.display = "none";
-        protective_cover_over_field.classList.add("nocover");
-        protective_cover_over_field.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+        cover_while_asyncawait.classList.add("nocover");
     }, 1200 * 0.8093);
     await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
 }

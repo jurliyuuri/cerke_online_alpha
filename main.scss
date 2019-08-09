@@ -41,6 +41,16 @@ img.water_entry {
   left: 20px;
 }
 
+#protective_cover_over_field_while_asyncawait {
+  background-color: rgba(0, 0, 0, 0);
+  width: 631px;
+  height: 631px + $hop1zuo1_height * 2;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 999;
+}
+
 #protective_tam_cover_over_field {
   background-color: rgba(0, 82, 66, 0.5);
   width: 631px;
