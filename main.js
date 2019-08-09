@@ -793,11 +793,8 @@ function displayCiurl(ciurl) {
     for (let i = 0; i < imgs.length; i++) {
         contains_ciurl.appendChild(imgs[i]);
     }
-    const audioContext = new AudioContext();
-    const audioElement = document.querySelector('audio');
-    const track = audioContext.createMediaElementSource(audioElement);
-    track.connect(audioContext.destination);
-    audioElement.play();
+    const sound = new Audio("sound/ciurl4.ogg");
+    sound.play();
 }
 function clearCiurl() {
     removeChildren(document.getElementById("contains_ciurl"));
