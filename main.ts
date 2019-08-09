@@ -470,7 +470,7 @@ async function sendStuff<T, U>(log: string, message: T, validateInput: (response
     cover_while_asyncawait.classList.remove("nocover");
 
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    let url = 'http://localhost:5000/slow';
+    let url = 'http://localhost:5000/';
     const data = {
         "id": (Math.random() * 100000) | 0,
         "message": message
