@@ -128,7 +128,7 @@
   #outer_container {
     width: 100vw;
     height: 141.3793103448vw;
-    margin: calc((100vh - 100vw / 29 * 41 )/2) 0;
+    margin: calc((100vh - 100vw / 29 * 41) / 2) 0;
   }
 
   #container {
