@@ -1,0 +1,182 @@
+/* original png info */
+$logo_aspect_ratio: 1488px / 1804px;
+$cpu_or_random_aspect_ratio: 670px / 830px;
+$friend_aspect_ratio: 673px / 830px;
+$friend_protrusion_ratio: 3px / 673px;
+
+@media (min-aspect-ratio: 29/41){
+  $container-height: 100vh;
+
+  $button_height_coeff: 0.24661;
+  $gap_between_buttons_coeff: 0.013889;
+
+  $min-entirety-aspect-ratio: 29/41;
+
+  $container-width: $container-height * $min-entirety-aspect-ratio;
+
+  $logo_width: 0.44144 * $container-height;
+  #cerke_online_logo {
+    height: $logo_width / $logo_aspect_ratio;
+    width: $logo_width;
+    position: absolute;
+    left: -$logo_width / 2 + $container-width / 2;
+    top: 0.087037 * $container-height;
+  }
+
+  $button_height: $button_height_coeff * $container-height;
+  $cpu_or_random_width: $button_height * $cpu_or_random_aspect_ratio;
+  $gap_between_buttons: $gap_between_buttons_coeff * $container-height;
+  $random_left: -$cpu_or_random_width / 2 + $container-width / 2;
+
+  body {
+    background-color: rgb(230, 230, 230);
+    margin: 0;
+  }
+
+  #cpu_button {
+    width: $cpu_or_random_width;
+    height: $button_height;
+    position: absolute;
+    left: $random_left - $gap_between_buttons - $cpu_or_random_width;
+    top: 2/3 * $container-height;
+  }
+
+  #random_button {
+    width: $cpu_or_random_width;
+    height: $button_height;
+    position: absolute;
+    left: $random_left;
+    top: 2/3 * $container-height;
+  }
+
+  $friend_width: $button_height * $friend_aspect_ratio;
+  #friend_button {
+    width: $friend_width;
+    height: $button_height;
+    position: absolute;
+    left: $random_left + $cpu_or_random_width + $gap_between_buttons -
+      $friend_protrusion_ratio * $friend_width;
+    top: 2/3 * $container-height;
+  }
+
+  #sketch1 {
+    width: $container-width;
+    height: $container-height;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #sketch2 {
+    width: $container-width / 2;
+    height: $container-height;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #outer_container {
+    width: $container-width;
+    height: $container-height;
+    margin: 0 auto;
+  }
+
+  #container {
+    width: $container-width;
+    height: $container-height;
+    position: relative;
+    top: 0px;
+    left: 0px;
+  }
+}
+
+
+@media (max-aspect-ratio: 29/41){
+  $container-height: 100vw / 29 * 41;
+
+  $button_height_coeff: 0.24661;
+  $gap_between_buttons_coeff: 0.013889;
+
+  $min-entirety-aspect-ratio: 29/41;
+
+  $container-width: $container-height * $min-entirety-aspect-ratio;
+
+  $logo_width: 0.44144 * $container-height;
+  #cerke_online_logo {
+    height: $logo_width / $logo_aspect_ratio;
+    width: $logo_width;
+    position: absolute;
+    left: -$logo_width / 2 + $container-width / 2;
+    top: 0.087037 * $container-height;
+  }
+
+  $button_height: $button_height_coeff * $container-height;
+  $cpu_or_random_width: $button_height * $cpu_or_random_aspect_ratio;
+  $gap_between_buttons: $gap_between_buttons_coeff * $container-height;
+  $random_left: -$cpu_or_random_width / 2 + $container-width / 2;
+
+  body {
+    background-color: rgb(230, 230, 230);
+    margin: 0;
+  }
+
+  #cpu_button {
+    width: $cpu_or_random_width;
+    height: $button_height;
+    position: absolute;
+    left: $random_left - $gap_between_buttons - $cpu_or_random_width;
+    top: 2/3 * $container-height;
+  }
+
+  #random_button {
+    width: $cpu_or_random_width;
+    height: $button_height;
+    position: absolute;
+    left: $random_left;
+    top: 2/3 * $container-height;
+  }
+
+  $friend_width: $button_height * $friend_aspect_ratio;
+  #friend_button {
+    width: $friend_width;
+    height: $button_height;
+    position: absolute;
+    left: $random_left + $cpu_or_random_width + $gap_between_buttons -
+      $friend_protrusion_ratio * $friend_width;
+    top: 2/3 * $container-height;
+  }
+
+  #sketch1 {
+    width: $container-width;
+    height: $container-height;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #sketch2 {
+    width: $container-width / 2;
+    height: $container-height;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #outer_container {
+    width: $container-width;
+    height: $container-height;
+    margin: calc((100vh -  100vw / 29 * 41 )/2) 0;
+  }
+
+  #container {
+    width: $container-width;
+    height: $container-height;
+    position: relative;
+    top: 0px;
+    left: 0px;
+  }
+}

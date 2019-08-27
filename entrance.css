@@ -1,0 +1,143 @@
+/* original png info */
+@media (min-aspect-ratio: 29/41) {
+  #cerke_online_logo {
+    height: 53.5186666667vh;
+    width: 44.144vh;
+    position: absolute;
+    left: 13.2938536585vh;
+    top: 8.7037vh;
+  }
+
+  body {
+    background-color: #e6e6e6;
+    margin: 0;
+  }
+
+  #cpu_button {
+    width: 19.9070722892vh;
+    height: 24.661vh;
+    position: absolute;
+    left: 4.1163452248vh;
+    top: 66.6666666667vh;
+  }
+
+  #random_button {
+    width: 19.9070722892vh;
+    height: 24.661vh;
+    position: absolute;
+    left: 25.412317514vh;
+    top: 66.6666666667vh;
+  }
+
+  #friend_button {
+    width: 19.9962084337vh;
+    height: 24.661vh;
+    position: absolute;
+    left: 46.6191536585vh;
+    top: 66.6666666667vh;
+  }
+
+  #sketch1 {
+    width: 70.7317073171vh;
+    height: 100vh;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #sketch2 {
+    width: 35.3658536585vh;
+    height: 100vh;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #outer_container {
+    width: 70.7317073171vh;
+    height: 100vh;
+    margin: 0 auto;
+  }
+
+  #container {
+    width: 70.7317073171vh;
+    height: 100vh;
+    position: relative;
+    top: 0px;
+    left: 0px;
+  }
+}
+@media (max-aspect-ratio: 29/41) {
+  #cerke_online_logo {
+    height: 75.6643218391vw;
+    width: 62.4104827586vw;
+    position: absolute;
+    left: 18.7947586207vw;
+    top: 12.3052310345vw;
+  }
+
+  body {
+    background-color: #e6e6e6;
+    margin: 0;
+  }
+
+  #cpu_button {
+    width: 28.1444815123vw;
+    height: 34.8655517241vw;
+    position: absolute;
+    left: 5.8196604902vw;
+    top: 94.2528735632vw;
+  }
+
+  #random_button {
+    width: 28.1444815123vw;
+    height: 34.8655517241vw;
+    position: absolute;
+    left: 35.9277592439vw;
+    top: 94.2528735632vw;
+  }
+
+  #friend_button {
+    width: 28.2705015787vw;
+    height: 34.8655517241vw;
+    position: absolute;
+    left: 65.909837931vw;
+    top: 94.2528735632vw;
+  }
+
+  #sketch1 {
+    width: 100vw;
+    height: 141.3793103448vw;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #sketch2 {
+    width: 50vw;
+    height: 141.3793103448vw;
+    position: absolute;
+    border: 1px solid blue;
+    left: 0px;
+    top: 0px;
+  }
+
+  #outer_container {
+    width: 100vw;
+    height: 141.3793103448vw;
+    margin: calc((100vh - 100vw / 29 * 41 )/2) 0;
+  }
+
+  #container {
+    width: 100vw;
+    height: 141.3793103448vw;
+    position: relative;
+    top: 0px;
+    left: 0px;
+  }
+}
+
+/*# sourceMappingURL=entrance.css.map */
