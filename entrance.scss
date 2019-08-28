@@ -1,17 +1,16 @@
-/* original png info */
+// original png info
 $logo_aspect_ratio: 1488px / 1804px;
 $cpu_or_random_aspect_ratio: 670px / 830px;
 $friend_aspect_ratio: 673px / 830px;
 $friend_protrusion_ratio: 3px / 673px;
 
+// magic numbers
+$button_height_coeff: 0.24661;
+$gap_between_buttons_coeff: 0.013889;
+$min-entirety-aspect-ratio: 29/41;
+
 @media (min-aspect-ratio: 29/41) {
   $container-height: 100vh;
-
-  $button_height_coeff: 0.24661;
-  $gap_between_buttons_coeff: 0.013889;
-
-  $min-entirety-aspect-ratio: 29/41;
-
   $container-width: $container-height * $min-entirety-aspect-ratio;
 
   $logo_width: 0.44144 * $container-height;
@@ -93,14 +92,8 @@ $friend_protrusion_ratio: 3px / 673px;
 }
 
 @media (max-aspect-ratio: 29/41) {
-  $container-height: 100vw / 29 * 41;
-
-  $button_height_coeff: 0.24661;
-  $gap_between_buttons_coeff: 0.013889;
-
-  $min-entirety-aspect-ratio: 29/41;
-
-  $container-width: $container-height * $min-entirety-aspect-ratio;
+  $container-width: 100vw;
+  $container-height: $container-width / $min-entirety-aspect-ratio;
 
   $logo_width: 0.44144 * $container-height;
   #cerke_online_logo {
