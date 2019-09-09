@@ -28,6 +28,14 @@
     top: 66.6666666667vh;
   }
 
+  #cancel_button {
+    width: 19.9070722892vh;
+    height: 19.9070722892vh;
+    position: absolute;
+    left: 25.412317514vh;
+    top: 66.6666666667vh;
+  }
+
   #friend_button {
     width: 19.9962084337vh;
     height: 24.661vh;
@@ -93,6 +101,14 @@
   #random_button {
     width: 28.1444815123vw;
     height: 34.8655517241vw;
+    position: absolute;
+    left: 35.9277592439vw;
+    top: 94.2528735632vw;
+  }
+
+  #cancel_button {
+    width: 28.1444815123vw;
+    height: 28.1444815123vw;
     position: absolute;
     left: 35.9277592439vw;
     top: 94.2528735632vw;
