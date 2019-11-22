@@ -10,10 +10,13 @@ type GAME_STATE = {
     f: Field,
     IA_is_down: boolean,
     tam_itself_is_tam_hue: boolean,
+    is_my_turn: boolean,
     backupDuringStepping: null | [Coord, Piece]
 };
 
-let GAME_STATE: GAME_STATE = {
+let GAME_STATE: GAME_STATE = (() => {
+    let _is_my_turn: boolean = true; //fixme
+    return {
     f: {
         currentBoard: [
             [null, null, null, null, null, null, null, null, "Tam2"],
@@ -31,8 +34,25 @@ let GAME_STATE: GAME_STATE = {
     },
     IA_is_down: true,
     tam_itself_is_tam_hue: true,
+
+    set is_my_turn (i: boolean) {
+        _is_my_turn = !!i;
+        if (_is_my_turn) {
+            document.getElementById("larta_me")!.style.display = "block";
+            document.getElementById("larta_opponent")!.style.display = "none";
+            document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.add("nocover");
+        } else {
+            document.getElementById("larta_me")!.style.display = "none";
+            document.getElementById("larta_opponent")!.style.display = "block";
+            document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.remove("nocover");
+        }
+    },
+
+    get is_my_turn() {
+        return _is_my_turn;
+    },
     backupDuringStepping: null
-}
+}})();
 
 type UI_STATE = {
     selectedCoord: null | Coord | ["Hop1zuo1", number];

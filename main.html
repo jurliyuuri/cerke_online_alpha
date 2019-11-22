@@ -10,7 +10,7 @@
 <script src="create_html_element.js"></script>
 <script src="main.js"></script>
 </head>
-<body onload="drawField(sampleField);">
+<body onload="drawField(sampleField); GAME_STATE.is_my_turn = true;">
     <div id="field">
     <div id="hop1zuo1_of_downward">
         <div id="contains_pieces_on_downward">
@@ -47,8 +47,14 @@
 
     </div>
 
+    <div id="protective_cover_over_field_while_waiting_for_opponent" class="nocover">
+
+    </div>
+
     <div id="contains_ciurl">
         
     </div>
     <div><img src="image/k.png" id="water_entry_logo" width="500" style="display: none"></div>
+    <div id="larta_me"><img src="image/larta.png"></div>
+    <div id="larta_opponent"><img src="image/larta.png"></div>
 </body>

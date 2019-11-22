@@ -47,6 +47,29 @@ img.water_entry {
   z-index: 999;
 }
 
+#protective_cover_over_field_while_waiting_for_opponent {
+  background-color: rgba(0, 0, 0, 0);
+  width: 631px;
+  height: 911px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 999;
+  cursor: not-allowed;
+}
+
+#larta_me {
+  position: absolute;
+  left: 680px;
+  top: 700px;
+}
+
+#larta_opponent {
+  position: absolute;
+  left: 680px;
+  top: 0px;
+}
+
 #protective_tam_cover_over_field {
   background-color: rgba(0, 82, 66, 0.5);
   width: 631px;
