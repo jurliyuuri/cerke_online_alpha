@@ -347,6 +347,7 @@ function stepping(from, piece, to) {
         centralNode.style.zIndex = "200";
         contains_guides.appendChild(centralNode);
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
+        /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guide_after_stepping handles that. */
         display_guide_after_stepping(coord, { piece: piece, path: "ct" }, contains_guides, guideListYellow);
         if (piece === "Tam2") {
             if (guideListGreen.length > 0) {

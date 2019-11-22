@@ -428,6 +428,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
             piece,
             GAME_STATE.f.currentBoard,
             GAME_STATE.tam_itself_is_tam_hue);
+        /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guide_after_stepping handles that. */
 
         display_guide_after_stepping(coord, { piece: piece, path: "ct" }, contains_guides, guideListYellow);
 
