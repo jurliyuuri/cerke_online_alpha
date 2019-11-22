@@ -1036,7 +1036,7 @@ function display_guide_after_stepping(
         if (destPiece === "Tam2"
             || (
                 destPiece !== null
-                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(list[ind]))
+                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(list[ind]) || q.piece === "Tam2")
             )
         ) {
             continue;

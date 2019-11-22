@@ -841,7 +841,7 @@ function display_guide_after_stepping(coord, q, parent, list) {
         // cannot step twice
         if (destPiece === "Tam2"
             || (destPiece !== null
-                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(list[ind])))) {
+                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(list[ind]) || q.piece === "Tam2"))) {
             continue;
         }
         let img = createCircleGuideImageAt(list[ind], q.path);
