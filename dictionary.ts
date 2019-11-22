@@ -10,7 +10,7 @@ type Dictionary = {
 
 const DICTIONARY: Dictionary = {
     ja: {
-        whetherToTake: "駒を取りますか？",
+        whetherToTake: "駒を取る → [OK]\n駒を踏む → [Cancel]",
         failedWaterEntry: "入水判定に失敗しました。"
     }
 }
