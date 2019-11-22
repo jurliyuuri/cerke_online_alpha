@@ -373,6 +373,7 @@ async function sendAfterHalfAcceptance(message, src, step) {
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
         return;
     }
     await displayWaterEntryLogo();
@@ -383,13 +384,14 @@ async function sendAfterHalfAcceptance(message, src, step) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         cancelStepping();
-        // now it's opponent's turn
+        GAME_STATE.is_my_turn = false;
     }
     else {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
     }
 }
 async function sendStuff(log, message, validateInput) {
@@ -397,7 +399,7 @@ async function sendStuff(log, message, validateInput) {
     const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait");
     cover_while_asyncawait.classList.remove("nocover");
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    let url = 'http://localhost:5000/';
+    let url = 'http://localhost:5000/slow/';
     const data = {
         "id": (Math.random() * 100000) | 0,
         "message": message
@@ -441,6 +443,7 @@ async function sendNormalMessage(message) {
         UI_STATE.selectedCoord = null;
         updateField(message);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
         return;
     }
     await displayWaterEntryLogo();
@@ -452,7 +455,7 @@ async function sendNormalMessage(message) {
         UI_STATE.selectedCoord = null;
         if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
             cancelStepping();
-            // FIXME: implement handing over the turn
+            GAME_STATE.is_my_turn = false;
         }
     }
     else {
@@ -460,6 +463,7 @@ async function sendNormalMessage(message) {
         UI_STATE.selectedCoord = null;
         updateField(message);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
     }
 }
 function updateFieldAfterHalfAcceptance(message, src, step) {

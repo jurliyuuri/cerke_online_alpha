@@ -462,6 +462,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
         return;
     }
 
@@ -475,12 +476,13 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         UI_STATE.selectedCoord = null;
 
         cancelStepping();
-        // now it's opponent's turn
+        GAME_STATE.is_my_turn = false;
     } else {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
     }
 }
 
@@ -491,7 +493,7 @@ async function sendStuff<T, U>(log: string, message: T, validateInput: (response
     cover_while_asyncawait.classList.remove("nocover");
 
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    let url = 'http://localhost:5000/';
+    let url = 'http://localhost:5000/slow/';
     const data = {
         "id": (Math.random() * 100000) | 0,
         "message": message
@@ -541,6 +543,7 @@ async function sendNormalMessage(message: NormalMove) {
         UI_STATE.selectedCoord = null;
         updateField(message);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
         return;
     }
 
@@ -555,13 +558,14 @@ async function sendNormalMessage(message: NormalMove) {
 
         if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
             cancelStepping();
-            // FIXME: implement handing over the turn
+            GAME_STATE.is_my_turn = false;
         }
     } else {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateField(message);
         drawField(GAME_STATE.f);
+        GAME_STATE.is_my_turn = false;
     }
 }
 
