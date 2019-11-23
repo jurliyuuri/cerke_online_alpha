@@ -75,6 +75,65 @@ function get_one_valid_opponent_move(): OpponentMove {
     return get_one_valid_opponent_move();
 }
 
+async function displayOpponentSrcDst(src: Coord, dst: Coord) {
+    const [src_i, src_j] = src;
+    const [dest_i, dest_j] = dst;
+    
+    let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+    if (piece === null) {
+        throw new Error("src is unoccupied");
+    }
+
+    let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+    /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
+    if (destPiece !== null) {
+        if (destPiece === "Tam2") {
+            throw new Error("dest is occupied by Tam2");
+        } else if (destPiece.side === Side.Downward) {
+            throw new Error("dest is occupied by an ally");
+        } else if (destPiece.side === Side.Upward) {
+            const flipped: NonTam2PieceDownward = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Downward
+            }
+            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+
+            let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+            let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+
+            const total_duration = 750 * 0.8093;
+            await animateNode(srcNode, total_duration, 
+                coordToPieceXY([dest_i, dest_j]), 
+                coordToPieceXY([src_i, src_j])
+            );
+            
+            await animateNode(destNode, total_duration, 
+                {top: -135, left: indToHop1Zuo1Horizontal(GAME_STATE.f.hop1zuo1OfDownward.length - 1)},
+                coordToPieceXY([dest_i, dest_j]),
+                "50", 180
+            );
+
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            drawField(GAME_STATE.f);
+        } else {
+            let _should_not_reach_here: never = destPiece.side;
+            throw new Error("should not reach here");
+        }
+    } else {
+        let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        await animateNode(imgNode, 1500 * 0.8093, 
+            coordToPieceXY([dest_i, dest_j]), 
+            coordToPieceXY([src_i, src_j])
+        );
+        GAME_STATE.f.currentBoard[src_i][src_j] = null;
+        GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        drawField(GAME_STATE.f);
+    }
+}
+
 
 async function poll() {
     console.log("poll");
@@ -83,68 +142,21 @@ async function poll() {
 
         // you are supposed to send a request to the server and wait for the response
         const opponent_move = get_one_valid_opponent_move();
-        if (opponent_move.type === "NonTamMove" && opponent_move.data.type === "SrcDst") {
-            const [src_i, src_j] = fromAbsoluteCoord(opponent_move.data.src);
-            const [dest_i, dest_j] = fromAbsoluteCoord(opponent_move.data.dest);
-
-            let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
-            if (piece === null) {
-                throw new Error("src is unoccupied");
-            }
-
-            let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
-
-            /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
-            if (destPiece !== null) {
-                if (destPiece === "Tam2") {
-                    throw new Error("dest is occupied by Tam2");
-                } else if (destPiece.side === Side.Downward) {
-                    throw new Error("dest is occupied by an ally");
-                } else if (destPiece.side === Side.Upward) {
-                    const flipped: NonTam2PieceDownward = {
-                        color: destPiece.color,
-                        prof: destPiece.prof,
-                        side: Side.Downward
-                    }
-                    GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-                    let {top: src_top, left: src_left} = coordToPieceXY([src_i, src_j]);
-                    let {top: dest_top, left: dest_left} = coordToPieceXY([dest_i, dest_j]);
-
-                    let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-                    let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
-
-                    const total_duration = 750 * 0.8093;
-                    await animateNode(srcNode, total_duration, 
-                        coordToPieceXY([dest_i, dest_j]), 
-                        coordToPieceXY([src_i, src_j])
-                    );
-                    
-                    await animateNode(destNode, total_duration, 
-                        {top: -135, left: indToHop1Zuo1Horizontal(GAME_STATE.f.hop1zuo1OfDownward.length - 1)},
-                        coordToPieceXY([dest_i, dest_j]),
-                        "50", 180
-                    );
-
-                    GAME_STATE.f.currentBoard[src_i][src_j] = null;
-                    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-                    drawField(GAME_STATE.f);
-                } else {
-                    let _should_not_reach_here: never = destPiece.side;
-                    throw new Error("should not reach here");
-                }
-            } else {
-                let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-                await animateNode(imgNode, 1500 * 0.8093, 
-                    coordToPieceXY([dest_i, dest_j]), 
-                    coordToPieceXY([src_i, src_j])
+        if (opponent_move.type === "NonTamMove") {
+            if(opponent_move.data.type === "SrcDst") {
+                displayOpponentSrcDst(
+                    fromAbsoluteCoord(opponent_move.data.src),
+                    fromAbsoluteCoord(opponent_move.data.dest)
                 );
-                GAME_STATE.f.currentBoard[src_i][src_j] = null;
-                GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-                drawField(GAME_STATE.f);
+                GAME_STATE.is_my_turn = true;
+            } else {
+                let a : never = opponent_move.data.type;
+                throw new Error("does not happen");
             }
+        } else {
+            let a : never = opponent_move.type;
+            throw new Error("does not happen");
         }
-        
-        GAME_STATE.is_my_turn = true;
     } else {
         await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
         await poll();
@@ -1184,8 +1196,6 @@ function display_guide_after_stepping(
     }
 
     for (let ind = 0; ind < list.length; ind++) {
-        const [i, j] = list[ind];
-
         // Since you cannot step twice, the destination must be occupiable, that is, either empty or opponent's unprotected piece.
         if (!canGetOccupiedBy(Side.Upward, list[ind], q.piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
             continue;
