@@ -84,6 +84,7 @@ var calculate_movable;
         // is Tam2 available at any neighborhood?
         return eightNeighborhood(coord).some(([i, j]) => board[i][j] === "Tam2");
     }
+    calculate_movable.isTamHue = isTamHue;
     function calculateMovablePositions(coord, sq, board, tam_itself_is_tam_hue) {
         if (sq === "Tam2") {
             return { finite: eightNeighborhood(coord), infinite: [] };

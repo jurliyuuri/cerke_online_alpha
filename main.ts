@@ -801,7 +801,7 @@ function canGetOccupiedByUpward(dest: Coord, piece_to_move: Piece, board: Board)
             let piece = board[a][b];
             if (piece == null) { return false; }
             if (piece === "Tam2") { return false; }
-            return piece.prof === Profession.Uai1 && piece.side === Side.Downward
+            return piece.prof === Profession.Uai1 && piece.side === Side.Downward && isTamHue([a,b], board, GAME_STATE.tam_itself_is_tam_hue)
         }).length > 0;
 
     const [i, j] = dest;

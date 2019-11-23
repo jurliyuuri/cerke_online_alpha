@@ -77,7 +77,7 @@ namespace calculate_movable {
         ]);
     }
 
-    function isTamHue(coord: Coord, board: Readonly<Board>, tam_itself_is_tam_hue: boolean): boolean {
+    export function isTamHue(coord: Coord, board: Readonly<Board>, tam_itself_is_tam_hue: boolean): boolean {
         // unconditionally TamHue
         if (coordEq(coord, [2, 2]) || coordEq(coord, [2, 6]) ||
             coordEq(coord, [3, 3]) || coordEq(coord, [3, 5]) ||
