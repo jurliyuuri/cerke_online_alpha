@@ -11,10 +11,20 @@ type GAME_STATE = {
     IA_is_down: boolean,
     tam_itself_is_tam_hue: boolean,
     is_my_turn: boolean,
-    backupDuringStepping: null | [Coord, Piece]
+    backupDuringStepping: null | [Coord, Piece],
+    clear_poll: () => void
 };
 
-function get_one_valid_opponent_move() {
+type OpponentMove = {
+    type: 'NonTamMove',
+    data:  {
+        type: 'SrcDst',
+        src: AbsoluteCoord,
+        dest: AbsoluteCoord
+    }
+};
+
+function get_one_valid_opponent_move(): OpponentMove {
     const get_one_opponent_piece: () => {rotated_piece: "Tam2" | NonTam2PieceUpward, rotated_coord: Coord} = () => {
         while (true) {
             let rand_i = (Math.random() * 9 | 0) as BoardIndex; 
@@ -25,7 +35,8 @@ function get_one_valid_opponent_move() {
             if (piece === null) { 
                 continue; 
             } else if (piece === "Tam2") {
-                return {rotated_piece: piece, rotated_coord: rotateCoord(coord)}
+                continue; // FIXME (for now, no Tam2)
+                // return {rotated_piece: piece, rotated_coord: rotateCoord(coord)}
             } else if (piece.side === Side.Downward) {
                 const rot_piece: NonTam2PieceUpward = {prof: piece.prof, color: piece.color, side: Side.Upward};
                 return {rotated_piece: rot_piece, rotated_coord: rotateCoord(coord)}
@@ -44,10 +55,25 @@ function get_one_valid_opponent_move() {
     );
 
     const candidates : Coord[] = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
-    
-    const dest = candidates[Math.random() * candidates.length | 0];
-    console.log(rotateCoord(rotated_coord), rotated_piece, dest);
-    
+
+    /* FIXME: for now, no stepping */
+    for (let i = 0; i < 1000; i++) {
+        const dest = candidates[Math.random() * candidates.length | 0];
+        const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
+        if (destPiece === null || (destPiece !== "Tam2" && destPiece.side === Side.Upward) ) {
+            return {
+                type: 'NonTamMove',
+                data:  {
+                    type: 'SrcDst',
+                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    dest: toAbsoluteCoord(dest)
+                }
+            }
+        }
+    }
+
+    // if no candidate found, try again
+    return get_one_valid_opponent_move();
 }
 
 
@@ -55,7 +81,45 @@ function poll() {
     console.log("poll");
     if (Math.random() < 0.2) {
         console.log("ding!");
-        // write the opponent's hand to the board;
+        GAME_STATE.clear_poll();
+
+        // you are supposed to send a request to the server and wait for the response
+        const opponent_move = get_one_valid_opponent_move();
+        if (opponent_move.type === "NonTamMove" && opponent_move.data.type === "SrcDst") {
+            const [src_i, src_j] = fromAbsoluteCoord(opponent_move.data.src);
+            const [dest_i, dest_j] = fromAbsoluteCoord(opponent_move.data.dest);
+
+            let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+            if (piece === null) {
+                throw new Error("src is unoccupied");
+            }
+
+            let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+            /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
+            if (destPiece !== null) {
+                if (destPiece === "Tam2") {
+                    throw new Error("dest is occupied by Tam2");
+                } else if (destPiece.side === Side.Downward) {
+                    throw new Error("dest is occupied by an ally");
+                } else if (destPiece.side === Side.Upward) {
+                    const flipped: NonTam2PieceDownward = {
+                        color: destPiece.color,
+                        prof: destPiece.prof,
+                        side: Side.Downward
+                    }
+                    GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+                } else {
+                    let _should_not_reach_here: never = destPiece.side;
+                    throw new Error("should not reach here");
+                }
+            }
+
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        }
+
+        drawField(GAME_STATE.f);
         GAME_STATE.is_my_turn = true;
     }
 }
@@ -81,7 +145,12 @@ let GAME_STATE: GAME_STATE = (() => {
     },
     IA_is_down: true,
     tam_itself_is_tam_hue: true,
-
+    clear_poll: () => {
+        if (_intervalID != null) {
+            window.clearInterval(_intervalID);
+            _intervalID = null;
+        }
+    },
     set is_my_turn (i: boolean) {
         _is_my_turn = !!i;
         if (_is_my_turn) {

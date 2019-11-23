@@ -10,7 +10,8 @@ function get_one_valid_opponent_move() {
                 continue;
             }
             else if (piece === "Tam2") {
-                return { rotated_piece: piece, rotated_coord: rotateCoord(coord) };
+                continue; // FIXME (for now, no Tam2)
+                // return {rotated_piece: piece, rotated_coord: rotateCoord(coord)}
             }
             else if (piece.side === Side.Downward) {
                 const rot_piece = { prof: piece.prof, color: piece.color, side: Side.Upward };
@@ -24,14 +25,64 @@ function get_one_valid_opponent_move() {
     const { rotated_piece, rotated_coord } = get_one_opponent_piece();
     const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(rotated_coord, rotated_piece, rotateBoard(GAME_STATE.f.currentBoard), GAME_STATE.tam_itself_is_tam_hue);
     const candidates = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
-    const dest = candidates[Math.random() * candidates.length | 0];
-    console.log(rotateCoord(rotated_coord), rotated_piece, dest);
+    /* FIXME: for now, no stepping */
+    for (let i = 0; i < 1000; i++) {
+        const dest = candidates[Math.random() * candidates.length | 0];
+        const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
+        if (destPiece === null || (destPiece !== "Tam2" && destPiece.side === Side.Upward)) {
+            return {
+                type: 'NonTamMove',
+                data: {
+                    type: 'SrcDst',
+                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    dest: toAbsoluteCoord(dest)
+                }
+            };
+        }
+    }
+    // if no candidate found, try again
+    return get_one_valid_opponent_move();
 }
 function poll() {
     console.log("poll");
     if (Math.random() < 0.2) {
         console.log("ding!");
-        // write the opponent's hand to the board;
+        GAME_STATE.clear_poll();
+        // you are supposed to send a request to the server and wait for the response
+        const opponent_move = get_one_valid_opponent_move();
+        if (opponent_move.type === "NonTamMove" && opponent_move.data.type === "SrcDst") {
+            const [src_i, src_j] = fromAbsoluteCoord(opponent_move.data.src);
+            const [dest_i, dest_j] = fromAbsoluteCoord(opponent_move.data.dest);
+            let piece = GAME_STATE.f.currentBoard[src_i][src_j];
+            if (piece === null) {
+                throw new Error("src is unoccupied");
+            }
+            let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
+            if (destPiece !== null) {
+                if (destPiece === "Tam2") {
+                    throw new Error("dest is occupied by Tam2");
+                }
+                else if (destPiece.side === Side.Downward) {
+                    throw new Error("dest is occupied by an ally");
+                }
+                else if (destPiece.side === Side.Upward) {
+                    const flipped = {
+                        color: destPiece.color,
+                        prof: destPiece.prof,
+                        side: Side.Downward
+                    };
+                    GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+                }
+                else {
+                    let _should_not_reach_here = destPiece.side;
+                    throw new Error("should not reach here");
+                }
+            }
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        }
+        drawField(GAME_STATE.f);
         GAME_STATE.is_my_turn = true;
     }
 }
@@ -56,6 +107,12 @@ let GAME_STATE = (() => {
         },
         IA_is_down: true,
         tam_itself_is_tam_hue: true,
+        clear_poll: () => {
+            if (_intervalID != null) {
+                window.clearInterval(_intervalID);
+                _intervalID = null;
+            }
+        },
         set is_my_turn(i) {
             _is_my_turn = !!i;
             if (_is_my_turn) {
@@ -700,7 +757,7 @@ function getThingsGoing(piece_to_move, from, to) {
         }
     }
     // dest is not an empty square; it is always possible to step
-    if (!canGetOccupiedByUpward(to, piece_to_move, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) { // can step, but cannot take
+    if (!canGetOccupiedBy(Side.Upward, to, piece_to_move, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) { // can step, but cannot take
         stepping(from, piece_to_move, to);
         return;
     }
@@ -873,8 +930,8 @@ function display_guide_after_stepping(coord, q, parent, list) {
     }
     for (let ind = 0; ind < list.length; ind++) {
         const [i, j] = list[ind];
-        // cannot step twice
-        if (!canGetOccupiedByUpward(list[ind], q.piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
+        // Since you cannot step twice, the destination must be occupiable, that is, either empty or opponent's unprotected piece.
+        if (!canGetOccupiedBy(Side.Upward, list[ind], q.piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
             continue;
         }
         let img = createCircleGuideImageAt(list[ind], q.path);
