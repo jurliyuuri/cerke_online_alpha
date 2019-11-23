@@ -43,11 +43,10 @@ function get_one_valid_opponent_move() {
     // if no candidate found, try again
     return get_one_valid_opponent_move();
 }
-function poll() {
+async function poll() {
     console.log("poll");
     if (Math.random() < 0.2) {
         console.log("ding!");
-        GAME_STATE.clear_poll();
         // you are supposed to send a request to the server and wait for the response
         const opponent_move = get_one_valid_opponent_move();
         if (opponent_move.type === "NonTamMove" && opponent_move.data.type === "SrcDst") {
@@ -79,11 +78,27 @@ function poll() {
                     throw new Error("should not reach here");
                 }
             }
+            let { top: src_top, left: src_left } = coordToPieceXY([src_i, src_j]);
+            let { top: dest_top, left: dest_left } = coordToPieceXY([dest_i, dest_j]);
+            let imgNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
+            const total_duration = 1500 * 0.8093;
+            const subdiv = 50;
+            for (let i = 1; i < subdiv; i++) {
+                await new Promise(resolve => setTimeout(resolve, total_duration / subdiv));
+                imgNode.style.top = `${(src_top * (subdiv - i) + dest_top * i) / subdiv}px`;
+                imgNode.style.left = `${(src_left * (subdiv - i) + dest_left * i) / subdiv}px`;
+            }
+            await new Promise(resolve => setTimeout(resolve, total_duration / subdiv));
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            erasePhantom();
+            drawField(GAME_STATE.f);
         }
-        drawField(GAME_STATE.f);
         GAME_STATE.is_my_turn = true;
+    }
+    else {
+        await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+        await poll();
     }
 }
 let GAME_STATE = (() => {
@@ -107,30 +122,18 @@ let GAME_STATE = (() => {
         },
         IA_is_down: true,
         tam_itself_is_tam_hue: true,
-        clear_poll: () => {
-            if (_intervalID != null) {
-                window.clearInterval(_intervalID);
-                _intervalID = null;
-            }
-        },
         set is_my_turn(i) {
             _is_my_turn = !!i;
             if (_is_my_turn) {
                 document.getElementById("larta_me").style.display = "block";
                 document.getElementById("larta_opponent").style.display = "none";
                 document.getElementById("protective_cover_over_field_while_waiting_for_opponent").classList.add("nocover");
-                if (_intervalID != null) {
-                    window.clearInterval(_intervalID);
-                    _intervalID = null;
-                }
             }
             else {
                 document.getElementById("larta_me").style.display = "none";
                 document.getElementById("larta_opponent").style.display = "block";
                 document.getElementById("protective_cover_over_field_while_waiting_for_opponent").classList.remove("nocover");
-                if (_intervalID == null) {
-                    _intervalID = window.setInterval(poll, 500 * 0.8093);
-                }
+                window.setTimeout(poll, 500 * 0.8093);
             }
         },
         get is_my_turn() {
@@ -1064,6 +1067,7 @@ function drawField(field) {
                 }
                 const coord = [i, j];
                 let imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
+                imgNode.id = `field_piece_${i}_${j}`;
                 if (piece === "Tam2") {
                     imgNode.style.cursor = "pointer";
                     imgNode.addEventListener('click', function () {

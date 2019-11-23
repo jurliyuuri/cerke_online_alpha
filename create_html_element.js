@@ -17,9 +17,16 @@ function createPieceSizeImageOnBoardByPathAndXY(top, left, path, className) {
     i.height = PIECE_SIZE;
     return i;
 }
+function coordToPieceXY(coord) {
+    const [row_index, column_index] = coord;
+    return {
+        top: 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
+        left: 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2
+    };
+}
 function createPieceSizeImageOnBoardByPath(coord, path, className) {
-    let [row_index, column_index] = coord;
-    return createPieceSizeImageOnBoardByPathAndXY(1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, path, className);
+    const { top, left } = coordToPieceXY(coord);
+    return createPieceSizeImageOnBoardByPathAndXY(top, left, path, className);
 }
 function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
     let [row_index, column_index] = coord;
