@@ -11,6 +11,7 @@ var calculateMovablePositions = calculate_movable.calculateMovablePositions;
 var coordEq = type__piece.coordEq;
 var eightNeighborhood = calculate_movable.eightNeighborhood;
 var isTamHue = calculate_movable.isTamHue;
+var canGetOccupiedBy = calculate_movable.canGetOccupiedBy;
 const sampleBoard = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
         null, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, null, { color: Color.Kok1, prof: Profession.Gua2, side: Side.Upward }, null, null],

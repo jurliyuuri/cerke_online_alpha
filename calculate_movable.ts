@@ -96,6 +96,41 @@ namespace calculate_movable {
         return eightNeighborhood(coord).some(([i, j]) => board[i][j] === "Tam2");
     }
 
+    /** Checks whether it is possible for the moving piece to occupy the destination, either by moving to an empty square or taking the opponent's piece.
+     * @param {Side} side the side who is moving the piece
+     * @param {Coord} dest destination
+     * @param {Piece} piece_to_move piece that is moving
+     * @param {Readonly<Board>} board the board
+     * @param {boolean} tam_itself_is_tam_hue whether tam2 itself is tam2 hue
+     */
+    export function canGetOccupiedBy(side: Side, dest: Coord, piece_to_move: Piece, board: Readonly<Board>, tam_itself_is_tam_hue: boolean) {
+        /* Intentionally does not verify whether the piece itself is of opponent */
+        const isProtectedByOpponentTamHueAUai = (side: Side, coord: Coord) => eightNeighborhood(coord).filter(([a, b]) => {
+                let piece = board[a][b];
+                if (piece == null) { return false; }
+                if (piece === "Tam2") { return false; }
+                return piece.prof === Profession.Uai1 && piece.side !== side && isTamHue([a,b], board, tam_itself_is_tam_hue)
+            }).length > 0;
+
+        const [i, j] = dest;
+        const destPiece = board[i][j];
+
+        /* Tam2 can never be taken */
+        if (destPiece === "Tam2") { return false; }
+
+        /* It is always allowed to enter an empty square */
+        if (destPiece === null) { 
+            return true; 
+        } else { 
+            return (
+                piece_to_move !== "Tam2" /* tam2 can never take a piece */
+                && destPiece.side !== side /* cannot take your own piece */
+                && !isProtectedByOpponentTamHueAUai(side, dest) /* must not be protected by tam2 hue a uai1 */
+            )
+        }
+
+    }
+
 
     export function calculateMovablePositions(coord: Coord, sq: "Tam2" | NonTam2PieceUpward, board: Board, tam_itself_is_tam_hue: boolean): { finite: Array<Coord>, infinite: Array<Coord> } {
         if (sq === "Tam2") {

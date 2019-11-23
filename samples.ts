@@ -26,6 +26,7 @@ import Ret_NormalMove = type__message.Ret_NormalMove;
 import Ret_AfterHalfAcceptance = type__message.Ret_AfterHalfAcceptance;
 import eightNeighborhood = calculate_movable.eightNeighborhood;
 import isTamHue = calculate_movable.isTamHue;
+import canGetOccupiedBy = calculate_movable.canGetOccupiedBy;
 
 const sampleBoard: Board = [
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },

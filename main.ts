@@ -791,38 +791,6 @@ function updateField(message: NormalMove) {
     }
 }
 
-/** Checks whether it is possible for the moving piece to occupy the destination, either by moving to an empty square or taking the opponent's piece.
- * @param {Coord} dest destination
- * @param {Piece} piece_to_move piece that is moving
- */
-function canGetOccupiedByUpward(dest: Coord, piece_to_move: Piece, board: Board) {
-    /* Intentionally does not verify whether the piece itself is downward */
-    const isProtectedByDownwardTamHueAUai = (coord: Coord) => eightNeighborhood(coord).filter(([a, b]) => {
-            let piece = board[a][b];
-            if (piece == null) { return false; }
-            if (piece === "Tam2") { return false; }
-            return piece.prof === Profession.Uai1 && piece.side === Side.Downward && isTamHue([a,b], board, GAME_STATE.tam_itself_is_tam_hue)
-        }).length > 0;
-
-    const [i, j] = dest;
-    const destPiece = board[i][j];
-
-    /* Tam2 can never be taken */
-    if (destPiece === "Tam2") { return false; }
-
-    /* It is always allowed to enter an empty square */
-    if (destPiece === null) { 
-        return true; 
-    } else { 
-        return (
-            piece_to_move !== "Tam2" /* tam2 can never take a piece */
-            && destPiece.side !== Side.Upward /* cannot take your own piece */
-            && !isProtectedByDownwardTamHueAUai(dest) /* must not be protected by tam2 hue a uai1 */
-        )
-    }
-
-}
-
 function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coord) {
     let destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
@@ -851,7 +819,7 @@ function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord,
 
     // dest is not an empty square; it is always possible to step
 
-    if (!canGetOccupiedByUpward(to, piece_to_move, GAME_STATE.f.currentBoard)) { // can step, but cannot take
+    if (!canGetOccupiedBy(Side.Upward, to, piece_to_move, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) { // can step, but cannot take
         stepping(from, piece_to_move, to);
         return;
     }
@@ -1076,8 +1044,8 @@ function display_guide_after_stepping(
     for (let ind = 0; ind < list.length; ind++) {
         const [i, j] = list[ind];
 
-        // cannot step twice
-        if (!canGetOccupiedByUpward(list[ind], q.piece, GAME_STATE.f.currentBoard)) {
+        // Since you cannot step twice, the destination must be occupiable, that is, either empty or opponent's unprotected piece.
+        if (!canGetOccupiedBy(Side.Upward, list[ind], q.piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
             continue;
         }
 
