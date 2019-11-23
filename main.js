@@ -22,6 +22,32 @@ function get_one_valid_opponent_move() {
             }
         }
     };
+    if (Math.random() < 0.2) {
+        const len = GAME_STATE.f.hop1zuo1OfDownward.length;
+        if (len === 0) {
+            return get_one_valid_opponent_move();
+        } // retry
+        const piece = GAME_STATE.f.hop1zuo1OfDownward[Math.random() * len | 0];
+        const empty_square = (() => {
+            while (true) {
+                let rand_i = (Math.random() * 9 | 0);
+                let rand_j = (Math.random() * 9 | 0);
+                let coord = [rand_i, rand_j];
+                if (GAME_STATE.f.currentBoard[rand_i][rand_j] == null) {
+                    return coord;
+                }
+            }
+        })();
+        return {
+            type: "NonTamMove",
+            data: {
+                type: "FromHand",
+                color: piece.color,
+                prof: piece.prof,
+                dest: toAbsoluteCoord(empty_square)
+            }
+        };
+    }
     const { rotated_piece, rotated_coord } = get_one_opponent_piece();
     const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(rotated_coord, rotated_piece, rotateBoard(GAME_STATE.f.currentBoard), GAME_STATE.tam_itself_is_tam_hue);
     const candidates = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
@@ -108,6 +134,23 @@ async function displayOpponentSrcDst(src, dst) {
         drawField(GAME_STATE.f);
     }
 }
+async function displayOpponentFromHand(piece, dest) {
+    // remove the corresponding one from hand
+    const ind = GAME_STATE.f.hop1zuo1OfDownward.findIndex(p => p.color === piece.color && p.prof === piece.prof);
+    if (ind === -1) {
+        throw new Error("What should exist in the hand does not exist");
+    }
+    const [removed] = GAME_STATE.f.hop1zuo1OfDownward.splice(ind, 1);
+    // add the removed piece to the destination
+    const [dest_i, dest_j] = dest;
+    if (GAME_STATE.f.currentBoard[dest_i][dest_j] !== null) {
+        throw new Error("Trying to parachute the piece onto an occupied space");
+    }
+    let imgNode = document.getElementById(`hop1zuo1OfDownward_${ind}`);
+    await animateNode(imgNode, 1500 * 0.8093, coordToPieceXY([dest_i, dest_j]), /* hop1zuo1 and board does not agree on the absolute coordinates, but agrees on the displacement */ indToHo1Zuo1OfDownward(ind));
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = removed;
+    drawField(GAME_STATE.f);
+}
 async function poll() {
     console.log("poll");
     if (Math.random() < 0.2) {
@@ -119,17 +162,22 @@ async function poll() {
                 displayOpponentSrcDst(fromAbsoluteCoord(opponent_move.data.src), fromAbsoluteCoord(opponent_move.data.dest));
                 GAME_STATE.is_my_turn = true;
             }
+            else if (opponent_move.data.type === "FromHand") {
+                const piece = { prof: opponent_move.data.prof, color: opponent_move.data.color, side: Side.Downward };
+                displayOpponentFromHand(piece, fromAbsoluteCoord(opponent_move.data.dest));
+                GAME_STATE.is_my_turn = true;
+            }
             else {
-                let a = opponent_move.data.type;
+                let a = opponent_move.data;
                 throw new Error("does not happen");
             }
         }
         else if (opponent_move.type === "TamMove") {
             if (opponent_move.stepStyle === "NoStep") {
-                let src = fromAbsoluteCoord(opponent_move.src);
-                let fstdst = fromAbsoluteCoord(opponent_move.firstDest);
-                let snddst = fromAbsoluteCoord(opponent_move.secondDest);
-                let piece = GAME_STATE.f.currentBoard[src[0]][src[1]];
+                const src = fromAbsoluteCoord(opponent_move.src);
+                const fstdst = fromAbsoluteCoord(opponent_move.firstDest);
+                const snddst = fromAbsoluteCoord(opponent_move.secondDest);
+                const piece = GAME_STATE.f.currentBoard[src[0]][src[1]];
                 if (piece === null) {
                     throw new Error("src is unoccupied");
                 }
@@ -1187,6 +1235,7 @@ function drawField(field) {
         for (let i = 0; i < list.length; i++) {
             const piece = list[i];
             let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            imgNode.id = `hop1zuo1OfDownward_${i}`;
             contains_pieces_on_downward.appendChild(imgNode);
         }
     };

@@ -20,6 +20,11 @@ type OpponentMove = {
         type: 'SrcDst',
         src: AbsoluteCoord,
         dest: AbsoluteCoord
+    } | {
+        type: 'FromHand';
+        color: Color;
+        prof: Profession;
+        dest: AbsoluteCoord;
     }
 } | {
     type: 'TamMove'
@@ -51,6 +56,30 @@ function get_one_valid_opponent_move(): OpponentMove {
             }
         }
     };
+
+    if (Math.random() < 0.2) {
+        const len = GAME_STATE.f.hop1zuo1OfDownward.length;
+        if (len === 0) { return get_one_valid_opponent_move(); } // retry
+
+        const piece = GAME_STATE.f.hop1zuo1OfDownward[Math.random() * len | 0];
+
+        const empty_square = (() => {while (true) {
+            let rand_i = (Math.random() * 9 | 0) as BoardIndex; 
+            let rand_j = (Math.random() * 9 | 0) as BoardIndex; 
+            let coord : Coord = [rand_i, rand_j];
+            if (GAME_STATE.f.currentBoard[rand_i][rand_j] == null) { return coord; }
+        }})();
+
+        return { 
+            type: "NonTamMove",
+            data: {
+                type: "FromHand",
+                color: piece.color,
+                prof: piece.prof,
+                dest: toAbsoluteCoord(empty_square)
+            }
+        }
+    } 
 
     const {rotated_piece, rotated_coord} = get_one_opponent_piece();
     const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
@@ -157,6 +186,32 @@ async function displayOpponentSrcDst(src: Coord, dst: Coord) {
     }
 }
 
+async function displayOpponentFromHand(piece: NonTam2PieceDownward, dest: Coord) {
+    // remove the corresponding one from hand
+    const ind = GAME_STATE.f.hop1zuo1OfDownward.findIndex(
+        p => p.color === piece.color && p.prof === piece.prof
+    );
+    if (ind === -1) {
+        throw new Error("What should exist in the hand does not exist");
+    }
+    const [removed] = GAME_STATE.f.hop1zuo1OfDownward.splice(ind, 1);
+
+    // add the removed piece to the destination
+    const [dest_i, dest_j] = dest;
+    if (GAME_STATE.f.currentBoard[dest_i][dest_j] !== null) {
+        throw new Error("Trying to parachute the piece onto an occupied space");
+    }
+
+    let imgNode : HTMLElement = document.getElementById(`hop1zuo1OfDownward_${ind}`)!;
+    await animateNode(imgNode, 1500 * 0.8093, 
+        coordToPieceXY([dest_i, dest_j]), /* hop1zuo1 and board does not agree on the absolute coordinates, but agrees on the displacement */
+        indToHo1Zuo1OfDownward(ind)
+    )
+
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = removed;
+    drawField(GAME_STATE.f);
+}
+
 
 async function poll() {
     console.log("poll");
@@ -172,17 +227,24 @@ async function poll() {
                     fromAbsoluteCoord(opponent_move.data.dest)
                 );
                 GAME_STATE.is_my_turn = true;
+            } else if (opponent_move.data.type === "FromHand") {
+                const piece : NonTam2PieceDownward = {prof: opponent_move.data.prof, color: opponent_move.data.color, side: Side.Downward};
+                displayOpponentFromHand(
+                    piece,
+                    fromAbsoluteCoord(opponent_move.data.dest)
+                );
+                GAME_STATE.is_my_turn = true;
             } else {
-                let a : never = opponent_move.data.type;
+                let a : never = opponent_move.data;
                 throw new Error("does not happen");
             }
         } else if (opponent_move.type === "TamMove") {
             if (opponent_move.stepStyle === "NoStep") {
-                let src: Coord = fromAbsoluteCoord(opponent_move.src);
-                let fstdst: Coord = fromAbsoluteCoord(opponent_move.firstDest);
-                let snddst: Coord = fromAbsoluteCoord(opponent_move.secondDest);
+                const src: Coord = fromAbsoluteCoord(opponent_move.src);
+                const fstdst: Coord = fromAbsoluteCoord(opponent_move.firstDest);
+                const snddst: Coord = fromAbsoluteCoord(opponent_move.secondDest);
 
-                let piece: Piece | null = GAME_STATE.f.currentBoard[src[0]][src[1]]
+                const piece: Piece | null = GAME_STATE.f.currentBoard[src[0]][src[1]]
                 if (piece === null) {
                     throw new Error("src is unoccupied");
                 }
@@ -1492,6 +1554,7 @@ function drawField(field: Field) {
         for (let i = 0; i < list.length; i++) {
             const piece: NonTam2PieceDownward = list[i];
             let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            imgNode.id = `hop1zuo1OfDownward_${i}`;
             contains_pieces_on_downward.appendChild(imgNode);
         }
     }
