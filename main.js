@@ -652,10 +652,10 @@ function updateField(message) {
  * @param {Coord} dest destination
  * @param {Piece} piece_to_move piece that is moving
  */
-function canGetOccupiedByUpward(dest, piece_to_move) {
+function canGetOccupiedByUpward(dest, piece_to_move, board) {
     /* Intentionally does not verify whether the piece itself is downward */
     const isProtectedByDownwardTamHueAUai = (coord) => eightNeighborhood(coord).filter(([a, b]) => {
-        let piece = GAME_STATE.f.currentBoard[a][b];
+        let piece = board[a][b];
         if (piece == null) {
             return false;
         }
@@ -665,7 +665,7 @@ function canGetOccupiedByUpward(dest, piece_to_move) {
         return piece.prof === Profession.Uai1 && piece.side === Side.Downward;
     }).length > 0;
     const [i, j] = dest;
-    const destPiece = GAME_STATE.f.currentBoard[i][j];
+    const destPiece = board[i][j];
     /* Tam2 can never be taken */
     if (destPiece === "Tam2") {
         return false;
@@ -704,7 +704,7 @@ function getThingsGoing(piece_to_move, from, to) {
         }
     }
     // dest is not an empty square; it is always possible to step
-    if (!canGetOccupiedByUpward(to, piece_to_move)) { // can step, but cannot take
+    if (!canGetOccupiedByUpward(to, piece_to_move, GAME_STATE.f.currentBoard)) { // can step, but cannot take
         stepping(from, piece_to_move, to);
         return;
     }
@@ -878,7 +878,7 @@ function display_guide_after_stepping(coord, q, parent, list) {
     for (let ind = 0; ind < list.length; ind++) {
         const [i, j] = list[ind];
         // cannot step twice
-        if (!canGetOccupiedByUpward(list[ind], q.piece)) {
+        if (!canGetOccupiedByUpward(list[ind], q.piece, GAME_STATE.f.currentBoard)) {
             continue;
         }
         let img = createCircleGuideImageAt(list[ind], q.path);
