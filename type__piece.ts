@@ -65,6 +65,38 @@ namespace type__piece {
         return a[0] === b[0] && a[1] === b[1];
     }
 
+    export function rotateCoord(c: Coord): Coord {
+        return [8 - c[0] as BoardIndex, 8 - c[1] as BoardIndex];
+    }
+
+    export function rotateBoard(b: Board): Board {
+        let ans: Board = [
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"]
+        ];
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                ans[i][j] = rotatePieceOrNull(b[8 - i][8 - j]);
+            }
+        }
+        return ans;
+    }
+
+    function rotatePieceOrNull(p: Piece | null): Piece | null {
+        if (p === null || p === "Tam2") {
+            return p;
+        } else {
+            return {prof: p.prof, color: p.color, side: 1 - p.side};
+        }
+    }
+
     export function toPath(p: NonTam2Piece): string {
         const sideToPath = function (side: Side): string {
             if (side === Side.Downward) return "piece_rev";

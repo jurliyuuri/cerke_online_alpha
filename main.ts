@@ -14,6 +14,43 @@ type GAME_STATE = {
     backupDuringStepping: null | [Coord, Piece]
 };
 
+function get_one_valid_opponent_move() {
+    const get_one_opponent_piece: () => {rotated_piece: "Tam2" | NonTam2PieceUpward, rotated_coord: Coord} = () => {
+        while (true) {
+            let rand_i = (Math.random() * 9 | 0) as BoardIndex; 
+            let rand_j = (Math.random() * 9 | 0) as BoardIndex; 
+            let coord : Coord = [rand_i, rand_j];
+            const piece: Piece | null =  GAME_STATE.f.currentBoard[rand_i][rand_j];
+            
+            if (piece === null) { 
+                continue; 
+            } else if (piece === "Tam2") {
+                return {rotated_piece: piece, rotated_coord: rotateCoord(coord)}
+            } else if (piece.side === Side.Downward) {
+                const rot_piece: NonTam2PieceUpward = {prof: piece.prof, color: piece.color, side: Side.Upward};
+                return {rotated_piece: rot_piece, rotated_coord: rotateCoord(coord)}
+            } else {
+                continue;
+            }
+        }
+    };
+
+    const {rotated_piece, rotated_coord} = get_one_opponent_piece();
+    const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
+        rotated_coord,
+        rotated_piece,
+        rotateBoard(GAME_STATE.f.currentBoard),
+        GAME_STATE.tam_itself_is_tam_hue
+    );
+
+    const candidates : Coord[] = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
+    
+    const dest = candidates[Math.random() * candidates.length | 0];
+    console.log(rotateCoord(rotated_coord), rotated_piece, dest);
+    
+}
+
+
 function poll() {
     console.log("poll");
     if (Math.random() < 0.2) {

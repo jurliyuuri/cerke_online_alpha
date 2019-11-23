@@ -37,6 +37,38 @@ var type__piece;
         return a[0] === b[0] && a[1] === b[1];
     }
     type__piece.coordEq = coordEq;
+    function rotateCoord(c) {
+        return [8 - c[0], 8 - c[1]];
+    }
+    type__piece.rotateCoord = rotateCoord;
+    function rotateBoard(b) {
+        let ans = [
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"],
+            [null, null, null, null, null, null, null, null, "Tam2"]
+        ];
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                ans[i][j] = rotatePieceOrNull(b[8 - i][8 - j]);
+            }
+        }
+        return ans;
+    }
+    type__piece.rotateBoard = rotateBoard;
+    function rotatePieceOrNull(p) {
+        if (p === null || p === "Tam2") {
+            return p;
+        }
+        else {
+            return { prof: p.prof, color: p.color, side: 1 - p.side };
+        }
+    }
     function toPath(p) {
         const sideToPath = function (side) {
             if (side === Side.Downward)

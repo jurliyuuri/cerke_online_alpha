@@ -1,4 +1,32 @@
 "use strict";
+function get_one_valid_opponent_move() {
+    const get_one_opponent_piece = () => {
+        while (true) {
+            let rand_i = (Math.random() * 9 | 0);
+            let rand_j = (Math.random() * 9 | 0);
+            let coord = [rand_i, rand_j];
+            const piece = GAME_STATE.f.currentBoard[rand_i][rand_j];
+            if (piece === null) {
+                continue;
+            }
+            else if (piece === "Tam2") {
+                return { rotated_piece: piece, rotated_coord: rotateCoord(coord) };
+            }
+            else if (piece.side === Side.Downward) {
+                const rot_piece = { prof: piece.prof, color: piece.color, side: Side.Upward };
+                return { rotated_piece: rot_piece, rotated_coord: rotateCoord(coord) };
+            }
+            else {
+                continue;
+            }
+        }
+    };
+    const { rotated_piece, rotated_coord } = get_one_opponent_piece();
+    const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(rotated_coord, rotated_piece, rotateBoard(GAME_STATE.f.currentBoard), GAME_STATE.tam_itself_is_tam_hue);
+    const candidates = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
+    const dest = candidates[Math.random() * candidates.length | 0];
+    console.log(rotateCoord(rotated_coord), rotated_piece, dest);
+}
 function poll() {
     console.log("poll");
     if (Math.random() < 0.2) {
