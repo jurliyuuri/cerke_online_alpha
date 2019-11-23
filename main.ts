@@ -119,13 +119,11 @@ async function poll() {
             let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
 
             const total_duration = 1500 * 0.8093;
-            const subdiv = 50;
-            for (let i = 1; i < subdiv; i++) {
-                await new Promise(resolve => setTimeout(resolve, total_duration / subdiv));
-                imgNode.style.top = `${(src_top * (subdiv - i) + dest_top * i) / subdiv}px`;
-                imgNode.style.left = `${(src_left * (subdiv - i) + dest_left * i) / subdiv}px`;
-            }
-            await new Promise(resolve => setTimeout(resolve, total_duration / subdiv));
+            imgNode.style.transition = `transform ${total_duration / 1000}s ease`;
+            imgNode.style.zIndex = "100"; // so that it doesn't go under another piece
+            imgNode.style.transform = `translateY(${dest_top - src_top}px)`
+            imgNode.style.transform += `translateX(${dest_left - src_left}px)`
+            await new Promise(resolve => setTimeout(resolve, total_duration));
 
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
