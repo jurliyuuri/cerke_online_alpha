@@ -14,8 +14,18 @@ type GAME_STATE = {
     backupDuringStepping: null | [Coord, Piece]
 };
 
+function poll() {
+    console.log("poll");
+    if (Math.random() < 0.2) {
+        console.log("ding!");
+        // write the opponent's hand to the board;
+        GAME_STATE.is_my_turn = true;
+    }
+}
+
 let GAME_STATE: GAME_STATE = (() => {
-    let _is_my_turn: boolean = true; //fixme
+    let _is_my_turn: boolean = true;
+    let _intervalID: number | null = null;
     return {
     f: {
         currentBoard: [
@@ -41,10 +51,17 @@ let GAME_STATE: GAME_STATE = (() => {
             document.getElementById("larta_me")!.style.display = "block";
             document.getElementById("larta_opponent")!.style.display = "none";
             document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.add("nocover");
+            if (_intervalID != null) {
+                window.clearInterval(_intervalID);
+                _intervalID = null;
+            }
         } else {
             document.getElementById("larta_me")!.style.display = "none";
             document.getElementById("larta_opponent")!.style.display = "block";
             document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.remove("nocover");
+            if (_intervalID == null) {
+                _intervalID = window.setInterval(poll, 500 * 0.8093);
+            }
         }
     },
 
