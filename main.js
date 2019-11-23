@@ -648,9 +648,13 @@ function updateField(message) {
         let _should_not_reach_here = message;
     }
 }
-/* Intentionally does not verify whether the piece itself is downward */
-function isProtectedByDownwardTamHueAUai(coord) {
-    return eightNeighborhood(coord).filter(([a, b]) => {
+/** Checks whether it is possible for the destination to trigger piece-taking.
+ * @param {Coord} dest destination
+ * @param {Piece} piece_to_move piece that is moving
+ */
+function canBeTakenByUpward(dest, piece_to_move) {
+    /* Intentionally does not verify whether the piece itself is downward */
+    const isProtectedByDownwardTamHueAUai = (coord) => eightNeighborhood(coord).filter(([a, b]) => {
         let piece = GAME_STATE.f.currentBoard[a][b];
         if (piece == null) {
             return false;
@@ -660,12 +664,17 @@ function isProtectedByDownwardTamHueAUai(coord) {
         }
         return piece.prof === Profession.Uai1 && piece.side === Side.Downward;
     }).length > 0;
+    const [i, j] = dest;
+    const destPiece = GAME_STATE.f.currentBoard[i][j];
+    return !(destPiece === "Tam2"
+        || (destPiece !== null
+            && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(dest) || piece_to_move === "Tam2")));
 }
-function getThingsGoing(piece, from, to) {
+function getThingsGoing(piece_to_move, from, to) {
     let destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (destPiece == null) { // dest is empty square; try to simply move
         let message;
-        if (piece !== "Tam2") {
+        if (piece_to_move !== "Tam2") {
             let abs_src = toAbsoluteCoord(from);
             let abs_dst = toAbsoluteCoord(to);
             message = {
@@ -684,9 +693,9 @@ function getThingsGoing(piece, from, to) {
             return;
         }
     }
-    if (destPiece === "Tam2" || destPiece.side === Side.Upward || piece === "Tam2"
-        || isProtectedByDownwardTamHueAUai(to)) { // can step, but cannot take
-        stepping(from, piece, to);
+    // dest is not an empty square; it is always possible to step
+    if (!canBeTakenByUpward(to, piece_to_move)) { // can step, but cannot take
+        stepping(from, piece_to_move, to);
         return;
     }
     if (confirm(DICTIONARY.ja.whetherToTake)) {
@@ -704,7 +713,7 @@ function getThingsGoing(piece, from, to) {
         return;
     }
     else {
-        stepping(from, piece, to);
+        stepping(from, piece_to_move, to);
         return;
     }
 }
@@ -858,11 +867,8 @@ function display_guide_after_stepping(coord, q, parent, list) {
     }
     for (let ind = 0; ind < list.length; ind++) {
         const [i, j] = list[ind];
-        const destPiece = GAME_STATE.f.currentBoard[i][j];
         // cannot step twice
-        if (destPiece === "Tam2"
-            || (destPiece !== null
-                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(list[ind]) || q.piece === "Tam2"))) {
+        if (!canBeTakenByUpward(list[ind], q.piece)) {
             continue;
         }
         let img = createCircleGuideImageAt(list[ind], q.path);
