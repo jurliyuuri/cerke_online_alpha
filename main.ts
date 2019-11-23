@@ -807,10 +807,20 @@ function canGetOccupiedByUpward(dest: Coord, piece_to_move: Piece) {
     const [i, j] = dest;
     const destPiece = GAME_STATE.f.currentBoard[i][j];
 
+    /* Tam2 can never be taken */
     if (destPiece === "Tam2") { return false; }
 
-    return destPiece === null
-                || !(destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(dest) || piece_to_move === "Tam2")
+    /* It is always allowed to enter an empty square */
+    if (destPiece === null) { 
+        return true; 
+    } else { 
+        return (
+            piece_to_move !== "Tam2" /* tam2 can never take a piece */
+            && destPiece.side !== Side.Upward /* cannot take your own piece */
+            && !isProtectedByDownwardTamHueAUai(dest) /* must not be protected by tam2 hue a uai1 */
+        )
+    }
+
 }
 
 function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coord) {
