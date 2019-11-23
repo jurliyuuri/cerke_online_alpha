@@ -791,11 +791,11 @@ function updateField(message: NormalMove) {
     }
 }
 
-/** Checks whether it is possible for the destination to trigger piece-taking.
+/** Checks whether it is possible for the moving piece to occupy the destination, either by moving to an empty square or taking the opponent's piece.
  * @param {Coord} dest destination
  * @param {Piece} piece_to_move piece that is moving
  */
-function canBeTakenByUpward(dest: Coord, piece_to_move: Piece) {
+function canGetOccupiedByUpward(dest: Coord, piece_to_move: Piece) {
     /* Intentionally does not verify whether the piece itself is downward */
     const isProtectedByDownwardTamHueAUai = (coord: Coord) => eightNeighborhood(coord).filter(([a, b]) => {
             let piece = GAME_STATE.f.currentBoard[a][b];
@@ -807,13 +807,10 @@ function canBeTakenByUpward(dest: Coord, piece_to_move: Piece) {
     const [i, j] = dest;
     const destPiece = GAME_STATE.f.currentBoard[i][j];
 
-    return !(
-        destPiece === "Tam2"
-            || (
-                destPiece !== null
-                && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(dest) || piece_to_move === "Tam2")
-            )
-    );
+    if (destPiece === "Tam2") { return false; }
+
+    return destPiece === null
+                || !(destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(dest) || piece_to_move === "Tam2")
 }
 
 function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coord) {
@@ -844,7 +841,7 @@ function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord,
 
     // dest is not an empty square; it is always possible to step
 
-    if (!canBeTakenByUpward(to, piece_to_move)) { // can step, but cannot take
+    if (!canGetOccupiedByUpward(to, piece_to_move)) { // can step, but cannot take
         stepping(from, piece_to_move, to);
         return;
     }
@@ -1070,7 +1067,7 @@ function display_guide_after_stepping(
         const [i, j] = list[ind];
 
         // cannot step twice
-        if (!canBeTakenByUpward(list[ind], q.piece)) {
+        if (!canGetOccupiedByUpward(list[ind], q.piece)) {
             continue;
         }
 

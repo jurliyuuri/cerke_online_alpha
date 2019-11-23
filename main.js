@@ -648,11 +648,11 @@ function updateField(message) {
         let _should_not_reach_here = message;
     }
 }
-/** Checks whether it is possible for the destination to trigger piece-taking.
+/** Checks whether it is possible for the moving piece to occupy the destination, either by moving to an empty square or taking the opponent's piece.
  * @param {Coord} dest destination
  * @param {Piece} piece_to_move piece that is moving
  */
-function canBeTakenByUpward(dest, piece_to_move) {
+function canGetOccupiedByUpward(dest, piece_to_move) {
     /* Intentionally does not verify whether the piece itself is downward */
     const isProtectedByDownwardTamHueAUai = (coord) => eightNeighborhood(coord).filter(([a, b]) => {
         let piece = GAME_STATE.f.currentBoard[a][b];
@@ -666,9 +666,11 @@ function canBeTakenByUpward(dest, piece_to_move) {
     }).length > 0;
     const [i, j] = dest;
     const destPiece = GAME_STATE.f.currentBoard[i][j];
-    return !(destPiece === "Tam2"
-        || (destPiece !== null
-            && (destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(dest) || piece_to_move === "Tam2")));
+    if (destPiece === "Tam2") {
+        return false;
+    }
+    return destPiece === null
+        || !(destPiece.side === Side.Upward || isProtectedByDownwardTamHueAUai(dest) || piece_to_move === "Tam2");
 }
 function getThingsGoing(piece_to_move, from, to) {
     let destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
@@ -694,7 +696,7 @@ function getThingsGoing(piece_to_move, from, to) {
         }
     }
     // dest is not an empty square; it is always possible to step
-    if (!canBeTakenByUpward(to, piece_to_move)) { // can step, but cannot take
+    if (!canGetOccupiedByUpward(to, piece_to_move)) { // can step, but cannot take
         stepping(from, piece_to_move, to);
         return;
     }
@@ -868,7 +870,7 @@ function display_guide_after_stepping(coord, q, parent, list) {
     for (let ind = 0; ind < list.length; ind++) {
         const [i, j] = list[ind];
         // cannot step twice
-        if (!canBeTakenByUpward(list[ind], q.piece)) {
+        if (!canGetOccupiedByUpward(list[ind], q.piece)) {
             continue;
         }
         let img = createCircleGuideImageAt(list[ind], q.path);
