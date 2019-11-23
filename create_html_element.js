@@ -4,9 +4,6 @@
  * No write to the global variable is permitted.
  * Every call to document.createElement should live here.
  */
-const BOX_SIZE = 70;
-const MAX_PIECE_SIZE = BOX_SIZE - 1;
-const PIECE_SIZE = 60;
 function createPieceSizeImageOnBoardByPathAndXY(top, left, path, className) {
     let i = document.createElement("img");
     i.classList.add(className);
@@ -16,13 +13,6 @@ function createPieceSizeImageOnBoardByPathAndXY(top, left, path, className) {
     i.width = PIECE_SIZE;
     i.height = PIECE_SIZE;
     return i;
-}
-function coordToPieceXY(coord) {
-    const [row_index, column_index] = coord;
-    return {
-        top: 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-        left: 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2
-    };
 }
 function createPieceSizeImageOnBoardByPath(coord, path, className) {
     const { top, left } = coordToPieceXY(coord);

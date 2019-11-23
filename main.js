@@ -90,7 +90,7 @@ async function displayOpponentSrcDst(src, dst) {
             let destNode = document.getElementById(`field_piece_${dest_i}_${dest_j}`);
             const total_duration = 750 * 0.8093;
             await animateNode(srcNode, total_duration, coordToPieceXY([dest_i, dest_j]), coordToPieceXY([src_i, src_j]));
-            await animateNode(destNode, total_duration, { top: -135, left: indToHop1Zuo1Horizontal(GAME_STATE.f.hop1zuo1OfDownward.length - 1) }, coordToPieceXY([dest_i, dest_j]), "50", 180);
+            await animateNode(destNode, total_duration, indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1), coordToPieceXY([dest_i, dest_j]), "50", 180);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
             drawField(GAME_STATE.f);
@@ -1116,9 +1116,6 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
         /* re-click: deselect */
         UI_STATE.selectedCoord = null;
     }
-}
-function indToHop1Zuo1Horizontal(ind) {
-    return 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
 }
 function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
     return createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, indToHop1Zuo1Horizontal(ind), path, "piece_image_on_hop1zuo1");

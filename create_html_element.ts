@@ -4,10 +4,6 @@
  * Every call to document.createElement should live here.
  */
 
-const BOX_SIZE = 70;
-const MAX_PIECE_SIZE = BOX_SIZE - 1;
-const PIECE_SIZE = 60;
-
 function createPieceSizeImageOnBoardByPathAndXY(top: number, left: number, path: string, className: string): HTMLImageElement {
     let i = document.createElement("img");
     i.classList.add(className);
@@ -17,14 +13,6 @@ function createPieceSizeImageOnBoardByPathAndXY(top: number, left: number, path:
     i.width = PIECE_SIZE;
     i.height = PIECE_SIZE;
     return i;
-}
-
-function coordToPieceXY(coord: Coord) {
-    const [row_index, column_index] = coord;
-    return {
-        top: 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 
-        left: 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2
-    };
 }
 
 function createPieceSizeImageOnBoardByPath(coord: Coord, path: string, className: string): HTMLImageElement {

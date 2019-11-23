@@ -133,7 +133,7 @@ async function displayOpponentSrcDst(src: Coord, dst: Coord) {
             );
             
             await animateNode(destNode, total_duration, 
-                {top: -135, left: indToHop1Zuo1Horizontal(GAME_STATE.f.hop1zuo1OfDownward.length - 1)},
+                indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
                 coordToPieceXY([dest_i, dest_j]),
                 "50", 180
             );
@@ -1400,10 +1400,6 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
         /* re-click: deselect */
         UI_STATE.selectedCoord = null;
     }
-}
-
-function indToHop1Zuo1Horizontal(ind: number) {
-    return 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
 }
 
 function createPieceImgToBePlacedOnHop1zuo1(ind: number, path: string): HTMLImageElement {
