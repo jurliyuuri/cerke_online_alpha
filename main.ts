@@ -21,9 +21,17 @@ type OpponentMove = {
         src: AbsoluteCoord,
         dest: AbsoluteCoord
     }
+} | {
+    type: 'TamMove'
+    stepStyle: 'NoStep';
+    src: AbsoluteCoord;
+    firstDest: AbsoluteCoord;
+    secondDest: AbsoluteCoord;
 };
 
 function get_one_valid_opponent_move(): OpponentMove {
+
+    // There is always at least one piece, namely Tam2
     const get_one_opponent_piece: () => {rotated_piece: "Tam2" | NonTam2PieceUpward, rotated_coord: Coord} = () => {
         while (true) {
             let rand_i = (Math.random() * 9 | 0) as BoardIndex; 
@@ -34,8 +42,7 @@ function get_one_valid_opponent_move(): OpponentMove {
             if (piece === null) { 
                 continue; 
             } else if (piece === "Tam2") {
-                continue; // FIXME (for now, no Tam2)
-                // return {rotated_piece: piece, rotated_coord: rotateCoord(coord)}
+                return {rotated_piece: piece, rotated_coord: rotateCoord(coord)};
             } else if (piece.side === Side.Downward) {
                 const rot_piece: NonTam2PieceUpward = {prof: piece.prof, color: piece.color, side: Side.Upward};
                 return {rotated_piece: rot_piece, rotated_coord: rotateCoord(coord)}
@@ -55,11 +62,27 @@ function get_one_valid_opponent_move(): OpponentMove {
 
     const candidates : Coord[] = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
 
+    if (candidates.length === 0) { return get_one_valid_opponent_move(); } // retry
+
     /* FIXME: for now, no stepping */
     for (let i = 0; i < 1000; i++) {
         const dest = candidates[Math.random() * candidates.length | 0];
         const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
-        if (destPiece === null || (destPiece !== "Tam2" && destPiece.side === Side.Upward) ) {
+        if (rotated_piece === "Tam2") {
+            if (destPiece === null) { /* empty square; first move */
+                const fstdst: Coord = dest;
+                const empty_neighbors = eightNeighborhood(fstdst).filter(([i,j]) => GAME_STATE.f.currentBoard[i][j] == null);
+                if (empty_neighbors.length === 0) { return get_one_valid_opponent_move(); } // retry
+                const snddst: Coord = empty_neighbors[Math.random() * empty_neighbors.length | 0];
+                return {
+                    type: "TamMove",
+                    stepStyle: "NoStep",
+                    secondDest: toAbsoluteCoord(snddst),
+                    firstDest: toAbsoluteCoord(fstdst),
+                    src: toAbsoluteCoord(rotateCoord(rotated_coord))
+                }
+            }
+        } else if (destPiece === null || (destPiece !== "Tam2" && destPiece.side === Side.Upward) ) {
             return {
                 type: 'NonTamMove',
                 data:  {
@@ -153,8 +176,45 @@ async function poll() {
                 let a : never = opponent_move.data.type;
                 throw new Error("does not happen");
             }
+        } else if (opponent_move.type === "TamMove") {
+            if (opponent_move.stepStyle === "NoStep") {
+                let src: Coord = fromAbsoluteCoord(opponent_move.src);
+                let fstdst: Coord = fromAbsoluteCoord(opponent_move.firstDest);
+                let snddst: Coord = fromAbsoluteCoord(opponent_move.secondDest);
+
+                let piece: Piece | null = GAME_STATE.f.currentBoard[src[0]][src[1]]
+                if (piece === null) {
+                    throw new Error("src is unoccupied");
+                }
+
+                let imgNode : HTMLElement = document.getElementById(`field_piece_${src[0]}_${src[1]}`)!;
+                await animateNode(imgNode, 1500 * 0.8093, 
+                    coordToPieceXY(fstdst), 
+                    coordToPieceXY(src)
+                );
+                GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
+                GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
+                drawField(GAME_STATE.f);
+                
+                let imgNode2 : HTMLElement = document.getElementById(`field_piece_${fstdst[0]}_${fstdst[1]}`)!;
+
+                /* somehow does not work without this line */
+                await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+
+                await animateNode(imgNode2, 1500 * 0.8093, 
+                    coordToPieceXY(snddst), 
+                    coordToPieceXY(fstdst)
+                );
+                GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
+                GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
+                drawField(GAME_STATE.f);
+                GAME_STATE.is_my_turn = true;
+            } else {
+                let a : never = opponent_move.stepStyle;
+                throw new Error("does not happen");
+            }
         } else {
-            let a : never = opponent_move.type;
+            let a : never = opponent_move;
             throw new Error("does not happen");
         }
     } else {
