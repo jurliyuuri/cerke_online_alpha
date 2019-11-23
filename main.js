@@ -72,24 +72,29 @@ async function poll() {
                         side: Side.Downward
                     };
                     GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+                    let { top: src_top, left: src_left } = coordToPieceXY([src_i, src_j]);
+                    let { top: dest_top, left: dest_left } = coordToPieceXY([dest_i, dest_j]);
+                    let srcNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
+                    let destNode = document.getElementById(`field_piece_${dest_i}_${dest_j}`);
+                    const total_duration = 750 * 0.8093;
+                    await animateNode(srcNode, total_duration, coordToPieceXY([dest_i, dest_j]), coordToPieceXY([src_i, src_j]));
+                    await animateNode(destNode, total_duration, { top: -135, left: indToHop1Zuo1Horizontal(GAME_STATE.f.hop1zuo1OfDownward.length - 1) }, coordToPieceXY([dest_i, dest_j]), "50", 180);
+                    GAME_STATE.f.currentBoard[src_i][src_j] = null;
+                    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+                    drawField(GAME_STATE.f);
                 }
                 else {
                     let _should_not_reach_here = destPiece.side;
                     throw new Error("should not reach here");
                 }
             }
-            let { top: src_top, left: src_left } = coordToPieceXY([src_i, src_j]);
-            let { top: dest_top, left: dest_left } = coordToPieceXY([dest_i, dest_j]);
-            let imgNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
-            const total_duration = 1500 * 0.8093;
-            imgNode.style.transition = `transform ${total_duration / 1000}s ease`;
-            imgNode.style.zIndex = "100"; // so that it doesn't go under another piece
-            imgNode.style.transform = `translateY(${dest_top - src_top}px)`;
-            imgNode.style.transform += `translateX(${dest_left - src_left}px)`;
-            await new Promise(resolve => setTimeout(resolve, total_duration));
-            GAME_STATE.f.currentBoard[src_i][src_j] = null;
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-            drawField(GAME_STATE.f);
+            else {
+                let imgNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
+                await animateNode(imgNode, 1500 * 0.8093, coordToPieceXY([dest_i, dest_j]), coordToPieceXY([src_i, src_j]));
+                GAME_STATE.f.currentBoard[src_i][src_j] = null;
+                GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+                drawField(GAME_STATE.f);
+            }
         }
         GAME_STATE.is_my_turn = true;
     }
@@ -97,6 +102,21 @@ async function poll() {
         await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
         await poll();
     }
+}
+/**
+ *
+ * @param total_duration total duration in millisecond
+ * @param rotate angle to rotate, in degrees
+ */
+async function animateNode(node, total_duration, to, from, zIndex = "100", rotate) {
+    node.style.transition = `transform ${total_duration / 1000}s ease`;
+    node.style.zIndex = zIndex; // so that it doesn't go under another piece
+    node.style.transform = `translateY(${to.top - from.top}px)`;
+    node.style.transform += `translateX(${to.left - from.left}px)`;
+    if (rotate != null) {
+        node.style.transform += `rotate(${rotate}deg)`;
+    }
+    await new Promise(resolve => setTimeout(resolve, total_duration));
 }
 let GAME_STATE = (() => {
     let _is_my_turn = true;
@@ -990,7 +1010,7 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
     if (UI_STATE.selectedCoord == null || UI_STATE.selectedCoord[0] !== "Hop1zuo1" || UI_STATE.selectedCoord[1] !== ind) {
         UI_STATE.selectedCoord = ["Hop1zuo1", ind];
         const contains_guides_on_upward = document.getElementById("contains_guides_on_upward");
-        let centralNode = createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, "selection2", "selection");
+        let centralNode = createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, indToHop1Zuo1Horizontal(ind), "selection2", "selection");
         centralNode.style.cursor = "pointer";
         // click on it to erase
         centralNode.addEventListener('click', function () {
@@ -1039,8 +1059,11 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
         UI_STATE.selectedCoord = null;
     }
 }
+function indToHop1Zuo1Horizontal(ind) {
+    return 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
+}
 function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
-    return createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, path, "piece_image_on_hop1zuo1");
+    return createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, indToHop1Zuo1Horizontal(ind), path, "piece_image_on_hop1zuo1");
 }
 function createPieceImgToBePlacedOnBoard(coord, piece) {
     return createPieceSizeImageOnBoardByPath(coord, toPath_(piece), "piece_image_on_board");

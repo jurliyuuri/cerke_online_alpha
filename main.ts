@@ -107,35 +107,69 @@ async function poll() {
                         side: Side.Downward
                     }
                     GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+                    let {top: src_top, left: src_left} = coordToPieceXY([src_i, src_j]);
+                    let {top: dest_top, left: dest_left} = coordToPieceXY([dest_i, dest_j]);
+
+                    let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+                    let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+
+                    const total_duration = 750 * 0.8093;
+                    await animateNode(srcNode, total_duration, 
+                        coordToPieceXY([dest_i, dest_j]), 
+                        coordToPieceXY([src_i, src_j])
+                    );
+                    
+                    await animateNode(destNode, total_duration, 
+                        {top: -135, left: indToHop1Zuo1Horizontal(GAME_STATE.f.hop1zuo1OfDownward.length - 1)},
+                        coordToPieceXY([dest_i, dest_j]),
+                        "50", 180
+                    );
+
+                    GAME_STATE.f.currentBoard[src_i][src_j] = null;
+                    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+                    drawField(GAME_STATE.f);
                 } else {
                     let _should_not_reach_here: never = destPiece.side;
                     throw new Error("should not reach here");
                 }
+            } else {
+                let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+                await animateNode(imgNode, 1500 * 0.8093, 
+                    coordToPieceXY([dest_i, dest_j]), 
+                    coordToPieceXY([src_i, src_j])
+                );
+                GAME_STATE.f.currentBoard[src_i][src_j] = null;
+                GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+                drawField(GAME_STATE.f);
             }
-
-            let {top: src_top, left: src_left} = coordToPieceXY([src_i, src_j]);
-            let {top: dest_top, left: dest_left} = coordToPieceXY([dest_i, dest_j]);
-
-            let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-
-            const total_duration = 1500 * 0.8093;
-            imgNode.style.transition = `transform ${total_duration / 1000}s ease`;
-            imgNode.style.zIndex = "100"; // so that it doesn't go under another piece
-            imgNode.style.transform = `translateY(${dest_top - src_top}px)`
-            imgNode.style.transform += `translateX(${dest_left - src_left}px)`
-            await new Promise(resolve => setTimeout(resolve, total_duration));
-
-            GAME_STATE.f.currentBoard[src_i][src_j] = null;
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-            drawField(GAME_STATE.f);
         }
-
         
         GAME_STATE.is_my_turn = true;
     } else {
         await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
         await poll();
     }
+}
+
+/**
+ * 
+ * @param total_duration total duration in millisecond
+ * @param rotate angle to rotate, in degrees
+ */
+async function animateNode(node: HTMLElement, 
+    total_duration: number, 
+    to: {top: number, left: number}, 
+    from: {top: number, left: number}, 
+    zIndex: string = "100",
+    rotate?: number) {
+    node.style.transition = `transform ${total_duration / 1000}s ease`;
+    node.style.zIndex = zIndex; // so that it doesn't go under another piece
+    node.style.transform = `translateY(${to.top - from.top}px)`;
+    node.style.transform += `translateX(${to.left - from.left}px)`;
+    if (rotate != null) {
+        node.style.transform += `rotate(${rotate}deg)`;
+    }
+    await new Promise(resolve => setTimeout(resolve, total_duration));
 }
 
 let GAME_STATE: GAME_STATE = (() => {
@@ -1236,7 +1270,7 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
         const contains_guides_on_upward = document.getElementById("contains_guides_on_upward")!;
         let centralNode = createPieceSizeImageOnBoardByPathAndXY(
             1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-            1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
+            indToHop1Zuo1Horizontal(ind),
             "selection2",
             "selection"
         );
@@ -1298,10 +1332,14 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
     }
 }
 
+function indToHop1Zuo1Horizontal(ind: number) {
+    return 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
+}
+
 function createPieceImgToBePlacedOnHop1zuo1(ind: number, path: string): HTMLImageElement {
     return createPieceSizeImageOnBoardByPathAndXY(
         1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-        1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
+        indToHop1Zuo1Horizontal(ind),
         path,
         "piece_image_on_hop1zuo1"
     );
