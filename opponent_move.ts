@@ -3,7 +3,8 @@ type OpponentMove = {
     data:  {
         type: 'SrcDst',
         src: AbsoluteCoord,
-        dest: AbsoluteCoord
+        dest: AbsoluteCoord,
+        waterEntryCiurl?: Ciurl
     } | {
         type: 'FromHand';
         color: Color;
@@ -14,6 +15,7 @@ type OpponentMove = {
         src: AbsoluteCoord;
         step: AbsoluteCoord;
         dest: AbsoluteCoord;
+        waterEntryCiurl?: Ciurl
     }
 } | {
     type: 'TamMove'
@@ -222,7 +224,7 @@ async function displayOpponentSrcStepDstFinite(src: Coord, step: Coord, dest: Co
     }
 }
 
-async function displayOpponentSrcDst(src: Coord, dst: Coord) {
+async function displayOpponentSrcDst(src: Coord, dst: Coord, water_ciurl: Ciurl | undefined) {
     const [src_i, src_j] = src;
     const [dest_i, dest_j] = dst;
     

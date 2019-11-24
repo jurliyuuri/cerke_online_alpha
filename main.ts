@@ -9,7 +9,8 @@ async function poll() {
             if(opponent_move.data.type === "SrcDst") {
                 displayOpponentSrcDst(
                     fromAbsoluteCoord(opponent_move.data.src),
-                    fromAbsoluteCoord(opponent_move.data.dest)
+                    fromAbsoluteCoord(opponent_move.data.dest),
+                    opponent_move.data.waterEntryCiurl
                 );
                 GAME_STATE.is_my_turn = true;
             } else if (opponent_move.data.type === "FromHand") {
@@ -20,11 +21,20 @@ async function poll() {
                 );
                 GAME_STATE.is_my_turn = true;
             } else if (opponent_move.data.type === "SrcStepDstFinite") {
-                displayOpponentSrcStepDstFinite(
-                    fromAbsoluteCoord(opponent_move.data.src),
-                    fromAbsoluteCoord(opponent_move.data.step),
-                    fromAbsoluteCoord(opponent_move.data.dest)
-                );
+                if (opponent_move.data.waterEntryCiurl) {
+                    displayOpponentSrcStepDstFiniteWithWaterEntry(
+                        fromAbsoluteCoord(opponent_move.data.src),
+                        fromAbsoluteCoord(opponent_move.data.step),
+                        fromAbsoluteCoord(opponent_move.data.dest),
+                        opponent_move.data.waterEntryCiurl
+                    );
+                } else {
+                    displayOpponentSrcStepDstFinite(
+                        fromAbsoluteCoord(opponent_move.data.src),
+                        fromAbsoluteCoord(opponent_move.data.step),
+                        fromAbsoluteCoord(opponent_move.data.dest)
+                    );
+                }
                 GAME_STATE.is_my_turn = true;
             } else {
                 let a : never = opponent_move.data;
