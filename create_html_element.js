@@ -18,6 +18,9 @@ function createPieceSizeImageOnBoardByPath(coord, path, className) {
     const { top, left } = coordToPieceXY(coord);
     return createPieceSizeImageOnBoardByPathAndXY(top, left, path, className);
 }
+function createCancelButton() {
+    return createPieceSizeImageOnBoardByPathAndXY(1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE), 1 + 7.5 * BOX_SIZE, "piece/bmun", "piece_image_on_board");
+}
 function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
     let [row_index, column_index] = coord;
     return createPieceSizeImageOnBoardByPathAndXY(1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE), 1 + column_index * BOX_SIZE, path, className);

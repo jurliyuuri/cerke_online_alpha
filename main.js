@@ -536,7 +536,7 @@ function drawPhantomAt(coord, piece) {
 }
 function drawCancel(fn) {
     let contains_phantom = document.getElementById("contains_phantom");
-    let cancelButton = createPieceSizeImageOnBoardByPath_Shifted([9, 7.5], "piece/bmun", "piece_image_on_board");
+    let cancelButton = createCancelButton();
     cancelButton.width = 80;
     cancelButton.height = 80;
     cancelButton.style.zIndex = "100";

@@ -25,7 +25,16 @@ function createPieceSizeImageOnBoardByPath(coord: Coord, path: string, className
     );
 }
 
-function createPieceSizeImageOnBoardByPath_Shifted(coord: readonly [number, number], path: string, className: string): HTMLImageElement {
+function createCancelButton() {
+    return createPieceSizeImageOnBoardByPathAndXY(
+        1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
+        1 + 7.5 * BOX_SIZE,
+        "piece/bmun",
+        "piece_image_on_board"
+    );
+}
+
+function createPieceSizeImageOnBoardByPath_Shifted(coord: Coord, path: string, className: string): HTMLImageElement {
     let [row_index, column_index] = coord;
     return createPieceSizeImageOnBoardByPathAndXY(
         1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
