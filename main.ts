@@ -25,6 +25,11 @@ type OpponentMove = {
         color: Color;
         prof: Profession;
         dest: AbsoluteCoord;
+    } | {
+        type: 'SrcStepDstFinite';
+        src: AbsoluteCoord;
+        step: AbsoluteCoord;
+        dest: AbsoluteCoord;
     }
 } | {
     type: 'TamMove'
@@ -125,6 +130,91 @@ function get_one_valid_opponent_move(): OpponentMove {
 
     // if no candidate found, try again
     return get_one_valid_opponent_move();
+}
+
+async function displayOpponentSrcStepDstFinite(src: Coord, step: Coord, dest: Coord) {
+    const [src_i, src_j] = src;
+    const [step_i, step_j] = step;
+    const [dest_i, dest_j] = dest;
+
+    let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+    if (piece === null) {
+        throw new Error("src is unoccupied");
+    }
+
+    let stepPiece: Piece | null = GAME_STATE.f.currentBoard[step_i][step_j];
+
+    if (stepPiece === null) {
+        throw new Error("step is unoccupied");
+    }
+
+    let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+    /* it IS possible that you are returning to the original position, in which case you don't do anything */
+    if (destPiece !== null) {
+        if (destPiece === "Tam2") {
+            throw new Error("dest is occupied by Tam2");
+        } else if (destPiece.side === Side.Downward) {
+            throw new Error("dest is occupied by an ally");
+        } else if (destPiece.side === Side.Upward) {
+            const flipped: NonTam2PieceDownward = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Downward
+            }
+            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+
+            let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+            let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+
+            await animateNode(srcNode, 750 * 0.8093, 
+                coordToPieceXY_Shifted(step), 
+                coordToPieceXY(src)
+            );
+
+            await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+
+            await animateNode(srcNode, 750 * 0.8093, 
+                coordToPieceXY(dest),
+                coordToPieceXY(src) /* must be src, since the node is not renewed */
+            );
+
+            await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+            
+            await animateNode(destNode, 750 * 0.8093, 
+                indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
+                coordToPieceXY([dest_i, dest_j]),
+                "50", 180
+            );
+
+            if (!coordEq(src, dest)) {
+                GAME_STATE.f.currentBoard[src_i][src_j] = null;
+                GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            }
+            drawField(GAME_STATE.f);
+        } else {
+            let _should_not_reach_here: never = destPiece.side;
+            throw new Error("should not reach here");
+        }
+    } else {
+        let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        await animateNode(imgNode, 750 * 0.8093, 
+            coordToPieceXY_Shifted(step), 
+            coordToPieceXY(src)
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+
+        await animateNode(imgNode, 750 * 0.8093, 
+            coordToPieceXY(dest),
+            coordToPieceXY(src) /* must be src, since the node is not renewed */
+        );
+        if (!coordEq(src, dest)) {
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        }
+        drawField(GAME_STATE.f);
+    }
 }
 
 async function displayOpponentSrcDst(src: Coord, dst: Coord) {
@@ -231,6 +321,13 @@ async function poll() {
                 const piece : NonTam2PieceDownward = {prof: opponent_move.data.prof, color: opponent_move.data.color, side: Side.Downward};
                 displayOpponentFromHand(
                     piece,
+                    fromAbsoluteCoord(opponent_move.data.dest)
+                );
+                GAME_STATE.is_my_turn = true;
+            } else if (opponent_move.data.type === "SrcStepDstFinite") {
+                displayOpponentSrcStepDstFinite(
+                    fromAbsoluteCoord(opponent_move.data.src),
+                    fromAbsoluteCoord(opponent_move.data.step),
                     fromAbsoluteCoord(opponent_move.data.dest)
                 );
                 GAME_STATE.is_my_turn = true;
