@@ -17,12 +17,7 @@ function createPieceSizeImageOnBoardByPathAndXY(top: number, left: number, path:
 
 function createPieceSizeImageOnBoardByPath(coord: Coord, path: string, className: string): HTMLImageElement {
     const {top, left} = coordToPieceXY(coord);
-    return createPieceSizeImageOnBoardByPathAndXY(
-        top,
-        left,
-        path,
-        className
-    );
+    return createPieceSizeImageOnBoardByPathAndXY(top, left, path, className);
 }
 
 function createCancelButton() {
@@ -35,13 +30,8 @@ function createCancelButton() {
 }
 
 function createPieceSizeImageOnBoardByPath_Shifted(coord: Coord, path: string, className: string): HTMLImageElement {
-    let [row_index, column_index] = coord;
-    return createPieceSizeImageOnBoardByPathAndXY(
-        1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
-        1 + column_index * BOX_SIZE,
-        path,
-        className
-    );
+    const {top, left} = coordToPieceXY_Shifted(coord);
+    return createPieceSizeImageOnBoardByPathAndXY(top, left, path, className);
 }
 
 function createCircleGuideImageAt(coord: Coord, path: string): HTMLImageElement {

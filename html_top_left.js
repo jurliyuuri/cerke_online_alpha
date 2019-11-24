@@ -9,6 +9,13 @@ function coordToPieceXY(coord) {
         left: 1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2
     };
 }
+function coordToPieceXY_Shifted(coord) {
+    const [row_index, column_index] = coord;
+    return {
+        top: 1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
+        left: 1 + column_index * BOX_SIZE,
+    };
+}
 function indToHop1Zuo1Horizontal(ind) {
     return 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
 }
