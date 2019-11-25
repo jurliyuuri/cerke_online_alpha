@@ -120,7 +120,8 @@ function get_one_valid_opponent_move(): OpponentMove {
                     src: toAbsoluteCoord(rotateCoord(rotated_coord))
                 }
             }
-        } else if (destPiece === null || (destPiece !== "Tam2" && destPiece.side === Side.Upward) ) {
+        } else if (destPiece === null) {
+            // cannot step
             return {
                 type: 'NonTamMove',
                 data:  {
@@ -129,6 +130,54 @@ function get_one_valid_opponent_move(): OpponentMove {
                     dest: toAbsoluteCoord(dest)
                 }
             }
+        } else if (destPiece === "Tam2") {
+            // for now, avoid stepping on Tam2;
+            return get_one_valid_opponent_move(); // retry
+        } else if (destPiece.side === Side.Upward && Math.random() < 0.7) {
+            // opponent's piece; stepping and taking both attainable
+            // take, with probability 0.7
+            
+            return {
+                type: 'NonTamMove',
+                data:  {
+                    type: 'SrcDst',
+                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    dest: toAbsoluteCoord(dest)
+                }
+            }
+        } else { // opponent (prob 30%); ally (prob 100%) --> step
+            const step = dest; // less confusing
+
+            /* FIXME: For now, no infinite */
+            const { finite: guideListYellow } = calculateMovablePositions(
+                rotateCoord(step),
+                rotated_piece,
+                rotateBoard(GAME_STATE.f.currentBoard),
+                GAME_STATE.tam_itself_is_tam_hue
+            );
+
+            const candidates : Coord[] = guideListYellow.map(rotateCoord);
+            if (candidates.length === 0) { return get_one_valid_opponent_move(); } // retry
+            for (let i = 0; i < 1000; i++) {
+                const finalDest = candidates[Math.random() * candidates.length | 0];
+                if (canGetOccupiedBy(Side.Downward, finalDest, {
+                    color: rotated_piece.color, 
+                    prof: rotated_piece.prof, 
+                    side: Side.Downward
+                }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
+                    return {
+                        type: "NonTamMove",
+                        data: {
+                            type: "SrcStepDstFinite",
+                            src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                            step: toAbsoluteCoord(step),
+                            dest: toAbsoluteCoord(finalDest)
+                        }
+                    }
+                }
+            }
+            // if no candidate found, try again
+            return get_one_valid_opponent_move();
         }
     }
 
