@@ -157,50 +157,37 @@ async function displayOpponentSrcStepDstFinite(src: Coord, step: Coord, dest: Co
 
     /* it IS possible that you are returning to the original position, in which case you don't do anything */
     if (destPiece !== null) {
-        if (destPiece === "Tam2") {
-            throw new Error("dest is occupied by Tam2");
-        } else if (destPiece.side === Side.Downward) {
-            throw new Error("dest is occupied by an ally");
-        } else if (destPiece.side === Side.Upward) {
-            const flipped: NonTam2PieceDownward = {
-                color: destPiece.color,
-                prof: destPiece.prof,
-                side: Side.Downward
-            }
-            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+        const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece) ;
+        GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
 
-            let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-            let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+        let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
 
-            await animateNode(srcNode, 750 * 0.8093, 
-                coordToPieceXY_Shifted(step), 
-                coordToPieceXY(src)
-            );
+        await animateNode(srcNode, 750 * 0.8093, 
+            coordToPieceXY_Shifted(step), 
+            coordToPieceXY(src)
+        );
 
-            await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+        await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
 
-            await animateNode(srcNode, 750 * 0.8093, 
-                coordToPieceXY(dest),
-                coordToPieceXY(src) /* must be src, since the node is not renewed */
-            );
+        await animateNode(srcNode, 750 * 0.8093, 
+            coordToPieceXY(dest),
+            coordToPieceXY(src) /* must be src, since the node is not renewed */
+        );
 
-            await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
-            
-            await animateNode(destNode, 750 * 0.8093, 
-                indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
-                coordToPieceXY([dest_i, dest_j]),
-                "50", 180
-            );
+        await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+        
+        await animateNode(destNode, 750 * 0.8093, 
+            indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
+            coordToPieceXY([dest_i, dest_j]),
+            "50", 180
+        );
 
-            if (!coordEq(src, dest)) {
-                GAME_STATE.f.currentBoard[src_i][src_j] = null;
-                GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-            }
-            drawField(GAME_STATE.f);
-        } else {
-            let _should_not_reach_here: never = destPiece.side;
-            throw new Error("should not reach here");
+        if (!coordEq(src, dest)) {
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
+        drawField(GAME_STATE.f);
     } else {
         let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
         await animateNode(imgNode, 750 * 0.8093, 
@@ -222,6 +209,28 @@ async function displayOpponentSrcStepDstFinite(src: Coord, step: Coord, dest: Co
     }
 }
 
+/**
+ * Unsafe function. Takes an upward piece and turns it into a downward one. Panics if already downward or Tam2.
+ * @param {Piece} upward  
+ */
+function downwardTakingUpward(upward: Piece): NonTam2PieceDownward {
+    if (upward === "Tam2") {
+        throw new Error("tried to convert Tam2 into downward");
+    } else if (upward.side === Side.Downward) {
+        throw new Error("tried to convert an already downward piece to downward");
+    } else if (upward.side === Side.Upward) {
+        const flipped: NonTam2PieceDownward = {
+            color: upward.color,
+            prof: upward.prof,
+            side: Side.Downward
+        }
+        return flipped;
+    } else {
+        let _should_not_reach_here: never = upward.side;
+        throw new Error("should not reach here");
+    }
+}
+
 async function displayOpponentSrcDst(src: Coord, dst: Coord) {
     const [src_i, src_j] = src;
     const [dest_i, dest_j] = dst;
@@ -235,40 +244,27 @@ async function displayOpponentSrcDst(src: Coord, dst: Coord) {
 
     /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
     if (destPiece !== null) {
-        if (destPiece === "Tam2") {
-            throw new Error("dest is occupied by Tam2");
-        } else if (destPiece.side === Side.Downward) {
-            throw new Error("dest is occupied by an ally");
-        } else if (destPiece.side === Side.Upward) {
-            const flipped: NonTam2PieceDownward = {
-                color: destPiece.color,
-                prof: destPiece.prof,
-                side: Side.Downward
-            }
-            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+        const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
+        GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
 
-            let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-            let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+        let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
 
-            const total_duration = 750 * 0.8093;
-            await animateNode(srcNode, total_duration, 
-                coordToPieceXY([dest_i, dest_j]), 
-                coordToPieceXY([src_i, src_j])
-            );
-            
-            await animateNode(destNode, total_duration, 
-                indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
-                coordToPieceXY([dest_i, dest_j]),
-                "50", 180
-            );
+        const total_duration = 750 * 0.8093;
+        await animateNode(srcNode, total_duration, 
+            coordToPieceXY([dest_i, dest_j]), 
+            coordToPieceXY([src_i, src_j])
+        );
+        
+        await animateNode(destNode, total_duration, 
+            indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
+            coordToPieceXY([dest_i, dest_j]),
+            "50", 180
+        );
 
-            GAME_STATE.f.currentBoard[src_i][src_j] = null;
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-            drawField(GAME_STATE.f);
-        } else {
-            let _should_not_reach_here: never = destPiece.side;
-            throw new Error("should not reach here");
-        }
+        GAME_STATE.f.currentBoard[src_i][src_j] = null;
+        GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        drawField(GAME_STATE.f);
     } else {
         let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
         await animateNode(imgNode, 1500 * 0.8093, 
