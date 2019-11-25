@@ -493,8 +493,8 @@ async function sendNormalMessage(message: NormalMove) {
 
         if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
             cancelStepping();
-            GAME_STATE.is_my_turn = false;
         }
+        GAME_STATE.is_my_turn = false;
     } else {
         eraseGuide();
         UI_STATE.selectedCoord = null;
