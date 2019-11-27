@@ -1,10 +1,13 @@
-;(() => {
-
 type ObtainablePieces = "黒兵" | "赤兵" | "黒弓" | "黒車" | "黒虎" | "黒馬" | "黒筆" | "黒巫" | "黒将" | "赤弓" | "赤車" | "赤虎" | "赤馬" | "赤筆" | "赤巫" | "赤将" | "黒王" | "赤王" | "黒船" | "赤船";
 
 type ObtainableProf = "兵" | "弓" | "車" | "虎" | "馬" | "筆" | "巫" | "将" | "王" | "船";
 
 type ObtainablePieces2 = {color: "黒" | "赤", prof: ObtainableProf};
+
+type Hand = "王" | "獣" | "同色獣" | "地心" | "同色地心" | "馬弓兵" | "同色馬弓兵" | "助友" | "同色助友" | "戦集" | "同色戦集" | "行行" | "同色行行" | "筆兵無傾" | "同色筆兵無傾" | "闇戦之集" | "同色闇戦之集" | "無抗行処" | "同色無抗行処";
+
+
+const calculate_hands_and_score_from_pieces = (() => {
 
 const toObtainablePieces2 : {[P in ObtainablePieces]: ObtainablePieces2} = {
     "黒兵": {color: "黒", prof: "兵"},
@@ -30,8 +33,6 @@ const toObtainablePieces2 : {[P in ObtainablePieces]: ObtainablePieces2} = {
 }
 
 const piece_list: ObtainablePieces[] = ["黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "黒王", "赤王", "黒船", "赤船"];
-
-type Hand = "王" | "獣" | "同色獣" | "地心" | "同色地心" | "馬弓兵" | "同色馬弓兵" | "助友" | "同色助友" | "戦集" | "同色戦集" | "行行" | "同色行行" | "筆兵無傾" | "同色筆兵無傾" | "闇戦之集" | "同色闇戦之集" | "無抗行処" | "同色無抗行処";
 
 const toScore: {[P in Hand]: number} = {
     "無抗行処": 50,
@@ -117,11 +118,30 @@ function calculate_hands_with_no_king(count: PieceNumMap): Set<Hand> {
 }
 
 function calculate_hands_with_king(count: PieceNumMap): Set<Hand> {
+    function has(prof: ObtainableProf): boolean {
+        return count[prof]["赤"] + count[prof]["黒"] > 0
+    }
+
+    function has_all(profs: ObtainableProf[]): boolean {
+        return profs.every(has);
+    }
+
+    function has_all_same_color(profs: ObtainableProf[]): boolean {
+        return profs.every(a => count[a]["赤"] >= 1) || profs.every(a => count[a]["黒"] >= 1);
+    }
+
     let ans: Set<Hand> = new Set(["王"]);
     ans.add("王");
+
     const prof_list_excluding_king: ObtainableProf[] = [
         "兵", "弓", "車", "虎", "馬", "筆", "巫", "将", "船"
     ];
+
+    if (has_all_same_color([...prof_list_excluding_king, "王"])) {
+        ans.add("同色無抗行処");
+    } else if (has_all([...prof_list_excluding_king, "王"])) {
+        ans.add("無抗行処")
+    }
 
     const f = (color: "赤" | "黒") => {
         if (count["王"][color] === 1) {
@@ -217,6 +237,10 @@ function calculate_hands_and_score_from_pieces(ps: ObtainablePieces[]): {"error"
         return {"error": true, "too_many": hands.too_many};
     }
 }
+
+return calculate_hands_and_score_from_pieces;
+})();
+
 
 const tests: {"pieces": ObtainablePieces[], "score": number, "hands": Hand[]}[] = [
     { "pieces": ["赤弓"], "score": 0, "hands": [] },
@@ -340,5 +364,3 @@ for (let i = 0; i < tests.length; i++) {
     }
     
 }
-
-})()
