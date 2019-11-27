@@ -22,7 +22,6 @@ const calculate_hands_and_score_from_pieces = (() => {
         "黒船": { color: "黒", prof: "船" },
         "赤船": { color: "赤", prof: "船" }
     };
-    const piece_list = ["黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "黒王", "赤王", "黒船", "赤船"];
     const toScore = {
         "無抗行処": 50,
         "同色無抗行処": 52,
@@ -245,6 +244,15 @@ const calculate_hands_and_score_from_pieces = (() => {
     }
     return calculate_hands_and_score_from_pieces;
 })();
+const generate_example = len => {
+    let piece_list = ["黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "黒兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "赤兵", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "黒王", "赤王", "黒船", "赤船"];
+    // Fisher-Yates
+    for (let i = piece_list.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [piece_list[i], piece_list[j]] = [piece_list[j], piece_list[i]];
+    }
+    return piece_list.slice(0, len);
+};
 const tests = [
     { "pieces": ["赤弓"], "score": 0, "hands": [] },
     { "pieces": ["赤兵"], "score": 0, "hands": [] },
