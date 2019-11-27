@@ -167,6 +167,7 @@ function calculate_hands_with_king(count: PieceNumMap): Set<Hand> {
     g("同色行行", "行行");
     g("同色筆兵無傾", "筆兵無傾");
     g("同色闇戦之集", "闇戦之集");
+    g("同色無抗行処", "無抗行処");
 
     return ans;
 }
