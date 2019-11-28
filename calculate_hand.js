@@ -1,27 +1,27 @@
 "use strict";
+const toObtainablePieces2 = {
+    "黒兵": { color: "黒", prof: "兵" },
+    "赤兵": { color: "赤", prof: "兵" },
+    "黒弓": { color: "黒", prof: "弓" },
+    "黒車": { color: "黒", prof: "車" },
+    "黒虎": { color: "黒", prof: "虎" },
+    "黒馬": { color: "黒", prof: "馬" },
+    "黒筆": { color: "黒", prof: "筆" },
+    "黒巫": { color: "黒", prof: "巫" },
+    "黒将": { color: "黒", prof: "将" },
+    "赤弓": { color: "赤", prof: "弓" },
+    "赤車": { color: "赤", prof: "車" },
+    "赤虎": { color: "赤", prof: "虎" },
+    "赤馬": { color: "赤", prof: "馬" },
+    "赤筆": { color: "赤", prof: "筆" },
+    "赤巫": { color: "赤", prof: "巫" },
+    "赤将": { color: "赤", prof: "将" },
+    "黒王": { color: "黒", prof: "王" },
+    "赤王": { color: "赤", prof: "王" },
+    "黒船": { color: "黒", prof: "船" },
+    "赤船": { color: "赤", prof: "船" }
+};
 const calculate_hands_and_score_from_pieces = (() => {
-    const toObtainablePieces2 = {
-        "黒兵": { color: "黒", prof: "兵" },
-        "赤兵": { color: "赤", prof: "兵" },
-        "黒弓": { color: "黒", prof: "弓" },
-        "黒車": { color: "黒", prof: "車" },
-        "黒虎": { color: "黒", prof: "虎" },
-        "黒馬": { color: "黒", prof: "馬" },
-        "黒筆": { color: "黒", prof: "筆" },
-        "黒巫": { color: "黒", prof: "巫" },
-        "黒将": { color: "黒", prof: "将" },
-        "赤弓": { color: "赤", prof: "弓" },
-        "赤車": { color: "赤", prof: "車" },
-        "赤虎": { color: "赤", prof: "虎" },
-        "赤馬": { color: "赤", prof: "馬" },
-        "赤筆": { color: "赤", prof: "筆" },
-        "赤巫": { color: "赤", prof: "巫" },
-        "赤将": { color: "赤", prof: "将" },
-        "黒王": { color: "黒", prof: "王" },
-        "赤王": { color: "赤", prof: "王" },
-        "黒船": { color: "黒", prof: "船" },
-        "赤船": { color: "赤", prof: "船" }
-    };
     const toScore = {
         "無抗行処": 50,
         "同色無抗行処": 52,

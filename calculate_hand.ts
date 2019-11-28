@@ -6,9 +6,6 @@ type ObtainablePieces2 = {color: "黒" | "赤", prof: ObtainableProf};
 
 type Hand = "王" | "獣" | "同色獣" | "地心" | "同色地心" | "馬弓兵" | "同色馬弓兵" | "助友" | "同色助友" | "戦集" | "同色戦集" | "行行" | "同色行行" | "筆兵無傾" | "同色筆兵無傾" | "闇戦之集" | "同色闇戦之集" | "無抗行処" | "同色無抗行処";
 
-
-const calculate_hands_and_score_from_pieces = (() => {
-
 const toObtainablePieces2 : {[P in ObtainablePieces]: ObtainablePieces2} = {
     "黒兵": {color: "黒", prof: "兵"},
     "赤兵": {color: "赤", prof: "兵"},
@@ -32,6 +29,7 @@ const toObtainablePieces2 : {[P in ObtainablePieces]: ObtainablePieces2} = {
     "赤船": {color: "赤", prof: "船"}
 }
 
+const calculate_hands_and_score_from_pieces = (() => {
 const toScore: {[P in Hand]: number} = {
     "無抗行処": 50,
     "同色無抗行処": 52,
