@@ -36,14 +36,26 @@ const initialize_funcs = (TOTAL_PROB_NUM) => {
                 html += `<tr><td>${to_images(PROBS[i])}</td>`;
                 const a = ANS_LIST[i];
                 if (a.matches === true) {
-                    html += `<td>正</td><td>${a.ans.join("、")}</td><td>${a.ans.join("、")}</td>`;
+                    html += `<td>正</td><td>${show_hands(a.ans)}</td><td>${show_hands(a.ans)}</td>`;
                 }
                 else {
-                    html += `<td>誤</td><td>${a.correct_ans.join("、")}</td><td>${a.user_ans.join("、")}</td>`;
+                    html += `<td>誤</td><td>${show_hands(a.correct_ans)}</td><td>${show_hands(a.user_ans)}</td>`;
                 }
                 html += "</tr>";
             }
             html += "</table>";
+            let incorrect = [];
+            let correct = [];
+            for (let i = 0; i < ANS_LIST.length; i++) {
+                if (!ANS_LIST[i].matches) {
+                    incorrect.push(PROBS[i].map(to_ascii).join("_"));
+                }
+                else {
+                    correct.push(PROBS[i].map(to_ascii).join("_"));
+                }
+            }
+            html += `<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=私の役判定正答率は%20${correct_num / TOTAL_PROB_NUM * 100}%25%20%28${correct_num}/${TOTAL_PROB_NUM}%29%0D%0A%23cerke%20%23机戦%20%23机戦の役判定100本ノック%20${location.href}%3Fcorrect%3D${correct.join(".")}%26incorrect%3D${incorrect.join(".")}" data-size="large">
+        ツイートする</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>`;
             document.getElementById("contest").innerHTML = "";
             document.getElementById("result").innerHTML = html;
             return;
@@ -96,11 +108,14 @@ const initialize_funcs = (TOTAL_PROB_NUM) => {
             ANS_LIST.push({ "ans": ans, "matches": true });
         }
         else {
-            html = `<strong style='background-color: rgb(253, 172, 181)'>不正解...</strong>${ans.length > 0 ? ans.sort().join("、") : "役なし"}ではなく${u.hands.length > 0 ? u.hands.sort().join("、") : "役なし"}です`;
+            html = `<strong style='background-color: rgb(253, 172, 181)'>不正解...</strong>${show_hands(ans)}ではなく${show_hands(u.hands)}です`;
             ANS_LIST.push({ "correct_ans": u.hands, "user_ans": ans, "matches": false });
         }
         html += "<input type='button' onclick='calculate_hand_contest()' value='OK'>";
         document.getElementById("result").innerHTML = html;
+    }
+    function show_hands(ans) {
+        return ans.length > 0 ? ans.sort().join("、") : "役なし";
     }
     function create_form(prob, current_prob) {
         const salt = Math.random().toString(26).slice(2);
@@ -133,7 +148,7 @@ const initialize_funcs = (TOTAL_PROB_NUM) => {
             f("deadly_army", "闇戦之集")
         ].join("<br>") + `<br><input type='button' id='submit_${salt}' onclick='submit_ans("${salt}")' value='決定'>`;
     }
-    function to_images(prob) {
+    function to_ascii(piece) {
         const to_paige = {
             "兵": "kauk",
             "虎": "dau",
@@ -146,7 +161,10 @@ const initialize_funcs = (TOTAL_PROB_NUM) => {
             "巫": "tuk",
             "将": "uai"
         };
-        return prob.map(piece => `<img src="image/piece/${toObtainablePieces2[piece].color === "赤" ? "r" : "b"}${to_paige[toObtainablePieces2[piece].prof]}.png" width="30" style="padding: 2px;">`).join("");
+        return `${toObtainablePieces2[piece].color === "赤" ? "r" : "b"}${to_paige[toObtainablePieces2[piece].prof]}`;
+    }
+    function to_images(prob) {
+        return prob.map(piece => `<img src="image/piece/${to_ascii(piece)}.png" width="30" style="padding: 2px;">`).join("");
     }
     return { calculate_hand_contest, submit_ans };
 };
