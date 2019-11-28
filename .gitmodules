@@ -1,3 +1,6 @@
 [submodule "api2"]
 	path = api2
 	url = https://github.com/sozysozbot/cerke_online_api.git
+[submodule "cerke_calculate_hands"]
+	path = cerke_calculate_hands
+	url = https://github.com/sozysozbot/cerke_calculate_hands.git
