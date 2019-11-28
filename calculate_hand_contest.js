@@ -85,7 +85,7 @@ function submit_ans(salt) {
         ANS_LIST.push({ "ans": ans, "matches": true });
     }
     else {
-        html = `<strong style='background-color: rgb(253, 172, 181)'>不正解...</strong>${ans.sort().join("、")}ではなく${u.hands.sort().join("、")}です`;
+        html = `<strong style='background-color: rgb(253, 172, 181)'>不正解...</strong>${ans.length > 0 ? ans.sort().join("、") : "役なし"}ではなく${u.hands.length > 0 ? u.hands.sort().join("、") : "役なし"}です`;
         ANS_LIST.push({ "correct_ans": u.hands, "user_ans": ans, "matches": false });
     }
     html += "<input type='button' onclick='calculate_hand_contest()' value='OK'>";
