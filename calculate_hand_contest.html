@@ -4,14 +4,23 @@
 <link rel="stylesheet" type="text/css" href="main.css">
 <script src="calculate_hand.js"></script>
 <script src="calculate_hand_contest.js"></script>
+<script>
+let calculate_hand_contest = () => {};
+let submit_ans = () => {};
+</script>
 </head>
 <body>
     <h2>机戦の役判定100本ノック</h2>
     <div id="contest">
-        <input type="button" onclick="calculate_hand_contest()" value="100本ノックを始める">
+        <input type="button" onclick="const obj = initialize_funcs(5); calculate_hand_contest = obj.calculate_hand_contest; submit_ans = obj.submit_ans; calculate_hand_contest()" value="5本ノックを始める"><br>
+        <input type="button" onclick="const obj = initialize_funcs(10); calculate_hand_contest = obj.calculate_hand_contest; submit_ans = obj.submit_ans; calculate_hand_contest()" value="10本ノックを始める"><br>
+        <input type="button" onclick="const obj = initialize_funcs(20); calculate_hand_contest = obj.calculate_hand_contest; submit_ans = obj.submit_ans; calculate_hand_contest()" value="20本ノックを始める"><br>
+        <input type="button" onclick="const obj = initialize_funcs(50); calculate_hand_contest = obj.calculate_hand_contest; submit_ans = obj.submit_ans; calculate_hand_contest()" value="50本ノックを始める"><br>
+        <input type="button" onclick="const obj = initialize_funcs(100); calculate_hand_contest = obj.calculate_hand_contest; submit_ans = obj.submit_ans; calculate_hand_contest()" value="100本ノックを始める"><br>
+       
     </div>
     <div id="result">
-        
+
     </div>
     
 </body>

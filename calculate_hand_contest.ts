@@ -5,8 +5,10 @@ function estimate_prob_of_hand_existing(piece_num: number) {
 
 type Prob = ObtainablePieces[];
 
+const initialize_funcs = (TOTAL_PROB_NUM: number) => {
+
 function create_probs(): Prob[] {
-    const prob_piece_nums = Array.from({length: 100}).map(() => Math.floor(Math.random() * 7 + 3.5)).sort((a,b) => a - b);
+    const prob_piece_nums = Array.from({length: TOTAL_PROB_NUM}).map(() => Math.floor(Math.random() * 7 + 3.5)).sort((a,b) => a - b);
    
     return prob_piece_nums.map(piece_num => {
         if (estimate_prob_of_hand_existing(piece_num) < 0.6) { // if less than 60%, skew
@@ -31,16 +33,16 @@ let CURRENT_PROB = -1;
 let ANS_LIST: ({"correct_ans": Hand[], "user_ans": Hand[], "matches": false} | {"ans": Hand[], "matches": true})[] = [];
 
 function calculate_hand_contest() {
-    if (CURRENT_PROB === 99) { // finish
+    if (CURRENT_PROB === TOTAL_PROB_NUM - 1) { // finish
         const correct_num = ANS_LIST.filter(a => a.matches).length;
-        let html = `正答率 ${correct_num / 100 * 100}% (${correct_num}/${100})<table><tr><td>手駒</td><td>正誤</td><td>正解</td><td>回答</td>`;
+        let html = `正答率 ${correct_num / TOTAL_PROB_NUM * 100}% (${correct_num}/${TOTAL_PROB_NUM})<table style='border-collapse: collapse; border-spacing: 0;'><tr><td>手駒</td><td></td><td>正解</td><td>回答</td>`;
         for (let i = 0; i < ANS_LIST.length; i++) {
             html += `<tr><td>${to_images(PROBS[i])}</td>`;
             const a = ANS_LIST[i];
             if (a.matches === true) {
                 html += `<td>正</td><td>${a.ans.join("、")}</td><td>${a.ans.join("、")}</td>`
             } else {
-                html += `<td>正</td><td>${a.correct_ans.join("、")}</td><td>${a.user_ans.join("、")}</td>`
+                html += `<td>誤</td><td>${a.correct_ans.join("、")}</td><td>${a.user_ans.join("、")}</td>`
             }
             html += "</tr>"
         }
@@ -58,9 +60,15 @@ function submit_ans(salt: string) {
     (document.getElementById("submit_" + salt)! as HTMLInputElement).disabled = true;
     let ans: Hand[] = [];
     const f = (hand_id: string, hand: Hand, hand_flash: Hand) => {
-        if ((document.getElementById(hand_id + "_" + salt)! as HTMLInputElement).checked) {
+        const normal_node = document.getElementById(hand_id + "_" + salt)! as HTMLInputElement;
+        normal_node.disabled = true;
+        const flash_node = document.getElementById(hand_id + "_flash_" + salt)! as HTMLInputElement;
+        flash_node.disabled = true;
+        const no_node = document.getElementById(hand_id + "_not_" + salt)! as HTMLInputElement;
+        no_node.disabled = true;
+        if (normal_node.checked) {
             ans.push(hand);
-        } else if ((document.getElementById(hand_id + "_flash_" + salt)! as HTMLInputElement).checked) {
+        } else if (flash_node.checked) {
             ans.push(hand_flash);
         }
     }
@@ -69,7 +77,11 @@ function submit_ans(salt: string) {
     f("culture", "地心", "同色地心");
     f("cavalry", "馬弓兵", "同色馬弓兵");
     f("attack", "行行", "同色行行");
-    if ((document.getElementById("king_" + salt)! as HTMLInputElement).checked) {
+    const king_node = document.getElementById("king_" + salt)! as HTMLInputElement;
+    king_node.disabled = true;
+    const no_king_node =  document.getElementById("king_not_" + salt)! as HTMLInputElement;
+    no_king_node.disabled = true;
+    if (king_node.checked) {
         ans.push("王");
     }
     f("animals", "獣", "同色獣");
@@ -111,7 +123,7 @@ function create_form(prob: Prob, current_prob: number) {
     `;
 
     document.getElementById("contest")!.innerHTML = [
-        `<h3>第${current_prob + 1}問</h3>`,
+        `<h3>第${current_prob + 1}問 (${current_prob + 1}/${TOTAL_PROB_NUM})</h3>`,
         prob.join("、"),
         to_images(prob),
         f("unbeatable", "無抗行処"), 
@@ -151,3 +163,6 @@ function to_images(prob: Prob): string{
     }${to_paige[toObtainablePieces2[piece].prof]}.png" width="30" style="padding: 2px;">`).join("");
 }
 
+return {calculate_hand_contest, submit_ans};
+
+};
