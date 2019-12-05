@@ -153,6 +153,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
                     type: "TamMove",
                     stepStyle: "StepsDuringLatter",
                     src: toAbsoluteCoord(theVerySrc),
+                    step: toAbsoluteCoord(stepsOn),
                     firstDest: toAbsoluteCoord(firstDest),
                     secondDest: toAbsoluteCoord(guideListYellow[ind])
                 }
@@ -175,7 +176,12 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
     return;
 }
 
-function afterFirstTamMove(from: Coord, to: Coord, hasAlreadyStepped: boolean) {
+/**
+ * @param from where the first half started
+ * @param to where the first half ended
+ * @param step supplied when the first half of the move stepped a piece
+ */
+function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     eraseGuide();
     document.getElementById("protective_tam_cover_over_field")!.classList.remove("nocover");
 
@@ -221,7 +227,7 @@ function afterFirstTamMove(from: Coord, to: Coord, hasAlreadyStepped: boolean) {
                 const destPiece = GAME_STATE.f.currentBoard[i][j];
 
                 // cannot step twice
-                if (hasAlreadyStepped && destPiece !== null) {
+                if (step !== undefined && destPiece !== null) {
                     continue;
                 }
 
@@ -229,12 +235,19 @@ function afterFirstTamMove(from: Coord, to: Coord, hasAlreadyStepped: boolean) {
 
                 if (destPiece === null) {
                     img.addEventListener('click', function () {
-                        (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, to: Coord, hasAlreadyStepped: boolean) {
+                        (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, to: Coord) {
                             console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
 
-                            let message: NormalMove = {
+                            let message: NormalMove = step ? {
                                 type: "TamMove",
-                                stepStyle: hasAlreadyStepped ? 'StepsDuringFormer' : 'NoStep',
+                                stepStyle: 'StepsDuringFormer',
+                                src: toAbsoluteCoord(theVerySrc),
+                                step: toAbsoluteCoord(step),
+                                firstDest: toAbsoluteCoord(firstDest),
+                                secondDest: toAbsoluteCoord(to)
+                            } : {
+                                type: "TamMove",
+                                stepStyle: 'NoStep',
                                 src: toAbsoluteCoord(theVerySrc),
                                 firstDest: toAbsoluteCoord(firstDest),
                                 secondDest: toAbsoluteCoord(to)
@@ -248,7 +261,7 @@ function afterFirstTamMove(from: Coord, to: Coord, hasAlreadyStepped: boolean) {
                             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
 
                             return;
-                        })(from, coord, guideListYellow[ind], hasAlreadyStepped);
+                        })(from, coord, guideListYellow[ind]);
                     });
                 } else {
                     img.addEventListener('click', function () {
@@ -730,7 +743,7 @@ function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord,
             sendNormalMessage(message);
             return;
         } else {
-            afterFirstTamMove(from, to, false);
+            afterFirstTamMove(from, to);
             return;
         }
     }
@@ -764,7 +777,7 @@ function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord,
 
 function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piece, dest: Coord) {
     if (piece === "Tam2") {
-        afterFirstTamMove(src, dest, true);
+        afterFirstTamMove(src, dest, step);
         return;
     }
 

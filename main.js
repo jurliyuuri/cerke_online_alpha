@@ -116,6 +116,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
                     type: "TamMove",
                     stepStyle: "StepsDuringLatter",
                     src: toAbsoluteCoord(theVerySrc),
+                    step: toAbsoluteCoord(stepsOn),
                     firstDest: toAbsoluteCoord(firstDest),
                     secondDest: toAbsoluteCoord(guideListYellow[ind])
                 };
@@ -133,7 +134,12 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     });
     return;
 }
-function afterFirstTamMove(from, to, hasAlreadyStepped) {
+/**
+ * @param from where the first half started
+ * @param to where the first half ended
+ * @param step supplied when the first half of the move stepped a piece
+ */
+function afterFirstTamMove(from, to, step) {
     eraseGuide();
     document.getElementById("protective_tam_cover_over_field").classList.remove("nocover");
     // stepping should now have been completed
@@ -160,17 +166,24 @@ function afterFirstTamMove(from, to, hasAlreadyStepped) {
                 const [i, j] = guideListYellow[ind];
                 const destPiece = GAME_STATE.f.currentBoard[i][j];
                 // cannot step twice
-                if (hasAlreadyStepped && destPiece !== null) {
+                if (step !== undefined && destPiece !== null) {
                     continue;
                 }
                 let img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
                 if (destPiece === null) {
                     img.addEventListener('click', function () {
-                        (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc, firstDest, to, hasAlreadyStepped) {
+                        (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc, firstDest, to) {
                             console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
-                            let message = {
+                            let message = step ? {
                                 type: "TamMove",
-                                stepStyle: hasAlreadyStepped ? 'StepsDuringFormer' : 'NoStep',
+                                stepStyle: 'StepsDuringFormer',
+                                src: toAbsoluteCoord(theVerySrc),
+                                step: toAbsoluteCoord(step),
+                                firstDest: toAbsoluteCoord(firstDest),
+                                secondDest: toAbsoluteCoord(to)
+                            } : {
+                                type: "TamMove",
+                                stepStyle: 'NoStep',
                                 src: toAbsoluteCoord(theVerySrc),
                                 firstDest: toAbsoluteCoord(firstDest),
                                 secondDest: toAbsoluteCoord(to)
@@ -181,7 +194,7 @@ function afterFirstTamMove(from, to, hasAlreadyStepped) {
                             document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
                             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
                             return;
-                        })(from, coord, guideListYellow[ind], hasAlreadyStepped);
+                        })(from, coord, guideListYellow[ind]);
                     });
                 }
                 else {
@@ -565,7 +578,7 @@ function getThingsGoing(piece_to_move, from, to) {
             return;
         }
         else {
-            afterFirstTamMove(from, to, false);
+            afterFirstTamMove(from, to);
             return;
         }
     }
@@ -595,7 +608,7 @@ function getThingsGoing(piece_to_move, from, to) {
 }
 function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     if (piece === "Tam2") {
-        afterFirstTamMove(src, dest, true);
+        afterFirstTamMove(src, dest, step);
         return;
     }
     const message = {
