@@ -14,6 +14,12 @@ type OpponentMove = {
         src: AbsoluteCoord;
         step: AbsoluteCoord;
         dest: AbsoluteCoord;
+    } | {
+        type: 'InfAfterStep',
+        src: AbsoluteCoord,
+        step: AbsoluteCoord,
+        plannedDirection: AbsoluteCoord,
+        finalDest: Promise<AbsoluteCoord>
     }
 } | {
     type: 'TamMove'
@@ -150,32 +156,58 @@ function get_one_valid_opponent_move(): OpponentMove {
             const step = dest; // less confusing
 
             /* FIXME: For now, no infinite */
-            const { finite: guideListYellow } = calculateMovablePositions(
+            const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
                 rotateCoord(step),
                 rotated_piece,
                 rotateBoard(GAME_STATE.f.currentBoard),
                 GAME_STATE.tam_itself_is_tam_hue
             );
 
-            const candidates : Coord[] = guideListYellow.map(rotateCoord);
-            if (candidates.length === 0) { return get_one_valid_opponent_move(); } // retry
+            const candidates_finite : Coord[] = guideListYellow.map(rotateCoord);
+            const candidates_infinite : Coord[] = guideListGreen.map(rotateCoord);
+            if (candidates_finite.length === 0 && candidates_infinite.length === 0) { return get_one_valid_opponent_move(); } // retry
             for (let i = 0; i < 1000; i++) {
-                const finalDest = candidates[Math.random() * candidates.length | 0];
-                if (canGetOccupiedBy(Side.Downward, finalDest, {
-                    color: rotated_piece.color, 
-                    prof: rotated_piece.prof, 
-                    side: Side.Downward
-                }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
-                    return {
-                        type: "NonTamMove",
-                        data: {
-                            type: "SrcStepDstFinite",
-                            src: toAbsoluteCoord(rotateCoord(rotated_coord)),
-                            step: toAbsoluteCoord(step),
-                            dest: toAbsoluteCoord(finalDest)
+
+                // conditional probability, to choose all candidates equally likely
+                if (Math.random() < candidates_finite.length / (candidates_finite.length + candidates_infinite.length)) {
+                    const finalDest = candidates_finite[Math.random() * candidates_finite.length | 0];
+                    if (canGetOccupiedBy(Side.Downward, finalDest, {
+                        color: rotated_piece.color, 
+                        prof: rotated_piece.prof, 
+                        side: Side.Downward
+                    }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
+                        return {
+                            type: "NonTamMove",
+                            data: {
+                                type: "SrcStepDstFinite",
+                                src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                                step: toAbsoluteCoord(step),
+                                dest: toAbsoluteCoord(finalDest)
+                            }
+                        }
+                    }
+                } else {
+                    const finalDest = candidates_infinite[Math.random() * candidates_infinite.length | 0];
+                    if (canGetOccupiedBy(Side.Downward, finalDest, {
+                        color: rotated_piece.color, 
+                        prof: rotated_piece.prof, 
+                        side: Side.Downward
+                    }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
+                        return {
+                            type: "NonTamMove",
+                            data: {
+                                type: "InfAfterStep",
+                                src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                                step: toAbsoluteCoord(step),
+                                plannedDirection: toAbsoluteCoord(finalDest),
+                                finalDest: new Promise((resolve, reject) => {
+                                    /* fixme */
+                                })
+                            }
                         }
                     }
                 }
+                
             }
             // if no candidate found, try again
             return get_one_valid_opponent_move();
