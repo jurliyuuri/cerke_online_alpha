@@ -102,11 +102,12 @@ function get_one_valid_opponent_move(): OpponentMove {
 
     if (candidates.length === 0) { return get_one_valid_opponent_move(); } // retry
 
-    /* FIXME: for now, no stepping */
     for (let i = 0; i < 1000; i++) {
         const dest = candidates[Math.random() * candidates.length | 0];
         const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
         if (rotated_piece === "Tam2") {
+            /* FIXME: for now, no stepping */
+
             if (destPiece === null) { /* empty square; first move */
                 const fstdst: Coord = dest;
                 const empty_neighbors = eightNeighborhood(fstdst).filter(([i,j]) => GAME_STATE.f.currentBoard[i][j] == null);
