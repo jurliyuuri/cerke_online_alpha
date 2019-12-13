@@ -73,19 +73,57 @@ function get_one_valid_opponent_move() {
         const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
         if (rotated_piece === "Tam2") {
             /* FIXME: for now, no stepping */
-            if (destPiece === null) { /* empty square; first move */
+            if (destPiece === null) { /* empty square; first move is completed without stepping */
                 const fstdst = dest;
-                const empty_neighbors = eightNeighborhood(fstdst).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-                if (empty_neighbors.length === 0) {
+                const cands = eightNeighborhood(fstdst);
+                const neighbor = cands[cands.length * Math.random() | 0];
+                /* if the neighbor is empty, that is the second destination */
+                if (GAME_STATE.f.currentBoard[neighbor[0]][neighbor[1]] == null) {
+                    const snddst = neighbor;
+                    return {
+                        type: "TamMove",
+                        stepStyle: "NoStep",
+                        secondDest: toAbsoluteCoord(snddst),
+                        firstDest: toAbsoluteCoord(fstdst),
+                        src: toAbsoluteCoord(rotateCoord(rotated_coord))
+                    };
+                }
+                else { /* if not, step from there */
+                    const step = neighbor;
+                    const empty_neighbors_of_step = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
+                    if (empty_neighbors_of_step.length === 0) {
+                        return get_one_valid_opponent_move();
+                    } // retry
+                    const snddst = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
+                    return {
+                        type: "TamMove",
+                        stepStyle: "StepsDuringLatter",
+                        firstDest: toAbsoluteCoord(fstdst),
+                        secondDest: toAbsoluteCoord(snddst),
+                        src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                        step: toAbsoluteCoord(step)
+                    };
+                }
+            }
+            else { /* not an empty square: must complete the first move */
+                const step = dest;
+                const empty_neighbors_of_step = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
+                if (empty_neighbors_of_step.length === 0) {
                     return get_one_valid_opponent_move();
                 } // retry
-                const snddst = empty_neighbors[Math.random() * empty_neighbors.length | 0];
+                const fstdst = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
+                const empty_neighbors_of_fstdst = eightNeighborhood(fstdst).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
+                if (empty_neighbors_of_fstdst.length === 0) {
+                    return get_one_valid_opponent_move();
+                } // retry
+                const snddst = empty_neighbors_of_fstdst[empty_neighbors_of_fstdst.length * Math.random() | 0];
                 return {
                     type: "TamMove",
-                    stepStyle: "NoStep",
-                    secondDest: toAbsoluteCoord(snddst),
+                    stepStyle: "StepsDuringFormer",
                     firstDest: toAbsoluteCoord(fstdst),
-                    src: toAbsoluteCoord(rotateCoord(rotated_coord))
+                    secondDest: toAbsoluteCoord(snddst),
+                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    step: toAbsoluteCoord(step)
                 };
             }
         }
@@ -278,4 +316,14 @@ async function displayOpponentTamNoStep(src, fstdst, snddst) {
     GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
     GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
     drawField(GAME_STATE.f);
+}
+async function displayOpponentTamSteppingDuringFormer(p) {
+    await displayOpponentSrcStepDstFinite(p.src, p.step, p.firstDest);
+    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await displayOpponentSrcDst(p.firstDest, p.secondDest);
+}
+async function displayOpponentTamSteppingDuringLatter(p) {
+    await displayOpponentSrcDst(p.src, p.firstDest);
+    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await displayOpponentSrcStepDstFinite(p.firstDest, p.step, p.secondDest);
 }

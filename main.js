@@ -29,6 +29,24 @@ async function poll() {
                 displayOpponentTamNoStep(fromAbsoluteCoord(opponent_move.src), fromAbsoluteCoord(opponent_move.firstDest), fromAbsoluteCoord(opponent_move.secondDest));
                 GAME_STATE.is_my_turn = true;
             }
+            else if (opponent_move.stepStyle === "StepsDuringFormer") {
+                displayOpponentTamSteppingDuringFormer({
+                    src: fromAbsoluteCoord(opponent_move.src),
+                    firstDest: fromAbsoluteCoord(opponent_move.firstDest),
+                    secondDest: fromAbsoluteCoord(opponent_move.secondDest),
+                    step: fromAbsoluteCoord(opponent_move.step)
+                });
+                GAME_STATE.is_my_turn = true;
+            }
+            else if (opponent_move.stepStyle === "StepsDuringLatter") {
+                displayOpponentTamSteppingDuringLatter({
+                    src: fromAbsoluteCoord(opponent_move.src),
+                    firstDest: fromAbsoluteCoord(opponent_move.firstDest),
+                    secondDest: fromAbsoluteCoord(opponent_move.secondDest),
+                    step: fromAbsoluteCoord(opponent_move.step)
+                });
+                GAME_STATE.is_my_turn = true;
+            }
             else {
                 let a = opponent_move.stepStyle;
                 throw new Error("does not happen");
