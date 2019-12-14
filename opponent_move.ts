@@ -1,17 +1,21 @@
+type SrcDst = {
+    type: 'SrcDst',
+    src: AbsoluteCoord,
+    dest: AbsoluteCoord,
+    water_entry_ciurl?: Ciurl
+};
+
+type SrcStepDstFinite = {
+    type: 'SrcStepDstFinite';
+    src: AbsoluteCoord;
+    step: AbsoluteCoord;
+    dest: AbsoluteCoord;
+    water_entry_ciurl?: Ciurl
+};
+
 type OpponentMoveWithPotentialWaterEntry = {
     type: 'NonTamMove',
-    data:  {
-        type: 'SrcDst',
-        src: AbsoluteCoord,
-        dest: AbsoluteCoord,
-        water_entry_ciurl?: Ciurl
-    } | {
-        type: 'SrcStepDstFinite';
-        src: AbsoluteCoord;
-        step: AbsoluteCoord;
-        dest: AbsoluteCoord;
-        water_entry_ciurl?: Ciurl
-    }
+    data: SrcDst | SrcStepDstFinite
 };
 
 type OpponentMove = OpponentMoveWithPotentialWaterEntry | {
@@ -37,6 +41,33 @@ type OpponentMove = OpponentMoveWithPotentialWaterEntry | {
     secondDest: AbsoluteCoord;
 };
 
+function isWaterAbs([row, col]: AbsoluteCoord): boolean {
+    return (row === 4 && col === 2)
+        || (row === 4 && col === 3)
+        || (row === 4 && col === 4)
+        || (row === 4 && col === 5)
+        || (row === 4 && col === 6)
+        || (row === 2 && col === 4)
+        || (row === 3 && col === 4)
+        || (row === 5 && col === 4)
+        || (row === 6 && col === 4)
+    ;
+}
+
+function isWater([row, col]: Coord): boolean {
+    return (row === 4 && col === 2)
+        || (row === 4 && col === 3)
+        || (row === 4 && col === 4)
+        || (row === 4 && col === 5)
+        || (row === 4 && col === 6)
+        || (row === 2 && col === 4)
+        || (row === 3 && col === 4)
+        || (row === 5 && col === 4)
+        || (row === 6 && col === 4)
+    ;
+}
+
+
 /**
  * @param total_duration total duration in millisecond
  * @param rotate angle to rotate, in degrees
@@ -55,6 +86,18 @@ async function animateNode(node: HTMLElement,
         node.style.transform += `rotate(${rotate}deg)`;
     }
     await new Promise(resolve => setTimeout(resolve, total_duration));
+}
+
+function add_ciurl_if_required(obj: OpponentMoveWithPotentialWaterEntry, dest: Coord, moving_piece_prof: Profession) {
+    if (isWater(dest) && moving_piece_prof !== Profession.Nuak1) {
+        obj.data.water_entry_ciurl =  [
+            Math.random() < 0.5,
+            Math.random() < 0.5,
+            Math.random() < 0.5,
+            Math.random() < 0.5,
+            Math.random() < 0.5
+          ] as Ciurl;
+    }
 }
 
 function get_one_valid_opponent_move(): OpponentMove {
@@ -172,22 +215,23 @@ function get_one_valid_opponent_move(): OpponentMove {
             }
         } else if (destPiece === null) {
             // cannot step
-            return {
+            let obj: OpponentMoveWithPotentialWaterEntry = {
                 type: 'NonTamMove',
                 data:  {
                     type: 'SrcDst',
                     src: toAbsoluteCoord(rotateCoord(rotated_coord)),
                     dest: toAbsoluteCoord(dest)
                 }
-            }
+            };
+            add_ciurl_if_required(obj, dest, rotated_piece.prof);
+            return obj;
         } else if (destPiece === "Tam2") {
             // for now, avoid stepping on Tam2;
             return get_one_valid_opponent_move(); // retry
         } else if (destPiece.side === Side.Upward && Math.random() < 0.7) {
             // opponent's piece; stepping and taking both attainable
             // take, with probability 0.7
-            
-            return {
+            let obj: OpponentMoveWithPotentialWaterEntry = {
                 type: 'NonTamMove',
                 data:  {
                     type: 'SrcDst',
@@ -195,6 +239,8 @@ function get_one_valid_opponent_move(): OpponentMove {
                     dest: toAbsoluteCoord(dest)
                 }
             }
+            add_ciurl_if_required(obj, dest, rotated_piece.prof);
+            return obj;
         } else { // opponent (prob 30%); ally (prob 100%) --> step
             const step = dest; // less confusing
 
@@ -215,7 +261,7 @@ function get_one_valid_opponent_move(): OpponentMove {
                     prof: rotated_piece.prof, 
                     side: Side.Downward
                 }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
-                    return {
+                    let obj: OpponentMoveWithPotentialWaterEntry = {
                         type: "NonTamMove",
                         data: {
                             type: "SrcStepDstFinite",
@@ -224,6 +270,8 @@ function get_one_valid_opponent_move(): OpponentMove {
                             dest: toAbsoluteCoord(finalDest)
                         }
                     }
+                    add_ciurl_if_required(obj, finalDest, rotated_piece.prof);
+                    return obj;
                 }
             }
             // if no candidate found, try again
@@ -235,8 +283,16 @@ function get_one_valid_opponent_move(): OpponentMove {
     return get_one_valid_opponent_move();
 }
 
+async function displayOpponentSrcStepDstFinite(p: SrcStepDstFinite) {
+    await displayOpponentSrcStepDstFinite_(
+        fromAbsoluteCoord(p.src),
+        fromAbsoluteCoord(p.step),
+        fromAbsoluteCoord(p.dest),
+        p.water_entry_ciurl
+    );
+}
 
-async function displayOpponentSrcStepDstFinite(src: Coord, step: Coord, dest: Coord) {
+async function displayOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: Coord, water_entry_ciurl?: Ciurl) {
     const [src_i, src_j] = src;
     const [step_i, step_j] = step;
     const [dest_i, dest_j] = dest;
@@ -253,6 +309,10 @@ async function displayOpponentSrcStepDstFinite(src: Coord, step: Coord, dest: Co
     }
 
     let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+    if (water_entry_ciurl) {
+        alert("water entry!!!!!!!");
+    }
 
     /* it IS possible that you are returning to the original position, in which case you don't do anything */
     if (destPiece !== null) {
@@ -330,16 +390,30 @@ function downwardTakingUpward(upward: Piece): NonTam2PieceDownward {
     }
 }
 
-async function displayOpponentSrcDst(src: Coord, dst: Coord) {
+async function displayOpponentSrcDst(p: SrcDst) {
+    const src: Coord = fromAbsoluteCoord(p.src);
+    const dst: Coord = fromAbsoluteCoord(p.dest);
+    if (p.water_entry_ciurl) {
+        await displayOpponentSrcDst_(src, dst, p.water_entry_ciurl);
+    } else {
+        await displayOpponentSrcDst_(src, dst);
+    }
+}
+
+async function displayOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?: Ciurl) {
     const [src_i, src_j] = src;
     const [dest_i, dest_j] = dst;
-    
+
     let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
     if (piece === null) {
         throw new Error("src is unoccupied");
     }
 
     let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+    if (water_entry_ciurl) {
+        alert("water entry!!!"); // FIXME
+    }
 
     /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
     if (destPiece !== null) {
@@ -432,13 +506,13 @@ async function displayOpponentTamNoStep(src: Coord, fstdst: Coord, snddst: Coord
 }
 
 async function displayOpponentTamSteppingDuringFormer(p: {src: Coord, firstDest: Coord, secondDest: Coord, step: Coord}) {
-    await displayOpponentSrcStepDstFinite(p.src, p.step, p.firstDest);
+    await displayOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
-    await displayOpponentSrcDst(p.firstDest, p.secondDest);
+    await displayOpponentSrcDst_(p.firstDest, p.secondDest);
 }
 
 async function displayOpponentTamSteppingDuringLatter(p: {src: Coord, firstDest: Coord, secondDest: Coord, step: Coord}) {
-    await displayOpponentSrcDst(p.src, p.firstDest);
+    await displayOpponentSrcDst_(p.src, p.firstDest);
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
-    await displayOpponentSrcStepDstFinite(p.firstDest, p.step, p.secondDest);
+    await displayOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }

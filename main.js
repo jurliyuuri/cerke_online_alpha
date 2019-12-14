@@ -7,16 +7,16 @@ async function poll() {
         const opponent_move = get_one_valid_opponent_move();
         if (opponent_move.type === "NonTamMove") {
             if (opponent_move.data.type === "SrcDst") {
-                displayOpponentSrcDst(fromAbsoluteCoord(opponent_move.data.src), fromAbsoluteCoord(opponent_move.data.dest));
+                await displayOpponentSrcDst(opponent_move.data);
                 GAME_STATE.is_my_turn = true;
             }
             else if (opponent_move.data.type === "FromHand") {
                 const piece = { prof: opponent_move.data.prof, color: opponent_move.data.color, side: Side.Downward };
-                displayOpponentFromHand(piece, fromAbsoluteCoord(opponent_move.data.dest));
+                await displayOpponentFromHand(piece, fromAbsoluteCoord(opponent_move.data.dest));
                 GAME_STATE.is_my_turn = true;
             }
             else if (opponent_move.data.type === "SrcStepDstFinite") {
-                displayOpponentSrcStepDstFinite(fromAbsoluteCoord(opponent_move.data.src), fromAbsoluteCoord(opponent_move.data.step), fromAbsoluteCoord(opponent_move.data.dest));
+                await displayOpponentSrcStepDstFinite(opponent_move.data);
                 GAME_STATE.is_my_turn = true;
             }
             else {
@@ -26,11 +26,11 @@ async function poll() {
         }
         else if (opponent_move.type === "TamMove") {
             if (opponent_move.stepStyle === "NoStep") {
-                displayOpponentTamNoStep(fromAbsoluteCoord(opponent_move.src), fromAbsoluteCoord(opponent_move.firstDest), fromAbsoluteCoord(opponent_move.secondDest));
+                await displayOpponentTamNoStep(fromAbsoluteCoord(opponent_move.src), fromAbsoluteCoord(opponent_move.firstDest), fromAbsoluteCoord(opponent_move.secondDest));
                 GAME_STATE.is_my_turn = true;
             }
             else if (opponent_move.stepStyle === "StepsDuringFormer") {
-                displayOpponentTamSteppingDuringFormer({
+                await displayOpponentTamSteppingDuringFormer({
                     src: fromAbsoluteCoord(opponent_move.src),
                     firstDest: fromAbsoluteCoord(opponent_move.firstDest),
                     secondDest: fromAbsoluteCoord(opponent_move.secondDest),
@@ -39,7 +39,7 @@ async function poll() {
                 GAME_STATE.is_my_turn = true;
             }
             else if (opponent_move.stepStyle === "StepsDuringLatter") {
-                displayOpponentTamSteppingDuringLatter({
+                await displayOpponentTamSteppingDuringLatter({
                     src: fromAbsoluteCoord(opponent_move.src),
                     firstDest: fromAbsoluteCoord(opponent_move.firstDest),
                     secondDest: fromAbsoluteCoord(opponent_move.secondDest),
