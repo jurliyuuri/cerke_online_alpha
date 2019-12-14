@@ -37,6 +37,33 @@ type OpponentMove = OpponentMoveWithPotentialWaterEntry | {
     secondDest: AbsoluteCoord;
 };
 
+function isWaterAbs([row, col]: AbsoluteCoord): boolean {
+    return (row === 4 && col === 2)
+        || (row === 4 && col === 3)
+        || (row === 4 && col === 4)
+        || (row === 4 && col === 5)
+        || (row === 4 && col === 6)
+        || (row === 2 && col === 4)
+        || (row === 3 && col === 4)
+        || (row === 5 && col === 4)
+        || (row === 6 && col === 4)
+    ;
+}
+
+function isWater([row, col]: Coord): boolean {
+    return (row === 4 && col === 2)
+        || (row === 4 && col === 3)
+        || (row === 4 && col === 4)
+        || (row === 4 && col === 5)
+        || (row === 4 && col === 6)
+        || (row === 2 && col === 4)
+        || (row === 3 && col === 4)
+        || (row === 5 && col === 4)
+        || (row === 6 && col === 4)
+    ;
+}
+
+
 /**
  * @param total_duration total duration in millisecond
  * @param rotate angle to rotate, in degrees
@@ -172,14 +199,26 @@ function get_one_valid_opponent_move(): OpponentMove {
             }
         } else if (destPiece === null) {
             // cannot step
-            return {
+            let obj: OpponentMoveWithPotentialWaterEntry = {
                 type: 'NonTamMove',
                 data:  {
                     type: 'SrcDst',
                     src: toAbsoluteCoord(rotateCoord(rotated_coord)),
                     dest: toAbsoluteCoord(dest)
                 }
+            };
+
+            if (isWater(dest) && rotated_piece.prof !== Profession.Nuak1) {
+                obj.data.water_entry_ciurl =  [
+                    Math.random() < 0.5,
+                    Math.random() < 0.5,
+                    Math.random() < 0.5,
+                    Math.random() < 0.5,
+                    Math.random() < 0.5
+                  ] as Ciurl;
             }
+
+            return obj;
         } else if (destPiece === "Tam2") {
             // for now, avoid stepping on Tam2;
             return get_one_valid_opponent_move(); // retry
