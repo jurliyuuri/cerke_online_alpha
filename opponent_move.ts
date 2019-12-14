@@ -1,20 +1,27 @@
-type OpponentMove = {
+type OpponentMoveWithPotentialWaterEntry = {
     type: 'NonTamMove',
     data:  {
         type: 'SrcDst',
         src: AbsoluteCoord,
-        dest: AbsoluteCoord
-    } | {
-        type: 'FromHand';
-        color: Color;
-        prof: Profession;
-        dest: AbsoluteCoord;
+        dest: AbsoluteCoord,
+        water_entry_ciurl?: Ciurl
     } | {
         type: 'SrcStepDstFinite';
         src: AbsoluteCoord;
         step: AbsoluteCoord;
         dest: AbsoluteCoord;
+        water_entry_ciurl?: Ciurl
     }
+};
+
+type OpponentMove = OpponentMoveWithPotentialWaterEntry | {
+    type: 'NonTamMove',
+    data:  {
+        type: 'FromHand';
+        color: Color;
+        prof: Profession;
+        dest: AbsoluteCoord;
+    } 
 } | {
     type: 'TamMove'
     stepStyle: 'NoStep';
