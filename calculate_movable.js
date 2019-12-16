@@ -176,12 +176,30 @@ var calculate_movable;
                     };
                 case Profession.Maun1: // Horse, 馬, dodor
                     return {
-                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
-                            [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
-                            [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
-                            [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
-                            [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2],
-                        ], board),
+                        finite: [], infinite: (() => {
+                            const deltas = [
+                                [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
+                                [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
+                                [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
+                                [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2],
+                            ];
+                            return [].concat(...deltas.map((delta) => {
+                                const blocker_deltas = getBlockerDeltas(delta).filter((d) => 
+                                /*
+                                 * remove [-1, 1], [-1, -1], [1, -1] and [1, 1], because
+                                 * pieces here will not prevent Tam2HueAMaun1 from moving.
+                                 */
+                                !([-1, 1].includes(d[0]) && [-1, 1].includes(d[1])));
+                                const blocker = applyDeltas(coord, blocker_deltas);
+                                // if nothing is blocking the way
+                                if (blocker.every(([i, j]) => board[i][j] == null)) {
+                                    return applyDeltas(coord, [delta]);
+                                }
+                                else {
+                                    return [];
+                                }
+                            }));
+                        })(),
                     };
                 case Profession.Kua2: // Clerk, 筆, kua
                     return {
