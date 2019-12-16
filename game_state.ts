@@ -107,7 +107,7 @@ let GAME_STATE: GAME_STATE = (() => {
             document.getElementById("larta_me")!.style.display = "none";
             document.getElementById("larta_opponent")!.style.display = "block";
             document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.remove("nocover");
-            window.setTimeout(poll, 500 * 0.8093);
+            window.setTimeout(sendMainPoll, 500 * 0.8093);
         }
     },
 

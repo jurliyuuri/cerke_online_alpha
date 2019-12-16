@@ -1,4 +1,4 @@
-async function poll() {
+async function sendMainPoll() {
     console.log("poll");
     if (Math.random() < 0.2) {
         console.log("ding!");
@@ -7,17 +7,17 @@ async function poll() {
         const opponent_move = get_one_valid_opponent_move();
         if (opponent_move.type === "NonTamMove") {
             if(opponent_move.data.type === "SrcDst") {
-                await displayOpponentSrcDst(opponent_move.data);
+                await animateOpponentSrcDst(opponent_move.data);
                 GAME_STATE.is_my_turn = true;
             } else if (opponent_move.data.type === "FromHand") {
                 const piece : NonTam2PieceDownward = {prof: opponent_move.data.prof, color: opponent_move.data.color, side: Side.Downward};
-                await displayOpponentFromHand(
+                await animateOpponentFromHand(
                     piece,
                     fromAbsoluteCoord(opponent_move.data.dest)
                 );
                 GAME_STATE.is_my_turn = true;
             } else if (opponent_move.data.type === "SrcStepDstFinite") {
-                await displayOpponentSrcStepDstFinite(opponent_move.data);
+                await animateOpponentSrcStepDstFinite(opponent_move.data);
                 GAME_STATE.is_my_turn = true;
             } else {
                 let a : never = opponent_move.data;
@@ -25,14 +25,14 @@ async function poll() {
             }
         } else if (opponent_move.type === "TamMove") {
             if (opponent_move.stepStyle === "NoStep") {
-                await displayOpponentTamNoStep(
+                await animateOpponentTamNoStep(
                     fromAbsoluteCoord(opponent_move.src),
                     fromAbsoluteCoord(opponent_move.firstDest),
                     fromAbsoluteCoord(opponent_move.secondDest)
                 );
                 GAME_STATE.is_my_turn = true;
             } else if (opponent_move.stepStyle === "StepsDuringFormer") {
-                await displayOpponentTamSteppingDuringFormer({
+                await animateOpponentTamSteppingDuringFormer({
                     src: fromAbsoluteCoord(opponent_move.src),
                     firstDest: fromAbsoluteCoord(opponent_move.firstDest),
                     secondDest: fromAbsoluteCoord(opponent_move.secondDest),
@@ -40,7 +40,7 @@ async function poll() {
                 });
                 GAME_STATE.is_my_turn = true;
             } else if (opponent_move.stepStyle === "StepsDuringLatter") {
-                await displayOpponentTamSteppingDuringLatter({
+                await animateOpponentTamSteppingDuringLatter({
                     src: fromAbsoluteCoord(opponent_move.src),
                     firstDest: fromAbsoluteCoord(opponent_move.firstDest),
                     secondDest: fromAbsoluteCoord(opponent_move.secondDest),
@@ -57,7 +57,7 @@ async function poll() {
         }
     } else {
         await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-        await poll();
+        await sendMainPoll();
     }
 }
 
@@ -423,7 +423,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         return;
     }
 
-    await displayWaterEntryLogo();
+    await animateWaterEntryLogo();
     displayCiurl(res.dat.ciurl);
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
 
@@ -504,7 +504,7 @@ async function sendNormalMessage(message: NormalMove) {
         return;
     }
 
-    await displayWaterEntryLogo();
+    await animateWaterEntryLogo();
     displayCiurl(res.dat.ciurl);
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
 
@@ -909,7 +909,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
     }
 }
 
-async function displayWaterEntryLogo() {
+async function animateWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo")!;
     water_entry_logo.style.display = "block";
     water_entry_logo.classList.add("water_entry");

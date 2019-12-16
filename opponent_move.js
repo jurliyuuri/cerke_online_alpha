@@ -226,10 +226,10 @@ function get_one_valid_opponent_move() {
     // if no candidate found, try again
     return get_one_valid_opponent_move();
 }
-async function displayOpponentSrcStepDstFinite(p) {
-    await displayOpponentSrcStepDstFinite_(fromAbsoluteCoord(p.src), fromAbsoluteCoord(p.step), fromAbsoluteCoord(p.dest), p.water_entry_ciurl);
+async function animateOpponentSrcStepDstFinite(p) {
+    await animateOpponentSrcStepDstFinite_(fromAbsoluteCoord(p.src), fromAbsoluteCoord(p.step), fromAbsoluteCoord(p.dest), p.water_entry_ciurl);
 }
-async function displayOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciurl) {
+async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciurl) {
     const [src_i, src_j] = src;
     const [step_i, step_j] = step;
     const [dest_i, dest_j] = dest;
@@ -298,17 +298,17 @@ function downwardTakingUpward(upward) {
         throw new Error("should not reach here");
     }
 }
-async function displayOpponentSrcDst(p) {
+async function animateOpponentSrcDst(p) {
     const src = fromAbsoluteCoord(p.src);
     const dst = fromAbsoluteCoord(p.dest);
     if (p.water_entry_ciurl) {
-        await displayOpponentSrcDst_(src, dst, p.water_entry_ciurl);
+        await animateOpponentSrcDst_(src, dst, p.water_entry_ciurl);
     }
     else {
-        await displayOpponentSrcDst_(src, dst);
+        await animateOpponentSrcDst_(src, dst);
     }
 }
-async function displayOpponentSrcDst_(src, dst, water_entry_ciurl) {
+async function animateOpponentSrcDst_(src, dst, water_entry_ciurl) {
     const [src_i, src_j] = src;
     const [dest_i, dest_j] = dst;
     let piece = GAME_STATE.f.currentBoard[src_i][src_j];
@@ -340,7 +340,7 @@ async function displayOpponentSrcDst_(src, dst, water_entry_ciurl) {
         drawField(GAME_STATE.f);
     }
 }
-async function displayOpponentFromHand(piece, dest) {
+async function animateOpponentFromHand(piece, dest) {
     // remove the corresponding one from hand
     const ind = GAME_STATE.f.hop1zuo1OfDownward.findIndex(p => p.color === piece.color && p.prof === piece.prof);
     if (ind === -1) {
@@ -357,7 +357,7 @@ async function displayOpponentFromHand(piece, dest) {
     GAME_STATE.f.currentBoard[dest_i][dest_j] = removed;
     drawField(GAME_STATE.f);
 }
-async function displayOpponentTamNoStep(src, fstdst, snddst) {
+async function animateOpponentTamNoStep(src, fstdst, snddst) {
     const piece = GAME_STATE.f.currentBoard[src[0]][src[1]];
     if (piece === null) {
         throw new Error("src is unoccupied");
@@ -375,13 +375,13 @@ async function displayOpponentTamNoStep(src, fstdst, snddst) {
     GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
     drawField(GAME_STATE.f);
 }
-async function displayOpponentTamSteppingDuringFormer(p) {
-    await displayOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
+async function animateOpponentTamSteppingDuringFormer(p) {
+    await animateOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
-    await displayOpponentSrcDst_(p.firstDest, p.secondDest);
+    await animateOpponentSrcDst_(p.firstDest, p.secondDest);
 }
-async function displayOpponentTamSteppingDuringLatter(p) {
-    await displayOpponentSrcDst_(p.src, p.firstDest);
+async function animateOpponentTamSteppingDuringLatter(p) {
+    await animateOpponentSrcDst_(p.src, p.firstDest);
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
-    await displayOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
+    await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }
