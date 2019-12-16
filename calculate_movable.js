@@ -174,33 +174,32 @@ var calculate_movable;
                             ...DOWNRIGHT,
                         ], board),
                     };
-                case Profession.Maun1: // Horse, 馬, dodor
+                case Profession.Maun1: { // Horse, 馬, dodor
+                    const deltas = [
+                        [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
+                        [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
+                        [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
+                        [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2],
+                    ];
+                    let inf = [];
+                    for (let i = 0; i < deltas.length; i++) {
+                        const delta = deltas[i];
+                        const blocker_deltas = getBlockerDeltas(delta).filter((d) => 
+                        /*
+                         * remove [-1, 1], [-1, -1], [1, -1] and [1, 1], because
+                         * pieces here will not prevent Tam2HueAMaun1 from moving.
+                         */
+                        !([-1, 1].includes(d[0]) && [-1, 1].includes(d[1])));
+                        const blocker = applyDeltas(coord, blocker_deltas);
+                        // if nothing is blocking the way
+                        if (blocker.every(([i, j]) => board[i][j] == null)) {
+                            inf = [...inf, ...applyDeltas(coord, [delta])];
+                        }
+                    }
                     return {
-                        finite: [], infinite: (() => {
-                            const deltas = [
-                                [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
-                                [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
-                                [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
-                                [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2],
-                            ];
-                            return [].concat(...deltas.map((delta) => {
-                                const blocker_deltas = getBlockerDeltas(delta).filter((d) => 
-                                /*
-                                 * remove [-1, 1], [-1, -1], [1, -1] and [1, 1], because
-                                 * pieces here will not prevent Tam2HueAMaun1 from moving.
-                                 */
-                                !([-1, 1].includes(d[0]) && [-1, 1].includes(d[1])));
-                                const blocker = applyDeltas(coord, blocker_deltas);
-                                // if nothing is blocking the way
-                                if (blocker.every(([i, j]) => board[i][j] == null)) {
-                                    return applyDeltas(coord, [delta]);
-                                }
-                                else {
-                                    return [];
-                                }
-                            }));
-                        })(),
+                        finite: [], infinite: inf,
                     };
+                }
                 case Profession.Kua2: // Clerk, 筆, kua
                     return {
                         finite: [], infinite: applyDeltasIfNoIntervention(coord, [
