@@ -5,7 +5,7 @@ namespace type__piece {
 
     export enum Side {
         Upward,  // Pieces that points upward. Denoted by @^@ in the ASCII notation.
-        Downward // Pieces that points downward. Denoted by @_@ in the ASCII notation.
+        Downward, // Pieces that points downward. Denoted by @_@ in the ASCII notation.
     }
 
     export interface NonTam2Piece {
@@ -18,7 +18,7 @@ namespace type__piece {
         return {
             color: u_or_d.color,
             prof: u_or_d.prof,
-            side: u_or_d.side
+            side: u_or_d.side,
         };
     }
 
@@ -27,13 +27,13 @@ namespace type__piece {
             return {
                 color: nontam.color,
                 prof: nontam.prof,
-                side: nontam.side
+                side: nontam.side,
             };
         } else {
             return {
                 color: nontam.color,
                 prof: nontam.prof,
-                side: nontam.side
+                side: nontam.side,
             };
         }
     }
@@ -52,7 +52,7 @@ namespace type__piece {
 
     export type Piece = "Tam2" | NonTam2Piece;
 
-    export type Tuple9<T> = [T, T, T, T, T, T, T, T, T]
+    export type Tuple9<T> = [T, T, T, T, T, T, T, T, T];
 
     export type Board = Tuple9<Row>;
     export type Row = Tuple9<Piece | null>;
@@ -70,7 +70,7 @@ namespace type__piece {
     }
 
     export function rotateBoard(b: Board): Board {
-        let ans: Board = [
+        const ans: Board = [
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
@@ -79,7 +79,7 @@ namespace type__piece {
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"]
+            [null, null, null, null, null, null, null, null, "Tam2"],
         ];
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
@@ -98,39 +98,39 @@ namespace type__piece {
     }
 
     export function toPath(p: NonTam2Piece): string {
-        const sideToPath = function (side: Side): string {
-            if (side === Side.Downward) return "piece_rev";
-            if (side === Side.Upward) return "piece";
+        const sideToPath = function(side: Side): string {
+            if (side === Side.Downward) { return "piece_rev"; }
+            if (side === Side.Upward) { return "piece"; }
 
-            let _should_not_reach_here: never = side;
+            const _should_not_reach_here: never = side;
             return _should_not_reach_here;
-        }
+        };
 
-        const colorToPath = function (color: Color): string {
-            if (color === Color.Huok2) return "b";
-            if (color === Color.Kok1) return "r";
+        const colorToPath = function(color: Color): string {
+            if (color === Color.Huok2) { return "b"; }
+            if (color === Color.Kok1) { return "r"; }
 
-            let _should_not_reach_here: never = color;
+            const _should_not_reach_here: never = color;
             return _should_not_reach_here;
-        }
+        };
 
-        const profToPath = function (prof: Profession): string {
-            if (prof === Profession.Dau2) return "dau";
-            if (prof === Profession.Gua2) return "gua";
-            if (prof === Profession.Io) return "io";
-            if (prof === Profession.Kauk2) return "kauk";
-            if (prof === Profession.Kaun1) return "kaun";
-            if (prof === Profession.Kua2) return "kua";
-            if (prof === Profession.Maun1) return "maun";
-            if (prof === Profession.Nuak1) return "nuak";
-            if (prof === Profession.Tuk2) return "tuk";
-            if (prof === Profession.Uai1) return "uai";
+        const profToPath = function(prof: Profession): string {
+            if (prof === Profession.Dau2) { return "dau"; }
+            if (prof === Profession.Gua2) { return "gua"; }
+            if (prof === Profession.Io) { return "io"; }
+            if (prof === Profession.Kauk2) { return "kauk"; }
+            if (prof === Profession.Kaun1) { return "kaun"; }
+            if (prof === Profession.Kua2) { return "kua"; }
+            if (prof === Profession.Maun1) { return "maun"; }
+            if (prof === Profession.Nuak1) { return "nuak"; }
+            if (prof === Profession.Tuk2) { return "tuk"; }
+            if (prof === Profession.Uai1) { return "uai"; }
 
-            let _should_not_reach_here: never = prof;
+            const _should_not_reach_here: never = prof;
             return _should_not_reach_here;
-        }
+        };
 
-        return `${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`
+        return `${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`;
     }
 
     export function toPath_(piece: Piece) {

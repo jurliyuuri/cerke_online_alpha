@@ -9,12 +9,12 @@ import NonTam2PieceDownward = type__piece.NonTam2PieceDownward;
 import Board = type__piece.Board;
 import Piece = type__piece.Piece;
 import Coord = type__piece.Coord;
-import BoardIndex = type__piece.BoardIndex
-import toUpOrDown = type__piece.toUpOrDown
+import BoardIndex = type__piece.BoardIndex;
+import toUpOrDown = type__piece.toUpOrDown;
 import AbsoluteColumn = type__message.AbsoluteColumn;
 import AbsoluteCoord = type__message.AbsoluteCoord;
 import AbsoluteRow = type__message.AbsoluteRow;
-import NormalMove = type__message.NormalMove
+import NormalMove = type__message.NormalMove;
 import calculateMovablePositions = calculate_movable.calculateMovablePositions;
 import coordEq = type__piece.coordEq;
 import rotateCoord = type__piece.rotateCoord;
@@ -41,11 +41,11 @@ const sampleBoard: Board = [
         null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, { color: Color.Huok2, prof: Profession.Nuak1, side: Side.Upward }, null, null],
     [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null],
     [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Upward }, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, null],
-    [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"]
+    [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"],
 ];
 
 const sampleField: Field = {
     currentBoard: sampleBoard,
     hop1zuo1OfDownward: [{ color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Downward }],
-    hop1zuo1OfUpward: [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }]
-}
+    hop1zuo1OfUpward: [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }],
+};

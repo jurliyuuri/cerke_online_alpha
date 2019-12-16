@@ -8,10 +8,10 @@ type Ret_RandomCancel = {
     whyIllegal: string
 } | {
     legal: true,
-    cancellable: boolean
-}
+    cancellable: boolean,
+};
 
-window.addEventListener('beforeunload', function (e) {
+window.addEventListener("beforeunload", function(e) {
     if (!UNLOAD_TRIGGERED_BY_USER) {
         // beforeunload should only capture what has been triggered by the user
         return;
@@ -19,7 +19,7 @@ window.addEventListener('beforeunload', function (e) {
 
     (async () => {
         if (typeof RESULT !== "undefined") { // you already have an access token
-            const r = await sendCancel<Ret_RandomCancel>(RESULT.access_token as AccessToken, a => a);
+            const r = await sendCancel<Ret_RandomCancel>(RESULT.access_token as AccessToken, (a) => a);
             if (!r.legal) {
                 alert(`sending cancel somehow resulted in an error: ${r.whyIllegal}`);
                 throw new Error(`sending cancel somehow resulted in an error: ${r.whyIllegal}`);
@@ -29,39 +29,38 @@ window.addEventListener('beforeunload', function (e) {
                 return;
             } else {
                 e.preventDefault();
-                e.returnValue = 'cannot cancel the game, as it is already ready';
+                e.returnValue = "cannot cancel the game, as it is already ready";
             }
         }
     })();
 });
 
 async function sendCancel<U>(access_token: AccessToken, validateInput: (response: any) => U): Promise<U> {
-    return await sendSomethingSomewhere('http://localhost:23564/random/cancel', {
-        "access_token": access_token
+    return await sendSomethingSomewhere("http://localhost:23564/random/cancel", {
+        access_token: access_token,
     }, validateInput);
 }
-
 
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(access_token: AccessToken) {
     alert("Let the game begin");
 }
 
-let RESULT: Res_RandomEntry | undefined = undefined;
+let RESULT: Res_RandomEntry | undefined;
 
 function apply_for_random_game() {
     (async () => {
-        let res: Res_RandomEntry = await sendEntrance<Res_RandomEntry>(a => a);
+        let res: Res_RandomEntry = await sendEntrance<Res_RandomEntry>((a) => a);
         RESULT = res;
         while (res.state != "let_the_game_begin") {
-            await new Promise(resolve => setTimeout(resolve, (2 + Math.random()) * 200 * 0.8093));
-            const newRes: Res_RandomPoll = await sendPoll<Res_RandomPoll>(res.access_token as AccessToken, a => a);
+            await new Promise((resolve) => setTimeout(resolve, (2 + Math.random()) * 200 * 0.8093));
+            const newRes: Res_RandomPoll = await sendPoll<Res_RandomPoll>(res.access_token as AccessToken, (a) => a);
             if (newRes.legal) {
                 res = newRes.ret;
                 RESULT = res;
             } else {
                 // re-entry
-                res = await sendEntrance<Res_RandomEntry>(a => a);
+                res = await sendEntrance<Res_RandomEntry>((a) => a);
                 RESULT = res;
             }
         }
@@ -70,23 +69,23 @@ function apply_for_random_game() {
 }
 
 async function sendPoll<U>(access_token: AccessToken, validateInput: (response: any) => U): Promise<U> {
-    return await sendSomethingSomewhere('http://localhost:23564/random/poll', {
-        "access_token": access_token
+    return await sendSomethingSomewhere("http://localhost:23564/random/poll", {
+        access_token: access_token,
     }, validateInput);
 }
 
 async function sendSomethingSomewhere<T, U>(url: string, data: T, validateInput: (response: any) => U): Promise<U> {
     const res: void | U = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(data), // data can be `string` or {object}!
         headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(function (res) {
+            "Content-Type": "application/json",
+        },
+    }).then(function(res) {
         return res.json();
     }).then(validateInput)
-        .catch(function (error) {
-            console.error('Error:', error);
+        .catch(function(error) {
+            console.error("Error:", error);
             return;
         });
 
@@ -100,5 +99,5 @@ async function sendSomethingSomewhere<T, U>(url: string, data: T, validateInput:
 }
 
 async function sendEntrance<U>(validateInput: (response: any) => U): Promise<U> {
-    return await sendSomethingSomewhere('http://localhost:23564/random/entry', {}, validateInput);
+    return await sendSomethingSomewhere("http://localhost:23564/random/entry", {}, validateInput);
 }

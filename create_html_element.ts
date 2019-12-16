@@ -5,7 +5,7 @@
  */
 
 function createPieceSizeImageOnBoardByPathAndXY(top: number, left: number, path: string, className: string): HTMLImageElement {
-    let i = document.createElement("img");
+    const i = document.createElement("img");
     i.classList.add(className);
     i.style.top = `${top}px`;
     i.style.left = `${left}px`;
@@ -25,7 +25,7 @@ function createCancelButton(): HTMLImageElement {
         1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
         1 + 7.5 * BOX_SIZE,
         "piece/bmun",
-        "piece_image_on_board"
+        "piece_image_on_board",
     );
 }
 
@@ -36,7 +36,7 @@ function createPieceSizeImageOnBoardByPath_Shifted(coord: Coord, path: string, c
 
 function createCircleGuideImageAt(coord: Coord, path: string): HTMLImageElement {
     const [row_index, column_index] = coord;
-    let img = document.createElement("img");
+    const img = document.createElement("img");
     img.classList.add("guide");
     img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
     img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
@@ -49,7 +49,7 @@ function createCircleGuideImageAt(coord: Coord, path: string): HTMLImageElement 
 }
 
 function createCiurl(side: boolean, o: { left: number, top: number, rotateDeg: number }): HTMLImageElement {
-    let img = document.createElement("img");
+    const img = document.createElement("img");
     img.src = `image/ciurl_${side}.png`;
     img.width = 150;
     img.height = 15;
@@ -67,7 +67,7 @@ function createPieceImgToBePlacedOnHop1zuo1(ind: number, path: string): HTMLImag
         1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
         indToHop1Zuo1Horizontal(ind),
         path,
-        "piece_image_on_hop1zuo1"
+        "piece_image_on_hop1zuo1",
     );
 }
 
