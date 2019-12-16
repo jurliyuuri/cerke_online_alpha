@@ -1,40 +1,40 @@
-type SrcDst = {
-    type: 'SrcDst',
-    src: AbsoluteCoord,
-    dest: AbsoluteCoord,
-    water_entry_ciurl?: Ciurl
-};
+interface SrcDst {
+    type: "SrcDst";
+    src: AbsoluteCoord;
+    dest: AbsoluteCoord;
+    water_entry_ciurl?: Ciurl;
+}
 
-type SrcStepDstFinite = {
-    type: 'SrcStepDstFinite';
+interface SrcStepDstFinite {
+    type: "SrcStepDstFinite";
     src: AbsoluteCoord;
     step: AbsoluteCoord;
     dest: AbsoluteCoord;
-    water_entry_ciurl?: Ciurl
-};
+    water_entry_ciurl?: Ciurl;
+}
 
-type OpponentMoveWithPotentialWaterEntry = {
-    type: 'NonTamMove',
-    data: SrcDst | SrcStepDstFinite
-};
+interface OpponentMoveWithPotentialWaterEntry {
+    type: "NonTamMove";
+    data: SrcDst | SrcStepDstFinite;
+}
 
 type OpponentMove = OpponentMoveWithPotentialWaterEntry | {
-    type: 'NonTamMove',
-    data:  {
-        type: 'FromHand';
+    type: "NonTamMove",
+    data: {
+        type: "FromHand";
         color: Color;
         prof: Profession;
         dest: AbsoluteCoord;
-    } 
+    },
 } | {
-    type: 'TamMove'
-    stepStyle: 'NoStep';
+    type: "TamMove"
+    stepStyle: "NoStep";
     src: AbsoluteCoord;
     firstDest: AbsoluteCoord;
     secondDest: AbsoluteCoord;
 } | {
-    type: 'TamMove'
-    stepStyle: 'StepsDuringFormer' | 'StepsDuringLatter';
+    type: "TamMove"
+    stepStyle: "StepsDuringFormer" | "StepsDuringLatter";
     src: AbsoluteCoord;
     step: AbsoluteCoord;
     firstDest: AbsoluteCoord;
@@ -67,17 +67,16 @@ function isWater([row, col]: Coord): boolean {
     ;
 }
 
-
 /**
  * @param total_duration total duration in millisecond
  * @param rotate angle to rotate, in degrees
  */
-async function animateNode(node: HTMLElement, 
-    total_duration: number, 
-    to: {top: number, left: number}, 
-    from: {top: number, left: number}, 
-    zIndex: string = "100",
-    rotate?: number) {
+async function animateNode(node: HTMLElement,
+                           total_duration: number,
+                           to: {top: number, left: number},
+                           from: {top: number, left: number},
+                           zIndex: string = "100",
+                           rotate?: number) {
     node.style.transition = `transform ${total_duration / 1000}s ease`;
     node.style.zIndex = zIndex; // so that it doesn't go under another piece
     node.style.transform = `translateY(${to.top - from.top}px)`;
@@ -85,7 +84,7 @@ async function animateNode(node: HTMLElement,
     if (rotate != null) {
         node.style.transform += `rotate(${rotate}deg)`;
     }
-    await new Promise(resolve => setTimeout(resolve, total_duration));
+    await new Promise((resolve) => setTimeout(resolve, total_duration));
 }
 
 function add_ciurl_if_required(obj: OpponentMoveWithPotentialWaterEntry, dest: Coord, moving_piece_prof: Profession) {
@@ -95,7 +94,7 @@ function add_ciurl_if_required(obj: OpponentMoveWithPotentialWaterEntry, dest: C
             Math.random() < 0.5,
             Math.random() < 0.5,
             Math.random() < 0.5,
-            Math.random() < 0.5
+            Math.random() < 0.5,
           ] as Ciurl;
     }
 }
@@ -105,18 +104,18 @@ function get_one_valid_opponent_move(): OpponentMove {
     // There is always at least one piece, namely Tam2
     const get_one_opponent_piece: () => {rotated_piece: "Tam2" | NonTam2PieceUpward, rotated_coord: Coord} = () => {
         while (true) {
-            let rand_i = (Math.random() * 9 | 0) as BoardIndex; 
-            let rand_j = (Math.random() * 9 | 0) as BoardIndex; 
-            let coord : Coord = [rand_i, rand_j];
+            const rand_i = (Math.random() * 9 | 0) as BoardIndex;
+            const rand_j = (Math.random() * 9 | 0) as BoardIndex;
+            const coord: Coord = [rand_i, rand_j];
             const piece: Piece | null =  GAME_STATE.f.currentBoard[rand_i][rand_j];
-            
-            if (piece === null) { 
-                continue; 
+
+            if (piece === null) {
+                continue;
             } else if (piece === "Tam2") {
                 return {rotated_piece: piece, rotated_coord: rotateCoord(coord)};
             } else if (piece.side === Side.Downward) {
                 const rot_piece: NonTam2PieceUpward = {prof: piece.prof, color: piece.color, side: Side.Upward};
-                return {rotated_piece: rot_piece, rotated_coord: rotateCoord(coord)}
+                return {rotated_piece: rot_piece, rotated_coord: rotateCoord(coord)};
             } else {
                 continue;
             }
@@ -130,32 +129,32 @@ function get_one_valid_opponent_move(): OpponentMove {
         const piece = GAME_STATE.f.hop1zuo1OfDownward[Math.random() * len | 0];
 
         const empty_square = (() => {while (true) {
-            let rand_i = (Math.random() * 9 | 0) as BoardIndex; 
-            let rand_j = (Math.random() * 9 | 0) as BoardIndex; 
-            let coord : Coord = [rand_i, rand_j];
+            const rand_i = (Math.random() * 9 | 0) as BoardIndex;
+            const rand_j = (Math.random() * 9 | 0) as BoardIndex;
+            const coord: Coord = [rand_i, rand_j];
             if (GAME_STATE.f.currentBoard[rand_i][rand_j] == null) { return coord; }
         }})();
 
-        return { 
+        return {
             type: "NonTamMove",
             data: {
                 type: "FromHand",
                 color: piece.color,
                 prof: piece.prof,
-                dest: toAbsoluteCoord(empty_square)
-            }
-        }
-    } 
+                dest: toAbsoluteCoord(empty_square),
+            },
+        };
+    }
 
     const {rotated_piece, rotated_coord} = get_one_opponent_piece();
     const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
         rotated_coord,
         rotated_piece,
         rotateBoard(GAME_STATE.f.currentBoard),
-        GAME_STATE.tam_itself_is_tam_hue
+        GAME_STATE.tam_itself_is_tam_hue,
     );
 
-    const candidates : Coord[] = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
+    const candidates: Coord[] = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
 
     if (candidates.length === 0) { return get_one_valid_opponent_move(); } // retry
 
@@ -173,17 +172,17 @@ function get_one_valid_opponent_move(): OpponentMove {
 
                 /* if the neighbor is empty, that is the second destination */
                 if (GAME_STATE.f.currentBoard[neighbor[0]][neighbor[1]] == null) {
-                    const snddst: Coord = neighbor; 
+                    const snddst: Coord = neighbor;
                     return {
                         type: "TamMove",
                         stepStyle: "NoStep",
                         secondDest: toAbsoluteCoord(snddst),
                         firstDest: toAbsoluteCoord(fstdst),
-                        src: toAbsoluteCoord(rotateCoord(rotated_coord))
-                    }
+                        src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    };
                 } else { /* if not, step from there */
                     const step: Coord = neighbor;
-                    const empty_neighbors_of_step: Coord[] = eightNeighborhood(step).filter(([i,j]) => GAME_STATE.f.currentBoard[i][j] == null);
+                    const empty_neighbors_of_step: Coord[] = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
                     if (empty_neighbors_of_step.length === 0) { return get_one_valid_opponent_move(); } // retry
                     const snddst: Coord = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
                     return {
@@ -192,16 +191,16 @@ function get_one_valid_opponent_move(): OpponentMove {
                         firstDest: toAbsoluteCoord(fstdst),
                         secondDest: toAbsoluteCoord(snddst),
                         src: toAbsoluteCoord(rotateCoord(rotated_coord)),
-                        step: toAbsoluteCoord(step)
-                    }
+                        step: toAbsoluteCoord(step),
+                    };
                 }
             } else { /* not an empty square: must complete the first move */
                 const step = dest;
-                const empty_neighbors_of_step: Coord[] = eightNeighborhood(step).filter(([i,j]) => GAME_STATE.f.currentBoard[i][j] == null);
+                const empty_neighbors_of_step: Coord[] = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
                 if (empty_neighbors_of_step.length === 0) { return get_one_valid_opponent_move(); } // retry
                 const fstdst: Coord = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
 
-                const empty_neighbors_of_fstdst: Coord[] = eightNeighborhood(fstdst).filter(([i,j]) => GAME_STATE.f.currentBoard[i][j] == null);
+                const empty_neighbors_of_fstdst: Coord[] = eightNeighborhood(fstdst).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
                 if (empty_neighbors_of_fstdst.length === 0) { return get_one_valid_opponent_move(); } // retry
                 const snddst: Coord = empty_neighbors_of_fstdst[empty_neighbors_of_fstdst.length * Math.random() | 0];
                 return {
@@ -210,18 +209,18 @@ function get_one_valid_opponent_move(): OpponentMove {
                     firstDest: toAbsoluteCoord(fstdst),
                     secondDest: toAbsoluteCoord(snddst),
                     src: toAbsoluteCoord(rotateCoord(rotated_coord)),
-                    step: toAbsoluteCoord(step)
-                }
+                    step: toAbsoluteCoord(step),
+                };
             }
         } else if (destPiece === null) {
             // cannot step
-            let obj: OpponentMoveWithPotentialWaterEntry = {
-                type: 'NonTamMove',
+            const obj: OpponentMoveWithPotentialWaterEntry = {
+                type: "NonTamMove",
                 data:  {
-                    type: 'SrcDst',
+                    type: "SrcDst",
                     src: toAbsoluteCoord(rotateCoord(rotated_coord)),
-                    dest: toAbsoluteCoord(dest)
-                }
+                    dest: toAbsoluteCoord(dest),
+                },
             };
             add_ciurl_if_required(obj, dest, rotated_piece.prof);
             return obj;
@@ -231,14 +230,14 @@ function get_one_valid_opponent_move(): OpponentMove {
         } else if (destPiece.side === Side.Upward && Math.random() < 0.7) {
             // opponent's piece; stepping and taking both attainable
             // take, with probability 0.7
-            let obj: OpponentMoveWithPotentialWaterEntry = {
-                type: 'NonTamMove',
+            const obj: OpponentMoveWithPotentialWaterEntry = {
+                type: "NonTamMove",
                 data:  {
-                    type: 'SrcDst',
+                    type: "SrcDst",
                     src: toAbsoluteCoord(rotateCoord(rotated_coord)),
-                    dest: toAbsoluteCoord(dest)
-                }
-            }
+                    dest: toAbsoluteCoord(dest),
+                },
+            };
             add_ciurl_if_required(obj, dest, rotated_piece.prof);
             return obj;
         } else { // opponent (prob 30%); ally (prob 100%) --> step
@@ -249,27 +248,27 @@ function get_one_valid_opponent_move(): OpponentMove {
                 rotateCoord(step),
                 rotated_piece,
                 rotateBoard(GAME_STATE.f.currentBoard),
-                GAME_STATE.tam_itself_is_tam_hue
+                GAME_STATE.tam_itself_is_tam_hue,
             );
 
-            const candidates : Coord[] = guideListYellow.map(rotateCoord);
+            const candidates: Coord[] = guideListYellow.map(rotateCoord);
             if (candidates.length === 0) { return get_one_valid_opponent_move(); } // retry
             for (let i = 0; i < 1000; i++) {
                 const finalDest = candidates[Math.random() * candidates.length | 0];
                 if (canGetOccupiedBy(Side.Downward, finalDest, {
-                    color: rotated_piece.color, 
-                    prof: rotated_piece.prof, 
-                    side: Side.Downward
+                    color: rotated_piece.color,
+                    prof: rotated_piece.prof,
+                    side: Side.Downward,
                 }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
-                    let obj: OpponentMoveWithPotentialWaterEntry = {
+                    const obj: OpponentMoveWithPotentialWaterEntry = {
                         type: "NonTamMove",
                         data: {
                             type: "SrcStepDstFinite",
                             src: toAbsoluteCoord(rotateCoord(rotated_coord)),
                             step: toAbsoluteCoord(step),
-                            dest: toAbsoluteCoord(finalDest)
-                        }
-                    }
+                            dest: toAbsoluteCoord(finalDest),
+                        },
+                    };
                     add_ciurl_if_required(obj, finalDest, rotated_piece.prof);
                     return obj;
                 }
@@ -288,7 +287,7 @@ async function animateOpponentSrcStepDstFinite(p: SrcStepDstFinite) {
         fromAbsoluteCoord(p.src),
         fromAbsoluteCoord(p.step),
         fromAbsoluteCoord(p.dest),
-        p.water_entry_ciurl
+        p.water_entry_ciurl,
     );
 }
 
@@ -297,18 +296,18 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
     const [step_i, step_j] = step;
     const [dest_i, dest_j] = dest;
 
-    let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+    const piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
     if (piece === null) {
         throw new Error("src is unoccupied");
     }
 
-    let stepPiece: Piece | null = GAME_STATE.f.currentBoard[step_i][step_j];
+    const stepPiece: Piece | null = GAME_STATE.f.currentBoard[step_i][step_j];
 
     if (stepPiece === null) {
         throw new Error("step is unoccupied");
     }
 
-    let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+    const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
 
     if (water_entry_ciurl) {
         alert("water entry!!!!!!!");
@@ -319,27 +318,27 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
         const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece) ;
         GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
 
-        let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-        let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+        const srcNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        const destNode: HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
 
-        await animateNode(srcNode, 750 * 0.8093, 
-            coordToPieceXY_Shifted(step), 
-            coordToPieceXY(src)
+        await animateNode(srcNode, 750 * 0.8093,
+            coordToPieceXY_Shifted(step),
+            coordToPieceXY(src),
         );
 
-        await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
-        await animateNode(srcNode, 750 * 0.8093, 
+        await animateNode(srcNode, 750 * 0.8093,
             coordToPieceXY(dest),
-            coordToPieceXY(src) /* must be src, since the node is not renewed */
+            coordToPieceXY(src), /* must be src, since the node is not renewed */
         );
 
-        await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
-        
-        await animateNode(destNode, 750 * 0.8093, 
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+        await animateNode(destNode, 750 * 0.8093,
             indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
             coordToPieceXY([dest_i, dest_j]),
-            "50", 180
+            "50", 180,
         );
 
         if (!coordEq(src, dest)) {
@@ -348,17 +347,17 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
         }
         drawField(GAME_STATE.f);
     } else {
-        let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-        await animateNode(imgNode, 750 * 0.8093, 
-            coordToPieceXY_Shifted(step), 
-            coordToPieceXY(src)
+        const imgNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        await animateNode(imgNode, 750 * 0.8093,
+            coordToPieceXY_Shifted(step),
+            coordToPieceXY(src),
         );
 
-        await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
-        await animateNode(imgNode, 750 * 0.8093, 
+        await animateNode(imgNode, 750 * 0.8093,
             coordToPieceXY(dest),
-            coordToPieceXY(src) /* must be src, since the node is not renewed */
+            coordToPieceXY(src), /* must be src, since the node is not renewed */
         );
         if (!coordEq(src, dest)) {
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -370,7 +369,7 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
 
 /**
  * Unsafe function. Takes an upward piece and turns it into a downward one. Panics if already downward or Tam2.
- * @param {Piece} upward  
+ * @param {Piece} upward
  */
 function downwardTakingUpward(upward: Piece): NonTam2PieceDownward {
     if (upward === "Tam2") {
@@ -381,11 +380,11 @@ function downwardTakingUpward(upward: Piece): NonTam2PieceDownward {
         const flipped: NonTam2PieceDownward = {
             color: upward.color,
             prof: upward.prof,
-            side: Side.Downward
-        }
+            side: Side.Downward,
+        };
         return flipped;
     } else {
-        let _should_not_reach_here: never = upward.side;
+        const _should_not_reach_here: never = upward.side;
         throw new Error("should not reach here");
     }
 }
@@ -404,12 +403,12 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
     const [src_i, src_j] = src;
     const [dest_i, dest_j] = dst;
 
-    let piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j]
+    const piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
     if (piece === null) {
         throw new Error("src is unoccupied");
     }
 
-    let destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+    const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
 
     if (water_entry_ciurl) {
         alert("water entry!!!"); // FIXME
@@ -420,29 +419,29 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
         const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
         GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
 
-        let srcNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-        let destNode : HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+        const srcNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        const destNode: HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
 
         const total_duration = 750 * 0.8093;
-        await animateNode(srcNode, total_duration, 
-            coordToPieceXY([dest_i, dest_j]), 
-            coordToPieceXY([src_i, src_j])
+        await animateNode(srcNode, total_duration,
+            coordToPieceXY([dest_i, dest_j]),
+            coordToPieceXY([src_i, src_j]),
         );
-        
-        await animateNode(destNode, total_duration, 
+
+        await animateNode(destNode, total_duration,
             indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
             coordToPieceXY([dest_i, dest_j]),
-            "50", 180
+            "50", 180,
         );
 
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         drawField(GAME_STATE.f);
     } else {
-        let imgNode : HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
-        await animateNode(imgNode, 1500 * 0.8093, 
-            coordToPieceXY([dest_i, dest_j]), 
-            coordToPieceXY([src_i, src_j])
+        const imgNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+        await animateNode(imgNode, 1500 * 0.8093,
+            coordToPieceXY([dest_i, dest_j]),
+            coordToPieceXY([src_i, src_j]),
         );
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
@@ -453,7 +452,7 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
 async function animateOpponentFromHand(piece: NonTam2PieceDownward, dest: Coord) {
     // remove the corresponding one from hand
     const ind = GAME_STATE.f.hop1zuo1OfDownward.findIndex(
-        p => p.color === piece.color && p.prof === piece.prof
+        (p) => p.color === piece.color && p.prof === piece.prof,
     );
     if (ind === -1) {
         throw new Error("What should exist in the hand does not exist");
@@ -466,39 +465,39 @@ async function animateOpponentFromHand(piece: NonTam2PieceDownward, dest: Coord)
         throw new Error("Trying to parachute the piece onto an occupied space");
     }
 
-    let imgNode : HTMLElement = document.getElementById(`hop1zuo1OfDownward_${ind}`)!;
-    await animateNode(imgNode, 1500 * 0.8093, 
+    const imgNode: HTMLElement = document.getElementById(`hop1zuo1OfDownward_${ind}`)!;
+    await animateNode(imgNode, 1500 * 0.8093,
         coordToPieceXY([dest_i, dest_j]), /* hop1zuo1 and board does not agree on the absolute coordinates, but agrees on the displacement */
-        indToHo1Zuo1OfDownward(ind)
-    )
+        indToHo1Zuo1OfDownward(ind),
+    );
 
     GAME_STATE.f.currentBoard[dest_i][dest_j] = removed;
     drawField(GAME_STATE.f);
 }
 
 async function animateOpponentTamNoStep(src: Coord, fstdst: Coord, snddst: Coord) {
-    const piece: Piece | null = GAME_STATE.f.currentBoard[src[0]][src[1]]
+    const piece: Piece | null = GAME_STATE.f.currentBoard[src[0]][src[1]];
     if (piece === null) {
         throw new Error("src is unoccupied");
     }
 
-    let imgNode : HTMLElement = document.getElementById(`field_piece_${src[0]}_${src[1]}`)!;
-    await animateNode(imgNode, 1500 * 0.8093, 
-        coordToPieceXY(fstdst), 
-        coordToPieceXY(src)
+    const imgNode: HTMLElement = document.getElementById(`field_piece_${src[0]}_${src[1]}`)!;
+    await animateNode(imgNode, 1500 * 0.8093,
+        coordToPieceXY(fstdst),
+        coordToPieceXY(src),
     );
     GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
     GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
     drawField(GAME_STATE.f);
-    
-    let imgNode2 : HTMLElement = document.getElementById(`field_piece_${fstdst[0]}_${fstdst[1]}`)!;
+
+    const imgNode2: HTMLElement = document.getElementById(`field_piece_${fstdst[0]}_${fstdst[1]}`)!;
 
     /* somehow does not work without this line */
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
-    await animateNode(imgNode2, 1500 * 0.8093, 
-        coordToPieceXY(snddst), 
-        coordToPieceXY(fstdst)
+    await animateNode(imgNode2, 1500 * 0.8093,
+        coordToPieceXY(snddst),
+        coordToPieceXY(fstdst),
     );
     GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
     GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
@@ -507,12 +506,12 @@ async function animateOpponentTamNoStep(src: Coord, fstdst: Coord, snddst: Coord
 
 async function animateOpponentTamSteppingDuringFormer(p: {src: Coord, firstDest: Coord, secondDest: Coord, step: Coord}) {
     await animateOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     await animateOpponentSrcDst_(p.firstDest, p.secondDest);
 }
 
 async function animateOpponentTamSteppingDuringLatter(p: {src: Coord, firstDest: Coord, secondDest: Coord, step: Coord}) {
     await animateOpponentSrcDst_(p.src, p.firstDest);
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093)); 
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }

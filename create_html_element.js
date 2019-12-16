@@ -5,7 +5,7 @@
  * Every call to document.createElement should live here.
  */
 function createPieceSizeImageOnBoardByPathAndXY(top, left, path, className) {
-    let i = document.createElement("img");
+    const i = document.createElement("img");
     i.classList.add(className);
     i.style.top = `${top}px`;
     i.style.left = `${left}px`;
@@ -27,7 +27,7 @@ function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
 }
 function createCircleGuideImageAt(coord, path) {
     const [row_index, column_index] = coord;
-    let img = document.createElement("img");
+    const img = document.createElement("img");
     img.classList.add("guide");
     img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
     img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
@@ -39,7 +39,7 @@ function createCircleGuideImageAt(coord, path) {
     return img;
 }
 function createCiurl(side, o) {
-    let img = document.createElement("img");
+    const img = document.createElement("img");
     img.src = `image/ciurl_${side}.png`;
     img.width = 150;
     img.height = 15;
