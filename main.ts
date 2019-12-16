@@ -1128,19 +1128,6 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
     }
 }
 
-function createPieceImgToBePlacedOnHop1zuo1(ind: number, path: string): HTMLImageElement {
-    return createPieceSizeImageOnBoardByPathAndXY(
-        1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-        indToHop1Zuo1Horizontal(ind),
-        path,
-        "piece_image_on_hop1zuo1"
-    );
-}
-
-function createPieceImgToBePlacedOnBoard(coord: Coord, piece: Piece) {
-    return createPieceSizeImageOnBoardByPath(coord, toPath_(piece), "piece_image_on_board");
-}
-
 function removeChildren(parent: HTMLElement) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);

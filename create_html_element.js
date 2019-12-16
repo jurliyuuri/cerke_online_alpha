@@ -51,3 +51,9 @@ function createCiurl(side, o) {
     img.style.position = "absolute";
     return img;
 }
+function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
+    return createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, indToHop1Zuo1Horizontal(ind), path, "piece_image_on_hop1zuo1");
+}
+function createPieceImgToBePlacedOnBoard(coord, piece) {
+    return createPieceSizeImageOnBoardByPath(coord, toPath_(piece), "piece_image_on_board");
+}

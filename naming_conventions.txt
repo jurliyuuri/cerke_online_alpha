@@ -1,1 +1,2 @@
 * async functions must begin with either `send` or `animate`
+* `function createSomethingSomething` must return an HTMLImageElement, and should be defined in create_html_element.ts
