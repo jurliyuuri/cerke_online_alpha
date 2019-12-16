@@ -74,7 +74,7 @@ function eraseGuide(): void {
     removeChildren(document.getElementById("contains_guides_on_upward")!);
 }
 
-function erasePhantom() {
+function erasePhantomAndOptionallyCancelButton() {
     const contains_phantom = document.getElementById("contains_phantom")!;
     while (contains_phantom.firstChild) {
         contains_phantom.removeChild(contains_phantom.firstChild);
@@ -83,7 +83,7 @@ function erasePhantom() {
 
 function cancelStepping() {
     eraseGuide();
-    erasePhantom();
+    erasePhantomAndOptionallyCancelButton();
     document.getElementById("protective_cover_over_field")!.classList.add("nocover");
 
     // resurrect the original one
@@ -114,7 +114,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function() {
         eraseGuide();
-        erasePhantom();
+        erasePhantomAndOptionallyCancelButton();
         document.getElementById("protective_cover_over_field")!.classList.add("nocover");
         document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
 
@@ -169,7 +169,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
                 sendNormalMessage(message);
 
                 eraseGuide();
-                erasePhantom();
+                erasePhantomAndOptionallyCancelButton();
                 document.getElementById("protective_cover_over_field")!.classList.add("nocover");
                 document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
                 return;
@@ -264,8 +264,10 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
                             sendNormalMessage(message);
 
                             document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
-                            erasePhantom();
-                            document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
+
+                            // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
+                            erasePhantomAndOptionallyCancelButton();
+
                             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
 
                             return;
@@ -293,7 +295,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     drawPhantomAt(from, "Tam2");
     drawCancel(function cancelTam2FirstMove() {
         eraseGuide();
-        erasePhantom();
+        erasePhantomAndOptionallyCancelButton();
         document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
         document.getElementById("protective_cover_over_field")!.classList.add("nocover");
 
@@ -311,7 +313,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
 function drawPhantomAt(coord: Coord, piece: Piece) {
     const contains_phantom = document.getElementById("contains_phantom")!;
-    erasePhantom();
+    erasePhantomAndOptionallyCancelButton();
 
     const phantom: HTMLImageElement = createPieceImgToBePlacedOnBoard(coord, piece);
     phantom.style.opacity = "0.1";

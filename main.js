@@ -69,7 +69,7 @@ function eraseGuide() {
     removeChildren(document.getElementById("contains_guides"));
     removeChildren(document.getElementById("contains_guides_on_upward"));
 }
-function erasePhantom() {
+function erasePhantomAndOptionallyCancelButton() {
     const contains_phantom = document.getElementById("contains_phantom");
     while (contains_phantom.firstChild) {
         contains_phantom.removeChild(contains_phantom.firstChild);
@@ -77,7 +77,7 @@ function erasePhantom() {
 }
 function cancelStepping() {
     eraseGuide();
-    erasePhantom();
+    erasePhantomAndOptionallyCancelButton();
     document.getElementById("protective_cover_over_field").classList.add("nocover");
     // resurrect the original one
     const backup = GAME_STATE.backupDuringStepping;
@@ -101,7 +101,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function () {
         eraseGuide();
-        erasePhantom();
+        erasePhantomAndOptionallyCancelButton();
         document.getElementById("protective_cover_over_field").classList.add("nocover");
         document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
         // resurrect the original one
@@ -140,7 +140,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
                 };
                 sendNormalMessage(message);
                 eraseGuide();
-                erasePhantom();
+                erasePhantomAndOptionallyCancelButton();
                 document.getElementById("protective_cover_over_field").classList.add("nocover");
                 document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
                 return;
@@ -208,8 +208,8 @@ function afterFirstTamMove(from, to, step) {
                             };
                             sendNormalMessage(message);
                             document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
-                            erasePhantom();
-                            document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
+                            // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
+                            erasePhantomAndOptionallyCancelButton();
                             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
                             return;
                         })(from, coord, guideListYellow[ind]);
@@ -232,7 +232,7 @@ function afterFirstTamMove(from, to, step) {
     drawPhantomAt(from, "Tam2");
     drawCancel(function cancelTam2FirstMove() {
         eraseGuide();
-        erasePhantom();
+        erasePhantomAndOptionallyCancelButton();
         document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
         document.getElementById("protective_cover_over_field").classList.add("nocover");
         // resurrect the original one
@@ -246,7 +246,7 @@ function afterFirstTamMove(from, to, step) {
 }
 function drawPhantomAt(coord, piece) {
     const contains_phantom = document.getElementById("contains_phantom");
-    erasePhantom();
+    erasePhantomAndOptionallyCancelButton();
     const phantom = createPieceImgToBePlacedOnBoard(coord, piece);
     phantom.style.opacity = "0.1";
     contains_phantom.appendChild(phantom);
