@@ -4,13 +4,13 @@ function toAbsoluteCoord_([row, col], IA_is_down) {
         [
             AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
             AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
-            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA
+            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA,
         ][IA_is_down ? row : 8 - row],
         [
             AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
             AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
-            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
-        ][IA_is_down ? col : 8 - col]
+            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P,
+        ][IA_is_down ? col : 8 - col],
     ];
 }
 function fromAbsoluteCoord_([absrow, abscol], IA_is_down) {
@@ -43,7 +43,7 @@ function fromAbsoluteCoord_([absrow, abscol], IA_is_down) {
         rowind = 8;
     }
     else {
-        let _should_not_reach_here = absrow;
+        const _should_not_reach_here = absrow;
         throw new Error("does not happen");
     }
     let colind;
@@ -75,7 +75,7 @@ function fromAbsoluteCoord_([absrow, abscol], IA_is_down) {
         colind = 8;
     }
     else {
-        let _should_not_reach_here = abscol;
+        const _should_not_reach_here = abscol;
         throw new Error("does not happen");
     }
     if (IA_is_down) {
@@ -104,7 +104,7 @@ let GAME_STATE = (() => {
                 [null, null, null, null, null, null, null, null, "Tam2"],
                 [null, null, null, null, null, null, null, null, "Tam2"],
                 [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"]
+                [null, null, null, null, null, null, null, null, "Tam2"],
             ],
             hop1zuo1OfDownward: [],
             hop1zuo1OfUpward: [],
@@ -128,6 +128,6 @@ let GAME_STATE = (() => {
         get is_my_turn() {
             return _is_my_turn;
         },
-        backupDuringStepping: null
+        backupDuringStepping: null,
     };
 })();

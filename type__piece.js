@@ -6,13 +6,13 @@ var type__piece;
     let Side;
     (function (Side) {
         Side[Side["Upward"] = 0] = "Upward";
-        Side[Side["Downward"] = 1] = "Downward"; // Pieces that points downward. Denoted by @_@ in the ASCII notation.
+        Side[Side["Downward"] = 1] = "Downward";
     })(Side = type__piece.Side || (type__piece.Side = {}));
     function fromUpOrDown(u_or_d) {
         return {
             color: u_or_d.color,
             prof: u_or_d.prof,
-            side: u_or_d.side
+            side: u_or_d.side,
         };
     }
     type__piece.fromUpOrDown = fromUpOrDown;
@@ -21,14 +21,14 @@ var type__piece;
             return {
                 color: nontam.color,
                 prof: nontam.prof,
-                side: nontam.side
+                side: nontam.side,
             };
         }
         else {
             return {
                 color: nontam.color,
                 prof: nontam.prof,
-                side: nontam.side
+                side: nontam.side,
             };
         }
     }
@@ -42,7 +42,7 @@ var type__piece;
     }
     type__piece.rotateCoord = rotateCoord;
     function rotateBoard(b) {
-        let ans = [
+        const ans = [
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
@@ -51,7 +51,7 @@ var type__piece;
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
             [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"]
+            [null, null, null, null, null, null, null, null, "Tam2"],
         ];
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
@@ -71,43 +71,57 @@ var type__piece;
     }
     function toPath(p) {
         const sideToPath = function (side) {
-            if (side === Side.Downward)
+            if (side === Side.Downward) {
                 return "piece_rev";
-            if (side === Side.Upward)
+            }
+            if (side === Side.Upward) {
                 return "piece";
-            let _should_not_reach_here = side;
+            }
+            const _should_not_reach_here = side;
             return _should_not_reach_here;
         };
         const colorToPath = function (color) {
-            if (color === Color.Huok2)
+            if (color === Color.Huok2) {
                 return "b";
-            if (color === Color.Kok1)
+            }
+            if (color === Color.Kok1) {
                 return "r";
-            let _should_not_reach_here = color;
+            }
+            const _should_not_reach_here = color;
             return _should_not_reach_here;
         };
         const profToPath = function (prof) {
-            if (prof === Profession.Dau2)
+            if (prof === Profession.Dau2) {
                 return "dau";
-            if (prof === Profession.Gua2)
+            }
+            if (prof === Profession.Gua2) {
                 return "gua";
-            if (prof === Profession.Io)
+            }
+            if (prof === Profession.Io) {
                 return "io";
-            if (prof === Profession.Kauk2)
+            }
+            if (prof === Profession.Kauk2) {
                 return "kauk";
-            if (prof === Profession.Kaun1)
+            }
+            if (prof === Profession.Kaun1) {
                 return "kaun";
-            if (prof === Profession.Kua2)
+            }
+            if (prof === Profession.Kua2) {
                 return "kua";
-            if (prof === Profession.Maun1)
+            }
+            if (prof === Profession.Maun1) {
                 return "maun";
-            if (prof === Profession.Nuak1)
+            }
+            if (prof === Profession.Nuak1) {
                 return "nuak";
-            if (prof === Profession.Tuk2)
+            }
+            if (prof === Profession.Tuk2) {
                 return "tuk";
-            if (prof === Profession.Uai1)
+            }
+            if (prof === Profession.Uai1) {
                 return "uai";
-            let _should_not_reach_here = prof;
+            }
+            const _should_not_reach_here = prof;
             return _should_not_reach_here;
         };
         return `${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`;
