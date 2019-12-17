@@ -243,7 +243,13 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
     }
     const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
     if (water_entry_ciurl) {
-        alert("water entry!!!!!!!");
+        await animateWaterEntryLogo();
+        displayCiurl(water_entry_ciurl, Side.Downward);
+        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+        if (water_entry_ciurl.filter((a) => a).length < 3) {
+            alert(DICTIONARY.ja.failedWaterEntry);
+            return;
+        }
     }
     /* it IS possible that you are returning to the original position, in which case you don't do anything */
     if (destPiece !== null) {
@@ -317,7 +323,13 @@ async function animateOpponentSrcDst_(src, dst, water_entry_ciurl) {
     }
     const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
     if (water_entry_ciurl) {
-        alert("water entry!!!"); // FIXME
+        await animateWaterEntryLogo();
+        displayCiurl(water_entry_ciurl, Side.Downward);
+        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+        if (water_entry_ciurl.filter((a) => a).length < 3) {
+            alert(DICTIONARY.ja.failedWaterEntry);
+            return;
+        }
     }
     /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
     if (destPiece !== null) {

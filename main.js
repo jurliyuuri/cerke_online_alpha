@@ -728,7 +728,7 @@ async function animateWaterEntryLogo() {
     }, 1200 * 0.8093);
     await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }
-function displayCiurl(ciurl) {
+function displayCiurl(ciurl, side) {
     // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
     // Standard Normal variate using Box-Muller transform.
     const randn_bm = function () {
@@ -743,11 +743,10 @@ function displayCiurl(ciurl) {
     };
     const contains_ciurl = document.getElementById("contains_ciurl");
     clearCiurl();
-    // should always lie around 300 ~ 370, when BOX_SIZE is 70
     const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
     const hop1zuo1_height = 140;
     const board_height = 631;
-    const averageTop = 84 + hop1zuo1_height + board_height;
+    const averageTop = 84 + ((side == null || side === Side.Upward) ? hop1zuo1_height + board_height : 0);
     const imgs = ciurl.map((side, ind) => createCiurl(side, {
         left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
         top: averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm(),
