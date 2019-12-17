@@ -39,6 +39,16 @@ type OpponentMove = OpponentMoveWithPotentialWaterEntry | {
     step: AbsoluteCoord;
     firstDest: AbsoluteCoord;
     secondDest: AbsoluteCoord;
+} | {
+    type: "InfAfterStep";
+    src: AbsoluteCoord;
+    step: AbsoluteCoord;
+    plannedDirection: AbsoluteCoord;
+    stepping_ciurl: Ciurl;
+    finalResult: Promise<{
+        dest: AbsoluteCoord;
+        water_entry_ciurl?: Ciurl;
+    }>;
 };
 
 function isWaterAbs([row, col]: AbsoluteCoord): boolean {
@@ -291,6 +301,114 @@ async function animateOpponentSrcStepDstFinite(p: SrcStepDstFinite) {
         fromAbsoluteCoord(p.dest),
         p.water_entry_ciurl,
     );
+}
+
+async function animateOpponentSteppingOverCiurl(
+    step: Coord,
+    plannedDirection: Coord,
+    stepping_ciurl: Ciurl
+) {
+    /* FIXME */
+    displayCiurl(stepping_ciurl, Side.Downward);
+}
+
+async function animateOpponentInfAfterStep(p: {
+    src: Coord, 
+    step: Coord, 
+    plannedDirection: Coord, 
+    stepping_ciurl: Ciurl, 
+    finalResult: Promise<{
+        dest: AbsoluteCoord;
+        water_entry_ciurl?: Ciurl;
+    }>
+}) {
+    const [src_i, src_j] = p.src;
+    const [step_i, step_j] = p.step;
+
+    const piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
+    if (piece === null) {
+        throw new Error("src is unoccupied");
+    }
+
+    const stepPiece: Piece | null = GAME_STATE.f.currentBoard[step_i][step_j];
+
+    if (stepPiece === null) {
+        throw new Error("step is unoccupied");
+    }
+
+    const srcNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
+    await animateNode(srcNode, 750 * 0.8093,
+        coordToPieceXY_Shifted(p.step),
+        coordToPieceXY(p.src),
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+    await animateOpponentSteppingOverCiurl(p.step, p.plannedDirection, p.stepping_ciurl);
+
+    const result = await p.finalResult;
+    const [dest_i, dest_j] = result.dest;
+    const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
+
+    /* The whole scheme works even if the move was cancelled, since cancellation is exactly the same thing as choosing the original position as the final destination */
+
+    /* it IS possible that you are returning to the original position, in which case you don't do anything */
+    if (destPiece !== null && !coordEq(p.src, result.dest)) {
+        const destNode: HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
+        await animateNode(srcNode, 750 * 0.8093,
+            coordToPieceXY(result.dest),
+            coordToPieceXY(p.src), /* must be src, since the node is not renewed */
+        );
+
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+        await animateNode(destNode, 750 * 0.8093,
+            indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length),
+            coordToPieceXY([dest_i, dest_j]),
+            "50", 180,
+        );
+
+        if (result.water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(result.water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (result.water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+
+        if (!coordEq(p.src, result.dest)) { /* if same, the piece should not take itself */
+            const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
+            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        }
+        drawField(GAME_STATE.f);
+    } else {
+        await animateNode(srcNode, 750 * 0.8093,
+            coordToPieceXY(result.dest),
+            coordToPieceXY(p.src), /* must be src, since the node is not renewed */
+        );
+
+        if (result.water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(result.water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (result.water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+
+        if (!coordEq(p.src, result.dest)) {
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        }
+        drawField(GAME_STATE.f);
+    }
 }
 
 async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: Coord, water_entry_ciurl?: Ciurl) {

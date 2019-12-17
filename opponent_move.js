@@ -230,6 +230,72 @@ function get_one_valid_opponent_move() {
 async function animateOpponentSrcStepDstFinite(p) {
     await animateOpponentSrcStepDstFinite_(fromAbsoluteCoord(p.src), fromAbsoluteCoord(p.step), fromAbsoluteCoord(p.dest), p.water_entry_ciurl);
 }
+async function animateOpponentSteppingOverCiurl(step, plannedDirection, stepping_ciurl) {
+    /* FIXME */
+    displayCiurl(stepping_ciurl, Side.Downward);
+}
+async function animateOpponentInfAfterStep(p) {
+    const [src_i, src_j] = p.src;
+    const [step_i, step_j] = p.step;
+    const piece = GAME_STATE.f.currentBoard[src_i][src_j];
+    if (piece === null) {
+        throw new Error("src is unoccupied");
+    }
+    const stepPiece = GAME_STATE.f.currentBoard[step_i][step_j];
+    if (stepPiece === null) {
+        throw new Error("step is unoccupied");
+    }
+    const srcNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
+    await animateNode(srcNode, 750 * 0.8093, coordToPieceXY_Shifted(p.step), coordToPieceXY(p.src));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+    await animateOpponentSteppingOverCiurl(p.step, p.plannedDirection, p.stepping_ciurl);
+    const result = await p.finalResult;
+    const [dest_i, dest_j] = result.dest;
+    const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+    /* The whole scheme works even if the move was cancelled, since cancellation is exactly the same thing as choosing the original position as the final destination */
+    /* it IS possible that you are returning to the original position, in which case you don't do anything */
+    if (destPiece !== null && !coordEq(p.src, result.dest)) {
+        const destNode = document.getElementById(`field_piece_${dest_i}_${dest_j}`);
+        await animateNode(srcNode, 750 * 0.8093, coordToPieceXY(result.dest), coordToPieceXY(p.src));
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        await animateNode(destNode, 750 * 0.8093, indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length), coordToPieceXY([dest_i, dest_j]), "50", 180);
+        if (result.water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(result.water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (result.water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+        if (!coordEq(p.src, result.dest)) { /* if same, the piece should not take itself */
+            const flipped = downwardTakingUpward(destPiece);
+            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        }
+        drawField(GAME_STATE.f);
+    }
+    else {
+        await animateNode(srcNode, 750 * 0.8093, coordToPieceXY(result.dest), coordToPieceXY(p.src));
+        if (result.water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(result.water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (result.water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+        if (!coordEq(p.src, result.dest)) {
+            GAME_STATE.f.currentBoard[src_i][src_j] = null;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        }
+        drawField(GAME_STATE.f);
+    }
+}
 async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciurl) {
     const [src_i, src_j] = src;
     const [step_i, step_j] = step;

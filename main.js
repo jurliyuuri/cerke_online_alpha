@@ -53,6 +53,16 @@ async function sendMainPoll() {
                 throw new Error("does not happen");
             }
         }
+        else if (opponent_move.type === "InfAfterStep") {
+            await animateOpponentInfAfterStep({
+                src: fromAbsoluteCoord(opponent_move.src),
+                step: fromAbsoluteCoord(opponent_move.step),
+                plannedDirection: fromAbsoluteCoord(opponent_move.plannedDirection),
+                stepping_ciurl: opponent_move.stepping_ciurl,
+                finalResult: opponent_move.finalResult
+            });
+            GAME_STATE.is_my_turn = true;
+        }
         else {
             const a = opponent_move;
             throw new Error("does not happen");
