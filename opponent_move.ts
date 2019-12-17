@@ -309,21 +309,8 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
 
     const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
 
-    if (water_entry_ciurl) {
-        await animateWaterEntryLogo();
-        displayCiurl(water_entry_ciurl, Side.Downward);
-        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
-        if (water_entry_ciurl.filter((a) => a).length < 3) {
-            alert(DICTIONARY.ja.failedWaterEntry);
-            return;
-        }
-    }
-
     /* it IS possible that you are returning to the original position, in which case you don't do anything */
-    if (destPiece !== null) {
-        const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece) ;
-        GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-
+    if (destPiece !== null && !coordEq(src, dest)) {
         const srcNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
         const destNode: HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
 
@@ -342,12 +329,25 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
         await animateNode(destNode, 750 * 0.8093,
-            indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
+            indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length),
             coordToPieceXY([dest_i, dest_j]),
             "50", 180,
         );
 
-        if (!coordEq(src, dest)) {
+        if (water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+
+        if (!coordEq(src, dest)) { /* if same, the piece should not take itself */
+            const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
+            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
@@ -365,6 +365,18 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
             coordToPieceXY(dest),
             coordToPieceXY(src), /* must be src, since the node is not renewed */
         );
+
+        if (water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+
         if (!coordEq(src, dest)) {
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
@@ -416,21 +428,8 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
 
     const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
 
-    if (water_entry_ciurl) {
-        await animateWaterEntryLogo();
-        displayCiurl(water_entry_ciurl, Side.Downward);
-        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
-        if (water_entry_ciurl.filter((a) => a).length < 3) {
-            alert(DICTIONARY.ja.failedWaterEntry);
-            return;
-        }
-    }
-
     /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
     if (destPiece !== null) {
-        const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
-        GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-
         const srcNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
         const destNode: HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
 
@@ -441,10 +440,24 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
         );
 
         await animateNode(destNode, total_duration,
-            indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length - 1),
+            indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length), /* not yet pushed into GAME_STATE.f.hop1zuo1OfDownward */
             coordToPieceXY([dest_i, dest_j]),
             "50", 180,
         );
+
+        if (water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+
+        const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
+        GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
 
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
@@ -455,6 +468,18 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
             coordToPieceXY([dest_i, dest_j]),
             coordToPieceXY([src_i, src_j]),
         );
+
+        if (water_entry_ciurl) {
+            await animateWaterEntryLogo();
+            displayCiurl(water_entry_ciurl, Side.Downward);
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            if (water_entry_ciurl.filter((a) => a).length < 3) {
+                alert(DICTIONARY.ja.failedWaterEntry);
+                drawField(GAME_STATE.f);
+                return;
+            }
+        }
+
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         drawField(GAME_STATE.f);
