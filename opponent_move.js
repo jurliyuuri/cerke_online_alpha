@@ -105,13 +105,13 @@ function get_one_valid_opponent_move() {
         const dest = candidates[Math.random() * candidates.length | 0];
         const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
         if (rotated_piece === "Tam2") {
-            /* FIXME: for now, no stepping */
             if (destPiece === null) { /* empty square; first move is completed without stepping */
                 const fstdst = dest;
                 const cands = eightNeighborhood(fstdst);
                 const neighbor = cands[cands.length * Math.random() | 0];
                 /* if the neighbor is empty, that is the second destination */
-                if (GAME_STATE.f.currentBoard[neighbor[0]][neighbor[1]] == null) {
+                if (GAME_STATE.f.currentBoard[neighbor[0]][neighbor[1]] == null /* the neighbor is utterly occupied */
+                    || coordEq(neighbor, rotateCoord(rotated_coord)) /* the neighbor is occupied by yourself, which means it is actually empty */) {
                     const snddst = neighbor;
                     return {
                         type: "TamMove",

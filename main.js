@@ -5,6 +5,7 @@ async function sendMainPoll() {
         console.log("ding!");
         // you are supposed to send a request to the server and wait for the response
         const opponent_move = get_one_valid_opponent_move();
+        console.log(opponent_move);
         if (opponent_move.type === "NonTamMove") {
             if (opponent_move.data.type === "SrcDst") {
                 await animateOpponentSrcDst(opponent_move.data);
