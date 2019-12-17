@@ -35,8 +35,8 @@ async function animateNode(node, total_duration, to, from, zIndex = "100", rotat
     }
     await new Promise((resolve) => setTimeout(resolve, total_duration));
 }
-function add_ciurl_if_required(obj, dest, moving_piece_prof) {
-    if (isWater(dest) && moving_piece_prof !== Profession.Nuak1) {
+function add_ciurl_if_required(obj, dest, moving_piece_prof, src) {
+    if (isWater(dest) && !isWater(src) && moving_piece_prof !== Profession.Nuak1) {
         obj.data.water_entry_ciurl = [
             Math.random() < 0.5,
             Math.random() < 0.5,
@@ -101,6 +101,7 @@ function get_one_valid_opponent_move() {
     if (candidates.length === 0) {
         return get_one_valid_opponent_move();
     } // retry
+    const src = rotateCoord(rotated_coord);
     for (let i = 0; i < 1000; i++) {
         const dest = candidates[Math.random() * candidates.length | 0];
         const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
@@ -111,14 +112,14 @@ function get_one_valid_opponent_move() {
                 const neighbor = cands[cands.length * Math.random() | 0];
                 /* if the neighbor is empty, that is the second destination */
                 if (GAME_STATE.f.currentBoard[neighbor[0]][neighbor[1]] == null /* the neighbor is utterly occupied */
-                    || coordEq(neighbor, rotateCoord(rotated_coord)) /* the neighbor is occupied by yourself, which means it is actually empty */) {
+                    || coordEq(neighbor, src) /* the neighbor is occupied by yourself, which means it is actually empty */) {
                     const snddst = neighbor;
                     return {
                         type: "TamMove",
                         stepStyle: "NoStep",
                         secondDest: toAbsoluteCoord(snddst),
                         firstDest: toAbsoluteCoord(fstdst),
-                        src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                        src: toAbsoluteCoord(src),
                     };
                 }
                 else { /* if not, step from there */
@@ -133,7 +134,7 @@ function get_one_valid_opponent_move() {
                         stepStyle: "StepsDuringLatter",
                         firstDest: toAbsoluteCoord(fstdst),
                         secondDest: toAbsoluteCoord(snddst),
-                        src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                        src: toAbsoluteCoord(src),
                         step: toAbsoluteCoord(step),
                     };
                 }
@@ -155,7 +156,7 @@ function get_one_valid_opponent_move() {
                     stepStyle: "StepsDuringFormer",
                     firstDest: toAbsoluteCoord(fstdst),
                     secondDest: toAbsoluteCoord(snddst),
-                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    src: toAbsoluteCoord(src),
                     step: toAbsoluteCoord(step),
                 };
             }
@@ -166,11 +167,11 @@ function get_one_valid_opponent_move() {
                 type: "NonTamMove",
                 data: {
                     type: "SrcDst",
-                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    src: toAbsoluteCoord(src),
                     dest: toAbsoluteCoord(dest),
                 },
             };
-            add_ciurl_if_required(obj, dest, rotated_piece.prof);
+            add_ciurl_if_required(obj, dest, rotated_piece.prof, src);
             return obj;
         }
         else if (destPiece === "Tam2") {
@@ -184,11 +185,11 @@ function get_one_valid_opponent_move() {
                 type: "NonTamMove",
                 data: {
                     type: "SrcDst",
-                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                    src: toAbsoluteCoord(src),
                     dest: toAbsoluteCoord(dest),
                 },
             };
-            add_ciurl_if_required(obj, dest, rotated_piece.prof);
+            add_ciurl_if_required(obj, dest, rotated_piece.prof, src);
             return obj;
         }
         else { // opponent (prob 30%); ally (prob 100%) --> step
@@ -210,12 +211,12 @@ function get_one_valid_opponent_move() {
                         type: "NonTamMove",
                         data: {
                             type: "SrcStepDstFinite",
-                            src: toAbsoluteCoord(rotateCoord(rotated_coord)),
+                            src: toAbsoluteCoord(src),
                             step: toAbsoluteCoord(step),
                             dest: toAbsoluteCoord(finalDest),
                         },
                     };
-                    add_ciurl_if_required(obj, finalDest, rotated_piece.prof);
+                    add_ciurl_if_required(obj, finalDest, rotated_piece.prof, src);
                     return obj;
                 }
             }
