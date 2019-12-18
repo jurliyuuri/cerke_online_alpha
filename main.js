@@ -652,6 +652,24 @@ function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     sendNormalMessage(message);
     return;
 }
+function filterInOneDirectionTillCiurlLimit(guideListGreen, step, plannedDirection, ciurl) {
+    return guideListGreen.filter(function (c) {
+        const subtractStep = function ([x, y]) {
+            const [step_x, step_y] = step;
+            return [x - step_x, y - step_y];
+        };
+        const limit = ciurl.filter((x) => x).length;
+        const [deltaC_x, deltaC_y] = subtractStep(c);
+        const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
+        return (
+        // 1. (c - step) crossed with (plannedDirection - step) gives zero
+        deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
+            // 2.  (c - step) dotted with (plannedDirection - step) gives positive
+            deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
+            // 3. deltaC must not exceed the limit enforced by ciurl
+            Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit);
+    });
+}
 async function sendInfAfterStep(message) {
     const res = await sendStuff("inf after step", message, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
@@ -676,25 +694,11 @@ async function sendInfAfterStep(message) {
         prof: message.prof,
         side: Side.Upward,
     };
-    // now re-add the green candidates in only one direction
+    // now re-add the green candidates in only one direction.
+    // first, get all the green candidates;
     const { infinite: guideListGreen } = calculateMovablePositions(step, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
-    // filter the result
-    const filteredList = guideListGreen.filter(function (c) {
-        const subtractStep = function ([x, y]) {
-            const [step_x, step_y] = step;
-            return [x - step_x, y - step_y];
-        };
-        const limit = res.ciurl.filter((x) => x).length;
-        const [deltaC_x, deltaC_y] = subtractStep(c);
-        const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
-        return (
-        // 1. (c - step) crossed with (plannedDirection - step) gives zero
-        deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
-            // 2.  (c - step) dotted with (plannedDirection - step) gives positive
-            deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
-            // 3. deltaC must not exceed the limit enforced by ciurl
-            Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit);
-    });
+    // then filter the result
+    const filteredList = filterInOneDirectionTillCiurlLimit(guideListGreen, step, plannedDirection, res.ciurl);
     const src = fromAbsoluteCoord(message.src);
     const passer = createCircleGuideImageAt(src, "ct");
     passer.addEventListener("click", function (ev) {
