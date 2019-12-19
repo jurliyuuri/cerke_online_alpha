@@ -69,7 +69,7 @@ function get_one_valid_opponent_move() {
             }
         }
     };
-    if (Math.random() < 0.2) {
+    if (Math.random() < 0.03) {
         const len = GAME_STATE.f.hop1zuo1OfDownward.length;
         if (len === 0) {
             return get_one_valid_opponent_move();
@@ -178,7 +178,7 @@ function get_one_valid_opponent_move() {
             // for now, avoid stepping on Tam2;
             return get_one_valid_opponent_move(); // retry
         }
-        else if (destPiece.side === Side.Upward && Math.random() < 0.7) {
+        else if (destPiece.side === Side.Upward && Math.random() < 0.1 /*0.7*/) {
             // opponent's piece; stepping and taking both attainable
             // take, with probability 0.7
             const obj = {
@@ -246,10 +246,12 @@ function get_one_valid_opponent_move() {
                         plannedDirection: toAbsoluteCoord(planned_dest),
                         stepping_ciurl,
                         finalResult: new Promise((resolve, reject) => {
-                            const filteredList = filterInOneDirectionTillCiurlLimit(guideListGreen, step, planned_dest, stepping_ciurl);
+                            const filteredList = filterInOneDirectionTillCiurlLimit(candidates_inf, step, planned_dest, stepping_ciurl);
                             // can always cancel
-                            const final_candidates = [...filteredList, src];
+                            const final_candidates = [...filteredList, ...filteredList, ...filteredList, src];
+                            console.log(final_candidates);
                             const final_destination = final_candidates[Math.random() * final_candidates.length | 0];
+                            console.log(final_destination);
                             let obj = {
                                 dest: toAbsoluteCoord(final_destination)
                             };
@@ -281,9 +283,11 @@ async function animateOpponentSrcStepDstFinite(p) {
     await animateOpponentSrcStepDstFinite_(fromAbsoluteCoord(p.src), fromAbsoluteCoord(p.step), fromAbsoluteCoord(p.dest), p.water_entry_ciurl);
 }
 async function animateOpponentSteppingOverCiurl(step, plannedDirection, stepping_ciurl) {
-    alert(`plan: from ${JSON.stringify(step)}, to ${JSON.stringify(plannedDirection)}`); /* FIXME */
+    drawArrow(step, plannedDirection);
+    await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
     displayCiurl(stepping_ciurl, Side.Downward);
     await new Promise((resolve) => setTimeout(resolve, 600 * 0.8093));
+    eraseArrow();
 }
 async function animateOpponentInfAfterStep(p) {
     const [src_i, src_j] = p.src;
@@ -537,6 +541,9 @@ async function animateOpponentTamSteppingDuringLatter(p) {
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }
+function eraseArrow() {
+    removeChildren(document.getElementById("arrows"));
+}
 function drawArrow(from, to) {
     if (from[1] === to[1] && from[0] > to[0]) { // up arrow
         document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_head", to));
@@ -593,5 +600,8 @@ function drawArrow(from, to) {
             document.getElementById("arrows").appendChild(createArrowPiece("arrow_downright_mid", [i, from[1] - from[0] + i]));
         }
         document.getElementById("arrows").appendChild(createArrowPiece("arrow_downright_head", [to[0] - 1, to[1] - 1]));
+    }
+    else {
+        throw new Error("unsupported direction for the arrow");
     }
 }
