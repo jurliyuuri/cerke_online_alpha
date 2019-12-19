@@ -255,8 +255,7 @@ function get_one_valid_opponent_move(): OpponentMove {
         } else { // opponent (prob 30%); ally (prob 100%) --> step
             const step = dest; // less confusing
 
-            /* FIXME: For now, no infinite */
-            const { finite: guideListYellow } = calculateMovablePositions(
+            const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
                 rotateCoord(step),
                 rotated_piece,
                 rotateBoard(GAME_STATE.f.currentBoard),
@@ -264,24 +263,78 @@ function get_one_valid_opponent_move(): OpponentMove {
             );
 
             const candidates: Coord[] = guideListYellow.map(rotateCoord);
-            if (candidates.length === 0) { return get_one_valid_opponent_move(); } // retry
+            const candidates_inf: Coord[] = guideListGreen.map(rotateCoord);
+            if (candidates.length === 0 && candidates_inf.length === 0) { 
+                return get_one_valid_opponent_move(); 
+            } // retry
+
             for (let i = 0; i < 1000; i++) {
-                const finalDest = candidates[Math.random() * candidates.length | 0];
-                if (canGetOccupiedBy(Side.Downward, finalDest, {
-                    color: rotated_piece.color,
-                    prof: rotated_piece.prof,
-                    side: Side.Downward,
-                }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
-                    const obj: OpponentMoveWithPotentialWaterEntry = {
-                        type: "NonTamMove",
-                        data: {
-                            type: "SrcStepDstFinite",
-                            src: toAbsoluteCoord(src),
-                            step: toAbsoluteCoord(step),
-                            dest: toAbsoluteCoord(finalDest),
-                        },
-                    };
-                    add_ciurl_if_required(obj, finalDest, rotated_piece.prof, src);
+                if (Math.random() < candidates.length / (candidates.length + candidates_inf.length)) {
+                    /* choosing from finite */
+                    const finalDest = candidates[Math.random() * candidates.length | 0];
+                    if (canGetOccupiedBy(Side.Downward, finalDest, {
+                        color: rotated_piece.color,
+                        prof: rotated_piece.prof,
+                        side: Side.Downward,
+                    }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
+                        const obj: OpponentMoveWithPotentialWaterEntry = {
+                            type: "NonTamMove",
+                            data: {
+                                type: "SrcStepDstFinite",
+                                src: toAbsoluteCoord(src),
+                                step: toAbsoluteCoord(step),
+                                dest: toAbsoluteCoord(finalDest),
+                            },
+                        };
+                        add_ciurl_if_required(obj, finalDest, rotated_piece.prof, src);
+                        return obj;
+                    }
+                } else {
+                    const planned_dest = candidates_inf[Math.random() * candidates_inf.length | 0];
+                    const stepping_ciurl: Ciurl = [
+                        Math.random() < 0.5,
+                        Math.random() < 0.5,
+                        Math.random() < 0.5,
+                        Math.random() < 0.5,
+                        Math.random() < 0.5,
+                      ] as Ciurl;
+                    const obj: OpponentMove = {
+                        type: "InfAfterStep",
+                        src: toAbsoluteCoord(src),
+                        step: toAbsoluteCoord(step),
+                        plannedDirection: toAbsoluteCoord(planned_dest),
+                        stepping_ciurl,
+                        finalResult: new Promise((resolve, reject) => {
+                            const filteredList = filterInOneDirectionTillCiurlLimit(
+                                guideListGreen,
+                                step,
+                                planned_dest,
+                                stepping_ciurl
+                            );
+
+                            // can always cancel
+                            const final_candidates = [...filteredList, src];
+                            const final_destination = final_candidates[Math.random() * final_candidates.length | 0];
+
+                            let obj: {dest: AbsoluteCoord, water_entry_ciurl?: Ciurl} = {
+                                dest: toAbsoluteCoord(final_destination)
+                            };
+
+                            if (isWater(final_destination) 
+                            && !isWater(src) 
+                            && rotated_piece.prof !== Profession.Nuak1) {
+                                obj.water_entry_ciurl = [
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5,
+                                    Math.random() < 0.5,
+                                  ] as Ciurl;
+                            }
+
+                            setTimeout(() => resolve(obj), 0.8093 * (1500 + (Math.random() * 3000 | 0)));
+                        })
+                    }
                     return obj;
                 }
             }
@@ -308,7 +361,7 @@ async function animateOpponentSteppingOverCiurl(
     plannedDirection: Coord,
     stepping_ciurl: Ciurl
 ) {
-    /* FIXME */
+    alert(`plan: from ${JSON.stringify(step)}, to ${JSON.stringify(plannedDirection)}`); /* FIXME */
     displayCiurl(stepping_ciurl, Side.Downward);
 }
 
