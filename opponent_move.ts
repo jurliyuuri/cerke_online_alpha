@@ -372,6 +372,7 @@ async function animateOpponentSteppingOverCiurl(
 ) {
     alert(`plan: from ${JSON.stringify(step)}, to ${JSON.stringify(plannedDirection)}`); /* FIXME */
     displayCiurl(stepping_ciurl, Side.Downward);
+    await new Promise((resolve) => setTimeout(resolve, 600 * 0.8093));
 }
 
 async function animateOpponentInfAfterStep(p: {

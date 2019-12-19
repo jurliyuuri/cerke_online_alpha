@@ -283,6 +283,7 @@ async function animateOpponentSrcStepDstFinite(p) {
 async function animateOpponentSteppingOverCiurl(step, plannedDirection, stepping_ciurl) {
     alert(`plan: from ${JSON.stringify(step)}, to ${JSON.stringify(plannedDirection)}`); /* FIXME */
     displayCiurl(stepping_ciurl, Side.Downward);
+    await new Promise((resolve) => setTimeout(resolve, 600 * 0.8093));
 }
 async function animateOpponentInfAfterStep(p) {
     const [src_i, src_j] = p.src;
