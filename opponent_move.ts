@@ -343,7 +343,20 @@ function get_one_valid_opponent_move(): OpponentMove {
                                   ] as Ciurl;
                             }
 
-                            setTimeout(() => resolve(obj), 0.8093 * (1500 + (Math.random() * 3000 | 0)));
+                            const sendInfPoll = async () => {
+                                console.log("inf poll");
+                                if (Math.random() < 0.2) {
+                                    console.log("ding!");
+                                    resolve(obj);
+                                } else {
+                                    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+                                    await sendInfPoll();
+                                }
+                            };
+
+                            (async () => {
+                                await sendInfPoll();
+                            })();
                         })
                     }
                     return obj;
