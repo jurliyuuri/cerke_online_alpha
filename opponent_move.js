@@ -405,4 +405,11 @@ function drawArrow(from, to) {
         }
         document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_tail", [from[0] - 1, from[1]]));
     }
+    else if (from[0] === to[0] && from[1] > to[1]) { // left arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_left_head", to));
+        for (let i = to[1]; i <= from[1] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_left_mid", [from[0], i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_left_tail", [from[0], from[1] - 1]));
+    }
 }
