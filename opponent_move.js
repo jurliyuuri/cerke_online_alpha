@@ -433,4 +433,11 @@ function drawArrow(from, to) {
         }
         document.getElementById("arrows").appendChild(createArrowPiece("arrow_upright_tail", [from[0] - 1, from[1]]));
     }
+    else if (from[0] > to[0] && from[1] > to[1]) { // up left arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_upleft_head", to));
+        for (let i = to[0]; i <= from[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_upleft_mid", [i, to[1] - to[0] + i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_upleft_tail", [from[0] - 1, from[1] - 1]));
+    }
 }
