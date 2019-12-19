@@ -397,3 +397,12 @@ async function animateOpponentTamSteppingDuringLatter(p) {
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }
+function drawArrow(from, to) {
+    if (from[1] === to[1] && from[0] > to[0]) { // up arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_head", to));
+        for (let i = to[0]; i <= from[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_mid", [i, from[1]]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_tail", [from[0] - 1, from[1]]));
+    }
+}

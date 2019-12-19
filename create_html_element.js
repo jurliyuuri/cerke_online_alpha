@@ -4,6 +4,19 @@
  * No write to the global variable is permitted.
  * Every call to document.createElement should live here.
  */
+function createArrowPiece(path, coord) {
+    const [row_index, column_index] = coord;
+    const top = 1 + row_index * BOX_SIZE + 159.5;
+    const left = column_index * BOX_SIZE + 19.25;
+    const i = document.createElement("img");
+    i.classList.add("selection");
+    i.style.top = `${top}px`;
+    i.style.left = `${left}px`;
+    i.src = `image/${path}.png`;
+    i.width = 140;
+    i.height = 140;
+    return i;
+}
 function createPieceSizeImageOnBoardByPathAndXY(top, left, path, className) {
     const i = document.createElement("img");
     i.classList.add(className);
