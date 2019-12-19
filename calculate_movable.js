@@ -124,11 +124,18 @@ var calculate_movable;
         }
     }
     calculate_movable.canGetOccupiedBy = canGetOccupiedBy;
-    function calculateMovablePositions(coord, sq, board, tam_itself_is_tam_hue) {
-        if (sq === "Tam2") {
+    /**
+     * Calculates the possible squares to which the piece can MOVE to. THIS INCLUDES SQUARES OCCUPIED BY TAM2, ALLIES, OR OPPONENTS PROTECTED BY TAM2HUEAUAI1
+     * @param coord the square from which the piece moves
+     * @param piece the piece to be moved
+     * @param board the board
+     * @param tam_itself_is_tam_hue rule variation: does Tam2 itself count as a tam2 hue?
+     */
+    function calculateMovablePositions(coord, piece, board, tam_itself_is_tam_hue) {
+        if (piece === "Tam2") {
             return { finite: eightNeighborhood(coord), infinite: [] };
         }
-        if (sq.prof === Profession.Io) {
+        if (piece.prof === Profession.Io) {
             return { finite: eightNeighborhood(coord), infinite: [] };
         }
         const UPLEFT = [[-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2], [-1, -1]];
@@ -140,7 +147,7 @@ var calculate_movable;
         const LEFT = [[0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7], [0, -8]];
         const RIGHT = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]];
         if (isTamHue(coord, board, tam_itself_is_tam_hue)) {
-            switch (sq.prof) {
+            switch (piece.prof) {
                 case Profession.Uai1: // General, 将, varxle
                     return { finite: eightNeighborhood(coord), infinite: [] };
                 case Profession.Kaun1:
@@ -223,12 +230,12 @@ var calculate_movable;
                         ], board),
                     };
                 default:
-                    const _should_not_reach_here = sq.prof;
+                    const _should_not_reach_here = piece.prof;
                     return _should_not_reach_here;
             }
         }
         else {
-            switch (sq.prof) {
+            switch (piece.prof) {
                 case Profession.Kauk2:
                     return { finite: applyDeltas(coord, [[-1, 0]]), infinite: [] }; // Pawn, 兵, elmer
                 case Profession.Kaun1:
@@ -273,7 +280,7 @@ var calculate_movable;
                         ]), infinite: [],
                     };
                 default:
-                    const _should_not_reach_here = sq.prof;
+                    const _should_not_reach_here = piece.prof;
                     return _should_not_reach_here;
             }
         }

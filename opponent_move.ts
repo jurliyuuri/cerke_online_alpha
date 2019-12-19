@@ -291,6 +291,15 @@ function get_one_valid_opponent_move(): OpponentMove {
                     }
                 } else {
                     const planned_dest = candidates_inf[Math.random() * candidates_inf.length | 0];
+                    if (!canGetOccupiedBy(Side.Downward, planned_dest, {
+                        color: rotated_piece.color,
+                        prof: rotated_piece.prof,
+                        side: Side.Downward,
+                    }, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
+                        return get_one_valid_opponent_move();
+                        // retry
+                    }
+
                     const stepping_ciurl: Ciurl = [
                         Math.random() < 0.5,
                         Math.random() < 0.5,
