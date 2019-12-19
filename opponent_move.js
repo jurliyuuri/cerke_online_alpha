@@ -405,6 +405,13 @@ function drawArrow(from, to) {
         }
         document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_tail", [from[0] - 1, from[1]]));
     }
+    else if (from[1] === to[1] && from[0] < to[0]) { // up arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_down_tail", from));
+        for (let i = from[0]; i <= to[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_down_mid", [i, from[1]]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_down_head", [to[0] - 1, to[1]]));
+    }
     else if (from[0] === to[0] && from[1] > to[1]) { // left arrow
         document.getElementById("arrows").appendChild(createArrowPiece("arrow_left_head", to));
         for (let i = to[1]; i <= from[1] - 1; i++) {
