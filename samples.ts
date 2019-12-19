@@ -38,8 +38,8 @@ const sampleBoard: Board = [
     [null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, "Tam2", null, null, null, null, {color: Color.Huok2, prof: Profession.Uai1, side: Side.Downward}, null],
     [null, null, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null,  { color: Color.Huok2, prof: Profession.Nuak1, side: Side.Downward }, null, null],
     [{ color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward },
-        null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, { color: Color.Huok2, prof: Profession.Nuak1, side: Side.Upward }, null, null],
-    [null, null, null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null],
+        {color: Color.Kok1, prof: Profession.Gua2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, null, { color: Color.Huok2, prof: Profession.Nuak1, side: Side.Upward }, null, null],
+    [null, "Tam2", null, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, null, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }, null],
     [null, null, { color: Color.Kok1, prof: Profession.Io, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Upward }, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, null],
     [null, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, null, null, null, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, "Tam2"],
 ];

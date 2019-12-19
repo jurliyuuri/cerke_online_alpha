@@ -537,3 +537,61 @@ async function animateOpponentTamSteppingDuringLatter(p) {
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }
+function drawArrow(from, to) {
+    if (from[1] === to[1] && from[0] > to[0]) { // up arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_head", to));
+        for (let i = to[0]; i <= from[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_mid", [i, from[1]]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_up_tail", [from[0] - 1, from[1]]));
+    }
+    else if (from[1] === to[1] && from[0] < to[0]) { // up arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_down_tail", from));
+        for (let i = from[0]; i <= to[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_down_mid", [i, from[1]]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_down_head", [to[0] - 1, to[1]]));
+    }
+    else if (from[0] === to[0] && from[1] > to[1]) { // left arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_left_head", to));
+        for (let i = to[1]; i <= from[1] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_left_mid", [from[0], i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_left_tail", [from[0], from[1] - 1]));
+    }
+    else if (from[0] === to[0] && from[1] < to[1]) { // right arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_right_tail", from));
+        for (let i = from[1]; i <= to[1] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_right_mid", [from[0], i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_right_head", [to[0], to[1] - 1]));
+    }
+    else if (from[0] > to[0] && from[1] < to[1] && (from[0] - to[0]) === (to[1] - from[1])) { // up right arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_upright_head", [to[0], to[1] - 1]));
+        for (let i = to[0]; i <= from[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_upright_mid", [i, to[1] + to[0] - 1 - i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_upright_tail", [from[0] - 1, from[1]]));
+    }
+    else if (from[0] < to[0] && from[1] > to[1] && (from[0] - to[0]) === (to[1] - from[1])) { // down left arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_downleft_tail", [from[0], from[1] - 1]));
+        for (let i = from[0]; i <= to[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_downleft_mid", [i, from[1] + from[0] - 1 - i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_downleft_head", [to[0] - 1, to[1]]));
+    }
+    else if (from[0] > to[0] && from[1] > to[1] && (from[0] - to[0]) === (from[1] - to[1])) { // up left arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_upleft_head", to));
+        for (let i = to[0]; i <= from[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_upleft_mid", [i, to[1] - to[0] + i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_upleft_tail", [from[0] - 1, from[1] - 1]));
+    }
+    else if (from[0] < to[0] && from[1] < to[1] && (from[0] - to[0]) === (from[1] - to[1])) { // down right arrow
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_downright_tail", from));
+        for (let i = from[0]; i <= to[0] - 1; i++) {
+            document.getElementById("arrows").appendChild(createArrowPiece("arrow_downright_mid", [i, from[1] - from[0] + i]));
+        }
+        document.getElementById("arrows").appendChild(createArrowPiece("arrow_downright_head", [to[0] - 1, to[1] - 1]));
+    }
+}
