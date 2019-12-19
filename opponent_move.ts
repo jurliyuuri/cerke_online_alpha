@@ -541,5 +541,11 @@ function drawArrow(from: Coord, to: Coord) {
             document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_left_mid", [from[0], i]));
         }
         document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_left_tail", [from[0], from[1]-1]));
+    } else if (from[0] === to[0] && from[1] < to[1]) { // right arrow
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_right_tail", from));
+        for (let i = from[1]; i <= to[1]-1; i++) {
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_right_mid", [from[0], i]));
+        }
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_right_head", [to[0], to[1]-1]));
     }
 }
