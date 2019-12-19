@@ -6,6 +6,7 @@
 
 function createPieceSizeImageOnBoardByPathAndXY(top: number, left: number, path: string, className: string): HTMLImageElement {
     const i = document.createElement("img");
+    i.setAttribute("draggable", "false");
     i.classList.add(className);
     i.style.top = `${top}px`;
     i.style.left = `${left}px`;
@@ -37,6 +38,7 @@ function createPieceSizeImageOnBoardByPath_Shifted(coord: Coord, path: string, c
 function createCircleGuideImageAt(coord: Coord, path: string): HTMLImageElement {
     const [row_index, column_index] = coord;
     const img = document.createElement("img");
+    img.setAttribute("draggable", "false");
     img.classList.add("guide");
     img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
     img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
@@ -50,6 +52,7 @@ function createCircleGuideImageAt(coord: Coord, path: string): HTMLImageElement 
 
 function createCiurl(side: boolean, o: { left: number, top: number, rotateDeg: number }): HTMLImageElement {
     const img = document.createElement("img");
+    img.setAttribute("draggable", "false");
     img.src = `image/ciurl_${side}.png`;
     img.width = 150;
     img.height = 15;

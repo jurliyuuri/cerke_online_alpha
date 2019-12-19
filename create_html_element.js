@@ -6,6 +6,7 @@
  */
 function createPieceSizeImageOnBoardByPathAndXY(top, left, path, className) {
     const i = document.createElement("img");
+    i.setAttribute("draggable", "false");
     i.classList.add(className);
     i.style.top = `${top}px`;
     i.style.left = `${left}px`;
@@ -28,6 +29,7 @@ function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
 function createCircleGuideImageAt(coord, path) {
     const [row_index, column_index] = coord;
     const img = document.createElement("img");
+    img.setAttribute("draggable", "false");
     img.classList.add("guide");
     img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
     img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
@@ -40,6 +42,7 @@ function createCircleGuideImageAt(coord, path) {
 }
 function createCiurl(side, o) {
     const img = document.createElement("img");
+    img.setAttribute("draggable", "false");
     img.src = `image/ciurl_${side}.png`;
     img.width = 150;
     img.height = 15;
