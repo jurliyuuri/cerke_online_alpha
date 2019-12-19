@@ -565,12 +565,17 @@ function drawArrow(from: Coord, to: Coord) {
             document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downleft_mid", [i, from[1]+from[0]-1-i]));
         }
         document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downleft_head", [to[0]-1, to[1]]));
-    } else if (from[0] > to[0] && from[1] > to[1]) { // up left arrow
+    } else if (from[0] > to[0] && from[1] > to[1]&& (from[0] - to[0]) === (from[1] - to[1]) ) { // up left arrow
         document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upleft_head", to));
         for (let i = to[0]; i <= from[0]-1; i++) {
             document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upleft_mid", [i, to[1]-to[0]+i]));
         }
         document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upleft_tail", [from[0]-1, from[1]-1]));
-
+    } else if (from[0] < to[0] && from[1] < to[1]&& (from[0] - to[0]) === (from[1] - to[1]) ) { // down right arrow
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downright_tail", from));
+        for (let i = from[0]; i <= to[0]-1; i++) {
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downright_mid", [i, from[1]-from[0]+i]));
+        }
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downright_head", [to[0]-1, to[1]-1]));
     }
 }
