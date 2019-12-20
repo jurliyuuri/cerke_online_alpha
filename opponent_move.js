@@ -246,7 +246,7 @@ function get_one_valid_opponent_move() {
                         plannedDirection: toAbsoluteCoord(planned_dest),
                         stepping_ciurl,
                         finalResult: new Promise((resolve, reject) => {
-                            const filteredList = filterInOneDirectionTillCiurlLimit(candidates_inf, step, planned_dest, stepping_ciurl).filter(dest => canGetOccupiedBy(Side.Downward, dest, {
+                            const filteredList = filterInOneDirectionTillCiurlLimit(candidates_inf, step, planned_dest, stepping_ciurl).filter((dest) => canGetOccupiedBy(Side.Downward, dest, {
                                 color: rotated_piece.color,
                                 prof: rotated_piece.prof,
                                 side: Side.Downward,
@@ -256,8 +256,8 @@ function get_one_valid_opponent_move() {
                             console.log(final_candidates);
                             const final_destination = final_candidates[Math.random() * final_candidates.length | 0];
                             console.log(final_destination);
-                            let obj = {
-                                dest: toAbsoluteCoord(final_destination)
+                            const obj = {
+                                dest: toAbsoluteCoord(final_destination),
                             };
                             if (isWater(final_destination)
                                 && !isWater(src)
@@ -284,7 +284,7 @@ function get_one_valid_opponent_move() {
                             (async () => {
                                 await sendInfPoll();
                             })();
-                        })
+                        }),
                     };
                     return obj;
                 }

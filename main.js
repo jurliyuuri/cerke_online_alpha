@@ -59,7 +59,7 @@ async function sendMainPoll() {
                 step: fromAbsoluteCoord(opponent_move.step),
                 plannedDirection: fromAbsoluteCoord(opponent_move.plannedDirection),
                 stepping_ciurl: opponent_move.stepping_ciurl,
-                finalResult: opponent_move.finalResult
+                finalResult: opponent_move.finalResult,
             });
             GAME_STATE.is_my_turn = true;
         }
