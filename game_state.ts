@@ -59,25 +59,29 @@ function fromAbsoluteCoord(abs: AbsoluteCoord): Coord {
     return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
 }
 
-let GAME_STATE: GAME_STATE = (() => {
-    let _is_my_turn: boolean = true;
+let GAME_STATE: GAME_STATE = ((p: {IA_is_down: boolean}) => {
+    console.log("0");
+    const initial_board_with_IA_down: Board = [
+        [{ color: Color.Huok2, prof: Profession.Kua2, side: Side.Downward },
+            { color: Color.Huok2, prof: Profession.Maun1, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Io, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Uai1, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Kaun1, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Maun1, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Kua2, side: Side.Downward }],
+        [{ color: Color.Kok1, prof: Profession.Tuk2, side: Side.Downward }, {color: Color.Kok1, prof: Profession.Gua2, side: Side.Downward }, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Downward }, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Downward }, null, {color: Color.Huok2, prof: Profession.Gua2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Tuk2, side: Side.Downward }],
+        [{ color: Color.Huok2, prof: Profession.Kauk2, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Nuak1, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Downward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Downward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Downward }],
+        [null, null, null, null, null, null, null, null, null],
+        [null, null, null, null, "Tam2", null, null, null, null],
+        [null, null, null, null, null, null, null, null, null],
+        [{ color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Nuak1, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Kauk2, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kauk2, side: Side.Upward }],
+        [{ color: Color.Huok2, prof: Profession.Tuk2, side: Side.Upward }, {color: Color.Huok2, prof: Profession.Gua2, side: Side.Upward }, null, { color: Color.Huok2, prof: Profession.Dau2, side: Side.Upward }, null, { color: Color.Kok1, prof: Profession.Dau2, side: Side.Upward }, null, {color: Color.Kok1, prof: Profession.Gua2, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Tuk2, side: Side.Upward }],
+        [{ color: Color.Kok1, prof: Profession.Kua2, side: Side.Upward },
+            { color: Color.Kok1, prof: Profession.Maun1, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Kaun1, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Uai1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Io, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kua2, side: Side.Upward }],
+    ];
+    let _is_my_turn: boolean = true; // override this by calling the setter
     return {
     f: {
-        currentBoard: [
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-            [null, null, null, null, null, null, null, null, "Tam2"],
-        ] as Board,
+        currentBoard: p.IA_is_down ? initial_board_with_IA_down : rotateBoard(initial_board_with_IA_down),
         hop1zuo1OfDownward: [],
         hop1zuo1OfUpward: [],
     },
-    IA_is_down: true,
+    IA_is_down: p.IA_is_down,
     tam_itself_is_tam_hue: true,
     set is_my_turn(i: boolean) {
         _is_my_turn = !!i;
@@ -97,4 +101,4 @@ let GAME_STATE: GAME_STATE = (() => {
         return _is_my_turn;
     },
     backupDuringStepping: null,
-}; })();
+}; })({IA_is_down: Math.random() < 0.5});

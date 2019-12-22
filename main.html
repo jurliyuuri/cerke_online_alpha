@@ -13,7 +13,7 @@
 <script src="opponent_move.js"></script>
 <script src="main.js"></script>
 </head>
-<body onload="drawField(sampleField); GAME_STATE.is_my_turn = true;">
+<body onload="drawField(GAME_STATE.f); GAME_STATE.is_my_turn = Math.random() < 0.5;">
     <div id="field">
     <div id="hop1zuo1_of_downward">
         <div id="contains_pieces_on_downward">
