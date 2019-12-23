@@ -109,6 +109,13 @@ function add_ciurl_if_required(obj: OpponentMoveWithPotentialWaterEntry, dest: C
     }
 }
 
+const getOneEmptyNeighborOf: (c: Coord) => Coord | null = (c: Coord) => {
+    const empty_neighbors_of_c: Coord[] = eightNeighborhood(c).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
+    if (empty_neighbors_of_c.length === 0) { return null; } // retry
+    const empty_neighbor: Coord = empty_neighbors_of_c[empty_neighbors_of_c.length * Math.random() | 0];
+    return empty_neighbor;
+};
+
 function get_one_valid_opponent_move(): OpponentMove {
 
     // There is always at least one piece, namely Tam2
@@ -194,9 +201,8 @@ function get_one_valid_opponent_move(): OpponentMove {
                     };
                 } else { /* if not, step from there */
                     const step: Coord = neighbor;
-                    const empty_neighbors_of_step: Coord[] = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-                    if (empty_neighbors_of_step.length === 0) { return get_one_valid_opponent_move(); } // retry
-                    const snddst: Coord = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
+                    const snddst = getOneEmptyNeighborOf(step);
+                    if (snddst == null) { return get_one_valid_opponent_move(); } // retry
                     return {
                         type: "TamMove",
                         stepStyle: "StepsDuringLatter",
@@ -208,13 +214,11 @@ function get_one_valid_opponent_move(): OpponentMove {
                 }
             } else { /* not an empty square: must complete the first move */
                 const step = dest;
-                const empty_neighbors_of_step: Coord[] = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-                if (empty_neighbors_of_step.length === 0) { return get_one_valid_opponent_move(); } // retry
-                const fstdst: Coord = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
+                const fstdst = getOneEmptyNeighborOf(step);
+                if (fstdst == null) { return get_one_valid_opponent_move(); } // retry
 
-                const empty_neighbors_of_fstdst: Coord[] = eightNeighborhood(fstdst).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-                if (empty_neighbors_of_fstdst.length === 0) { return get_one_valid_opponent_move(); } // retry
-                const snddst: Coord = empty_neighbors_of_fstdst[empty_neighbors_of_fstdst.length * Math.random() | 0];
+                const snddst = getOneEmptyNeighborOf(fstdst);
+                if (snddst == null) { return get_one_valid_opponent_move(); } // retry
                 return {
                     type: "TamMove",
                     stepStyle: "StepsDuringFormer",

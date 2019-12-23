@@ -46,6 +46,14 @@ function add_ciurl_if_required(obj, dest, moving_piece_prof, src) {
         ];
     }
 }
+const getOneEmptyNeighborOf = (c) => {
+    const empty_neighbors_of_c = eightNeighborhood(c).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
+    if (empty_neighbors_of_c.length === 0) {
+        return null;
+    } // retry
+    const empty_neighbor = empty_neighbors_of_c[empty_neighbors_of_c.length * Math.random() | 0];
+    return empty_neighbor;
+};
 function get_one_valid_opponent_move() {
     // There is always at least one piece, namely Tam2
     const get_one_opponent_piece = () => {
@@ -124,11 +132,10 @@ function get_one_valid_opponent_move() {
                 }
                 else { /* if not, step from there */
                     const step = neighbor;
-                    const empty_neighbors_of_step = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-                    if (empty_neighbors_of_step.length === 0) {
+                    const snddst = getOneEmptyNeighborOf(step);
+                    if (snddst == null) {
                         return get_one_valid_opponent_move();
                     } // retry
-                    const snddst = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
                     return {
                         type: "TamMove",
                         stepStyle: "StepsDuringLatter",
@@ -141,16 +148,14 @@ function get_one_valid_opponent_move() {
             }
             else { /* not an empty square: must complete the first move */
                 const step = dest;
-                const empty_neighbors_of_step = eightNeighborhood(step).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-                if (empty_neighbors_of_step.length === 0) {
+                const fstdst = getOneEmptyNeighborOf(step);
+                if (fstdst == null) {
                     return get_one_valid_opponent_move();
                 } // retry
-                const fstdst = empty_neighbors_of_step[empty_neighbors_of_step.length * Math.random() | 0];
-                const empty_neighbors_of_fstdst = eightNeighborhood(fstdst).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-                if (empty_neighbors_of_fstdst.length === 0) {
+                const snddst = getOneEmptyNeighborOf(fstdst);
+                if (snddst == null) {
                     return get_one_valid_opponent_move();
                 } // retry
-                const snddst = empty_neighbors_of_fstdst[empty_neighbors_of_fstdst.length * Math.random() | 0];
                 return {
                     type: "TamMove",
                     stepStyle: "StepsDuringFormer",
