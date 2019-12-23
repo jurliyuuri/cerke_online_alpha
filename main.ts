@@ -105,7 +105,7 @@ function cancelStepping() {
     UI_STATE.selectedCoord = null;
 
     // draw
-    drawField(GAME_STATE.f);
+    drawField();
 }
 
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, stepsOn: Coord) {
@@ -120,7 +120,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
     document.getElementById("cancelButton")!.remove();
 
     // draw
-    drawField(GAME_STATE.f);
+    drawField();
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function() {
         eraseGuide();
@@ -135,7 +135,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
         UI_STATE.selectedCoord = null;
 
         // draw
-        drawField(GAME_STATE.f);
+        drawField();
     });
     drawHoverAt_<"Tam2">(stepsOn, "Tam2", function(coord: Coord, piece: "Tam2") {
         const contains_guides = document.getElementById("contains_guides")!;
@@ -209,7 +209,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
-    drawField(GAME_STATE.f);
+    drawField();
 
     const drawTam2HoverNonshiftedAt = function(coord: Coord) {
         const contains_phantom = document.getElementById("contains_phantom")!;
@@ -317,7 +317,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
         UI_STATE.selectedCoord = null;
 
         // draw
-        drawField(GAME_STATE.f);
+        drawField();
     });
     drawTam2HoverNonshiftedAt(to);
 }
@@ -379,7 +379,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
     // draw
-    drawField(GAME_STATE.f);
+    drawField();
     drawPhantomAt(from, piece);
     drawCancel(cancelStepping);
     drawHoverAt_(to, piece, function(coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
@@ -430,7 +430,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
         return;
     }
@@ -450,7 +450,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
     }
 }
@@ -511,7 +511,7 @@ async function sendNormalMessage(message: NormalMove) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateField(message);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
         return;
     }
@@ -533,7 +533,7 @@ async function sendNormalMessage(message: NormalMove) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateField(message);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
     }
 }
@@ -1159,10 +1159,9 @@ function removeChildren(parent: HTMLElement) {
     }
 }
 
-function drawField(field: Field) {
-    const drawBoard = function(board: Board) {
+function drawField() {
+    (function drawBoard(board: Board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
-        GAME_STATE.f.currentBoard = board;
 
         // delete everything
         removeChildren(contains_pieces_on_board);
@@ -1198,11 +1197,10 @@ function drawField(field: Field) {
                 contains_pieces_on_board.appendChild(imgNode);
             }
         }
-    };
+    })(GAME_STATE.f.currentBoard);
 
-    const drawHop1zuo1OfUpward = function(list: NonTam2PieceUpward[]) {
+    (function drawHop1zuo1OfUpward (list: NonTam2PieceUpward[]) {
         const contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward")!;
-        GAME_STATE.f.hop1zuo1OfUpward = list;
 
         // delete everything
         removeChildren(contains_pieces_on_upward);
@@ -1218,11 +1216,10 @@ function drawField(field: Field) {
 
             contains_pieces_on_upward.appendChild(imgNode);
         }
-    };
+    })(GAME_STATE.f.hop1zuo1OfUpward);
 
-    const drawHop1zuo1OfDownward = function(list: NonTam2PieceDownward[]) {
+    (function drawHop1zuo1OfDownward (list: NonTam2PieceDownward[]) {
         const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward")!;
-        GAME_STATE.f.hop1zuo1OfDownward = list;
 
         // delete everything
         removeChildren(contains_pieces_on_downward);
@@ -1233,9 +1230,5 @@ function drawField(field: Field) {
             imgNode.id = `hop1zuo1OfDownward_${i}`;
             contains_pieces_on_downward.appendChild(imgNode);
         }
-    };
-
-    drawBoard(field.currentBoard);
-    drawHop1zuo1OfUpward(field.hop1zuo1OfUpward);
-    drawHop1zuo1OfDownward(field.hop1zuo1OfDownward);
+    })(GAME_STATE.f.hop1zuo1OfDownward);
 }

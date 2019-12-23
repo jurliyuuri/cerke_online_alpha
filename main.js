@@ -97,7 +97,7 @@ function cancelStepping() {
     GAME_STATE.backupDuringStepping = null;
     UI_STATE.selectedCoord = null;
     // draw
-    drawField(GAME_STATE.f);
+    drawField();
 }
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, firstDest, stepsOn) {
     eraseGuide();
@@ -108,7 +108,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     GAME_STATE.f.currentBoard[firstDest[0]][firstDest[1]] = null;
     document.getElementById("cancelButton").remove();
     // draw
-    drawField(GAME_STATE.f);
+    drawField();
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function () {
         eraseGuide();
@@ -120,7 +120,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
         GAME_STATE.backupDuringStepping = null;
         UI_STATE.selectedCoord = null;
         // draw
-        drawField(GAME_STATE.f);
+        drawField();
     });
     drawHoverAt_(stepsOn, "Tam2", function (coord, piece) {
         const contains_guides = document.getElementById("contains_guides");
@@ -176,7 +176,7 @@ function afterFirstTamMove(from, to, step) {
     document.getElementById("protective_cover_over_field").classList.add("nocover");
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
-    drawField(GAME_STATE.f);
+    drawField();
     const drawTam2HoverNonshiftedAt = function (coord) {
         const contains_phantom = document.getElementById("contains_phantom");
         const img = createPieceSizeImageOnBoardByPath(coord, toPath_("Tam2"), "piece_image_on_board");
@@ -252,7 +252,7 @@ function afterFirstTamMove(from, to, step) {
         GAME_STATE.f.currentBoard[from[0]][from[1]] = "Tam2";
         UI_STATE.selectedCoord = null;
         // draw
-        drawField(GAME_STATE.f);
+        drawField();
     });
     drawTam2HoverNonshiftedAt(to);
 }
@@ -294,7 +294,7 @@ function stepping(from, piece, to) {
     GAME_STATE.backupDuringStepping = [from, piece];
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     // draw
-    drawField(GAME_STATE.f);
+    drawField();
     drawPhantomAt(from, piece);
     drawCancel(cancelStepping);
     drawHoverAt_(to, piece, function (coord, piece) {
@@ -329,7 +329,7 @@ async function sendAfterHalfAcceptance(message, src, step) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
         return;
     }
@@ -347,7 +347,7 @@ async function sendAfterHalfAcceptance(message, src, step) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
     }
 }
@@ -399,7 +399,7 @@ async function sendNormalMessage(message) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateField(message);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
         return;
     }
@@ -419,7 +419,7 @@ async function sendNormalMessage(message) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateField(message);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
     }
 }
@@ -906,10 +906,9 @@ function removeChildren(parent) {
         parent.removeChild(parent.firstChild);
     }
 }
-function drawField(field) {
-    const drawBoard = function (board) {
+function drawField() {
+    (function drawBoard(board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
-        GAME_STATE.f.currentBoard = board;
         // delete everything
         removeChildren(contains_pieces_on_board);
         for (let i = 0; i < board.length; i++) {
@@ -941,10 +940,9 @@ function drawField(field) {
                 contains_pieces_on_board.appendChild(imgNode);
             }
         }
-    };
-    const drawHop1zuo1OfUpward = function (list) {
+    })(GAME_STATE.f.currentBoard);
+    (function drawHop1zuo1OfUpward(list) {
         const contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward");
-        GAME_STATE.f.hop1zuo1OfUpward = list;
         // delete everything
         removeChildren(contains_pieces_on_upward);
         for (let i = 0; i < list.length; i++) {
@@ -956,10 +954,9 @@ function drawField(field) {
             });
             contains_pieces_on_upward.appendChild(imgNode);
         }
-    };
-    const drawHop1zuo1OfDownward = function (list) {
+    })(GAME_STATE.f.hop1zuo1OfUpward);
+    (function drawHop1zuo1OfDownward(list) {
         const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward");
-        GAME_STATE.f.hop1zuo1OfDownward = list;
         // delete everything
         removeChildren(contains_pieces_on_downward);
         for (let i = 0; i < list.length; i++) {
@@ -968,8 +965,5 @@ function drawField(field) {
             imgNode.id = `hop1zuo1OfDownward_${i}`;
             contains_pieces_on_downward.appendChild(imgNode);
         }
-    };
-    drawBoard(field.currentBoard);
-    drawHop1zuo1OfUpward(field.hop1zuo1OfUpward);
-    drawHop1zuo1OfDownward(field.hop1zuo1OfDownward);
+    })(GAME_STATE.f.hop1zuo1OfDownward);
 }

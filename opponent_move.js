@@ -343,7 +343,7 @@ async function animateOpponentInfAfterStep(p) {
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (result.water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
@@ -353,7 +353,7 @@ async function animateOpponentInfAfterStep(p) {
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
+        drawField();
     }
     else {
         await animateNode(srcNode, 750 * 0.8093, coordToPieceXY(dest), coordToPieceXY(p.src));
@@ -363,7 +363,7 @@ async function animateOpponentInfAfterStep(p) {
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (result.water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
@@ -371,7 +371,7 @@ async function animateOpponentInfAfterStep(p) {
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
+        drawField();
     }
 }
 async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciurl) {
@@ -402,7 +402,7 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
@@ -412,7 +412,7 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
+        drawField();
     }
     else {
         const imgNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
@@ -425,7 +425,7 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
@@ -433,7 +433,7 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
+        drawField();
     }
 }
 /**
@@ -491,7 +491,7 @@ async function animateOpponentSrcDst_(src, dst, water_entry_ciurl) {
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
@@ -499,7 +499,7 @@ async function animateOpponentSrcDst_(src, dst, water_entry_ciurl) {
         GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-        drawField(GAME_STATE.f);
+        drawField();
     }
     else {
         const imgNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
@@ -510,13 +510,13 @@ async function animateOpponentSrcDst_(src, dst, water_entry_ciurl) {
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-        drawField(GAME_STATE.f);
+        drawField();
     }
 }
 async function animateOpponentFromHand(piece, dest) {
@@ -534,7 +534,7 @@ async function animateOpponentFromHand(piece, dest) {
     const imgNode = document.getElementById(`hop1zuo1OfDownward_${ind}`);
     await animateNode(imgNode, 1500 * 0.8093, coordToPieceXY([dest_i, dest_j]), /* hop1zuo1 and board does not agree on the absolute coordinates, but agrees on the displacement */ indToHo1Zuo1OfDownward(ind));
     GAME_STATE.f.currentBoard[dest_i][dest_j] = removed;
-    drawField(GAME_STATE.f);
+    drawField();
 }
 async function animateOpponentTamNoStep(src, fstdst, snddst) {
     const piece = GAME_STATE.f.currentBoard[src[0]][src[1]];
@@ -545,14 +545,14 @@ async function animateOpponentTamNoStep(src, fstdst, snddst) {
     await animateNode(imgNode, 1500 * 0.8093, coordToPieceXY(fstdst), coordToPieceXY(src));
     GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
     GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
-    drawField(GAME_STATE.f);
+    drawField();
     const imgNode2 = document.getElementById(`field_piece_${fstdst[0]}_${fstdst[1]}`);
     /* somehow does not work without this line */
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     await animateNode(imgNode2, 1500 * 0.8093, coordToPieceXY(snddst), coordToPieceXY(fstdst));
     GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
     GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
-    drawField(GAME_STATE.f);
+    drawField();
 }
 async function animateOpponentTamSteppingDuringFormer(p) {
     await animateOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
