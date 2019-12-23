@@ -538,6 +538,7 @@ async function sendNormalMessage(message: NormalMove) {
 }
 
 function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord, step: Coord) {
+    console.log(src, step);
     if (message.dest === null) {
         cancelStepping();
         return;
@@ -923,7 +924,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
         img.addEventListener("click", function(ev) {
             sendAfterHalfAcceptance({
                 type: "AfterHalfAcceptance",
-                dest: [i, j],
+                dest: toAbsoluteCoord([i, j]),
             }, src, step);
         });
 

@@ -423,6 +423,7 @@ async function sendNormalMessage(message) {
     }
 }
 function updateFieldAfterHalfAcceptance(message, src, step) {
+    console.log(src, step);
     if (message.dest === null) {
         cancelStepping();
         return;
@@ -723,7 +724,7 @@ async function sendInfAfterStep(message) {
         img.addEventListener("click", function (ev) {
             sendAfterHalfAcceptance({
                 type: "AfterHalfAcceptance",
-                dest: [i, j],
+                dest: toAbsoluteCoord([i, j]),
             }, src, step);
         });
         img.style.zIndex = "200";
