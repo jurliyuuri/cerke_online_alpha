@@ -133,13 +133,14 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
             throw new Error("should not happen");
         }
         for (let ind = 0; ind < guideListYellow.length; ind++) {
-            const [i, j] = guideListYellow[ind];
+            const secondDest = guideListYellow[ind];
+            const [i, j] = secondDest;
             const destPiece = GAME_STATE.f.currentBoard[i][j];
             // cannot step twice
             if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
                 continue;
             }
-            const img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
+            const img = createCircleGuideImageAt(secondDest, "ctam");
             img.addEventListener("click", function () {
                 const message = {
                     type: "TamMove",
@@ -147,7 +148,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
                     src: toAbsoluteCoord(theVerySrc),
                     step: toAbsoluteCoord(stepsOn),
                     firstDest: toAbsoluteCoord(firstDest),
-                    secondDest: toAbsoluteCoord(guideListYellow[ind]),
+                    secondDest: toAbsoluteCoord(secondDest),
                 };
                 sendNormalMessage(message);
                 eraseGuide();
@@ -711,8 +712,9 @@ async function sendInfAfterStep(message) {
     passer.style.zIndex = "200";
     contains_guides.appendChild(passer);
     for (let ind = 0; ind < filteredList.length; ind++) {
-        const [i, j] = filteredList[ind];
-        if (coordEq(src, [i, j])) {
+        const dest = filteredList[ind];
+        const [i, j] = dest;
+        if (coordEq(src, dest)) {
             continue; // yellow takes precedence over green
         }
         const destPiece = GAME_STATE.f.currentBoard[i][j];
@@ -724,7 +726,7 @@ async function sendInfAfterStep(message) {
         img.addEventListener("click", function (ev) {
             sendAfterHalfAcceptance({
                 type: "AfterHalfAcceptance",
-                dest: toAbsoluteCoord([i, j]),
+                dest: toAbsoluteCoord(dest),
             }, src, step);
         });
         img.style.zIndex = "200";

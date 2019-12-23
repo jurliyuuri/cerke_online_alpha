@@ -156,7 +156,8 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
         if (guideListGreen.length > 0) { throw new Error("should not happen"); }
 
         for (let ind = 0; ind < guideListYellow.length; ind++) {
-            const [i, j] = guideListYellow[ind];
+            const secondDest: Coord = guideListYellow[ind];
+            const [i, j] = secondDest;
             const destPiece = GAME_STATE.f.currentBoard[i][j];
 
             // cannot step twice
@@ -164,7 +165,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
                 continue;
             }
 
-            const img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
+            const img = createCircleGuideImageAt(secondDest, "ctam");
 
             img.addEventListener("click", function() {
                 const message: NormalMove = {
@@ -173,7 +174,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
                     src: toAbsoluteCoord(theVerySrc),
                     step: toAbsoluteCoord(stepsOn),
                     firstDest: toAbsoluteCoord(firstDest),
-                    secondDest: toAbsoluteCoord(guideListYellow[ind]),
+                    secondDest: toAbsoluteCoord(secondDest),
                 };
 
                 sendNormalMessage(message);
@@ -908,8 +909,9 @@ async function sendInfAfterStep(message: InfAfterStep) {
     contains_guides.appendChild(passer);
 
     for (let ind = 0; ind < filteredList.length; ind++) {
-        const [i, j] = filteredList[ind];
-        if (coordEq(src, [i, j])) {
+        const dest: Coord = filteredList[ind];
+        const [i, j] = dest;
+        if (coordEq(src, dest)) {
             continue; // yellow takes precedence over green
         }
         const destPiece = GAME_STATE.f.currentBoard[i][j];
@@ -924,7 +926,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
         img.addEventListener("click", function(ev) {
             sendAfterHalfAcceptance({
                 type: "AfterHalfAcceptance",
-                dest: toAbsoluteCoord([i, j]),
+                dest: toAbsoluteCoord(dest),
             }, src, step);
         });
 
