@@ -445,27 +445,34 @@ function updateFieldAfterHalfAcceptance(message, src, step) {
         return;
     }
     if (destPiece !== null) {
-        if (destPiece === "Tam2") {
-            throw new Error("dest is occupied by Tam2");
-        }
-        else if (destPiece.side === Side.Upward) {
-            throw new Error("dest is occupied by an ally");
-        }
-        else if (destPiece.side === Side.Downward) {
-            const flipped = {
-                color: destPiece.color,
-                prof: destPiece.prof,
-                side: Side.Upward,
-            };
-            GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
-        }
-        else {
-            const _should_not_reach_here = destPiece.side;
-            throw new Error("should not reach here");
-        }
+        takeTheDownwardPiece(destPiece);
     }
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+}
+/**
+ * Unsafe function.
+ * @param destPiece Assumed to be downward; if not, an error is thrown
+ */
+function takeTheDownwardPiece(destPiece) {
+    if (destPiece === "Tam2") {
+        throw new Error("dest is occupied by Tam2");
+    }
+    else if (destPiece.side === Side.Upward) {
+        throw new Error("dest is occupied by an ally");
+    }
+    else if (destPiece.side === Side.Downward) {
+        const flipped = {
+            color: destPiece.color,
+            prof: destPiece.prof,
+            side: Side.Upward,
+        };
+        GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+    }
+    else {
+        const _should_not_reach_here = destPiece.side;
+        throw new Error("should not reach here");
+    }
 }
 function updateField(message) {
     if (message.type === "NonTamMove") {
@@ -495,24 +502,7 @@ function updateField(message) {
             const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
             /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
             if (destPiece !== null) {
-                if (destPiece === "Tam2") {
-                    throw new Error("dest is occupied by Tam2");
-                }
-                else if (destPiece.side === Side.Upward) {
-                    throw new Error("dest is occupied by an ally");
-                }
-                else if (destPiece.side === Side.Downward) {
-                    const flipped = {
-                        color: destPiece.color,
-                        prof: destPiece.prof,
-                        side: Side.Upward,
-                    };
-                    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
-                }
-                else {
-                    const _should_not_reach_here = destPiece.side;
-                    throw new Error("should not reach here");
-                }
+                takeTheDownwardPiece(destPiece);
             }
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
@@ -536,24 +526,7 @@ function updateField(message) {
                 return;
             }
             if (destPiece !== null) {
-                if (destPiece === "Tam2") {
-                    throw new Error("dest is occupied by Tam2");
-                }
-                else if (destPiece.side === Side.Upward) {
-                    throw new Error("dest is occupied by an ally");
-                }
-                else if (destPiece.side === Side.Downward) {
-                    const flipped = {
-                        color: destPiece.color,
-                        prof: destPiece.prof,
-                        side: Side.Upward,
-                    };
-                    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
-                }
-                else {
-                    const _should_not_reach_here = destPiece.side;
-                    throw new Error("should not reach here");
-                }
+                takeTheDownwardPiece(destPiece);
             }
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
