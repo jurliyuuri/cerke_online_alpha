@@ -327,13 +327,14 @@ async function animateOpponentInfAfterStep(p) {
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     await animateOpponentSteppingOverCiurl(p.step, p.plannedDirection, p.stepping_ciurl);
     const result = await p.finalResult;
-    const [dest_i, dest_j] = result.dest;
+    const dest = fromAbsoluteCoord(result.dest);
+    const [dest_i, dest_j] = dest;
     const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
     /* The whole scheme works even if the move was cancelled, since cancellation is exactly the same thing as choosing the original position as the final destination */
     /* it IS possible that you are returning to the original position, in which case you don't do anything */
-    if (destPiece !== null && !coordEq(p.src, result.dest)) {
+    if (destPiece !== null && !coordEq(p.src, dest)) {
         const destNode = document.getElementById(`field_piece_${dest_i}_${dest_j}`);
-        await animateNode(srcNode, 750 * 0.8093, coordToPieceXY(result.dest), coordToPieceXY(p.src));
+        await animateNode(srcNode, 750 * 0.8093, coordToPieceXY(dest), coordToPieceXY(p.src));
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         await animateNode(destNode, 750 * 0.8093, indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length), coordToPieceXY([dest_i, dest_j]), "50", 180);
         if (result.water_entry_ciurl) {
@@ -346,7 +347,7 @@ async function animateOpponentInfAfterStep(p) {
                 return;
             }
         }
-        if (!coordEq(p.src, result.dest)) { /* if same, the piece should not take itself */
+        if (!coordEq(p.src, dest)) { /* if same, the piece should not take itself */
             const flipped = downwardTakingUpward(destPiece);
             GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -355,7 +356,7 @@ async function animateOpponentInfAfterStep(p) {
         drawField(GAME_STATE.f);
     }
     else {
-        await animateNode(srcNode, 750 * 0.8093, coordToPieceXY(result.dest), coordToPieceXY(p.src));
+        await animateNode(srcNode, 750 * 0.8093, coordToPieceXY(dest), coordToPieceXY(p.src));
         if (result.water_entry_ciurl) {
             await animateWaterEntryLogo();
             displayCiurl(result.water_entry_ciurl, Side.Downward);
@@ -366,7 +367,7 @@ async function animateOpponentInfAfterStep(p) {
                 return;
             }
         }
-        if (!coordEq(p.src, result.dest)) {
+        if (!coordEq(p.src, dest)) {
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }

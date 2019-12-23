@@ -437,16 +437,17 @@ async function animateOpponentInfAfterStep(p: {
     await animateOpponentSteppingOverCiurl(p.step, p.plannedDirection, p.stepping_ciurl);
 
     const result = await p.finalResult;
-    const [dest_i, dest_j] = result.dest;
+    const dest: Coord = fromAbsoluteCoord(result.dest);
+    const [dest_i, dest_j] = dest;
     const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
 
     /* The whole scheme works even if the move was cancelled, since cancellation is exactly the same thing as choosing the original position as the final destination */
 
     /* it IS possible that you are returning to the original position, in which case you don't do anything */
-    if (destPiece !== null && !coordEq(p.src, result.dest)) {
+    if (destPiece !== null && !coordEq(p.src, dest)) {
         const destNode: HTMLElement = document.getElementById(`field_piece_${dest_i}_${dest_j}`)!;
         await animateNode(srcNode, 750 * 0.8093,
-            coordToPieceXY(result.dest),
+            coordToPieceXY(dest),
             coordToPieceXY(p.src), /* must be src, since the node is not renewed */
         );
 
@@ -469,7 +470,7 @@ async function animateOpponentInfAfterStep(p: {
             }
         }
 
-        if (!coordEq(p.src, result.dest)) { /* if same, the piece should not take itself */
+        if (!coordEq(p.src, dest)) { /* if same, the piece should not take itself */
             const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
             GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -478,7 +479,7 @@ async function animateOpponentInfAfterStep(p: {
         drawField(GAME_STATE.f);
     } else {
         await animateNode(srcNode, 750 * 0.8093,
-            coordToPieceXY(result.dest),
+            coordToPieceXY(dest),
             coordToPieceXY(p.src), /* must be src, since the node is not renewed */
         );
 
@@ -493,7 +494,7 @@ async function animateOpponentInfAfterStep(p: {
             }
         }
 
-        if (!coordEq(p.src, result.dest)) {
+        if (!coordEq(p.src, dest)) {
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
