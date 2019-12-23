@@ -15,31 +15,35 @@ interface GAME_STATE {
 }
 
 function toAbsoluteCoord_([row, col]: Coord, IA_is_down: boolean): AbsoluteCoord {
+    const columns: AbsoluteColumn[] = [
+        "K", "L", "N",
+        "T", "Z", "X",
+        "C", "M", "P",
+    ];
+
+    const rows: AbsoluteRow[] = [
+        "A", "E", "I",
+        "U", "O", "Y",
+        "AI", "AU", "IA",
+    ];
+
     return [
-        [
-            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
-            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
-            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA,
-        ][IA_is_down ? row : 8 - row],
-        [
-            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
-            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
-            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P,
-        ][IA_is_down ? col : 8 - col],
+        rows[IA_is_down ? row : 8 - row],
+        columns[IA_is_down ? col : 8 - col],
     ];
 }
 
 function fromAbsoluteCoord_([absrow, abscol]: AbsoluteCoord, IA_is_down: boolean): Coord {
     let rowind: BoardIndex;
 
-    if (absrow === AbsoluteRow.A) { rowind = 0; } else if (absrow === AbsoluteRow.E) { rowind = 1; } else if (absrow === AbsoluteRow.I) { rowind = 2; } else if (absrow === AbsoluteRow.U) { rowind = 3; } else if (absrow === AbsoluteRow.O) { rowind = 4; } else if (absrow === AbsoluteRow.Y) { rowind = 5; } else if (absrow === AbsoluteRow.AI) { rowind = 6; } else if (absrow === AbsoluteRow.AU) { rowind = 7; } else if (absrow === AbsoluteRow.IA) { rowind = 8; } else {
+    if (absrow === "A") { rowind = 0; } else if (absrow === "E") { rowind = 1; } else if (absrow === "I") { rowind = 2; } else if (absrow === "U") { rowind = 3; } else if (absrow === "O") { rowind = 4; } else if (absrow === "Y") { rowind = 5; } else if (absrow === "AI") { rowind = 6; } else if (absrow === "AU") { rowind = 7; } else if (absrow === "IA") { rowind = 8; } else {
         const _should_not_reach_here: never = absrow;
         throw new Error("does not happen");
     }
 
     let colind: BoardIndex;
 
-    if (abscol === AbsoluteColumn.K) { colind = 0; } else if (abscol === AbsoluteColumn.L) { colind = 1; } else if (abscol === AbsoluteColumn.N) { colind = 2; } else if (abscol === AbsoluteColumn.T) { colind = 3; } else if (abscol === AbsoluteColumn.Z) { colind = 4; } else if (abscol === AbsoluteColumn.X) { colind = 5; } else if (abscol === AbsoluteColumn.C) { colind = 6; } else if (abscol === AbsoluteColumn.M) { colind = 7; } else if (abscol === AbsoluteColumn.P) { colind = 8; } else {
+    if (abscol === "K") { colind = 0; } else if (abscol === "L") { colind = 1; } else if (abscol === "N") { colind = 2; } else if (abscol === "T") { colind = 3; } else if (abscol === "Z") { colind = 4; } else if (abscol === "X") { colind = 5; } else if (abscol === "C") { colind = 6; } else if (abscol === "M") { colind = 7; } else if (abscol === "P") { colind = 8; } else {
         const _should_not_reach_here: never = abscol;
         throw new Error("does not happen");
     }

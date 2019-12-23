@@ -1,45 +1,47 @@
 "use strict";
 function toAbsoluteCoord_([row, col], IA_is_down) {
+    const columns = [
+        "K", "L", "N",
+        "T", "Z", "X",
+        "C", "M", "P",
+    ];
+    const rows = [
+        "A", "E", "I",
+        "U", "O", "Y",
+        "AI", "AU", "IA",
+    ];
     return [
-        [
-            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
-            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
-            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA,
-        ][IA_is_down ? row : 8 - row],
-        [
-            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
-            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
-            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P,
-        ][IA_is_down ? col : 8 - col],
+        rows[IA_is_down ? row : 8 - row],
+        columns[IA_is_down ? col : 8 - col],
     ];
 }
 function fromAbsoluteCoord_([absrow, abscol], IA_is_down) {
     let rowind;
-    if (absrow === AbsoluteRow.A) {
+    if (absrow === "A") {
         rowind = 0;
     }
-    else if (absrow === AbsoluteRow.E) {
+    else if (absrow === "E") {
         rowind = 1;
     }
-    else if (absrow === AbsoluteRow.I) {
+    else if (absrow === "I") {
         rowind = 2;
     }
-    else if (absrow === AbsoluteRow.U) {
+    else if (absrow === "U") {
         rowind = 3;
     }
-    else if (absrow === AbsoluteRow.O) {
+    else if (absrow === "O") {
         rowind = 4;
     }
-    else if (absrow === AbsoluteRow.Y) {
+    else if (absrow === "Y") {
         rowind = 5;
     }
-    else if (absrow === AbsoluteRow.AI) {
+    else if (absrow === "AI") {
         rowind = 6;
     }
-    else if (absrow === AbsoluteRow.AU) {
+    else if (absrow === "AU") {
         rowind = 7;
     }
-    else if (absrow === AbsoluteRow.IA) {
+    else if (absrow === "IA") {
         rowind = 8;
     }
     else {
@@ -47,31 +49,31 @@ function fromAbsoluteCoord_([absrow, abscol], IA_is_down) {
         throw new Error("does not happen");
     }
     let colind;
-    if (abscol === AbsoluteColumn.K) {
+    if (abscol === "K") {
         colind = 0;
     }
-    else if (abscol === AbsoluteColumn.L) {
+    else if (abscol === "L") {
         colind = 1;
     }
-    else if (abscol === AbsoluteColumn.N) {
+    else if (abscol === "N") {
         colind = 2;
     }
-    else if (abscol === AbsoluteColumn.T) {
+    else if (abscol === "T") {
         colind = 3;
     }
-    else if (abscol === AbsoluteColumn.Z) {
+    else if (abscol === "Z") {
         colind = 4;
     }
-    else if (abscol === AbsoluteColumn.X) {
+    else if (abscol === "X") {
         colind = 5;
     }
-    else if (abscol === AbsoluteColumn.C) {
+    else if (abscol === "C") {
         colind = 6;
     }
-    else if (abscol === AbsoluteColumn.M) {
+    else if (abscol === "M") {
         colind = 7;
     }
-    else if (abscol === AbsoluteColumn.P) {
+    else if (abscol === "P") {
         colind = 8;
     }
     else {

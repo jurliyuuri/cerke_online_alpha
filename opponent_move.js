@@ -1,14 +1,14 @@
 "use strict";
 function isWaterAbs([row, col]) {
-    return (row === AbsoluteRow.O && col === AbsoluteColumn.N)
-        || (row === AbsoluteRow.O && col === AbsoluteColumn.T)
-        || (row === AbsoluteRow.O && col === AbsoluteColumn.Z)
-        || (row === AbsoluteRow.O && col === AbsoluteColumn.X)
-        || (row === AbsoluteRow.O && col === AbsoluteColumn.C)
-        || (row === AbsoluteRow.I && col === AbsoluteColumn.Z)
-        || (row === AbsoluteRow.U && col === AbsoluteColumn.Z)
-        || (row === AbsoluteRow.Y && col === AbsoluteColumn.Z)
-        || (row === AbsoluteRow.AI && col === AbsoluteColumn.Z);
+    return (row === "O" && col === "N")
+        || (row === "O" && col === "T")
+        || (row === "O" && col === "Z")
+        || (row === "O" && col === "X")
+        || (row === "O" && col === "C")
+        || (row === "I" && col === "Z")
+        || (row === "U" && col === "Z")
+        || (row === "Y" && col === "Z")
+        || (row === "AI" && col === "Z");
 }
 function isWater([row, col]) {
     return (row === 4 && col === 2)
