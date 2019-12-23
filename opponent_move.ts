@@ -52,15 +52,15 @@ type OpponentMove = OpponentMoveWithPotentialWaterEntry | {
 };
 
 function isWaterAbs([row, col]: AbsoluteCoord): boolean {
-    return (row === 4 && col === 2)
-        || (row === 4 && col === 3)
-        || (row === 4 && col === 4)
-        || (row === 4 && col === 5)
-        || (row === 4 && col === 6)
-        || (row === 2 && col === 4)
-        || (row === 3 && col === 4)
-        || (row === 5 && col === 4)
-        || (row === 6 && col === 4)
+    return (row === AbsoluteRow.O && col === AbsoluteColumn.N)
+        || (row === AbsoluteRow.O && col === AbsoluteColumn.T)
+        || (row === AbsoluteRow.O && col === AbsoluteColumn.Z)
+        || (row === AbsoluteRow.O && col === AbsoluteColumn.X)
+        || (row === AbsoluteRow.O && col === AbsoluteColumn.C)
+        || (row === AbsoluteRow.I && col === AbsoluteColumn.Z)
+        || (row === AbsoluteRow.U && col === AbsoluteColumn.Z)
+        || (row === AbsoluteRow.Y && col === AbsoluteColumn.Z)
+        || (row === AbsoluteRow.AI && col === AbsoluteColumn.Z)
     ;
 }
 
