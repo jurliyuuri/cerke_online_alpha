@@ -1,252 +1,94 @@
 "use strict";
-function get_one_valid_opponent_move() {
-    const get_one_opponent_piece = () => {
-        while (true) {
-            let rand_i = (Math.random() * 9 | 0);
-            let rand_j = (Math.random() * 9 | 0);
-            let coord = [rand_i, rand_j];
-            const piece = GAME_STATE.f.currentBoard[rand_i][rand_j];
-            if (piece === null) {
-                continue;
-            }
-            else if (piece === "Tam2") {
-                continue; // FIXME (for now, no Tam2)
-                // return {rotated_piece: piece, rotated_coord: rotateCoord(coord)}
-            }
-            else if (piece.side === Side.Downward) {
-                const rot_piece = { prof: piece.prof, color: piece.color, side: Side.Upward };
-                return { rotated_piece: rot_piece, rotated_coord: rotateCoord(coord) };
-            }
-            else {
-                continue;
-            }
-        }
-    };
-    const { rotated_piece, rotated_coord } = get_one_opponent_piece();
-    const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(rotated_coord, rotated_piece, rotateBoard(GAME_STATE.f.currentBoard), GAME_STATE.tam_itself_is_tam_hue);
-    const candidates = [...guideListYellow.map(rotateCoord), ...guideListGreen.map(rotateCoord)];
-    /* FIXME: for now, no stepping */
-    for (let i = 0; i < 1000; i++) {
-        const dest = candidates[Math.random() * candidates.length | 0];
-        const destPiece = GAME_STATE.f.currentBoard[dest[0]][dest[1]];
-        if (destPiece === null || (destPiece !== "Tam2" && destPiece.side === Side.Upward)) {
-            return {
-                type: 'NonTamMove',
-                data: {
-                    type: 'SrcDst',
-                    src: toAbsoluteCoord(rotateCoord(rotated_coord)),
-                    dest: toAbsoluteCoord(dest)
-                }
-            };
-        }
-    }
-    // if no candidate found, try again
-    return get_one_valid_opponent_move();
-}
-function poll() {
+async function sendMainPoll() {
     console.log("poll");
     if (Math.random() < 0.2) {
         console.log("ding!");
-        GAME_STATE.clear_poll();
         // you are supposed to send a request to the server and wait for the response
         const opponent_move = get_one_valid_opponent_move();
-        if (opponent_move.type === "NonTamMove" && opponent_move.data.type === "SrcDst") {
-            const [src_i, src_j] = fromAbsoluteCoord(opponent_move.data.src);
-            const [dest_i, dest_j] = fromAbsoluteCoord(opponent_move.data.dest);
-            let piece = GAME_STATE.f.currentBoard[src_i][src_j];
-            if (piece === null) {
-                throw new Error("src is unoccupied");
+        console.log(opponent_move);
+        if (opponent_move.type === "NonTamMove") {
+            if (opponent_move.data.type === "SrcDst") {
+                await animateOpponentSrcDst(opponent_move.data);
+                GAME_STATE.is_my_turn = true;
             }
-            let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
-            /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
-            if (destPiece !== null) {
-                if (destPiece === "Tam2") {
-                    throw new Error("dest is occupied by Tam2");
-                }
-                else if (destPiece.side === Side.Downward) {
-                    throw new Error("dest is occupied by an ally");
-                }
-                else if (destPiece.side === Side.Upward) {
-                    const flipped = {
-                        color: destPiece.color,
-                        prof: destPiece.prof,
-                        side: Side.Downward
-                    };
-                    GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-                }
-                else {
-                    let _should_not_reach_here = destPiece.side;
-                    throw new Error("should not reach here");
-                }
+            else if (opponent_move.data.type === "FromHand") {
+                const piece = { prof: opponent_move.data.prof, color: opponent_move.data.color, side: Side.Downward };
+                await animateOpponentFromHand(piece, fromAbsoluteCoord(opponent_move.data.dest));
+                GAME_STATE.is_my_turn = true;
             }
-            GAME_STATE.f.currentBoard[src_i][src_j] = null;
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-        }
-        drawField(GAME_STATE.f);
-        GAME_STATE.is_my_turn = true;
-    }
-}
-let GAME_STATE = (() => {
-    let _is_my_turn = true;
-    let _intervalID = null;
-    return {
-        f: {
-            currentBoard: [
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"],
-                [null, null, null, null, null, null, null, null, "Tam2"]
-            ],
-            hop1zuo1OfDownward: [],
-            hop1zuo1OfUpward: [],
-        },
-        IA_is_down: true,
-        tam_itself_is_tam_hue: true,
-        clear_poll: () => {
-            if (_intervalID != null) {
-                window.clearInterval(_intervalID);
-                _intervalID = null;
-            }
-        },
-        set is_my_turn(i) {
-            _is_my_turn = !!i;
-            if (_is_my_turn) {
-                document.getElementById("larta_me").style.display = "block";
-                document.getElementById("larta_opponent").style.display = "none";
-                document.getElementById("protective_cover_over_field_while_waiting_for_opponent").classList.add("nocover");
-                if (_intervalID != null) {
-                    window.clearInterval(_intervalID);
-                    _intervalID = null;
-                }
+            else if (opponent_move.data.type === "SrcStepDstFinite") {
+                await animateOpponentSrcStepDstFinite(opponent_move.data);
+                GAME_STATE.is_my_turn = true;
             }
             else {
-                document.getElementById("larta_me").style.display = "none";
-                document.getElementById("larta_opponent").style.display = "block";
-                document.getElementById("protective_cover_over_field_while_waiting_for_opponent").classList.remove("nocover");
-                if (_intervalID == null) {
-                    _intervalID = window.setInterval(poll, 500 * 0.8093);
-                }
+                const a = opponent_move.data;
+                throw new Error("does not happen");
             }
-        },
-        get is_my_turn() {
-            return _is_my_turn;
-        },
-        backupDuringStepping: null
-    };
-})();
+        }
+        else if (opponent_move.type === "TamMove") {
+            if (opponent_move.stepStyle === "NoStep") {
+                await animateOpponentTamNoStep(fromAbsoluteCoord(opponent_move.src), fromAbsoluteCoord(opponent_move.firstDest), fromAbsoluteCoord(opponent_move.secondDest));
+                GAME_STATE.is_my_turn = true;
+            }
+            else if (opponent_move.stepStyle === "StepsDuringFormer") {
+                await animateOpponentTamSteppingDuringFormer({
+                    src: fromAbsoluteCoord(opponent_move.src),
+                    firstDest: fromAbsoluteCoord(opponent_move.firstDest),
+                    secondDest: fromAbsoluteCoord(opponent_move.secondDest),
+                    step: fromAbsoluteCoord(opponent_move.step),
+                });
+                GAME_STATE.is_my_turn = true;
+            }
+            else if (opponent_move.stepStyle === "StepsDuringLatter") {
+                await animateOpponentTamSteppingDuringLatter({
+                    src: fromAbsoluteCoord(opponent_move.src),
+                    firstDest: fromAbsoluteCoord(opponent_move.firstDest),
+                    secondDest: fromAbsoluteCoord(opponent_move.secondDest),
+                    step: fromAbsoluteCoord(opponent_move.step),
+                });
+                GAME_STATE.is_my_turn = true;
+            }
+            else {
+                const a = opponent_move.stepStyle;
+                throw new Error("does not happen");
+            }
+        }
+        else if (opponent_move.type === "InfAfterStep") {
+            await animateOpponentInfAfterStep({
+                src: fromAbsoluteCoord(opponent_move.src),
+                step: fromAbsoluteCoord(opponent_move.step),
+                plannedDirection: fromAbsoluteCoord(opponent_move.plannedDirection),
+                stepping_ciurl: opponent_move.stepping_ciurl,
+                finalResult: opponent_move.finalResult,
+            });
+            GAME_STATE.is_my_turn = true;
+        }
+        else {
+            const a = opponent_move;
+            throw new Error("does not happen");
+        }
+    }
+    else {
+        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+        await sendMainPoll();
+    }
+}
 let UI_STATE = {
-    selectedCoord: null
+    selectedCoord: null,
 };
 function eraseGuide() {
     removeChildren(document.getElementById("contains_guides"));
     removeChildren(document.getElementById("contains_guides_on_upward"));
 }
-function toAbsoluteCoord_([row, col], IA_is_down) {
-    return [
-        [
-            AbsoluteRow.A, AbsoluteRow.E, AbsoluteRow.I,
-            AbsoluteRow.U, AbsoluteRow.O, AbsoluteRow.Y,
-            AbsoluteRow.AI, AbsoluteRow.AU, AbsoluteRow.IA
-        ][IA_is_down ? row : 8 - row],
-        [
-            AbsoluteColumn.K, AbsoluteColumn.L, AbsoluteColumn.N,
-            AbsoluteColumn.T, AbsoluteColumn.Z, AbsoluteColumn.X,
-            AbsoluteColumn.C, AbsoluteColumn.M, AbsoluteColumn.P
-        ][IA_is_down ? col : 8 - col]
-    ];
-}
-function fromAbsoluteCoord_([absrow, abscol], IA_is_down) {
-    let rowind;
-    if (absrow === AbsoluteRow.A) {
-        rowind = 0;
-    }
-    else if (absrow === AbsoluteRow.E) {
-        rowind = 1;
-    }
-    else if (absrow === AbsoluteRow.I) {
-        rowind = 2;
-    }
-    else if (absrow === AbsoluteRow.U) {
-        rowind = 3;
-    }
-    else if (absrow === AbsoluteRow.O) {
-        rowind = 4;
-    }
-    else if (absrow === AbsoluteRow.Y) {
-        rowind = 5;
-    }
-    else if (absrow === AbsoluteRow.AI) {
-        rowind = 6;
-    }
-    else if (absrow === AbsoluteRow.AU) {
-        rowind = 7;
-    }
-    else if (absrow === AbsoluteRow.IA) {
-        rowind = 8;
-    }
-    else {
-        let _should_not_reach_here = absrow;
-        throw new Error("does not happen");
-    }
-    let colind;
-    if (abscol === AbsoluteColumn.K) {
-        colind = 0;
-    }
-    else if (abscol === AbsoluteColumn.L) {
-        colind = 1;
-    }
-    else if (abscol === AbsoluteColumn.N) {
-        colind = 2;
-    }
-    else if (abscol === AbsoluteColumn.T) {
-        colind = 3;
-    }
-    else if (abscol === AbsoluteColumn.Z) {
-        colind = 4;
-    }
-    else if (abscol === AbsoluteColumn.X) {
-        colind = 5;
-    }
-    else if (abscol === AbsoluteColumn.C) {
-        colind = 6;
-    }
-    else if (abscol === AbsoluteColumn.M) {
-        colind = 7;
-    }
-    else if (abscol === AbsoluteColumn.P) {
-        colind = 8;
-    }
-    else {
-        let _should_not_reach_here = abscol;
-        throw new Error("does not happen");
-    }
-    if (IA_is_down) {
-        return [rowind, colind];
-    }
-    else {
-        return [8 - rowind, 8 - colind];
-    }
-}
-function toAbsoluteCoord(coord) {
-    return toAbsoluteCoord_(coord, GAME_STATE.IA_is_down);
-}
-function fromAbsoluteCoord(abs) {
-    return fromAbsoluteCoord_(abs, GAME_STATE.IA_is_down);
-}
-function erasePhantom() {
-    let contains_phantom = document.getElementById("contains_phantom");
+function erasePhantomAndOptionallyCancelButton() {
+    const contains_phantom = document.getElementById("contains_phantom");
     while (contains_phantom.firstChild) {
         contains_phantom.removeChild(contains_phantom.firstChild);
     }
 }
 function cancelStepping() {
     eraseGuide();
-    erasePhantom();
+    erasePhantomAndOptionallyCancelButton();
     document.getElementById("protective_cover_over_field").classList.add("nocover");
     // resurrect the original one
     const backup = GAME_STATE.backupDuringStepping;
@@ -270,7 +112,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function () {
         eraseGuide();
-        erasePhantom();
+        erasePhantomAndOptionallyCancelButton();
         document.getElementById("protective_cover_over_field").classList.add("nocover");
         document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
         // resurrect the original one
@@ -282,7 +124,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     });
     drawHoverAt_(stepsOn, "Tam2", function (coord, piece) {
         const contains_guides = document.getElementById("contains_guides");
-        let centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
+        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
         centralNode.style.cursor = "pointer";
         centralNode.style.zIndex = "200";
         contains_guides.appendChild(centralNode);
@@ -291,24 +133,26 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
             throw new Error("should not happen");
         }
         for (let ind = 0; ind < guideListYellow.length; ind++) {
-            const [i, j] = guideListYellow[ind];
+            const secondDest = guideListYellow[ind];
+            const [i, j] = secondDest;
             const destPiece = GAME_STATE.f.currentBoard[i][j];
             // cannot step twice
             if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
                 continue;
             }
-            let img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
-            img.addEventListener('click', function () {
+            const img = createCircleGuideImageAt(secondDest, "ctam");
+            img.addEventListener("click", function () {
                 const message = {
                     type: "TamMove",
                     stepStyle: "StepsDuringLatter",
                     src: toAbsoluteCoord(theVerySrc),
+                    step: toAbsoluteCoord(stepsOn),
                     firstDest: toAbsoluteCoord(firstDest),
-                    secondDest: toAbsoluteCoord(guideListYellow[ind])
+                    secondDest: toAbsoluteCoord(secondDest),
                 };
                 sendNormalMessage(message);
                 eraseGuide();
-                erasePhantom();
+                erasePhantomAndOptionallyCancelButton();
                 document.getElementById("protective_cover_over_field").classList.add("nocover");
                 document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
                 return;
@@ -320,7 +164,12 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     });
     return;
 }
-function afterFirstTamMove(from, to, hasAlreadyStepped) {
+/**
+ * @param from where the first half started
+ * @param to where the first half ended
+ * @param step supplied when the first half of the move stepped a piece
+ */
+function afterFirstTamMove(from, to, step) {
     eraseGuide();
     document.getElementById("protective_tam_cover_over_field").classList.remove("nocover");
     // stepping should now have been completed
@@ -329,13 +178,13 @@ function afterFirstTamMove(from, to, hasAlreadyStepped) {
     GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
     drawField(GAME_STATE.f);
     const drawTam2HoverNonshiftedAt = function (coord) {
-        let contains_phantom = document.getElementById("contains_phantom");
-        let img = createPieceSizeImageOnBoardByPath(coord, toPath_("Tam2"), "piece_image_on_board");
+        const contains_phantom = document.getElementById("contains_phantom");
+        const img = createPieceSizeImageOnBoardByPath(coord, toPath_("Tam2"), "piece_image_on_board");
         img.style.zIndex = "100";
         img.style.cursor = "pointer";
         const selectTam2Hover = function () {
             const contains_guides = document.getElementById("contains_guides");
-            let centralNode = createPieceSizeImageOnBoardByPath(coord, "selection2", "selection");
+            const centralNode = createPieceSizeImageOnBoardByPath(coord, "selection2", "selection");
             centralNode.style.cursor = "pointer";
             centralNode.style.zIndex = "200";
             contains_guides.appendChild(centralNode);
@@ -347,32 +196,39 @@ function afterFirstTamMove(from, to, hasAlreadyStepped) {
                 const [i, j] = guideListYellow[ind];
                 const destPiece = GAME_STATE.f.currentBoard[i][j];
                 // cannot step twice
-                if (hasAlreadyStepped && destPiece !== null) {
+                if (step !== undefined && destPiece !== null) {
                     continue;
                 }
-                let img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
+                const img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
                 if (destPiece === null) {
-                    img.addEventListener('click', function () {
-                        (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc, firstDest, to, hasAlreadyStepped) {
+                    img.addEventListener("click", function () {
+                        (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(theVerySrc, firstDest, to) {
                             console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
-                            let message = {
+                            const message = step ? {
                                 type: "TamMove",
-                                stepStyle: hasAlreadyStepped ? 'StepsDuringFormer' : 'NoStep',
+                                stepStyle: "StepsDuringFormer",
+                                src: toAbsoluteCoord(theVerySrc),
+                                step: toAbsoluteCoord(step),
+                                firstDest: toAbsoluteCoord(firstDest),
+                                secondDest: toAbsoluteCoord(to),
+                            } : {
+                                type: "TamMove",
+                                stepStyle: "NoStep",
                                 src: toAbsoluteCoord(theVerySrc),
                                 firstDest: toAbsoluteCoord(firstDest),
-                                secondDest: toAbsoluteCoord(to)
+                                secondDest: toAbsoluteCoord(to),
                             };
                             sendNormalMessage(message);
                             document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
-                            erasePhantom();
-                            document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
+                            // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
+                            erasePhantomAndOptionallyCancelButton();
                             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
                             return;
-                        })(from, coord, guideListYellow[ind], hasAlreadyStepped);
+                        })(from, coord, guideListYellow[ind]);
                     });
                 }
                 else {
-                    img.addEventListener('click', function () {
+                    img.addEventListener("click", function () {
                         getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(from, coord, guideListYellow[ind]);
                     });
                 }
@@ -380,7 +236,7 @@ function afterFirstTamMove(from, to, hasAlreadyStepped) {
                 contains_guides.appendChild(img);
             }
         };
-        img.addEventListener('click', selectTam2Hover);
+        img.addEventListener("click", selectTam2Hover);
         contains_phantom.appendChild(img);
         // draw as already selected
         selectTam2Hover();
@@ -388,7 +244,7 @@ function afterFirstTamMove(from, to, hasAlreadyStepped) {
     drawPhantomAt(from, "Tam2");
     drawCancel(function cancelTam2FirstMove() {
         eraseGuide();
-        erasePhantom();
+        erasePhantomAndOptionallyCancelButton();
         document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
         document.getElementById("protective_cover_over_field").classList.add("nocover");
         // resurrect the original one
@@ -401,32 +257,32 @@ function afterFirstTamMove(from, to, hasAlreadyStepped) {
     drawTam2HoverNonshiftedAt(to);
 }
 function drawPhantomAt(coord, piece) {
-    let contains_phantom = document.getElementById("contains_phantom");
-    erasePhantom();
+    const contains_phantom = document.getElementById("contains_phantom");
+    erasePhantomAndOptionallyCancelButton();
     const phantom = createPieceImgToBePlacedOnBoard(coord, piece);
     phantom.style.opacity = "0.1";
     contains_phantom.appendChild(phantom);
 }
 function drawCancel(fn) {
-    let contains_phantom = document.getElementById("contains_phantom");
-    let cancelButton = createPieceSizeImageOnBoardByPath_Shifted([9, 7.5], "piece/bmun", "piece_image_on_board");
+    const contains_phantom = document.getElementById("contains_phantom");
+    const cancelButton = createCancelButton();
     cancelButton.width = 80;
     cancelButton.height = 80;
     cancelButton.style.zIndex = "100";
     cancelButton.style.cursor = "pointer";
-    cancelButton.setAttribute('id', 'cancelButton');
-    cancelButton.addEventListener('click', fn);
+    cancelButton.setAttribute("id", "cancelButton");
+    cancelButton.addEventListener("click", fn);
     contains_phantom.appendChild(cancelButton);
 }
 function drawHoverAt_(coord, piece, selectHover_) {
-    let contains_phantom = document.getElementById("contains_phantom");
-    let img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
+    const contains_phantom = document.getElementById("contains_phantom");
+    const img = createPieceSizeImageOnBoardByPath_Shifted(coord, toPath_(piece), "piece_image_on_board");
     img.style.zIndex = "100";
     img.style.cursor = "pointer";
     const selectHover = function () {
         selectHover_(coord, piece);
     };
-    img.addEventListener('click', selectHover);
+    img.addEventListener("click", selectHover);
     contains_phantom.appendChild(img);
     // draw as already selected
     selectHover();
@@ -443,25 +299,25 @@ function stepping(from, piece, to) {
     drawCancel(cancelStepping);
     drawHoverAt_(to, piece, function (coord, piece) {
         const contains_guides = document.getElementById("contains_guides");
-        let centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
+        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
         centralNode.style.cursor = "pointer";
         centralNode.style.zIndex = "200";
         contains_guides.appendChild(centralNode);
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
         /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guide_after_stepping handles that. */
-        display_guide_after_stepping(coord, { piece: piece, path: "ct" }, contains_guides, guideListYellow);
+        display_guide_after_stepping(coord, { piece, path: "ct" }, contains_guides, guideListYellow);
         if (piece === "Tam2") {
             if (guideListGreen.length > 0) {
                 throw new Error("should not happen");
             }
             return;
         }
-        display_guide_after_stepping(coord, { piece: piece, path: "ct2" }, contains_guides, guideListGreen);
+        display_guide_after_stepping(coord, { piece, path: "ct2" }, contains_guides, guideListGreen);
     });
 }
 async function sendAfterHalfAcceptance(message, src, step) {
-    const res = await sendStuff("`after half acceptance`", message, response => {
-        console.log('Success; the server returned:', JSON.stringify(response));
+    const res = await sendStuff("`after half acceptance`", message, (response) => {
+        console.log("Success; the server returned:", JSON.stringify(response));
         return response;
     });
     if (!res.legal) {
@@ -477,10 +333,10 @@ async function sendAfterHalfAcceptance(message, src, step) {
         GAME_STATE.is_my_turn = false;
         return;
     }
-    await displayWaterEntryLogo();
+    await animateWaterEntryLogo();
     displayCiurl(res.dat.ciurl);
-    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-    if (res.dat.ciurl.filter(a => a).length < 3) {
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+    if (res.dat.ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
         eraseGuide();
         UI_STATE.selectedCoord = null;
@@ -500,24 +356,24 @@ async function sendStuff(log, message, validateInput) {
     const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait");
     cover_while_asyncawait.classList.remove("nocover");
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    let url = 'http://localhost:5000/slow/';
+    const url = "http://localhost:5000/slow/";
     const data = {
-        "id": (Math.random() * 100000) | 0,
-        "message": message
+        id: (Math.random() * 100000) | 0,
+        message,
     };
     const res = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(data),
         headers: {
-            'Content-Type': 'application/json'
-        }
+            "Content-Type": "application/json",
+        },
     }).then(function (res) {
         cover_while_asyncawait.classList.add("nocover");
         return res.json();
     }).then(validateInput)
         .catch(function (error) {
         cover_while_asyncawait.classList.add("nocover");
-        console.error('Error:', error);
+        console.error("Error:", error);
         return;
     });
     console.log(res);
@@ -530,8 +386,8 @@ async function sendStuff(log, message, validateInput) {
     return res;
 }
 async function sendNormalMessage(message) {
-    const res = await sendStuff("normal move", message, response => {
-        console.log('Success; the server returned:', JSON.stringify(response));
+    const res = await sendStuff("normal move", message, (response) => {
+        console.log("Success; the server returned:", JSON.stringify(response));
         return response;
     });
     if (!res.legal) {
@@ -547,17 +403,17 @@ async function sendNormalMessage(message) {
         GAME_STATE.is_my_turn = false;
         return;
     }
-    await displayWaterEntryLogo();
+    await animateWaterEntryLogo();
     displayCiurl(res.dat.ciurl);
-    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-    if (res.dat.ciurl.filter(a => a).length < 3) {
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+    if (res.dat.ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
         eraseGuide();
         UI_STATE.selectedCoord = null;
         if (message.type === "NonTamMove" && message.data.type === "SrcStepDstFinite") {
             cancelStepping();
-            GAME_STATE.is_my_turn = false;
         }
+        GAME_STATE.is_my_turn = false;
     }
     else {
         eraseGuide();
@@ -568,21 +424,22 @@ async function sendNormalMessage(message) {
     }
 }
 function updateFieldAfterHalfAcceptance(message, src, step) {
+    console.log(src, step);
     if (message.dest === null) {
         cancelStepping();
         return;
     }
-    let [dest_i, dest_j] = fromAbsoluteCoord(message.dest);
+    const [dest_i, dest_j] = fromAbsoluteCoord(message.dest);
     // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
     const backup = GAME_STATE.backupDuringStepping;
-    let piece = backup[1];
+    const piece = backup[1];
     cancelStepping(); // this will now restore GAME_STATE.f.currentBoard[src_i][src_j]
     const [src_i, src_j] = src;
     const [step_i, step_j] = step;
     if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
         throw new Error("step is unoccupied");
     }
-    let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+    const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
     /* it's possible that you are returning to the original position, in which case you don't do anything */
     if (coordEq([src_i, src_j], [dest_i, dest_j])) {
         return;
@@ -598,12 +455,12 @@ function updateFieldAfterHalfAcceptance(message, src, step) {
             const flipped = {
                 color: destPiece.color,
                 prof: destPiece.prof,
-                side: Side.Upward
+                side: Side.Upward,
             };
             GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
         }
         else {
-            let _should_not_reach_here = destPiece.side;
+            const _should_not_reach_here = destPiece.side;
             throw new Error("should not reach here");
         }
     }
@@ -615,7 +472,7 @@ function updateField(message) {
         if (message.data.type === "FromHand") {
             const k = message.data;
             // remove the corresponding one from hand
-            const ind = GAME_STATE.f.hop1zuo1OfUpward.findIndex(piece => piece.color === k.color && piece.prof === k.prof);
+            const ind = GAME_STATE.f.hop1zuo1OfUpward.findIndex((piece) => piece.color === k.color && piece.prof === k.prof);
             if (ind === -1) {
                 throw new Error("What should exist in the hand does not exist");
             }
@@ -631,11 +488,11 @@ function updateField(message) {
             const k = message.data;
             const [src_i, src_j] = fromAbsoluteCoord(k.src);
             const [dest_i, dest_j] = fromAbsoluteCoord(k.dest);
-            let piece = GAME_STATE.f.currentBoard[src_i][src_j];
+            const piece = GAME_STATE.f.currentBoard[src_i][src_j];
             if (piece === null) {
                 throw new Error("src is unoccupied");
             }
-            let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
             /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
             if (destPiece !== null) {
                 if (destPiece === "Tam2") {
@@ -648,12 +505,12 @@ function updateField(message) {
                     const flipped = {
                         color: destPiece.color,
                         prof: destPiece.prof,
-                        side: Side.Upward
+                        side: Side.Upward,
                     };
                     GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
                 }
                 else {
-                    let _should_not_reach_here = destPiece.side;
+                    const _should_not_reach_here = destPiece.side;
                     throw new Error("should not reach here");
                 }
             }
@@ -666,14 +523,14 @@ function updateField(message) {
             const [dest_i, dest_j] = fromAbsoluteCoord(k.dest);
             // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
             const backup = GAME_STATE.backupDuringStepping;
-            let piece = backup[1];
+            const piece = backup[1];
             cancelStepping();
             // this will now restore GAME_STATE.f.currentBoard[src_i][src_j]
             const [step_i, step_j] = fromAbsoluteCoord(k.step);
             if (GAME_STATE.f.currentBoard[step_i][step_j] === null) {
                 throw new Error("step is unoccupied");
             }
-            let destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
+            const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
             /* it's possible that you are returning to the original position, in which case you don't do anything */
             if (coordEq([src_i, src_j], [dest_i, dest_j])) {
                 return;
@@ -689,12 +546,12 @@ function updateField(message) {
                     const flipped = {
                         color: destPiece.color,
                         prof: destPiece.prof,
-                        side: Side.Upward
+                        side: Side.Upward,
                     };
                     GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
                 }
                 else {
-                    let _should_not_reach_here = destPiece.side;
+                    const _should_not_reach_here = destPiece.side;
                     throw new Error("should not reach here");
                 }
             }
@@ -702,7 +559,7 @@ function updateField(message) {
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         else {
-            let _should_not_reach_here = message.data;
+            const _should_not_reach_here = message.data;
         }
     }
     else if (message.type === "TamMove") {
@@ -715,7 +572,7 @@ function updateField(message) {
             return;
         }
         // If not StepsDuringLatter, we decided that the piece should actually be located in firstDest after the first move
-        let piece = GAME_STATE.f.currentBoard[firstDest_i][firstDest_j];
+        const piece = GAME_STATE.f.currentBoard[firstDest_i][firstDest_j];
         if (piece === null) {
             throw new Error("firstDest is unoccupied");
         }
@@ -730,29 +587,29 @@ function updateField(message) {
         GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
     }
     else {
-        let _should_not_reach_here = message;
+        const _should_not_reach_here = message;
     }
 }
 function getThingsGoing(piece_to_move, from, to) {
-    let destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
+    const destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (destPiece == null) { // dest is empty square; try to simply move
         let message;
         if (piece_to_move !== "Tam2") {
-            let abs_src = toAbsoluteCoord(from);
-            let abs_dst = toAbsoluteCoord(to);
+            const abs_src = toAbsoluteCoord(from);
+            const abs_dst = toAbsoluteCoord(to);
             message = {
                 type: "NonTamMove",
                 data: {
                     type: "SrcDst",
                     src: abs_src,
-                    dest: abs_dst
-                }
+                    dest: abs_dst,
+                },
             };
             sendNormalMessage(message);
             return;
         }
         else {
-            afterFirstTamMove(from, to, false);
+            afterFirstTamMove(from, to);
             return;
         }
     }
@@ -762,15 +619,15 @@ function getThingsGoing(piece_to_move, from, to) {
         return;
     }
     if (confirm(DICTIONARY.ja.whetherToTake)) {
-        let abs_src = toAbsoluteCoord(from);
-        let abs_dst = toAbsoluteCoord(to);
-        let message = {
+        const abs_src = toAbsoluteCoord(from);
+        const abs_dst = toAbsoluteCoord(to);
+        const message = {
             type: "NonTamMove",
             data: {
                 type: "SrcDst",
                 src: abs_src,
-                dest: abs_dst
-            }
+                dest: abs_dst,
+            },
         };
         sendNormalMessage(message);
         return;
@@ -782,7 +639,7 @@ function getThingsGoing(piece_to_move, from, to) {
 }
 function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     if (piece === "Tam2") {
-        afterFirstTamMove(src, dest, true);
+        afterFirstTamMove(src, dest, step);
         return;
     }
     const message = {
@@ -791,45 +648,19 @@ function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
             type: "SrcStepDstFinite",
             step: toAbsoluteCoord(step),
             dest: toAbsoluteCoord(dest),
-            src: toAbsoluteCoord(src)
-        }
+            src: toAbsoluteCoord(src),
+        },
     };
     sendNormalMessage(message);
     return;
 }
-async function sendInfAfterStep(message) {
-    const res = await sendStuff("inf after step", message, response => {
-        console.log('Success; the server returned:', JSON.stringify(response));
-        return response;
-    });
-    if (!res.legal) {
-        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
-        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
-    }
-    displayCiurl(res.ciurl);
-    document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
-    eraseGuide(); // this removes the central guide, as well as the yellow and green ones
-    let step = fromAbsoluteCoord(message.step);
-    let plannedDirection = fromAbsoluteCoord(message.plannedDirection);
-    // recreate the selection node, but this time it is not clickable and hence not deletable
-    let centralNode = createPieceSizeImageOnBoardByPath_Shifted(step, "selection2", "selection");
-    centralNode.style.zIndex = "200";
-    const contains_guides = document.getElementById("contains_guides");
-    contains_guides.appendChild(centralNode);
-    const piece = {
-        color: message.color,
-        prof: message.prof,
-        side: Side.Upward
-    };
-    // now re-add the green candidates in only one direction
-    const { infinite: guideListGreen } = calculateMovablePositions(step, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
-    // filter the result
-    const filteredList = guideListGreen.filter(function (c) {
+function filterInOneDirectionTillCiurlLimit(guideListGreen, step, plannedDirection, ciurl) {
+    return guideListGreen.filter(function (c) {
         const subtractStep = function ([x, y]) {
             const [step_x, step_y] = step;
             return [x - step_x, y - step_y];
         };
-        const limit = res.ciurl.filter(x => x).length;
+        const limit = ciurl.filter((x) => x).length;
         const [deltaC_x, deltaC_y] = subtractStep(c);
         const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
         return (
@@ -840,19 +671,50 @@ async function sendInfAfterStep(message) {
             // 3. deltaC must not exceed the limit enforced by ciurl
             Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit);
     });
+}
+async function sendInfAfterStep(message) {
+    const res = await sendStuff("inf after step", message, (response) => {
+        console.log("Success; the server returned:", JSON.stringify(response));
+        return response;
+    });
+    if (!res.legal) {
+        alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
+        throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
+    displayCiurl(res.ciurl);
+    document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
+    eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+    const step = fromAbsoluteCoord(message.step);
+    const plannedDirection = fromAbsoluteCoord(message.plannedDirection);
+    // recreate the selection node, but this time it is not clickable and hence not deletable
+    const centralNode = createPieceSizeImageOnBoardByPath_Shifted(step, "selection2", "selection");
+    centralNode.style.zIndex = "200";
+    const contains_guides = document.getElementById("contains_guides");
+    contains_guides.appendChild(centralNode);
+    const piece = {
+        color: message.color,
+        prof: message.prof,
+        side: Side.Upward,
+    };
+    // now re-add the green candidates in only one direction.
+    // first, get all the green candidates;
+    const { infinite: guideListGreen } = calculateMovablePositions(step, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
+    // then filter the result
+    const filteredList = filterInOneDirectionTillCiurlLimit(guideListGreen, step, plannedDirection, res.ciurl);
     const src = fromAbsoluteCoord(message.src);
-    let passer = createCircleGuideImageAt(src, "ct");
-    passer.addEventListener('click', function (ev) {
+    const passer = createCircleGuideImageAt(src, "ct");
+    passer.addEventListener("click", function (ev) {
         sendAfterHalfAcceptance({
             type: "AfterHalfAcceptance",
-            dest: null
+            dest: null,
         }, src, step);
     });
     passer.style.zIndex = "200";
     contains_guides.appendChild(passer);
     for (let ind = 0; ind < filteredList.length; ind++) {
-        const [i, j] = filteredList[ind];
-        if (coordEq(src, [i, j])) {
+        const dest = filteredList[ind];
+        const [i, j] = dest;
+        if (coordEq(src, dest)) {
             continue; // yellow takes precedence over green
         }
         const destPiece = GAME_STATE.f.currentBoard[i][j];
@@ -860,18 +722,18 @@ async function sendInfAfterStep(message) {
         if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
             continue;
         }
-        let img = createCircleGuideImageAt(filteredList[ind], "ct2");
-        img.addEventListener('click', function (ev) {
+        const img = createCircleGuideImageAt(filteredList[ind], "ct2");
+        img.addEventListener("click", function (ev) {
             sendAfterHalfAcceptance({
                 type: "AfterHalfAcceptance",
-                dest: [i, j]
+                dest: toAbsoluteCoord(dest),
             }, src, step);
         });
         img.style.zIndex = "200";
         contains_guides.appendChild(img);
     }
 }
-async function displayWaterEntryLogo() {
+async function animateWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo");
     water_entry_logo.style.display = "block";
     water_entry_logo.classList.add("water_entry");
@@ -881,34 +743,35 @@ async function displayWaterEntryLogo() {
         water_entry_logo.style.display = "none";
         cover_while_asyncawait.classList.add("nocover");
     }, 1200 * 0.8093);
-    await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }
-function displayCiurl(ciurl) {
+function displayCiurl(ciurl, side) {
     // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
     // Standard Normal variate using Box-Muller transform.
     const randn_bm = function () {
-        var u = 0, v = 0;
-        while (u === 0)
-            u = Math.random(); //Converting [0,1) to (0,1)
-        while (v === 0)
+        let u = 0, v = 0;
+        while (u === 0) {
+            u = Math.random();
+        } // Converting [0,1) to (0,1)
+        while (v === 0) {
             v = Math.random();
+        }
         return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     };
     const contains_ciurl = document.getElementById("contains_ciurl");
     clearCiurl();
-    // should always lie around 300 ~ 370, when BOX_SIZE is 70
     const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
     const hop1zuo1_height = 140;
     const board_height = 631;
-    const averageTop = 84 + hop1zuo1_height + board_height;
-    let imgs = ciurl.map((side, ind) => createCiurl(side, {
+    const averageTop = 84 + ((side == null || side === Side.Upward) ? hop1zuo1_height + board_height : 0);
+    const imgs = ciurl.map((side, ind) => createCiurl(side, {
         left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
         top: averageTop + (ind + 0.5 - ciurl.length / 2) * 26 + BOX_SIZE * 0.05 * randn_bm(),
-        rotateDeg: Math.random() * 40 - 20
+        rotateDeg: Math.random() * 40 - 20,
     }));
     // Fisher-Yates
     for (let i = imgs.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(Math.random() * (i + 1));
         [imgs[i], imgs[j]] = [imgs[j], imgs[i]];
     }
     for (let i = 0; i < imgs.length; i++) {
@@ -929,13 +792,12 @@ function display_guide_after_stepping(coord, q, parent, list) {
         throw new Error("though stepping, hop1zuo1 startpoint!!!!!");
     }
     for (let ind = 0; ind < list.length; ind++) {
-        const [i, j] = list[ind];
         // Since you cannot step twice, the destination must be occupiable, that is, either empty or opponent's unprotected piece.
         if (!canGetOccupiedBy(Side.Upward, list[ind], q.piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
             continue;
         }
-        let img = createCircleGuideImageAt(list[ind], q.path);
-        img.addEventListener('click', q.path === "ct" ? function () {
+        const img = createCircleGuideImageAt(list[ind], q.path);
+        img.addEventListener("click", q.path === "ct" ? function () {
             getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
         } : function () {
             sendInfAfterStep({
@@ -944,7 +806,7 @@ function display_guide_after_stepping(coord, q, parent, list) {
                 prof: q.piece.prof,
                 step: toAbsoluteCoord(coord),
                 plannedDirection: toAbsoluteCoord(list[ind]),
-                src: toAbsoluteCoord(src)
+                src: toAbsoluteCoord(src),
             });
         });
         img.style.zIndex = "200";
@@ -954,9 +816,9 @@ function display_guide_after_stepping(coord, q, parent, list) {
 function display_guides(coord, piece, parent, list) {
     for (let ind = 0; ind < list.length; ind++) {
         // draw the yellow guides
-        let img = createCircleGuideImageAt(list[ind], "ct");
+        const img = createCircleGuideImageAt(list[ind], "ct");
         // click on it to get things going
-        img.addEventListener('click', function () {
+        img.addEventListener("click", function () {
             getThingsGoing(piece, coord, list[ind]);
         });
         parent.appendChild(img);
@@ -968,10 +830,10 @@ function selectOwnPieceOnBoard(coord, piece) {
     if (UI_STATE.selectedCoord == null || UI_STATE.selectedCoord[0] === "Hop1zuo1" || !coordEq(UI_STATE.selectedCoord, coord)) {
         UI_STATE.selectedCoord = coord;
         const contains_guides = document.getElementById("contains_guides");
-        let centralNode = createPieceSizeImageOnBoardByPath(coord, "selection2", "selection");
+        const centralNode = createPieceSizeImageOnBoardByPath(coord, "selection2", "selection");
         centralNode.style.cursor = "pointer";
         // click on it to erase
-        centralNode.addEventListener('click', function () {
+        centralNode.addEventListener("click", function () {
             eraseGuide();
             UI_STATE.selectedCoord = null;
         });
@@ -990,10 +852,10 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
     if (UI_STATE.selectedCoord == null || UI_STATE.selectedCoord[0] !== "Hop1zuo1" || UI_STATE.selectedCoord[1] !== ind) {
         UI_STATE.selectedCoord = ["Hop1zuo1", ind];
         const contains_guides_on_upward = document.getElementById("contains_guides_on_upward");
-        let centralNode = createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, "selection2", "selection");
+        const centralNode = createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, indToHop1Zuo1Horizontal(ind), "selection2", "selection");
         centralNode.style.cursor = "pointer";
         // click on it to erase
-        centralNode.addEventListener('click', function () {
+        centralNode.addEventListener("click", function () {
             eraseGuide();
             UI_STATE.selectedCoord = null;
         });
@@ -1001,31 +863,31 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
         const contains_guides = document.getElementById("contains_guides");
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
-                let ij = [i, j];
+                const ij = [i, j];
                 // skip if already occupied
                 if (GAME_STATE.f.currentBoard[i][j] != null) {
                     continue;
                 }
                 // draw the yellow guides
-                let img = createCircleGuideImageAt(ij, "ct");
+                const img = createCircleGuideImageAt(ij, "ct");
                 // click on it to get things going
-                img.addEventListener('click', function () {
+                img.addEventListener("click", function () {
                     (function getThingsGoingFromHop1zuo1(piece, to) {
-                        let dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+                        const dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
                         // must parachute onto an empty square
                         if (dest != null) {
                             alert("Cannot parachute onto an occupied square");
                             throw new Error("Cannot parachute onto an occupied square");
                         }
-                        let abs_dst = toAbsoluteCoord(to);
-                        let message = {
+                        const abs_dst = toAbsoluteCoord(to);
+                        const message = {
                             type: "NonTamMove",
                             data: {
                                 type: "FromHand",
                                 color: piece.color,
                                 prof: piece.prof,
-                                dest: abs_dst
-                            }
+                                dest: abs_dst,
+                            },
                         };
                         sendNormalMessage(message);
                     })(piece, ij);
@@ -1038,12 +900,6 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
         /* re-click: deselect */
         UI_STATE.selectedCoord = null;
     }
-}
-function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
-    return createPieceSizeImageOnBoardByPathAndXY(1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2, path, "piece_image_on_hop1zuo1");
-}
-function createPieceImgToBePlacedOnBoard(coord, piece) {
-    return createPieceSizeImageOnBoardByPath(coord, toPath_(piece), "piece_image_on_board");
 }
 function removeChildren(parent) {
     while (parent.firstChild) {
@@ -1063,21 +919,22 @@ function drawField(field) {
                     continue;
                 }
                 const coord = [i, j];
-                let imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
+                const imgNode = createPieceImgToBePlacedOnBoard(coord, piece);
+                imgNode.id = `field_piece_${i}_${j}`;
                 if (piece === "Tam2") {
                     imgNode.style.cursor = "pointer";
-                    imgNode.addEventListener('click', function () {
+                    imgNode.addEventListener("click", function () {
                         selectOwnPieceOnBoard(coord, piece);
                     });
                 }
                 else if (piece.side === Side.Upward) {
-                    let q = {
+                    const q = {
                         prof: piece.prof,
                         side: Side.Upward,
-                        color: piece.color
+                        color: piece.color,
                     };
                     imgNode.style.cursor = "pointer";
-                    imgNode.addEventListener('click', function () {
+                    imgNode.addEventListener("click", function () {
                         selectOwnPieceOnBoard(coord, q);
                     });
                 }
@@ -1092,9 +949,9 @@ function drawField(field) {
         removeChildren(contains_pieces_on_upward);
         for (let i = 0; i < list.length; i++) {
             const piece = list[i];
-            let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
             imgNode.style.cursor = "pointer";
-            imgNode.addEventListener('click', function () {
+            imgNode.addEventListener("click", function () {
                 selectOwnPieceOnHop1zuo1(i, piece);
             });
             contains_pieces_on_upward.appendChild(imgNode);
@@ -1107,7 +964,8 @@ function drawField(field) {
         removeChildren(contains_pieces_on_downward);
         for (let i = 0; i < list.length; i++) {
             const piece = list[i];
-            let imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
+            imgNode.id = `hop1zuo1OfDownward_${i}`;
             contains_pieces_on_downward.appendChild(imgNode);
         }
     };

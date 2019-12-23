@@ -20,15 +20,18 @@ var calculate_movable;
         - abs(dx_block, dy_block) < abs(dx, dy)
         */
         const [dx, dy] = delta;
-        let ans = [];
+        const ans = [];
         for (let dx_block = -8; dx_block <= 8; dx_block++) {
             for (let dy_block = -8; dy_block <= 8; dy_block++) {
-                if (dx * dy_block - dy * dx_block !== 0)
-                    continue; // cross product must be zero
-                if (dx * dx_block + dy * dy_block <= 0)
-                    continue; // cross product must be positive
-                if (dx_block * dx_block + dy_block * dy_block >= dx * dx + dy * dy)
+                if (dx * dy_block - dy * dx_block !== 0) {
                     continue;
+                } // cross product must be zero
+                if (dx * dx_block + dy * dy_block <= 0) {
+                    continue;
+                } // cross product must be positive
+                if (dx_block * dx_block + dy_block * dy_block >= dx * dx + dy * dy) {
+                    continue;
+                }
                 // must be strictly small in absolute value
                 ans[ans.length] = [dx_block, dy_block];
             }
@@ -36,10 +39,10 @@ var calculate_movable;
         return ans;
     }
     function applyDeltasIfNoIntervention(coord, deltas, board) {
-        return [].concat(...deltas.map(delta => applySingleDeltaIfNoIntervention(coord, delta, board)));
+        return [].concat(...deltas.map((delta) => applySingleDeltaIfNoIntervention(coord, delta, board)));
     }
     function applySingleDeltaIfNoIntervention(coord, delta, board) {
-        let blocker = applyDeltas(coord, getBlockerDeltas(delta));
+        const blocker = applyDeltas(coord, getBlockerDeltas(delta));
         // if nothing is blocking the way
         if (blocker.every(([i, j]) => board[i][j] == null)) {
             return applyDeltas(coord, [delta]);
@@ -49,7 +52,7 @@ var calculate_movable;
         }
     }
     function applySingleDeltaIfZeroOrOneIntervention(coord, delta, board) {
-        let blocker = applyDeltas(coord, getBlockerDeltas(delta));
+        const blocker = applyDeltas(coord, getBlockerDeltas(delta));
         // if no piece or a single piece is blocking the way
         if (blocker.filter(([i, j]) => board[i][j] != null).length <= 1) {
             return applyDeltas(coord, [delta]);
@@ -59,13 +62,13 @@ var calculate_movable;
         }
     }
     function applyDeltasIfZeroOrOneIntervention(coord, deltas, board) {
-        return [].concat(...deltas.map(delta => applySingleDeltaIfZeroOrOneIntervention(coord, delta, board)));
+        return [].concat(...deltas.map((delta) => applySingleDeltaIfZeroOrOneIntervention(coord, delta, board)));
     }
     function eightNeighborhood(coord) {
         return applyDeltas(coord, [
             [-1, -1], [-1, 0], [-1, 1],
             [0, -1], [0, 1],
-            [1, -1], [1, 0], [1, 1]
+            [1, -1], [1, 0], [1, 1],
         ]);
     }
     calculate_movable.eightNeighborhood = eightNeighborhood;
@@ -95,7 +98,7 @@ var calculate_movable;
     function canGetOccupiedBy(side, dest, piece_to_move, board, tam_itself_is_tam_hue) {
         /* Intentionally does not verify whether the piece itself is of opponent */
         const isProtectedByOpponentTamHueAUai = (side, coord) => eightNeighborhood(coord).filter(([a, b]) => {
-            let piece = board[a][b];
+            const piece = board[a][b];
             if (piece == null) {
                 return false;
             }
@@ -121,11 +124,18 @@ var calculate_movable;
         }
     }
     calculate_movable.canGetOccupiedBy = canGetOccupiedBy;
-    function calculateMovablePositions(coord, sq, board, tam_itself_is_tam_hue) {
-        if (sq === "Tam2") {
+    /**
+     * Calculates the possible squares to which the piece can MOVE to. THIS INCLUDES SQUARES OCCUPIED BY TAM2, ALLIES, OR OPPONENTS PROTECTED BY TAM2HUEAUAI1
+     * @param coord the square from which the piece moves
+     * @param piece the piece to be moved
+     * @param board the board
+     * @param tam_itself_is_tam_hue rule variation: does Tam2 itself count as a tam2 hue?
+     */
+    function calculateMovablePositions(coord, piece, board, tam_itself_is_tam_hue) {
+        if (piece === "Tam2") {
             return { finite: eightNeighborhood(coord), infinite: [] };
         }
-        if (sq.prof === Profession.Io) {
+        if (piece.prof === Profession.Io) {
             return { finite: eightNeighborhood(coord), infinite: [] };
         }
         const UPLEFT = [[-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2], [-1, -1]];
@@ -137,7 +147,7 @@ var calculate_movable;
         const LEFT = [[0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7], [0, -8]];
         const RIGHT = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8]];
         if (isTamHue(coord, board, tam_itself_is_tam_hue)) {
-            switch (sq.prof) {
+            switch (piece.prof) {
                 case Profession.Uai1: // General, 将, varxle
                     return { finite: eightNeighborhood(coord), infinite: [] };
                 case Profession.Kaun1:
@@ -146,20 +156,20 @@ var calculate_movable;
                     return {
                         finite: [
                             ...applyDeltas(coord, [[-1, 0], [0, -1], [0, 1], [1, 0]]),
-                            ...applySingleDeltaIfNoIntervention(coord, [-2, 0], board)
-                        ], infinite: []
+                            ...applySingleDeltaIfNoIntervention(coord, [-2, 0], board),
+                        ], infinite: [],
                     };
                 case Profession.Nuak1: // Vessel, 船, felkana
                     return {
                         finite: [
                             ...applyDeltas(coord, [[0, -1], [0, 1]]),
                             ...applyDeltasIfNoIntervention(coord, [
-                                [0, -2], [0, 2]
-                            ], board)
+                                [0, -2], [0, 2],
+                            ], board),
                         ], infinite: applyDeltasIfNoIntervention(coord, [
                             ...UP,
-                            ...DOWN
-                        ], board)
+                            ...DOWN,
+                        ], board),
                     };
                 case Profession.Gua2: // Rook, 弓, gustuer
                 case Profession.Dau2: // Tiger, 虎, stistyst
@@ -168,26 +178,43 @@ var calculate_movable;
                             ...UPLEFT,
                             ...UPRIGHT,
                             ...DOWNLEFT,
-                            ...DOWNRIGHT
-                        ], board)
+                            ...DOWNRIGHT,
+                        ], board),
                     };
-                case Profession.Maun1: // Horse, 馬, dodor
+                case Profession.Maun1: { // Horse, 馬, dodor
+                    const deltas = [
+                        [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
+                        [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
+                        [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
+                        [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2],
+                    ];
+                    let inf = [];
+                    for (let i = 0; i < deltas.length; i++) {
+                        const delta = deltas[i];
+                        const blocker_deltas = getBlockerDeltas(delta).filter((d) => 
+                        /*
+                         * remove [-1, 1], [-1, -1], [1, -1] and [1, 1], because
+                         * pieces here will not prevent Tam2HueAMaun1 from moving.
+                         */
+                        !([-1, 1].includes(d[0]) && [-1, 1].includes(d[1])));
+                        const blocker = applyDeltas(coord, blocker_deltas);
+                        // if nothing is blocking the way
+                        if (blocker.every(([i, j]) => board[i][j] == null)) {
+                            inf = [...inf, ...applyDeltas(coord, [delta])];
+                        }
+                    }
                     return {
-                        finite: [], infinite: applyDeltasIfNoIntervention(coord, [
-                            [-8, -8], [-7, -7], [-6, -6], [-5, -5], [-4, -4], [-3, -3], [-2, -2],
-                            [-8, 8], [-7, 7], [-6, 6], [-5, 5], [-4, 4], [-3, 3], [-2, 2],
-                            [8, -8], [7, -7], [6, -6], [5, -5], [4, -4], [3, -3], [2, -2],
-                            [8, 8], [7, 7], [6, 6], [5, 5], [4, 4], [3, 3], [2, 2]
-                        ], board)
+                        finite: [], infinite: inf,
                     };
+                }
                 case Profession.Kua2: // Clerk, 筆, kua
                     return {
                         finite: [], infinite: applyDeltasIfNoIntervention(coord, [
                             ...UP,
                             ...DOWN,
                             ...LEFT,
-                            ...RIGHT
-                        ], board)
+                            ...RIGHT,
+                        ], board),
                     };
                 case Profession.Tuk2: // Shaman, 巫, terlsk
                     return {
@@ -199,16 +226,16 @@ var calculate_movable;
                             ...UPLEFT,
                             ...UPRIGHT,
                             ...DOWNLEFT,
-                            ...DOWNRIGHT
-                        ], board)
+                            ...DOWNRIGHT,
+                        ], board),
                     };
                 default:
-                    let _should_not_reach_here = sq.prof;
+                    const _should_not_reach_here = piece.prof;
                     return _should_not_reach_here;
             }
         }
         else {
-            switch (sq.prof) {
+            switch (piece.prof) {
                 case Profession.Kauk2:
                     return { finite: applyDeltas(coord, [[-1, 0]]), infinite: [] }; // Pawn, 兵, elmer
                 case Profession.Kaun1:
@@ -225,35 +252,35 @@ var calculate_movable;
                             ...UP,
                             ...DOWN,
                             ...LEFT,
-                            ...RIGHT
-                        ], board)
+                            ...RIGHT,
+                        ], board),
                     };
                 case Profession.Kua2: // Clerk, 筆, kua
                     return {
                         finite: applyDeltas(coord, [[0, -1], [0, 1]]),
                         infinite: applyDeltasIfNoIntervention(coord, [
                             ...UP,
-                            ...DOWN
-                        ], board)
+                            ...DOWN,
+                        ], board),
                     };
                 case Profession.Tuk2: // Shaman, 巫, terlsk
                     return {
                         finite: applyDeltas(coord, [[-1, 0], [1, 0]]),
                         infinite: applyDeltasIfNoIntervention(coord, [
                             ...LEFT,
-                            ...RIGHT
-                        ], board)
+                            ...RIGHT,
+                        ], board),
                     };
                 case Profession.Uai1: // General, 将, varxle
                     return {
                         finite: applyDeltas(coord, [
                             [-1, -1], [-1, 0], [-1, 1],
                             [0, -1], [0, 1],
-                            [1, -1], [1, 1]
-                        ]), infinite: []
+                            [1, -1], [1, 1],
+                        ]), infinite: [],
                     };
                 default:
-                    let _should_not_reach_here = sq.prof;
+                    const _should_not_reach_here = piece.prof;
                     return _should_not_reach_here;
             }
         }
