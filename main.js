@@ -467,12 +467,35 @@ function takeTheDownwardPiece(destPiece) {
             prof: destPiece.prof,
             side: Side.Upward,
         };
+        const old_state = calculateHandsAndScore();
         GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+        const new_state = calculateHandsAndScore();
+        if (new_state.score === old_state.score) {
+            return;
+        }
+        else {
+            setTimeout(() => alert(`new hand detected; hands: ${new_state.hands}, score: ${new_state.score}`), 1000 * 0.8093);
+        }
     }
     else {
         const _should_not_reach_here = destPiece.side;
         throw new Error("should not reach here");
     }
+}
+function calculateHandsAndScore() {
+    const hop1zuo1 = GAME_STATE.f.hop1zuo1OfUpward.map(p => toObtainablePiece(p.color, p.prof));
+    const res = calculate_hands_and_score_from_pieces(hop1zuo1);
+    if (res.error === true) {
+        throw new Error(`should not happen: too many of ${res.too_many.join(",")}`);
+    }
+    return { hands: res.hands, score: res.score };
+}
+function toObtainablePiece(color, prof) {
+    const a = [
+        ["赤船", "赤兵", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "赤王"],
+        ["黒船", "黒兵", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "黒王"],
+    ];
+    return a[color][prof];
 }
 function updateField(message) {
     if (message.type === "NonTamMove") {
