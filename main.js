@@ -943,9 +943,10 @@ function drawScoreDisplay(hands) {
         return ans;
     }
     const score_display = document.getElementById("score_display");
+    const total_score_digits = toDigits(hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0));
     score_display.innerHTML =
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
-            drawDigits(20, 129, 70, toDigits(hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0)));
+            drawDigits(20, 234 - 70 * total_score_digits.length / 2, 70, total_score_digits);
 }
 setTimeout(() => drawScoreDisplay(["同色無抗行処", "同色筆兵無傾", "同色地心", "馬弓兵", "行行", "王", "同色獣", "戦集", "同色助友", "闇戦之集", "撃皇"]), 2000);
 function drawField() {
