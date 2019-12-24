@@ -934,12 +934,12 @@ function drawScoreDisplay(hands) {
         if (hand.slice(0, 2) === "同色") {
             ans += `
             <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
-            <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${170 + top_padding}px;" width="50">`;
+            <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`;
         }
         else {
             ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
         }
-        ans += drawDigits(left, 270 + top_padding, 50, digits);
+        ans += drawDigits(left, 280 + top_padding, 50, digits);
         return ans;
     }
     const score_display = document.getElementById("score_display");
@@ -947,7 +947,7 @@ function drawScoreDisplay(hands) {
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
             drawDigits(20, 129, 70, toDigits(hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0)));
 }
-setTimeout(() => drawScoreDisplay(["無抗行処", "同色筆兵無傾", "同色地心", "馬弓兵", "行行", "王", "同色獣", "戦集", "同色助友", "闇戦之集", "撃皇"]), 2000);
+setTimeout(() => drawScoreDisplay(["同色無抗行処", "同色筆兵無傾", "同色地心", "馬弓兵", "行行", "王", "同色獣", "戦集", "同色助友", "闇戦之集", "撃皇"]), 2000);
 function drawField() {
     (function drawBoard(board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
