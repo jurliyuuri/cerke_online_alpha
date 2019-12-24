@@ -744,7 +744,11 @@ function updateField(message: NormalMove) {
     }
 }
 
-function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coord) {
+function getThingsGoing(
+    piece_to_move: "Tam2" | NonTam2PieceUpward, 
+    from: Coord, 
+    to: Coord, 
+    ask_whether_to_step: boolean) {
     const destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (destPiece == null) { // dest is empty square; try to simply move
@@ -777,7 +781,8 @@ function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord,
         return;
     }
 
-    if (confirm(DICTIONARY.ja.whetherToTake)) {
+    // short-circuit evaluation
+    if (ask_whether_to_step && confirm(DICTIONARY.ja.whetherToTake)) {
         const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
         const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
         const message: NormalNonTamMove = {
@@ -1039,8 +1044,13 @@ function display_guides(coord: Coord, piece: "Tam2" | NonTam2PieceUpward, parent
 
         // click on it to get things going
         img.addEventListener("click", function() {
-            getThingsGoing(piece, coord, list[ind]);
+            getThingsGoing(piece, coord, list[ind], /* ask whether to step, when clicked */ true);
         });
+
+        img.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
+            getThingsGoing(piece, coord, list[ind], /* when right-clicked, default to step */ false);
+        })
 
         parent.appendChild(img);
     }

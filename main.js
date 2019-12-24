@@ -590,7 +590,7 @@ function updateField(message) {
         const _should_not_reach_here = message;
     }
 }
-function getThingsGoing(piece_to_move, from, to) {
+function getThingsGoing(piece_to_move, from, to, ask_whether_to_step) {
     const destPiece = GAME_STATE.f.currentBoard[to[0]][to[1]];
     if (destPiece == null) { // dest is empty square; try to simply move
         let message;
@@ -618,7 +618,8 @@ function getThingsGoing(piece_to_move, from, to) {
         stepping(from, piece_to_move, to);
         return;
     }
-    if (confirm(DICTIONARY.ja.whetherToTake)) {
+    // short-circuit evaluation
+    if (ask_whether_to_step && confirm(DICTIONARY.ja.whetherToTake)) {
         const abs_src = toAbsoluteCoord(from);
         const abs_dst = toAbsoluteCoord(to);
         const message = {
@@ -819,7 +820,11 @@ function display_guides(coord, piece, parent, list) {
         const img = createCircleGuideImageAt(list[ind], "ct");
         // click on it to get things going
         img.addEventListener("click", function () {
-            getThingsGoing(piece, coord, list[ind]);
+            getThingsGoing(piece, coord, list[ind], /* ask whether to step, when clicked */ true);
+        });
+        img.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+            getThingsGoing(piece, coord, list[ind], /* when right-clicked, default to step */ false);
         });
         parent.appendChild(img);
     }
