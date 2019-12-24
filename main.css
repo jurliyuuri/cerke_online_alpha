@@ -37,6 +37,16 @@ img.water_entry {
   left: 20px;
 }
 
+#score_display {
+  position: absolute;
+  top: 280px;
+  left: 11px;
+  height: 390px;
+  width: 650px;
+  background-color: rgba(1, 1, 1, 0.7);
+  z-index: 2000;
+}
+
 #protective_cover_over_field_while_asyncawait {
   background-color: rgba(0, 0, 0, 0);
   width: 631px;
