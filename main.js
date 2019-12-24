@@ -916,6 +916,11 @@ function toDigits(num) {
 }
 function drawScoreDisplay(hands) {
     const top_padding = 15;
+    if (hands.length > 11) {
+        throw new Error("too many hands");
+    }
+    const starting_position_left = [550, 550, 550, 550, 550, 550, 550, 550, 550, 575, 585, 595][hands.length];
+    const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
     function drawDigits(left, top, width, digits) {
         const letter_spacing = -0.06;
         return digits.map((digit, index) => `<img 
@@ -939,10 +944,10 @@ function drawScoreDisplay(hands) {
     }
     const score_display = document.getElementById("score_display");
     score_display.innerHTML =
-        hands.map((hand, index) => drawHandAndScore(hand, 550 - 60 * index)).join("") +
+        hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
             drawDigits(20, 129, 70, toDigits(hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0)));
 }
-setTimeout(() => drawScoreDisplay(["同色筆兵無傾", "同色地心", "同色馬弓兵", "行行", "王", "同色獣", "同色戦集", "同色助友"]), 2000);
+setTimeout(() => drawScoreDisplay(["無抗行処", "同色筆兵無傾", "同色地心", "馬弓兵", "行行", "王", "同色獣", "戦集", "同色助友", "闇戦之集", "撃皇"]), 2000);
 function drawField() {
     (function drawBoard(board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
