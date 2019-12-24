@@ -889,6 +889,60 @@ function removeChildren(parent) {
         parent.removeChild(parent.firstChild);
     }
 }
+function toDigits(num) {
+    if (num % 1 !== 0) {
+        throw new Error("non-integer");
+    }
+    else if (num >= 100 || num <= -100) {
+        alert("internal error: add linzi image for 100");
+        throw new Error("add linzi image for 100");
+    }
+    else if (num < 0) {
+        return ["neg", ...toDigits(-num)];
+    }
+    else if (num == 0) {
+        return ["num00"];
+    }
+    const lastDigitArr = num % 10 === 0 ? [] : [`num0${num % 10}`];
+    if (num >= 20) {
+        return [`num0${Math.floor(num / 10)}`, "num10", ...lastDigitArr];
+    }
+    else if (num >= 10) {
+        return ["num10", ...lastDigitArr];
+    }
+    else {
+        return lastDigitArr;
+    }
+}
+function drawScoreDisplay(hands) {
+    const top_padding = 15;
+    function drawDigits(left, top, width, digits) {
+        const letter_spacing = -0.06;
+        return digits.map((digit, index) => `<img 
+                src="image/dat2/${digit}.png" 
+                style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
+            >`).join("");
+    }
+    function drawHandAndScore(hand, left) {
+        const digits = toDigits(hand_to_score[hand]);
+        let ans = "";
+        if (hand.slice(0, 2) === "同色") {
+            ans += `
+            <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
+            <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${170 + top_padding}px;" width="50">`;
+        }
+        else {
+            ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
+        }
+        ans += drawDigits(left, 270 + top_padding, 50, digits);
+        return ans;
+    }
+    const score_display = document.getElementById("score_display");
+    score_display.innerHTML =
+        hands.map((hand, index) => drawHandAndScore(hand, 550 - 60 * index)).join("") +
+            drawDigits(20, 129, 70, toDigits(hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0)));
+}
+setTimeout(() => drawScoreDisplay(["同色筆兵無傾", "同色地心", "同色馬弓兵", "行行", "王", "同色獣", "同色戦集", "同色助友"]), 2000);
 function drawField() {
     (function drawBoard(board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
