@@ -474,7 +474,25 @@ function takeTheDownwardPiece(destPiece) {
             return;
         }
         else {
-            setTimeout(() => alert(`new hand detected; hands: ${new_state.hands}, score: ${new_state.score}`), 1000 * 0.8093);
+            setTimeout(() => {
+                drawScoreDisplay(new_state.hands.sort((a, b) => {
+                    const hands_ordering = [
+                        "同色無抗行処", "無抗行処",
+                        "同色筆兵無傾", "筆兵無傾",
+                        "同色地心", "地心",
+                        "同色馬弓兵", "馬弓兵",
+                        "同色行行", "行行",
+                        "王",
+                        "同色獣", "獣",
+                        "同色戦集", "戦集",
+                        "同色助友", "助友",
+                        "同色闇戦之集", "闇戦之集",
+                        "撃皇",
+                        "皇再来"
+                    ];
+                    return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
+                }));
+            }, 1000 * 0.8093);
         }
     }
     else {
@@ -943,6 +961,7 @@ function drawScoreDisplay(hands) {
         return ans;
     }
     const score_display = document.getElementById("score_display");
+    score_display.classList.remove("nocover");
     const total_score_digits = toDigits(hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0));
     score_display.innerHTML =
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
@@ -959,10 +978,17 @@ function drawScoreDisplay(hands) {
         node.style.border = "1px solid #aaaaaa";
         return node;
     }
-    score_display.appendChild(createButton("再行", 0));
-    score_display.appendChild(createButton("終", 250));
+    const ty_mok = createButton("再行", 0);
+    ty_mok.addEventListener("click", () => {
+        alert("ty mok1"); // FIXME
+    });
+    score_display.appendChild(ty_mok);
+    const ta_xot = createButton("終", 250);
+    ta_xot.addEventListener("click", () => {
+        alert("ta xot"); // FIXME
+    });
+    score_display.appendChild(ta_xot);
 }
-setTimeout(() => drawScoreDisplay(["同色無抗行処", "同色筆兵無傾", "同色地心", "馬弓兵", "行行", "王", "同色獣", "戦集", "同色助友", "闇戦之集", "撃皇"]), 2000);
 function drawField() {
     (function drawBoard(board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board");
