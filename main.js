@@ -895,7 +895,7 @@ function toDigits(num) {
     }
     else if (num >= 100 || num <= -100) {
         alert("internal error: add linzi image for 100");
-        throw new Error("add linzi image for 100");
+        throw new Error("add linzi image for 100"); /* FIXME */
     }
     else if (num < 0) {
         return ["neg", ...toDigits(-num)];
