@@ -1212,16 +1212,21 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
     score_display.innerHTML = 
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") + 
         drawDigits(20, 234 - 70 * total_score_digits.length / 2, 70, total_score_digits);
+    function createButton(img_name: String, top: number){
+        const node = document.createElement("input");
+        node.setAttribute("type", "image");
+        node.src = `image/dat2/${img_name}.png`;
+        node.height = 200;
+        node.style.backgroundColor = "#e0e0e0";
+        node.style.position = "absolute";
+        node.style.left = "660px";
+        node.style.top = `${top}px`;
+        node.style.border = "1px solid #aaaaaa";
+        return node;
+    }
     
-    const node = document.createElement("input");
-    node.setAttribute("type", "image");
-    node.src = "image/dat2/再行.png";
-    node.height = 200;
-    node.style.backgroundColor = "#e0e0e0";
-    node.style.position = "absolute";
-    node.style.left = "660px";
-    node.style.border = "1px solid #aaaaaa";
-    score_display.appendChild(node);
+    score_display.appendChild(createButton("再行", 0));
+    score_display.appendChild(createButton("終", 250));
 }
 
 setTimeout(() => drawScoreDisplay(["同色無抗行処", "同色筆兵無傾", "同色地心", "馬弓兵", "行行", "王", "同色獣", "戦集", "同色助友", "闇戦之集", "撃皇"]), 2000);
