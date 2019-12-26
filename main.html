@@ -15,6 +15,10 @@
 <script src="main.js"></script>
 </head>
 <body onload="drawField();">
+<div id="everything" style="position: absolute; left: 200px;">
+    <div style="position: absolute; left: -185px; top: 19.5px">
+        <img src="image/scoreboard.png" height="912">
+    </div>
     <div id="field">
     <div id="hop1zuo1_of_downward">
         <div id="contains_pieces_on_downward">
@@ -67,4 +71,5 @@
     <div id="kait_kaik">
         <input type="image" id="kait_kaik_button" src="image/kait_kaik.png" onclick="document.getElementById('kait_kaik').classList.add('nocover'); GAME_STATE.is_my_turn = Math.random() < 0.5;" width="200">
     </div>
+</div>
 </body>
