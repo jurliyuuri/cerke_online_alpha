@@ -14,7 +14,7 @@
 <script src="cerke_calculate_hands/calculate_hand.js"></script>
 <script src="main.js"></script>
 </head>
-<body onload="drawField(); GAME_STATE.is_my_turn = Math.random() < 0.5;">
+<body onload="drawField();">
     <div id="field">
     <div id="hop1zuo1_of_downward">
         <div id="contains_pieces_on_downward">
@@ -51,7 +51,7 @@
 
     </div>
 
-    <div id="protective_cover_over_field_while_waiting_for_opponent" class="nocover">
+    <div id="protective_cover_over_field_while_waiting_for_opponent">
 
     </div>
 
@@ -63,4 +63,8 @@
     <div id="larta_opponent"><img src="image/larta.png"></div>
     <div id="arrows"></div>
     <div id="score_display" class="nocover"></div>
+
+    <div id="kait_kaik">
+        <input type="image" id="kait_kaik_button" src="image/kait_kaik.png" onclick="document.getElementById('kait_kaik').classList.add('nocover'); GAME_STATE.is_my_turn = Math.random() < 0.5;" width="200">
+    </div>
 </body>
