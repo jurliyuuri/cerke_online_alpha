@@ -1,6 +1,25 @@
 "use strict";
+const { stopPolling, resumePolling, isPollingAllowed } = (() => {
+    let POLLING_ALLOWED = true;
+    // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot decision.
+    const stopPolling = () => {
+        POLLING_ALLOWED = false;
+    };
+    const resumePolling = () => {
+        POLLING_ALLOWED = true;
+        window.setTimeout(sendMainPoll, 500 * 0.8093);
+    };
+    const isPollingAllowed = () => {
+        return POLLING_ALLOWED;
+    };
+    return { stopPolling, resumePolling, isPollingAllowed };
+})();
+// I repentfully use a global state
 async function sendMainPoll() {
     console.log("poll");
+    if (!isPollingAllowed()) {
+        return;
+    }
     if (Math.random() < 0.2) {
         console.log("ding!");
         // you are supposed to send a request to the server and wait for the response
@@ -493,6 +512,7 @@ function takeTheDownwardPiece(destPiece) {
                     return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
                 }));
             }, 1000 * 0.8093);
+            stopPolling();
         }
     }
     else {

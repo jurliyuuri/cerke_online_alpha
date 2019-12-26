@@ -1,5 +1,28 @@
+const {stopPolling, resumePolling, isPollingAllowed} = (() => {
+    let POLLING_ALLOWED = true;
+
+    // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot decision.
+    const stopPolling = () => {
+        POLLING_ALLOWED = false;
+    };
+
+    const resumePolling = () => {
+        POLLING_ALLOWED = true;
+    window.setTimeout(sendMainPoll, 500 * 0.8093);
+    }
+
+    const isPollingAllowed = () => {
+        return POLLING_ALLOWED;
+    }
+    return {stopPolling, resumePolling, isPollingAllowed}
+})();
+// I repentfully use a global state
+
 async function sendMainPoll() {
     console.log("poll");
+    if (!isPollingAllowed()) {
+        return;
+    }
     if (Math.random() < 0.2) {
         console.log("ding!");
 
@@ -619,6 +642,7 @@ function takeTheDownwardPiece(destPiece: Piece){
                 },
                 1000 * 0.8093
             );
+            stopPolling();
         }
 
     } else {
