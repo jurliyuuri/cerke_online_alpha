@@ -6,7 +6,7 @@ interface Field {
     hop1zuo1OfDownward: NonTam2PieceDownward[];
 }
 
-type Season = "spring" | "summer" | "autumn" | "winter";
+type Season = 0 | 1 | 2 | 3;
 
 interface GAME_STATE {
     f: Field;
@@ -83,7 +83,7 @@ let GAME_STATE: GAME_STATE = ((p: {IA_is_down: boolean}) => {
             { color: Color.Kok1, prof: Profession.Maun1, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Kaun1, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Uai1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Io, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kua2, side: Side.Upward }],
     ];
     let _is_my_turn: boolean = true; // override this by calling the setter
-    const season: Season = "spring";
+    const season: Season = 0;
     return {
     f: {
         currentBoard: p.IA_is_down ? initial_board_with_IA_down : rotateBoard(initial_board_with_IA_down),

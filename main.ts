@@ -1281,6 +1281,14 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
     score_display.appendChild(ta_xot);
 }
 
+function drawScoreboard() {
+    const denote_season = document.getElementById("denote_season")!;
+    denote_season.style.top = `${360 + 51 * GAME_STATE.season}px`;
+
+    const denote_score = document.getElementById("denote_score")!;
+    denote_score.style.top = `${447 + 21.83333333333333 * (20 - GAME_STATE.my_score)}px`
+}
+
 function drawField() {
     (function drawBoard(board: Board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;

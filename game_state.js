@@ -109,7 +109,7 @@ let GAME_STATE = ((p) => {
             { color: Color.Kok1, prof: Profession.Maun1, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Kaun1, side: Side.Upward }, { color: Color.Kok1, prof: Profession.Uai1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Io, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Uai1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kaun1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Maun1, side: Side.Upward }, { color: Color.Huok2, prof: Profession.Kua2, side: Side.Upward }],
     ];
     let _is_my_turn = true; // override this by calling the setter
-    const season = "spring";
+    const season = 0;
     return {
         f: {
             currentBoard: p.IA_is_down ? initial_board_with_IA_down : rotateBoard(initial_board_with_IA_down),
