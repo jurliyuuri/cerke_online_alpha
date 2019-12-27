@@ -1,7 +1,7 @@
 const {stopPolling, resumePolling, isPollingAllowed} = (() => {
     let POLLING_ALLOWED = true;
 
-    // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot decision.
+    // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
     const stopPolling = () => {
         POLLING_ALLOWED = false;
     };
@@ -1269,8 +1269,8 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
         return node;
     }
 
-    const ty_mok = createButton("再行", 0);
-    ty_mok.addEventListener("click", () => {
+    const ty_mok1_button = createButton("再行", 0);
+    ty_mok1_button.addEventListener("click", () => {
         score_display.classList.add("nocover");
         // FIXME: must send server of this decision
         const orig_log2_rate = GAME_STATE.log2_rate;
@@ -1298,43 +1298,53 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
             resumePolling();
         }, 200 * 0.8093);
     });
-    score_display.appendChild(ty_mok);
+    score_display.appendChild(ty_mok1_button);
 
-    const ta_xot = createButton("終", 250);
-    ta_xot.addEventListener("click", () => {
-        score_display.classList.add("nocover");
+    const ta_xot1_button = createButton("終", 250);
+    ta_xot1_button.addEventListener("click", () => endSeason(total_score));
+    score_display.appendChild(ta_xot1_button);
+}
+
+function endSeason(total_score: number) {
+    const score_display = document.getElementById("score_display")!;
+    score_display.classList.add("nocover");
         // FIXME: must send server of this decision
-        const denote_season = document.getElementById("denote_season")!;
-        const denote_score = document.getElementById("denote_score")!;
-        const orig_score = GAME_STATE.my_score;
-        const orig_season = GAME_STATE.season;
-        GAME_STATE.my_score += total_score * Math.pow(2, GAME_STATE.log2_rate);
-        const seasonProgressMap: {[P in Season]: Season | null} = {
-            0: 1,
-            1: 2,
-            2: 3,
-            3: null
-        };
-        const new_season = seasonProgressMap[orig_season];
-        if (new_season == null) {
-            alert("the game has ended"); // FIXME
+    const denote_season = document.getElementById("denote_season")!;
+    const denote_score = document.getElementById("denote_score")!;
+    const orig_score = GAME_STATE.my_score;
+    const orig_season = GAME_STATE.season;
+    GAME_STATE.my_score += total_score * Math.pow(2, GAME_STATE.log2_rate);
+    
+    const seasonProgressMap: {[P in Season]: Season | null} = {
+        0: 1,
+        1: 2,
+        2: 3,
+        3: null
+    };
+    const new_season = seasonProgressMap[orig_season];
+    if (new_season == null) {
+        alert("the game has ended"); // FIXME
+        return;
+    }
+
+    GAME_STATE.season = new_season;
+    setTimeout(async () => {
+        await animateNode(denote_score, 1000 * 0.8093, 
+            getDenoteScoreNodeTopLeft(GAME_STATE.my_score), 
+            getDenoteScoreNodeTopLeft(orig_score));
+
+        if (GAME_STATE.my_score >= 40) {
+            alert("you win!"); // FIXME
             return;
         }
-
-        GAME_STATE.season = new_season;
-        setTimeout(async () => {
-            await animateNode(denote_score, 1000 * 0.8093, 
-                getDenoteScoreNodeTopLeft(GAME_STATE.my_score), 
-                getDenoteScoreNodeTopLeft(orig_score));
-            await animateNode(denote_season, 700 * 0.8093,
-                getDenoteSeasonNodeTopLeft(GAME_STATE.season),
-                getDenoteSeasonNodeTopLeft(orig_season));
-            await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
-            drawScoreboard();
-            alert("let the new season begin"); // FIXME
-        }, 200 * 0.8093)
-    })
-    score_display.appendChild(ta_xot);
+        await animateNode(denote_season, 700 * 0.8093,
+            getDenoteSeasonNodeTopLeft(GAME_STATE.season),
+            getDenoteSeasonNodeTopLeft(orig_season));
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        drawScoreboard();
+        alert("let the new season begin"); // FIXME
+        
+    }, 200 * 0.8093)
 }
 
 function getDenoteSeasonNodeTopLeft(season: Season) {
