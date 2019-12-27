@@ -348,7 +348,7 @@ async function animateOpponentInfAfterStep(p) {
             }
         }
         if (!coordEq(p.src, dest)) { /* if same, the piece should not take itself */
-            takeTheUpwardPiece(destPiece);
+            takeTheUpwardPieceAndCheckHand(destPiece);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
@@ -377,7 +377,7 @@ async function animateOpponentInfAfterStep(p) {
  * Unsafe function.
  * @param destPiece Assumed to be upward; if not, an error is thrown
  */
-function takeTheUpwardPiece(destPiece) {
+function takeTheUpwardPieceAndCheckHand(destPiece) {
     const flipped = (() => {
         if (destPiece === "Tam2") {
             throw new Error("tried to convert Tam2 into downward");
@@ -435,7 +435,7 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
             }
         }
         if (!coordEq(src, dest)) { /* if same, the piece should not take itself */
-            takeTheUpwardPiece(destPiece);
+            takeTheUpwardPieceAndCheckHand(destPiece);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
@@ -498,7 +498,7 @@ async function animateOpponentSrcDst_(src, dst, water_entry_ciurl) {
                 return;
             }
         }
-        takeTheUpwardPiece(destPiece);
+        takeTheUpwardPieceAndCheckHand(destPiece);
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         drawField();

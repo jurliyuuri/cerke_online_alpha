@@ -590,7 +590,7 @@ function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord
     }
 
     if (destPiece !== null) {
-        takeTheDownwardPiece(destPiece);
+        takeTheDownwardPieceAndCheckHand(destPiece);
     }
 
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -601,7 +601,7 @@ function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord
  * Unsafe function.
  * @param destPiece Assumed to be downward; if not, an error is thrown
  */
-function takeTheDownwardPiece(destPiece: Piece) {
+function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     if (destPiece === "Tam2") {
         throw new Error("dest is occupied by Tam2");
     } else if (destPiece.side === Side.Upward) {
@@ -716,7 +716,7 @@ function updateField(message: NormalMove) {
             /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
 
             if (destPiece !== null) {
-                takeTheDownwardPiece(destPiece);
+                takeTheDownwardPieceAndCheckHand(destPiece);
             }
 
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -755,7 +755,7 @@ function updateField(message: NormalMove) {
             }
 
             if (destPiece !== null) {
-                takeTheDownwardPiece(destPiece);
+                takeTheDownwardPieceAndCheckHand(destPiece);
             }
 
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
