@@ -486,9 +486,9 @@ function takeTheDownwardPiece(destPiece) {
             prof: destPiece.prof,
             side: Side.Upward,
         };
-        const old_state = calculateHandsAndScore();
+        const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
         GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
-        const new_state = calculateHandsAndScore();
+        const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
         if (new_state.score === old_state.score) {
             return;
         }
@@ -520,8 +520,8 @@ function takeTheDownwardPiece(destPiece) {
         throw new Error("should not reach here");
     }
 }
-function calculateHandsAndScore() {
-    const hop1zuo1 = GAME_STATE.f.hop1zuo1OfUpward.map((p) => toObtainablePiece(p.color, p.prof));
+function calculateHandsAndScore(pieces) {
+    const hop1zuo1 = pieces.map((p) => toObtainablePiece(p.color, p.prof));
     const res = calculate_hands_and_score_from_pieces(hop1zuo1);
     if (res.error === true) {
         throw new Error(`should not happen: too many of ${res.too_many.join(",")}`);
