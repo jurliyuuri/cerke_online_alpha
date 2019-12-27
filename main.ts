@@ -1271,13 +1271,39 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
 
     const ty_mok = createButton("再行", 0);
     ty_mok.addEventListener("click", () => {
-        alert("ty mok1"); // FIXME
+        score_display.classList.add("nocover");
+        // FIXME: must send server of this decision
+        const orig_log2_rate = GAME_STATE.log2_rate;
+        const log2RateProgressMap: {[P in Log2_Rate]: Log2_Rate} = {
+            0: 1,
+            1: 2,
+            2: 3,
+            3: 4,
+            4: 5,
+            5: 6,
+            6: 6, // does not go beyond x64, because the total score is 40
+        };
+        drawScoreboard(); // cargo cult
+        GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
+
+        const denote_rate = document.getElementById("denote_rate")!;
+        setTimeout(async () => {
+            denote_rate.style.display = "block";
+            await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
+            await animateNode(denote_rate, 1000 * 0.8093, 
+                getDenoteRateNodeTopLeft(GAME_STATE.log2_rate), 
+                getDenoteRateNodeTopLeft(orig_log2_rate));
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+            drawScoreboard();
+            resumePolling();
+        }, 200 * 0.8093);
     });
     score_display.appendChild(ty_mok);
 
     const ta_xot = createButton("終", 250);
     ta_xot.addEventListener("click", () => {
         score_display.classList.add("nocover");
+        // FIXME: must send server of this decision
         const denote_season = document.getElementById("denote_season")!;
         const denote_score = document.getElementById("denote_score")!;
         const orig_score = GAME_STATE.my_score;
@@ -1319,6 +1345,10 @@ function getDenoteScoreNodeTopLeft(score: number) {
     return {top: 447 + 21.83333333333333 * (20 - score), left: 65};
 }
 
+function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
+    return {top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4};
+}
+
 function drawScoreboard() {
     const denote_season = document.getElementById("denote_season")!;
     denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top}px`;
@@ -1335,8 +1365,11 @@ function drawScoreboard() {
         denote_rate.style.display = "none";
     } else {
         denote_rate.style.display = "block";
-        denote_rate.style.top = `${873 - 96.66666666666667 * (GAME_STATE.log2_rate - 1)}px`
     }
+        denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top}px`
+        denote_rate.style.transition = ``;
+        denote_rate.style.transform = ``;
+    
 }
 
 function drawField() {
