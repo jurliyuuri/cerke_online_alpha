@@ -348,10 +348,7 @@ async function animateOpponentInfAfterStep(p) {
             }
         }
         if (!coordEq(p.src, dest)) { /* if same, the piece should not take itself */
-            const flipped = downwardTakingUpward(destPiece);
-            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-            GAME_STATE.f.currentBoard[src_i][src_j] = null;
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            takeTheUpwardPieceAndMove(destPiece, p.src, dest, piece);
         }
         drawField();
     }
@@ -373,6 +370,18 @@ async function animateOpponentInfAfterStep(p) {
         }
         drawField();
     }
+}
+/**
+ * Unsafe function.
+ * @param destPiece Assumed to be upward; if not, an error is thrown
+ */
+function takeTheUpwardPieceAndMove(destPiece, src, dest, piece) {
+    const [src_i, src_j] = src;
+    const [dest_i, dest_j] = dest;
+    const flipped = downwardTakingUpward(destPiece);
+    GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+    GAME_STATE.f.currentBoard[src_i][src_j] = null;
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
 }
 async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciurl) {
     const [src_i, src_j] = src;
@@ -407,10 +416,7 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
             }
         }
         if (!coordEq(src, dest)) { /* if same, the piece should not take itself */
-            const flipped = downwardTakingUpward(destPiece);
-            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-            GAME_STATE.f.currentBoard[src_i][src_j] = null;
-            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            takeTheUpwardPieceAndMove(destPiece, src, dest, piece);
         }
         drawField();
     }
@@ -495,10 +501,7 @@ async function animateOpponentSrcDst_(src, dst, water_entry_ciurl) {
                 return;
             }
         }
-        const flipped = downwardTakingUpward(destPiece);
-        GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-        GAME_STATE.f.currentBoard[src_i][src_j] = null;
-        GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        takeTheUpwardPieceAndMove(destPiece, src, dst, piece);
         drawField();
     }
     else {
