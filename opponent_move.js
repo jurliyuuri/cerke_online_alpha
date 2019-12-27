@@ -378,7 +378,26 @@ async function animateOpponentInfAfterStep(p) {
 function takeTheUpwardPieceAndMove(destPiece, src, dest, piece) {
     const [src_i, src_j] = src;
     const [dest_i, dest_j] = dest;
-    const flipped = downwardTakingUpward(destPiece);
+    const flipped = (() => {
+        if (destPiece === "Tam2") {
+            throw new Error("tried to convert Tam2 into downward");
+        }
+        else if (destPiece.side === Side.Downward) {
+            throw new Error("tried to convert an already downward piece to downward");
+        }
+        else if (destPiece.side === Side.Upward) {
+            const flipped = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Downward,
+            };
+            return flipped;
+        }
+        else {
+            const _should_not_reach_here = destPiece.side;
+            throw new Error("should not reach here");
+        }
+    })();
     GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
@@ -440,30 +459,6 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         drawField();
-    }
-}
-/**
- * Unsafe function. Takes an upward piece and turns it into a downward one. Panics if already downward or Tam2.
- * @param {Piece} upward
- */
-function downwardTakingUpward(upward) {
-    if (upward === "Tam2") {
-        throw new Error("tried to convert Tam2 into downward");
-    }
-    else if (upward.side === Side.Downward) {
-        throw new Error("tried to convert an already downward piece to downward");
-    }
-    else if (upward.side === Side.Upward) {
-        const flipped = {
-            color: upward.color,
-            prof: upward.prof,
-            side: Side.Downward,
-        };
-        return flipped;
-    }
-    else {
-        const _should_not_reach_here = upward.side;
-        throw new Error("should not reach here");
     }
 }
 async function animateOpponentSrcDst(p) {

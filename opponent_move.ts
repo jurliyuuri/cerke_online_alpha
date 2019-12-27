@@ -506,7 +506,23 @@ async function animateOpponentInfAfterStep(p: {
 function takeTheUpwardPieceAndMove(destPiece: Piece, src: Coord, dest: Coord, piece: Piece) {
     const [src_i, src_j] = src;
     const [dest_i, dest_j] = dest;
-    const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
+    const flipped: NonTam2PieceDownward = (() => {
+        if (destPiece === "Tam2") {
+            throw new Error("tried to convert Tam2 into downward");
+        } else if (destPiece.side === Side.Downward) {
+            throw new Error("tried to convert an already downward piece to downward");
+        } else if (destPiece.side === Side.Upward) {
+            const flipped: NonTam2PieceDownward = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Downward,
+            };
+            return flipped;
+        } else {
+            const _should_not_reach_here: never = destPiece.side;
+            throw new Error("should not reach here");
+        }
+    })();
     GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
@@ -600,28 +616,6 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         drawField();
-    }
-}
-
-/**
- * Unsafe function. Takes an upward piece and turns it into a downward one. Panics if already downward or Tam2.
- * @param {Piece} upward
- */
-function downwardTakingUpward(upward: Piece): NonTam2PieceDownward {
-    if (upward === "Tam2") {
-        throw new Error("tried to convert Tam2 into downward");
-    } else if (upward.side === Side.Downward) {
-        throw new Error("tried to convert an already downward piece to downward");
-    } else if (upward.side === Side.Upward) {
-        const flipped: NonTam2PieceDownward = {
-            color: upward.color,
-            prof: upward.prof,
-            side: Side.Downward,
-        };
-        return flipped;
-    } else {
-        const _should_not_reach_here: never = upward.side;
-        throw new Error("should not reach here");
     }
 }
 
