@@ -602,52 +602,54 @@ function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord
  * @param destPiece Assumed to be downward; if not, an error is thrown
  */
 function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
-    if (destPiece === "Tam2") {
-        throw new Error("dest is occupied by Tam2");
-    } else if (destPiece.side === Side.Upward) {
-        throw new Error("dest is occupied by an ally");
-    } else if (destPiece.side === Side.Downward) {
-        const flipped: NonTam2PieceUpward = {
-            color: destPiece.color,
-            prof: destPiece.prof,
-            side: Side.Upward,
-        };
-
-        const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
-        GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
-        const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
-
-        if (new_state.score === old_state.score) {
-            return;
+    const flipped: NonTam2PieceUpward = (() => {
+        if (destPiece === "Tam2") {
+            throw new Error("dest is occupied by Tam2");
+        } else if (destPiece.side === Side.Upward) {
+            throw new Error("dest is occupied by an ally");
+        } else if (destPiece.side === Side.Downward) {
+            const flipped: NonTam2PieceUpward = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Upward,
+            };
+            return flipped;
         } else {
-            setTimeout(
-                () => {
-                    drawScoreDisplay(new_state.hands.sort((a, b) => {
-                        const hands_ordering: HandAndNegativeHand[] = [
-                            "同色無抗行処", "無抗行処",
-                            "同色筆兵無傾", "筆兵無傾",
-                            "同色地心", "地心",
-                            "同色馬弓兵", "馬弓兵",
-                            "同色行行", "行行",
-                            "王",
-                            "同色獣", "獣",
-                            "同色戦集", "戦集",
-                            "同色助友", "助友",
-                            "同色闇戦之集", "闇戦之集",
-                            "撃皇",
-                            "皇再来",
-                        ];
-                        return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
-                    }));
-                },
-                1000 * 0.8093,
-            );
-            stopPolling();
+            const _should_not_reach_here: never = destPiece.side;
+            throw new Error("should not reach here");
         }
+    })();
 
+    const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
+    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+    const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
+
+    if (new_state.score === old_state.score) {
+        return;
     } else {
-        const _should_not_reach_here: never = destPiece.side;
-        throw new Error("should not reach here");
+        setTimeout(
+            () => {
+                drawScoreDisplay(new_state.hands.sort((a, b) => {
+                    const hands_ordering: HandAndNegativeHand[] = [
+                        "同色無抗行処", "無抗行処",
+                        "同色筆兵無傾", "筆兵無傾",
+                        "同色地心", "地心",
+                        "同色馬弓兵", "馬弓兵",
+                        "同色行行", "行行",
+                        "王",
+                        "同色獣", "獣",
+                        "同色戦集", "戦集",
+                        "同色助友", "助友",
+                        "同色闇戦之集", "闇戦之集",
+                        "撃皇",
+                        "皇再来",
+                    ];
+                    return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
+                }));
+            },
+            1000 * 0.8093,
+        );
+        stopPolling();
     }
 }
 
