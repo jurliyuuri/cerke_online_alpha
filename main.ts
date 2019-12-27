@@ -26,7 +26,7 @@ async function sendMainPoll() {
     if (Math.random() < 0.2) {
         console.log("ding!");
 
-        // you are supposed to send a request to the server and wait for the response
+        // FIXME: you are supposed to send a request to the server and wait for the response
         const opponent_move = get_one_valid_opponent_move();
         console.log(opponent_move);
         if (opponent_move.type === "NonTamMove") {

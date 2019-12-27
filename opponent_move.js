@@ -401,6 +401,38 @@ function takeTheUpwardPieceAndCheckHand(destPiece) {
     const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfDownward);
     GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
     const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfDownward);
+    if (new_state.score === old_state.score) {
+        return;
+    }
+    // this will quite quickly be gone due to the setter of is_my_turn
+    document.getElementById("protective_cover_over_field_while_waiting_for_opponent").classList.remove("nocover");
+    // hence add another transparent film
+    document.getElementById("protective_cover_over_field_while_asyncawait").classList.remove("nocover");
+    window.setTimeout(async () => {
+        await sendTyMok1OrTaXot1Poll();
+    }, 0);
+    window.setTimeout(() => {
+        drawScoreDisplay(new_state.hands);
+    }, 1000 * 0.8093);
+}
+async function sendTyMok1OrTaXot1Poll() {
+    console.log("poll whether ty mok1 or ta xot1");
+    if (Math.random() < 0.2) {
+        console.log("ding!");
+        // FIXME: you are supposed to send a request to the server and wait for the response
+        const is_tymok1 = Math.random() < 0.5;
+        if (is_tymok1) {
+            alert("ty mok1"); // FIXME
+        }
+        else {
+            alert("ta xot1"); // FIXME
+        }
+    }
+    else {
+        document.getElementById("protective_cover_over_field_while_waiting_for_opponent").classList.remove("nocover");
+        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+        await sendTyMok1OrTaXot1Poll();
+    }
 }
 async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciurl) {
     const [src_i, src_j] = src;
