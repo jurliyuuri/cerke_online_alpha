@@ -502,6 +502,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece) {
     }
     setTimeout(() => {
         drawScoreDisplay(new_state.hands);
+        drawTyMok1AndTaXot1Buttons(new_state.score);
     }, 1000 * 0.8093);
     stopPolling();
 }
@@ -984,11 +985,13 @@ function drawScoreDisplay(hands_) {
     }
     const score_display = document.getElementById("score_display");
     score_display.classList.remove("nocover");
-    const total_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
-    const total_score_digits = toDigits(total_score);
+    const base_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
+    const base_score_digits = toDigits(base_score);
     score_display.innerHTML =
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
-            drawDigits(20, 234 - 70 * total_score_digits.length / 2, 70, total_score_digits);
+            drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
+}
+function drawTyMok1AndTaXot1Buttons(base_score) {
     function createButton(img_name, top) {
         const node = document.createElement("input");
         node.setAttribute("type", "image");
@@ -1001,6 +1004,7 @@ function drawScoreDisplay(hands_) {
         node.style.border = "1px solid #aaaaaa";
         return node;
     }
+    const score_display = document.getElementById("score_display");
     const ty_mok1_button = createButton("再行", 0);
     ty_mok1_button.addEventListener("click", () => {
         score_display.classList.add("nocover");
@@ -1029,10 +1033,10 @@ function drawScoreDisplay(hands_) {
     });
     score_display.appendChild(ty_mok1_button);
     const ta_xot1_button = createButton("終", 250);
-    ta_xot1_button.addEventListener("click", () => endSeason(total_score));
+    ta_xot1_button.addEventListener("click", () => endSeason(base_score));
     score_display.appendChild(ta_xot1_button);
 }
-function endSeason(total_score) {
+function endSeason(base_score) {
     const score_display = document.getElementById("score_display");
     score_display.classList.add("nocover");
     // FIXME: must send server of this decision
@@ -1040,7 +1044,7 @@ function endSeason(total_score) {
     const denote_score = document.getElementById("denote_score");
     const orig_score = GAME_STATE.my_score;
     const orig_season = GAME_STATE.season;
-    GAME_STATE.my_score += total_score * Math.pow(2, GAME_STATE.log2_rate);
+    GAME_STATE.my_score += base_score * Math.pow(2, GAME_STATE.log2_rate);
     const seasonProgressMap = {
         0: 1,
         1: 2,
