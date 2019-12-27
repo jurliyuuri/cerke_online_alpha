@@ -125,6 +125,16 @@ img.water_entry {
   left: 200px;
 }
 
+#denote_season {
+  position: absolute;
+  left: 3px;
+}
+
+#denote_score {
+  position: absolute;
+  left: 65px;
+}
+
 #scoreboard_containment {
   position: absolute;
   left: -185px;
