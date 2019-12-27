@@ -120,6 +120,17 @@ img.water_entry {
   border: 1px solid #aaaaaa;
 }
 
+#everything {
+  position: absolute;
+  left: 200px;
+}
+
+#scoreboard_containment {
+  position: absolute;
+  left: -185px;
+  top: 19.5px;
+}
+
 #board_containment {
   width: 631px;
   height: 631px;
