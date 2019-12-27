@@ -500,28 +500,26 @@ function takeTheDownwardPieceAndCheckHand(destPiece) {
     if (new_state.score === old_state.score) {
         return;
     }
-    else {
-        setTimeout(() => {
-            drawScoreDisplay(new_state.hands.sort((a, b) => {
-                const hands_ordering = [
-                    "同色無抗行処", "無抗行処",
-                    "同色筆兵無傾", "筆兵無傾",
-                    "同色地心", "地心",
-                    "同色馬弓兵", "馬弓兵",
-                    "同色行行", "行行",
-                    "王",
-                    "同色獣", "獣",
-                    "同色戦集", "戦集",
-                    "同色助友", "助友",
-                    "同色闇戦之集", "闇戦之集",
-                    "撃皇",
-                    "皇再来",
-                ];
-                return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
-            }));
-        }, 1000 * 0.8093);
-        stopPolling();
-    }
+    setTimeout(() => {
+        drawScoreDisplay(new_state.hands.sort((a, b) => {
+            const hands_ordering = [
+                "同色無抗行処", "無抗行処",
+                "同色筆兵無傾", "筆兵無傾",
+                "同色地心", "地心",
+                "同色馬弓兵", "馬弓兵",
+                "同色行行", "行行",
+                "王",
+                "同色獣", "獣",
+                "同色戦集", "戦集",
+                "同色助友", "助友",
+                "同色闇戦之集", "闇戦之集",
+                "撃皇",
+                "皇再来",
+            ];
+            return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
+        }));
+    }, 1000 * 0.8093);
+    stopPolling();
 }
 function calculateHandsAndScore(pieces) {
     const hop1zuo1 = pieces.map((p) => toObtainablePiece(p.color, p.prof));
