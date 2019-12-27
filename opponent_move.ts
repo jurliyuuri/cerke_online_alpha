@@ -473,7 +473,7 @@ async function animateOpponentInfAfterStep(p: {
         if (!coordEq(p.src, dest)) { /* if same, the piece should not take itself */
             takeTheUpwardPieceAndCheckHand(destPiece);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
-    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         drawField();
     } else {
@@ -624,7 +624,7 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
         if (!coordEq(src, dest)) { /* if same, the piece should not take itself */
             takeTheUpwardPieceAndCheckHand(destPiece);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
-    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+            GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
         drawField();
     } else {
@@ -711,7 +711,7 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
 
         takeTheUpwardPieceAndCheckHand(destPiece);
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
-    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+        GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         drawField();
     } else {
         const imgNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
