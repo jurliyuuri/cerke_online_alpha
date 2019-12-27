@@ -1014,6 +1014,14 @@ function drawScoreboard() {
     denote_season.style.top = `${360 + 51 * GAME_STATE.season}px`;
     const denote_score = document.getElementById("denote_score");
     denote_score.style.top = `${447 + 21.83333333333333 * (20 - GAME_STATE.my_score)}px`;
+    const denote_rate = document.getElementById("denote_rate");
+    if (GAME_STATE.log2_rate === 0) {
+        denote_rate.style.display = "none";
+    }
+    else {
+        denote_rate.style.display = "block";
+        denote_rate.style.top = `${873 - 96.66666666666667 * (GAME_STATE.log2_rate - 1)}px`;
+    }
 }
 function drawField() {
     (function drawBoard(board) {

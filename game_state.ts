@@ -7,6 +7,12 @@ interface Field {
 }
 
 type Season = 0 | 1 | 2 | 3;
+type Log2_Rate = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+/* 
+ * Theoretically speaking, it is necessary to distinguish x32 and x64 
+ * because it is possible to score 1 point (3+3-5).
+ * Not that it will ever be of use in any real situation.
+ */
 
 interface GAME_STATE {
     f: Field;
@@ -16,6 +22,7 @@ interface GAME_STATE {
     backupDuringStepping: null | [Coord, Piece];
     season: Season;
     my_score: number,
+    log2_rate: Log2_Rate
 }
 
 function toAbsoluteCoord_([row, col]: Coord, IA_is_down: boolean): AbsoluteCoord {
@@ -84,6 +91,7 @@ let GAME_STATE: GAME_STATE = ((p: {IA_is_down: boolean}) => {
     ];
     let _is_my_turn: boolean = true; // override this by calling the setter
     const season: Season = 0;
+    const log2_rate: Log2_Rate = 0;
     return {
     f: {
         currentBoard: p.IA_is_down ? initial_board_with_IA_down : rotateBoard(initial_board_with_IA_down),
@@ -111,5 +119,6 @@ let GAME_STATE: GAME_STATE = ((p: {IA_is_down: boolean}) => {
     },
     backupDuringStepping: null,
     my_score: 20,
-    season
+    season,
+    log2_rate
 }; })({IA_is_down: Math.random() < 0.5});

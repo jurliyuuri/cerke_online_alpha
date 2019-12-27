@@ -110,6 +110,7 @@ let GAME_STATE = ((p) => {
     ];
     let _is_my_turn = true; // override this by calling the setter
     const season = 0;
+    const log2_rate = 0;
     return {
         f: {
             currentBoard: p.IA_is_down ? initial_board_with_IA_down : rotateBoard(initial_board_with_IA_down),
@@ -137,6 +138,7 @@ let GAME_STATE = ((p) => {
         },
         backupDuringStepping: null,
         my_score: 20,
-        season
+        season,
+        log2_rate
     };
 })({ IA_is_down: Math.random() < 0.5 });
