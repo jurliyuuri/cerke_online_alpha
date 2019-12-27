@@ -1251,7 +1251,8 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
 
     const score_display = document.getElementById("score_display")!;
     score_display.classList.remove("nocover");
-    const total_score_digits: Digit[] = toDigits(hands.map(h => hand_to_score[h]).reduce((a,b) => a+b, 0));
+    const total_score = hands.map(h => hand_to_score[h]).reduce((a,b) => a+b, 0);
+    const total_score_digits: Digit[] = toDigits(total_score);
     score_display.innerHTML = 
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") + 
         drawDigits(20, 234 - 70 * total_score_digits.length / 2, 70, total_score_digits);
@@ -1276,17 +1277,58 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
 
     const ta_xot = createButton("終", 250);
     ta_xot.addEventListener("click", () => {
-        alert("ta xot"); // FIXME
+        score_display.classList.add("nocover");
+        const denote_season = document.getElementById("denote_season")!;
+        const denote_score = document.getElementById("denote_score")!;
+        const orig_score = GAME_STATE.my_score;
+        const orig_season = GAME_STATE.season;
+        GAME_STATE.my_score += total_score * Math.pow(2, GAME_STATE.log2_rate);
+        const seasonProgressMap: {[P in Season]: Season | null} = {
+            0: 1,
+            1: 2,
+            2: 3,
+            3: null
+        };
+        const new_season = seasonProgressMap[orig_season];
+        if (new_season == null) {
+            alert("the game has ended"); // FIXME
+            return;
+        }
+
+        GAME_STATE.season = new_season;
+        setTimeout(async () => {
+            await animateNode(denote_score, 1000 * 0.8093, 
+                getDenoteScoreNodeTopLeft(GAME_STATE.my_score), 
+                getDenoteScoreNodeTopLeft(orig_score));
+            await animateNode(denote_season, 700 * 0.8093,
+                getDenoteSeasonNodeTopLeft(GAME_STATE.season),
+                getDenoteSeasonNodeTopLeft(orig_season));
+            await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+            drawScoreboard();
+            alert("let the new season begin"); // FIXME
+        }, 200 * 0.8093)
     })
     score_display.appendChild(ta_xot);
 }
 
+function getDenoteSeasonNodeTopLeft(season: Season) {
+    return {top: 360 + 51 * season, left: 3};
+}
+
+function getDenoteScoreNodeTopLeft(score: number) {
+    return {top: 447 + 21.83333333333333 * (20 - score), left: 65};
+}
+
 function drawScoreboard() {
     const denote_season = document.getElementById("denote_season")!;
-    denote_season.style.top = `${360 + 51 * GAME_STATE.season}px`;
+    denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top}px`;
+    denote_season.style.transition = ``; // needs to clear the animation
+    denote_season.style.transform = ``;
 
     const denote_score = document.getElementById("denote_score")!;
-    denote_score.style.top = `${447 + 21.83333333333333 * (20 - GAME_STATE.my_score)}px`
+    denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top}px`
+    denote_score.style.transition = ``;
+    denote_score.style.transform = ``;
 
     const denote_rate = document.getElementById("denote_rate")!;
     if (GAME_STATE.log2_rate === 0) {
