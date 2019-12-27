@@ -115,7 +115,6 @@ function cancelStepping() {
     GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
     GAME_STATE.backupDuringStepping = null;
     UI_STATE.selectedCoord = null;
-    // draw
     drawField();
 }
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, firstDest, stepsOn) {
@@ -126,7 +125,6 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     GAME_STATE.backupDuringStepping = [firstDest, "Tam2"];
     GAME_STATE.f.currentBoard[firstDest[0]][firstDest[1]] = null;
     document.getElementById("cancelButton").remove();
-    // draw
     drawField();
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function () {
@@ -138,7 +136,6 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
         GAME_STATE.f.currentBoard[theVerySrc[0]][theVerySrc[1]] = "Tam2";
         GAME_STATE.backupDuringStepping = null;
         UI_STATE.selectedCoord = null;
-        // draw
         drawField();
     });
     drawHoverAt_(stepsOn, "Tam2", function (coord, piece) {
@@ -270,7 +267,6 @@ function afterFirstTamMove(from, to, step) {
         GAME_STATE.f.currentBoard[to[0]][to[1]] = null;
         GAME_STATE.f.currentBoard[from[0]][from[1]] = "Tam2";
         UI_STATE.selectedCoord = null;
-        // draw
         drawField();
     });
     drawTam2HoverNonshiftedAt(to);
@@ -312,7 +308,6 @@ function stepping(from, piece, to) {
     // delete the original one
     GAME_STATE.backupDuringStepping = [from, piece];
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
-    // draw
     drawField();
     drawPhantomAt(from, piece);
     drawCancel(cancelStepping);
@@ -343,7 +338,6 @@ async function sendAfterHalfAcceptance(message, src, step) {
         alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
-    // no water entry
     if (!res.dat.waterEntryHappened) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
@@ -413,7 +407,6 @@ async function sendNormalMessage(message) {
         alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
-    // no water entry
     if (!res.dat.waterEntryHappened) {
         eraseGuide();
         UI_STATE.selectedCoord = null;

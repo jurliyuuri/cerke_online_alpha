@@ -127,7 +127,6 @@ function cancelStepping() {
 
     UI_STATE.selectedCoord = null;
 
-    // draw
     drawField();
 }
 
@@ -142,7 +141,6 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
 
     document.getElementById("cancelButton")!.remove();
 
-    // draw
     drawField();
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function() {
@@ -157,7 +155,6 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
 
         UI_STATE.selectedCoord = null;
 
-        // draw
         drawField();
     });
     drawHoverAt_<"Tam2">(stepsOn, "Tam2", function(coord: Coord, piece: "Tam2") {
@@ -339,7 +336,6 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
         UI_STATE.selectedCoord = null;
 
-        // draw
         drawField();
     });
     drawTam2HoverNonshiftedAt(to);
@@ -401,7 +397,6 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     GAME_STATE.backupDuringStepping = [from, piece];
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
-    // draw
     drawField();
     drawPhantomAt(from, piece);
     drawCancel(cancelStepping);
@@ -448,7 +443,6 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
 
-    // no water entry
     if (!res.dat.waterEntryHappened) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
@@ -529,7 +523,6 @@ async function sendNormalMessage(message: NormalMove) {
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
 
-    // no water entry
     if (!res.dat.waterEntryHappened) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
