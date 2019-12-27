@@ -139,6 +139,6 @@ let GAME_STATE = ((p) => {
         backupDuringStepping: null,
         my_score: 20,
         season,
-        log2_rate
+        log2_rate,
     };
 })({ IA_is_down: Math.random() < 0.5 });

@@ -507,7 +507,7 @@ function takeTheDownwardPiece(destPiece) {
                         "同色助友", "助友",
                         "同色闇戦之集", "闇戦之集",
                         "撃皇",
-                        "皇再来"
+                        "皇再来",
                     ];
                     return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
                 }));
@@ -521,7 +521,7 @@ function takeTheDownwardPiece(destPiece) {
     }
 }
 function calculateHandsAndScore() {
-    const hop1zuo1 = GAME_STATE.f.hop1zuo1OfUpward.map(p => toObtainablePiece(p.color, p.prof));
+    const hop1zuo1 = GAME_STATE.f.hop1zuo1OfUpward.map((p) => toObtainablePiece(p.color, p.prof));
     const res = calculate_hands_and_score_from_pieces(hop1zuo1);
     if (res.error === true) {
         throw new Error(`should not happen: too many of ${res.too_many.join(",")}`);
@@ -961,8 +961,8 @@ function drawScoreDisplay(hands) {
     const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
     function drawDigits(left, top, width, digits) {
         const letter_spacing = -0.06;
-        return digits.map((digit, index) => `<img 
-                src="image/dat2/${digit}.png" 
+        return digits.map((digit, index) => `<img
+                src="image/dat2/${digit}.png"
                 style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
             >`).join("");
     }
@@ -982,7 +982,7 @@ function drawScoreDisplay(hands) {
     }
     const score_display = document.getElementById("score_display");
     score_display.classList.remove("nocover");
-    const total_score = hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0);
+    const total_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
     const total_score_digits = toDigits(total_score);
     score_display.innerHTML =
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
@@ -1043,7 +1043,7 @@ function endSeason(total_score) {
         0: 1,
         1: 2,
         2: 3,
-        3: null
+        3: null,
     };
     const new_season = seasonProgressMap[orig_season];
     if (new_season == null) {

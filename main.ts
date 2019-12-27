@@ -8,13 +8,13 @@ const {stopPolling, resumePolling, isPollingAllowed} = (() => {
 
     const resumePolling = () => {
         POLLING_ALLOWED = true;
-    window.setTimeout(sendMainPoll, 500 * 0.8093);
-    }
+        window.setTimeout(sendMainPoll, 500 * 0.8093);
+    };
 
     const isPollingAllowed = () => {
         return POLLING_ALLOWED;
-    }
-    return {stopPolling, resumePolling, isPollingAllowed}
+    };
+    return {stopPolling, resumePolling, isPollingAllowed};
 })();
 // I repentfully use a global state
 
@@ -601,7 +601,7 @@ function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord
  * Unsafe function.
  * @param destPiece Assumed to be downward; if not, an error is thrown
  */
-function takeTheDownwardPiece(destPiece: Piece){
+function takeTheDownwardPiece(destPiece: Piece) {
     if (destPiece === "Tam2") {
         throw new Error("dest is occupied by Tam2");
     } else if (destPiece.side === Side.Upward) {
@@ -622,25 +622,25 @@ function takeTheDownwardPiece(destPiece: Piece){
         } else {
             setTimeout(
                 () => {
-                    drawScoreDisplay(new_state.hands.sort((a,b) => {
+                    drawScoreDisplay(new_state.hands.sort((a, b) => {
                         const hands_ordering: HandAndNegativeHand[] = [
                             "同色無抗行処", "無抗行処",
                             "同色筆兵無傾", "筆兵無傾",
                             "同色地心", "地心",
-                            "同色馬弓兵", "馬弓兵", 
-                            "同色行行", "行行", 
-                            "王", 
+                            "同色馬弓兵", "馬弓兵",
+                            "同色行行", "行行",
+                            "王",
                             "同色獣", "獣",
-                            "同色戦集", "戦集", 
+                            "同色戦集", "戦集",
                             "同色助友", "助友",
-                            "同色闇戦之集", "闇戦之集", 
+                            "同色闇戦之集", "闇戦之集",
                             "撃皇",
-                            "皇再来"
+                            "皇再来",
                         ];
                         return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
                     }));
                 },
-                1000 * 0.8093
+                1000 * 0.8093,
             );
             stopPolling();
         }
@@ -652,13 +652,13 @@ function takeTheDownwardPiece(destPiece: Piece){
 }
 
 function calculateHandsAndScore() {
-    const hop1zuo1: ObtainablePieces[] = GAME_STATE.f.hop1zuo1OfUpward.map(p => toObtainablePiece(p.color, p.prof));
+    const hop1zuo1: ObtainablePieces[] = GAME_STATE.f.hop1zuo1OfUpward.map((p) => toObtainablePiece(p.color, p.prof));
     const res = calculate_hands_and_score_from_pieces(hop1zuo1);
     if (res.error === true) {
         throw new Error(`should not happen: too many of ${res.too_many.join(",")}`);
     }
 
-    return {hands: res.hands, score: res.score}
+    return {hands: res.hands, score: res.score};
 }
 
 function toObtainablePiece(color: Color, prof: Profession): ObtainablePieces {
@@ -798,9 +798,9 @@ function updateField(message: NormalMove) {
 }
 
 function getThingsGoing(
-    piece_to_move: "Tam2" | NonTam2PieceUpward, 
-    from: Coord, 
-    to: Coord, 
+    piece_to_move: "Tam2" | NonTam2PieceUpward,
+    from: Coord,
+    to: Coord,
     ask_whether_to_step: boolean) {
     const destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
@@ -1077,7 +1077,7 @@ function display_guides(coord: Coord, piece: "Tam2" | NonTam2PieceUpward, parent
         img.addEventListener("contextmenu", function(e) {
             e.preventDefault();
             getThingsGoing(piece, coord, list[ind], /* when right-clicked, default to step */ false);
-        })
+        });
 
         parent.appendChild(img);
     }
@@ -1207,9 +1207,9 @@ function toDigits(num: number): Digit[] {
         return ["neg", ...toDigits(-num)];
     } else if (num == 0) {
         return ["num00"];
-    }  
-    
-    const lastDigitArr: Digit[] = num % 10 === 0 ? [] : [`num0${num % 10}` as Digit]
+    }
+
+    const lastDigitArr: Digit[] = num % 10 === 0 ? [] : [`num0${num % 10}` as Digit];
     if (num >= 20) {
         return [`num0${Math.floor(num / 10)}` as Digit, "num10", ...lastDigitArr];
     } else if (num >= 10) {
@@ -1224,20 +1224,20 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
     if (hands.length > 11) { throw new Error("too many hands"); }
     const starting_position_left = [550, 550, 550, 550, 550, 550, 550, 550, 550, 575, 585, 595][hands.length];
     const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
-    function drawDigits(left: number, top: number, width: number, digits: Digit[]){
+    function drawDigits(left: number, top: number, width: number, digits: Digit[]) {
         const letter_spacing = -0.06;
         return digits.map(
-            (digit, index) => `<img 
-                src="image/dat2/${digit}.png" 
+            (digit, index) => `<img
+                src="image/dat2/${digit}.png"
                 style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
-            >`
+            >`,
         ).join("");
     }
 
-    function drawHandAndScore(hand: HandAndNegativeHand, left: number){
+    function drawHandAndScore(hand: HandAndNegativeHand, left: number) {
         const digits: Digit[] = toDigits(hand_to_score[hand]);
         let ans = "";
-        if (hand.slice(0,2) === "同色") {
+        if (hand.slice(0, 2) === "同色") {
             ans += `
             <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
             <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`
@@ -1251,12 +1251,12 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
 
     const score_display = document.getElementById("score_display")!;
     score_display.classList.remove("nocover");
-    const total_score = hands.map(h => hand_to_score[h]).reduce((a,b) => a+b, 0);
+    const total_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
     const total_score_digits: Digit[] = toDigits(total_score);
-    score_display.innerHTML = 
-        hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") + 
+    score_display.innerHTML =
+        hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
         drawDigits(20, 234 - 70 * total_score_digits.length / 2, 70, total_score_digits);
-    function createButton(img_name: String, top: number){
+    function createButton(img_name: String, top: number) {
         const node = document.createElement("input");
         node.setAttribute("type", "image");
         node.src = `image/dat2/${img_name}.png`;
@@ -1290,8 +1290,8 @@ function drawScoreDisplay(hands: HandAndNegativeHand[]) {
         setTimeout(async () => {
             denote_rate.style.display = "block";
             await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
-            await animateNode(denote_rate, 1000 * 0.8093, 
-                getDenoteRateNodeTopLeft(GAME_STATE.log2_rate), 
+            await animateNode(denote_rate, 1000 * 0.8093,
+                getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
                 getDenoteRateNodeTopLeft(orig_log2_rate));
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             drawScoreboard();
@@ -1314,12 +1314,12 @@ function endSeason(total_score: number) {
     const orig_score = GAME_STATE.my_score;
     const orig_season = GAME_STATE.season;
     GAME_STATE.my_score += total_score * Math.pow(2, GAME_STATE.log2_rate);
-    
+
     const seasonProgressMap: {[P in Season]: Season | null} = {
         0: 1,
         1: 2,
         2: 3,
-        3: null
+        3: null,
     };
     const new_season = seasonProgressMap[orig_season];
     if (new_season == null) {
@@ -1329,8 +1329,8 @@ function endSeason(total_score: number) {
 
     GAME_STATE.season = new_season;
     setTimeout(async () => {
-        await animateNode(denote_score, 1000 * 0.8093, 
-            getDenoteScoreNodeTopLeft(GAME_STATE.my_score), 
+        await animateNode(denote_score, 1000 * 0.8093,
+            getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
             getDenoteScoreNodeTopLeft(orig_score));
 
         if (GAME_STATE.my_score >= 40) {
@@ -1343,8 +1343,8 @@ function endSeason(total_score: number) {
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         drawScoreboard();
         alert("let the new season begin"); // FIXME
-        
-    }, 200 * 0.8093)
+
+    }, 200 * 0.8093);
 }
 
 function getDenoteSeasonNodeTopLeft(season: Season) {
@@ -1366,7 +1366,7 @@ function drawScoreboard() {
     denote_season.style.transform = ``;
 
     const denote_score = document.getElementById("denote_score")!;
-    denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top}px`
+    denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top}px`;
     denote_score.style.transition = ``;
     denote_score.style.transform = ``;
 
@@ -1376,10 +1376,10 @@ function drawScoreboard() {
     } else {
         denote_rate.style.display = "block";
     }
-        denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top}px`
-        denote_rate.style.transition = ``;
-        denote_rate.style.transform = ``;
-    
+    denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top}px`;
+    denote_rate.style.transition = ``;
+    denote_rate.style.transform = ``;
+
 }
 
 function drawField() {
@@ -1422,7 +1422,7 @@ function drawField() {
         }
     })(GAME_STATE.f.currentBoard);
 
-    (function drawHop1zuo1OfUpward (list: NonTam2PieceUpward[]) {
+    (function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
         const contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward")!;
 
         // delete everything
@@ -1441,7 +1441,7 @@ function drawField() {
         }
     })(GAME_STATE.f.hop1zuo1OfUpward);
 
-    (function drawHop1zuo1OfDownward (list: NonTam2PieceDownward[]) {
+    (function drawHop1zuo1OfDownward(list: NonTam2PieceDownward[]) {
         const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward")!;
 
         // delete everything
