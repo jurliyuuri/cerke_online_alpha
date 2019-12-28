@@ -39,6 +39,12 @@ function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
     const { top, left } = coordToPieceXY_Shifted(coord);
     return createPieceSizeImageOnBoardByPathAndXY(top, left, path, className);
 }
+function createPieceSizeSelectionButtonOnBoard_Shifted(coord) {
+    const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
+    centralNode.style.cursor = "pointer";
+    centralNode.style.zIndex = "200";
+    return centralNode;
+}
 function createCircleGuideImageAt(coord, path) {
     const [row_index, column_index] = coord;
     const img = document.createElement("img");

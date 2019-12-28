@@ -160,11 +160,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
     drawHoverAt_<"Tam2">(stepsOn, "Tam2", function(coord: Coord, piece: "Tam2") {
         const contains_guides = document.getElementById("contains_guides")!;
 
-        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
-
-        centralNode.style.cursor = "pointer";
-
-        centralNode.style.zIndex = "200";
+        const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
         contains_guides.appendChild(centralNode);
 
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
@@ -403,11 +399,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     drawHoverAt_(to, piece, function(coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
         const contains_guides = document.getElementById("contains_guides")!;
 
-        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
-
-        centralNode.style.cursor = "pointer";
-
-        centralNode.style.zIndex = "200";
+        const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
         contains_guides.appendChild(centralNode);
 
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(

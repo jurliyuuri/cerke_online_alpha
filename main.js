@@ -140,9 +140,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
     });
     drawHoverAt_(stepsOn, "Tam2", function (coord, piece) {
         const contains_guides = document.getElementById("contains_guides");
-        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
-        centralNode.style.cursor = "pointer";
-        centralNode.style.zIndex = "200";
+        const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
         contains_guides.appendChild(centralNode);
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
         if (guideListGreen.length > 0) {
@@ -313,9 +311,7 @@ function stepping(from, piece, to) {
     drawCancel(cancelStepping);
     drawHoverAt_(to, piece, function (coord, piece) {
         const contains_guides = document.getElementById("contains_guides");
-        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
-        centralNode.style.cursor = "pointer";
-        centralNode.style.zIndex = "200";
+        const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
         contains_guides.appendChild(centralNode);
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(coord, piece, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue);
         /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guide_after_stepping handles that. */
