@@ -98,3 +98,16 @@ function createPieceImgToBePlacedOnHop1zuo1(ind: number, path: string): HTMLImag
 function createPieceImgToBePlacedOnBoard(coord: Coord, piece: Piece): HTMLImageElement {
     return createPieceSizeImageOnBoardByPath(coord, toPath_(piece), "piece_image_on_board");
 }
+
+function createImageButton(img_name: String, top: number): HTMLInputElement {
+    const node = document.createElement("input");
+    node.setAttribute("type", "image");
+    node.src = `image/${img_name}.png`;
+    node.height = 200;
+    node.style.backgroundColor = "#e0e0e0";
+    node.style.position = "absolute";
+    node.style.left = "660px";
+    node.style.top = `${top}px`;
+    node.style.border = "1px solid #aaaaaa";
+    return node;
+}

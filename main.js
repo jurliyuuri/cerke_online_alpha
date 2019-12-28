@@ -981,20 +981,8 @@ function drawScoreDisplay(hands_) {
             drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
 }
 function drawTyMok1AndTaXot1Buttons(base_score) {
-    function createButton(img_name, top) {
-        const node = document.createElement("input");
-        node.setAttribute("type", "image");
-        node.src = `image/dat2/${img_name}.png`;
-        node.height = 200;
-        node.style.backgroundColor = "#e0e0e0";
-        node.style.position = "absolute";
-        node.style.left = "660px";
-        node.style.top = `${top}px`;
-        node.style.border = "1px solid #aaaaaa";
-        return node;
-    }
     const score_display = document.getElementById("score_display");
-    const ty_mok1_button = createButton("再行", 0);
+    const ty_mok1_button = createImageButton("dat2/再行", 0);
     ty_mok1_button.addEventListener("click", () => {
         score_display.classList.add("nocover");
         // FIXME: must send server of this decision
@@ -1021,7 +1009,7 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
         }, 200 * 0.8093);
     });
     score_display.appendChild(ty_mok1_button);
-    const ta_xot1_button = createButton("終", 250);
+    const ta_xot1_button = createImageButton("dat2/終", 250);
     ta_xot1_button.addEventListener("click", () => endSeason(base_score));
     score_display.appendChild(ta_xot1_button);
 }
