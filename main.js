@@ -1049,6 +1049,10 @@ function endSeason(base_score) {
             alert("you win!"); // FIXME
             return;
         }
+        else if (GAME_STATE.my_score <= 0) {
+            alert("you lose..."); // FIXME
+            return;
+        }
         await animateNode(denote_season, 700 * 0.8093, getDenoteSeasonNodeTopLeft(GAME_STATE.season), getDenoteSeasonNodeTopLeft(orig_season));
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         drawScoreboard();

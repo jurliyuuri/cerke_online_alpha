@@ -1326,6 +1326,9 @@ function endSeason(base_score: number) {
         if (GAME_STATE.my_score >= 40) {
             alert("you win!"); // FIXME
             return;
+        } else if (GAME_STATE.my_score <= 0) {
+            alert("you lose..."); // FIXME
+            return;
         }
         await animateNode(denote_season, 700 * 0.8093,
             getDenoteSeasonNodeTopLeft(GAME_STATE.season),
