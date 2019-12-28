@@ -139,7 +139,7 @@ function get_one_valid_opponent_move(): OpponentMove {
         }
     };
 
-    if (Math.random() < 0.03) {
+    if (Math.random() < 0.003) {
         const len = GAME_STATE.f.hop1zuo1OfDownward.length;
         if (len === 0) { return get_one_valid_opponent_move(); } // retry
 
@@ -539,7 +539,7 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
     document.getElementById("protective_cover_over_field_while_asyncawait")!.classList.remove("nocover");
 
     window.setTimeout(async () => {
-        await sendTyMok1OrTaXot1Poll();
+        await sendTyMok1OrTaXot1Poll(new_state.score);
     }, 0);
 
     window.setTimeout(() => {
@@ -547,23 +547,32 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
     }, 1000 * 0.8093);
 }
 
-async function sendTyMok1OrTaXot1Poll() {
+async function sendTyMok1OrTaXot1Poll(base_score: number) {
     console.log("poll whether ty mok1 or ta xot1");
     if (Math.random() < 0.2) {
         console.log("ding!");
 
         // FIXME: you are supposed to send a request to the server and wait for the response
         const is_tymok1 = Math.random() < 0.5;
+    
+        const score_display = document.getElementById("score_display")!;
 
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         if (is_tymok1) {
-            alert("ty mok1"); // FIXME
+            score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
+            await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
+            console.log("go on with ty mok1");
+            increaseRateAndAnimate(false);
         } else {
-            alert("ta xot1"); // FIXME
+            score_display.innerHTML += `<img src="image/dat2/終.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
+            await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
+            console.log("go on with ta xot1");
+            endSeason(-base_score); // since opponent, negative score
         }
     } else {
         document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.remove("nocover");
         await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
-        await sendTyMok1OrTaXot1Poll();
+        await sendTyMok1OrTaXot1Poll(base_score);
     }
 }
 

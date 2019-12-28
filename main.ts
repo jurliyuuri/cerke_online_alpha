@@ -1245,37 +1245,48 @@ function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
         drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
 }
 
+function increaseRateAndAnimate(done_by_me: boolean) {
+    const score_display = document.getElementById("score_display")!;
+    score_display.classList.add("nocover");
+    const orig_log2_rate = GAME_STATE.log2_rate;
+    const log2RateProgressMap: {[P in Log2_Rate]: Log2_Rate} = {
+        0: 1,
+        1: 2,
+        2: 3,
+        3: 4,
+        4: 5,
+        5: 6,
+        6: 6, // does not go beyond x64, because the total score is 40
+    };
+    drawScoreboard(); // cargo cult
+    GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
+
+    const denote_rate = document.getElementById("denote_rate")!;
+    setTimeout(async () => {
+        denote_rate.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
+        await animateNode(denote_rate, 1000 * 0.8093,
+            getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
+            getDenoteRateNodeTopLeft(orig_log2_rate));
+        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+        drawScoreboard();
+        if (done_by_me) {
+            resumePolling();
+        } else {
+            
+            GAME_STATE.is_my_turn = true;
+        }
+    }, 200 * 0.8093);
+}
+
 function drawTyMok1AndTaXot1Buttons(base_score: number) {
     const score_display = document.getElementById("score_display")!;
 
     const ty_mok1_button = createImageButton("dat2/再行", 0);
     ty_mok1_button.addEventListener("click", () => {
-        score_display.classList.add("nocover");
         // FIXME: must send server of this decision
-        const orig_log2_rate = GAME_STATE.log2_rate;
-        const log2RateProgressMap: {[P in Log2_Rate]: Log2_Rate} = {
-            0: 1,
-            1: 2,
-            2: 3,
-            3: 4,
-            4: 5,
-            5: 6,
-            6: 6, // does not go beyond x64, because the total score is 40
-        };
-        drawScoreboard(); // cargo cult
-        GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
 
-        const denote_rate = document.getElementById("denote_rate")!;
-        setTimeout(async () => {
-            denote_rate.style.display = "block";
-            await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
-            await animateNode(denote_rate, 1000 * 0.8093,
-                getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
-                getDenoteRateNodeTopLeft(orig_log2_rate));
-            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
-            drawScoreboard();
-            resumePolling();
-        }, 200 * 0.8093);
+        increaseRateAndAnimate(true);
     });
     score_display.appendChild(ty_mok1_button);
 
