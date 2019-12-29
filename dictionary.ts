@@ -2,6 +2,7 @@
 interface DictElem {
     whetherToTake: string;
     failedWaterEntry: string;
+    gameEnd: string;
     newSeason: string[]
 }
 
@@ -18,6 +19,7 @@ const DICTIONARY: Dictionary = {
             "季節が改まり夏になりました。",
             "季節が改まり秋になりました。",
             "季節が改まり冬になりました。"
-        ]
+        ],
+        gameEnd: "試合終了です。"
     },
 };

@@ -1319,7 +1319,24 @@ function endSeason(base_score: number) {
     };
     const new_season = seasonProgressMap[orig_season];
     if (new_season == null) {
-        alert("the game has ended"); // FIXME
+        setTimeout(async () => {
+            await animateNode(denote_score, 1000 * 0.8093,
+                getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+                getDenoteScoreNodeTopLeft(orig_score));
+
+                alert(DICTIONARY.ja.gameEnd);
+            
+                if (GAME_STATE.my_score > 20) {
+                    alert("you win!"); // FIXME
+                    return;
+                } else if (GAME_STATE.my_score < 20) {
+                    alert("you lose..."); // FIXME
+                    return;
+                } else {
+                    alert("draw");
+                    return;
+                }
+        }, 200 * 0.8093);
         return;
     }
 
