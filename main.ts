@@ -1,4 +1,4 @@
-const {stopPolling, resumePolling, isPollingAllowed} = (() => {
+const {stopPolling, resumePolling, isPollingAllowed, allowPolling} = (() => {
     let POLLING_ALLOWED = true;
 
     // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
@@ -11,10 +11,14 @@ const {stopPolling, resumePolling, isPollingAllowed} = (() => {
         window.setTimeout(sendMainPoll, 500 * 0.8093);
     };
 
+    const allowPolling = () => {
+        POLLING_ALLOWED = true;
+    }
+
     const isPollingAllowed = () => {
         return POLLING_ALLOWED;
     };
-    return {stopPolling, resumePolling, isPollingAllowed};
+    return {stopPolling, resumePolling, isPollingAllowed, allowPolling};
 })();
 // I repentfully use a global state
 
@@ -1352,7 +1356,7 @@ function endSeason(base_score: number) {
         };
     
         GAME_STATE.log2_rate = 0;
-        resumePolling(); // reset another global state
+        allowPolling(); // reset another global state
         drawField();
 
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
