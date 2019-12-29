@@ -1008,6 +1008,7 @@ function increaseRateAndAnimate(done_by_me) {
         else {
             GAME_STATE.is_my_turn = true;
         }
+        document.getElementById("protective_cover_over_field_while_asyncawait").classList.add("nocover");
     }, 200 * 0.8093);
 }
 function drawTyMok1AndTaXot1Buttons(base_score) {
@@ -1044,6 +1045,7 @@ function endSeason(base_score) {
     }
     GAME_STATE.season = new_season;
     setTimeout(async () => {
+        var _a, _b, _c, _d, _e;
         await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
         if (GAME_STATE.my_score >= 40) {
             alert("you win!"); // FIXME
@@ -1056,7 +1058,25 @@ function endSeason(base_score) {
         await animateNode(denote_season, 700 * 0.8093, getDenoteSeasonNodeTopLeft(GAME_STATE.season), getDenoteSeasonNodeTopLeft(orig_season));
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         drawScoreboard();
-        alert("let the new season begin"); // FIXME
+        alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        (_a = document.getElementById("protective_cover_over_field")) === null || _a === void 0 ? void 0 : _a.classList.remove("nocover");
+        (_b = document.getElementById("protective_tam_cover_over_field")) === null || _b === void 0 ? void 0 : _b.classList.remove("nocover");
+        await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
+        GAME_STATE.f = {
+            currentBoard: GAME_STATE.IA_is_down ? rotateBoard(rotateBoard(initial_board_with_IA_down)) : rotateBoard(initial_board_with_IA_down),
+            hop1zuo1OfDownward: [],
+            hop1zuo1OfUpward: [],
+        };
+        GAME_STATE.log2_rate = 0;
+        resumePolling(); // reset another global state
+        drawField();
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        (_c = document.getElementById("protective_cover_over_field")) === null || _c === void 0 ? void 0 : _c.classList.add("nocover");
+        (_d = document.getElementById("protective_tam_cover_over_field")) === null || _d === void 0 ? void 0 : _d.classList.add("nocover");
+        // FIXME: should be asking the server
+        GAME_STATE.is_my_turn = Math.random() < 0.5;
+        (_e = document.getElementById("protective_cover_over_field_while_asyncawait")) === null || _e === void 0 ? void 0 : _e.classList.add("nocover");
     }, 200 * 0.8093);
 }
 function getDenoteSeasonNodeTopLeft(season) {

@@ -1276,6 +1276,8 @@ function increaseRateAndAnimate(done_by_me: boolean) {
             
             GAME_STATE.is_my_turn = true;
         }
+
+        document.getElementById("protective_cover_over_field_while_asyncawait")!.classList.add("nocover");
     }, 200 * 0.8093);
 }
 
@@ -1335,7 +1337,31 @@ function endSeason(base_score: number) {
             getDenoteSeasonNodeTopLeft(orig_season));
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         drawScoreboard();
-        alert("let the new season begin"); // FIXME
+        alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
+
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        document.getElementById("protective_cover_over_field")?.classList.remove("nocover");
+        document.getElementById("protective_tam_cover_over_field")?.classList.remove("nocover");
+        
+        await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
+
+        GAME_STATE.f =  {
+            currentBoard: GAME_STATE.IA_is_down ? rotateBoard(rotateBoard(initial_board_with_IA_down)) : rotateBoard(initial_board_with_IA_down),
+            hop1zuo1OfDownward: [],
+            hop1zuo1OfUpward: [],
+        };
+    
+        GAME_STATE.log2_rate = 0;
+        resumePolling(); // reset another global state
+        drawField();
+
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        document.getElementById("protective_cover_over_field")?.classList.add("nocover");
+        document.getElementById("protective_tam_cover_over_field")?.classList.add("nocover");
+        
+        // FIXME: should be asking the server
+        GAME_STATE.is_my_turn = Math.random() < 0.5;
+        document.getElementById("protective_cover_over_field_while_asyncawait")?.classList.add("nocover");
 
     }, 200 * 0.8093);
 }

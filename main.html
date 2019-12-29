@@ -72,7 +72,7 @@
     <div id="score_display" class="nocover"></div>
 
     <div id="kait_kaik">
-        <input type="image" id="kait_kaik_button" src="image/kait_kaik.png" onclick="document.getElementById('kait_kaik').classList.add('nocover'); GAME_STATE.is_my_turn = Math.random() < 0.5;" width="200">
+        <input type="image" id="kait_kaik_button" src="image/kait_kaik.png" onclick="document.getElementById('kait_kaik').classList.add('nocover'); GAME_STATE.is_my_turn = Math.random() < 0.5; /* FIXME: should be asking the server */" width="200">
     </div>
 </div>
 </body>
