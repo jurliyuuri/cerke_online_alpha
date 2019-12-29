@@ -558,6 +558,13 @@ async function sendTyMok1OrTaXot1Poll(base_score: number) {
         const score_display = document.getElementById("score_display")!;
 
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+        // so that the ty mok1 / ta xot1 image is written after the score is written
+        // this is necessary because the scorewriting deletes scoredisplay.innerHTML
+        while (!score_display.hasChildNodes()) {
+            await new Promise((resolve) => setTimeout(resolve, 100 * 0.8093));
+        }
+
         if (is_tymok1) {
             score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
             await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
