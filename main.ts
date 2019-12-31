@@ -1,9 +1,36 @@
+const {stopPolling, resumePolling, isPollingAllowed, allowPolling} = (() => {
+    let POLLING_ALLOWED = true;
+
+    // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
+    const stopPolling = () => {
+        POLLING_ALLOWED = false;
+    };
+
+    const resumePolling = () => {
+        POLLING_ALLOWED = true;
+        window.setTimeout(sendMainPoll, 500 * 0.8093);
+    };
+
+    const allowPolling = () => {
+        POLLING_ALLOWED = true;
+    }
+
+    const isPollingAllowed = () => {
+        return POLLING_ALLOWED;
+    };
+    return {stopPolling, resumePolling, isPollingAllowed, allowPolling};
+})();
+// I repentfully use a global state
+
 async function sendMainPoll() {
     console.log("poll");
+    if (!isPollingAllowed()) {
+        return;
+    }
     if (Math.random() < 0.2) {
         console.log("ding!");
 
-        // you are supposed to send a request to the server and wait for the response
+        // FIXME: you are supposed to send a request to the server and wait for the response
         const opponent_move = get_one_valid_opponent_move();
         console.log(opponent_move);
         if (opponent_move.type === "NonTamMove") {
@@ -104,8 +131,7 @@ function cancelStepping() {
 
     UI_STATE.selectedCoord = null;
 
-    // draw
-    drawField(GAME_STATE.f);
+    drawField();
 }
 
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Coord, firstDest: Coord, stepsOn: Coord) {
@@ -119,8 +145,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
 
     document.getElementById("cancelButton")!.remove();
 
-    // draw
-    drawField(GAME_STATE.f);
+    drawField();
     drawPhantomAt(firstDest, "Tam2");
     drawCancel(function() {
         eraseGuide();
@@ -134,17 +159,12 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
 
         UI_STATE.selectedCoord = null;
 
-        // draw
-        drawField(GAME_STATE.f);
+        drawField();
     });
     drawHoverAt_<"Tam2">(stepsOn, "Tam2", function(coord: Coord, piece: "Tam2") {
         const contains_guides = document.getElementById("contains_guides")!;
 
-        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
-
-        centralNode.style.cursor = "pointer";
-
-        centralNode.style.zIndex = "200";
+        const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
         contains_guides.appendChild(centralNode);
 
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
@@ -209,7 +229,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
     GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
-    drawField(GAME_STATE.f);
+    drawField();
 
     const drawTam2HoverNonshiftedAt = function(coord: Coord) {
         const contains_phantom = document.getElementById("contains_phantom")!;
@@ -316,8 +336,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
         UI_STATE.selectedCoord = null;
 
-        // draw
-        drawField(GAME_STATE.f);
+        drawField();
     });
     drawTam2HoverNonshiftedAt(to);
 }
@@ -378,18 +397,13 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     GAME_STATE.backupDuringStepping = [from, piece];
     GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
-    // draw
-    drawField(GAME_STATE.f);
+    drawField();
     drawPhantomAt(from, piece);
     drawCancel(cancelStepping);
     drawHoverAt_(to, piece, function(coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
         const contains_guides = document.getElementById("contains_guides")!;
 
-        const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
-
-        centralNode.style.cursor = "pointer";
-
-        centralNode.style.zIndex = "200";
+        const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
         contains_guides.appendChild(centralNode);
 
         const { finite: guideListYellow, infinite: guideListGreen } = calculateMovablePositions(
@@ -425,12 +439,11 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
 
-    // no water entry
     if (!res.dat.waterEntryHappened) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
         return;
     }
@@ -450,7 +463,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateFieldAfterHalfAcceptance(message, src, step);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
     }
 }
@@ -506,12 +519,11 @@ async function sendNormalMessage(message: NormalMove) {
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
 
-    // no water entry
     if (!res.dat.waterEntryHappened) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateField(message);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
         return;
     }
@@ -533,7 +545,7 @@ async function sendNormalMessage(message: NormalMove) {
         eraseGuide();
         UI_STATE.selectedCoord = null;
         updateField(message);
-        drawField(GAME_STATE.f);
+        drawField();
         GAME_STATE.is_my_turn = false;
     }
 }
@@ -567,6 +579,19 @@ function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord
     }
 
     if (destPiece !== null) {
+        takeTheDownwardPieceAndCheckHand(destPiece);
+    }
+
+    GAME_STATE.f.currentBoard[src_i][src_j] = null;
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+}
+
+/**
+ * Unsafe function.
+ * @param destPiece Assumed to be downward; if not, an error is thrown
+ */
+function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
+    const flipped: NonTam2PieceUpward = (() => {
         if (destPiece === "Tam2") {
             throw new Error("dest is occupied by Tam2");
         } else if (destPiece.side === Side.Upward) {
@@ -577,15 +602,44 @@ function updateFieldAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord
                 prof: destPiece.prof,
                 side: Side.Upward,
             };
-            GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+            return flipped;
         } else {
             const _should_not_reach_here: never = destPiece.side;
             throw new Error("should not reach here");
         }
+    })();
+
+    const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
+    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+    const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
+
+    if (new_state.score === old_state.score) {
+        return;
     }
 
-    GAME_STATE.f.currentBoard[src_i][src_j] = null;
-    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+    setTimeout(() => {
+        drawScoreDisplay(new_state.hands);
+        drawTyMok1AndTaXot1Buttons(new_state.score);
+    }, 1000 * 0.8093);
+    stopPolling();
+}
+
+function calculateHandsAndScore(pieces: NonTam2Piece[]) {
+    const hop1zuo1: ObtainablePieces[] = pieces.map((p) => toObtainablePiece(p.color, p.prof));
+    const res = calculate_hands_and_score_from_pieces(hop1zuo1);
+    if (res.error === true) {
+        throw new Error(`should not happen: too many of ${res.too_many.join(",")}`);
+    }
+
+    return {hands: res.hands, score: res.score};
+}
+
+function toObtainablePiece(color: Color, prof: Profession): ObtainablePieces {
+    const a: ObtainablePieces[][] = [
+        ["赤船", "赤兵", "赤弓", "赤車", "赤虎", "赤馬", "赤筆", "赤巫", "赤将", "赤王"],
+        ["黒船", "黒兵", "黒弓", "黒車", "黒虎", "黒馬", "黒筆", "黒巫", "黒将", "黒王"],
+    ];
+    return a[color][prof];
 }
 
 function updateField(message: NormalMove) {
@@ -635,21 +689,7 @@ function updateField(message: NormalMove) {
             /* it's NOT possible that you are returning to the original position, in which case you don't do anything */
 
             if (destPiece !== null) {
-                if (destPiece === "Tam2") {
-                    throw new Error("dest is occupied by Tam2");
-                } else if (destPiece.side === Side.Upward) {
-                    throw new Error("dest is occupied by an ally");
-                } else if (destPiece.side === Side.Downward) {
-                    const flipped: NonTam2PieceUpward = {
-                        color: destPiece.color,
-                        prof: destPiece.prof,
-                        side: Side.Upward,
-                    };
-                    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
-                } else {
-                    const _should_not_reach_here: never = destPiece.side;
-                    throw new Error("should not reach here");
-                }
+                takeTheDownwardPieceAndCheckHand(destPiece);
             }
 
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -688,21 +728,7 @@ function updateField(message: NormalMove) {
             }
 
             if (destPiece !== null) {
-                if (destPiece === "Tam2") {
-                    throw new Error("dest is occupied by Tam2");
-                } else if (destPiece.side === Side.Upward) {
-                    throw new Error("dest is occupied by an ally");
-                } else if (destPiece.side === Side.Downward) {
-                    const flipped: NonTam2PieceUpward = {
-                        color: destPiece.color,
-                        prof: destPiece.prof,
-                        side: Side.Upward,
-                    };
-                    GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
-                } else {
-                    const _should_not_reach_here: never = destPiece.side;
-                    throw new Error("should not reach here");
-                }
+                takeTheDownwardPieceAndCheckHand(destPiece);
             }
 
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -744,7 +770,11 @@ function updateField(message: NormalMove) {
     }
 }
 
-function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord, to: Coord) {
+function getThingsGoing(
+    piece_to_move: "Tam2" | NonTam2PieceUpward,
+    from: Coord,
+    to: Coord,
+    ask_whether_to_step: boolean) {
     const destPiece: "Tam2" | null | NonTam2Piece = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
     if (destPiece == null) { // dest is empty square; try to simply move
@@ -777,7 +807,8 @@ function getThingsGoing(piece_to_move: "Tam2" | NonTam2PieceUpward, from: Coord,
         return;
     }
 
-    if (confirm(DICTIONARY.ja.whetherToTake)) {
+    // short-circuit evaluation
+    if (ask_whether_to_step && confirm(DICTIONARY.ja.whetherToTake)) {
         const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
         const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
         const message: NormalNonTamMove = {
@@ -815,32 +846,6 @@ function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piec
 
     sendNormalMessage(message);
     return;
-}
-
-function filterInOneDirectionTillCiurlLimit(guideListGreen: Coord[], step: Coord, plannedDirection: Coord, ciurl: Ciurl) {
-    return guideListGreen.filter(function(c: Coord) {
-        const subtractStep = function([x, y]: Coord): [number, number] {
-            const [step_x, step_y] = step;
-            return [x - step_x, y - step_y];
-        };
-
-        const limit: number = ciurl.filter((x) => x).length;
-
-        const [deltaC_x, deltaC_y] = subtractStep(c);
-        const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
-
-        return (
-            // 1. (c - step) crossed with (plannedDirection - step) gives zero
-            deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
-
-            // 2.  (c - step) dotted with (plannedDirection - step) gives positive
-            deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
-
-            // 3. deltaC must not exceed the limit enforced by ciurl
-            Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit
-        );
-    });
-
 }
 
 async function sendInfAfterStep(message: InfAfterStep) {
@@ -1039,7 +1044,12 @@ function display_guides(coord: Coord, piece: "Tam2" | NonTam2PieceUpward, parent
 
         // click on it to get things going
         img.addEventListener("click", function() {
-            getThingsGoing(piece, coord, list[ind]);
+            getThingsGoing(piece, coord, list[ind], /* ask whether to step, when clicked */ true);
+        });
+
+        img.addEventListener("contextmenu", function(e) {
+            e.preventDefault();
+            getThingsGoing(piece, coord, list[ind], /* when right-clicked, default to step */ false);
         });
 
         parent.appendChild(img);
@@ -1159,10 +1169,262 @@ function removeChildren(parent: HTMLElement) {
     }
 }
 
-function drawField(field: Field) {
-    const drawBoard = function(board: Board) {
+type Digit = "num00" | "num01" | "num02" | "num03" | "num04" | "num05" | "num06" | "num07" | "num08" | "num09" | "num10" | "neg";
+function toDigits(num: number): Digit[] {
+    if (num % 1 !== 0) {
+        throw new Error("non-integer");
+    } else if (num >= 100 || num <= -100) {
+        alert("internal error: add linzi image for 100");
+        throw new Error("add linzi image for 100"); /* FIXME */
+    } else if (num < 0) {
+        return ["neg", ...toDigits(-num)];
+    } else if (num == 0) {
+        return ["num00"];
+    }
+
+    const lastDigitArr: Digit[] = num % 10 === 0 ? [] : [`num0${num % 10}` as Digit];
+    if (num >= 20) {
+        return [`num0${Math.floor(num / 10)}` as Digit, "num10", ...lastDigitArr];
+    } else if (num >= 10) {
+        return [ "num10", ...lastDigitArr];
+    } else {
+        return lastDigitArr;
+    }
+}
+
+function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
+    const hands = hands_.sort((a, b) => {
+        const hands_ordering: HandAndNegativeHand[] = [
+            "同色無抗行処", "無抗行処",
+            "同色筆兵無傾", "筆兵無傾",
+            "同色地心", "地心",
+            "同色馬弓兵", "馬弓兵",
+            "同色行行", "行行",
+            "王",
+            "同色獣", "獣",
+            "同色戦集", "戦集",
+            "同色助友", "助友",
+            "同色闇戦之集", "闇戦之集",
+            "撃皇",
+            "皇再来",
+        ];
+        return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
+    });
+
+    const top_padding = 15;
+    if (hands.length > 11) { throw new Error("too many hands"); }
+    const starting_position_left = [550, 550, 550, 550, 550, 550, 550, 550, 550, 575, 585, 595][hands.length];
+    const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
+    function drawDigits(left: number, top: number, width: number, digits: Digit[]) {
+        const letter_spacing = -0.06;
+        return digits.map(
+            (digit, index) => `<img
+                src="image/dat2/${digit}.png"
+                style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
+            >`,
+        ).join("");
+    }
+
+    function drawHandAndScore(hand: HandAndNegativeHand, left: number) {
+        const digits: Digit[] = toDigits(hand_to_score[hand]);
+        let ans = "";
+        if (hand.slice(0, 2) === "同色") {
+            ans += `
+            <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
+            <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`
+            ;
+        } else {
+            ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
+        }
+        ans += drawDigits(left, 280 + top_padding, 50, digits);
+        return ans;
+    }
+
+    const score_display = document.getElementById("score_display")!;
+    score_display.classList.remove("nocover");
+    const base_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
+    const base_score_digits: Digit[] = toDigits(base_score);
+    score_display.innerHTML =
+        hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
+        drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
+}
+
+function increaseRateAndAnimate(done_by_me: boolean) {
+    const score_display = document.getElementById("score_display")!;
+    score_display.classList.add("nocover");
+    const orig_log2_rate = GAME_STATE.log2_rate;
+    const log2RateProgressMap: {[P in Log2_Rate]: Log2_Rate} = {
+        0: 1,
+        1: 2,
+        2: 3,
+        3: 4,
+        4: 5,
+        5: 6,
+        6: 6, // does not go beyond x64, because the total score is 40
+    };
+    drawScoreboard(); // cargo cult
+    GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
+
+    const denote_rate = document.getElementById("denote_rate")!;
+    setTimeout(async () => {
+        denote_rate.style.display = "block";
+        await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
+        await animateNode(denote_rate, 1000 * 0.8093,
+            getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
+            getDenoteRateNodeTopLeft(orig_log2_rate));
+        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+        drawScoreboard();
+        if (done_by_me) {
+            resumePolling();
+        } else {
+            
+            GAME_STATE.is_my_turn = true;
+        }
+
+        document.getElementById("protective_cover_over_field_while_asyncawait")!.classList.add("nocover");
+    }, 200 * 0.8093);
+}
+
+function drawTyMok1AndTaXot1Buttons(base_score: number) {
+    const score_display = document.getElementById("score_display")!;
+
+    const ty_mok1_button = createImageButton("dat2/再行", 0);
+    ty_mok1_button.addEventListener("click", () => {
+        // FIXME: must send server of this decision
+
+        increaseRateAndAnimate(true);
+    });
+    score_display.appendChild(ty_mok1_button);
+
+    const ta_xot1_button = createImageButton("dat2/終", 250);
+    ta_xot1_button.addEventListener("click", () => endSeason(base_score));
+    score_display.appendChild(ta_xot1_button);
+}
+
+function endSeason(base_score: number) {
+    const score_display = document.getElementById("score_display")!;
+    score_display.classList.add("nocover");
+        // FIXME: must send server of this decision
+    const denote_season = document.getElementById("denote_season")!;
+    const denote_score = document.getElementById("denote_score")!;
+    const orig_score = GAME_STATE.my_score;
+    const orig_season = GAME_STATE.season;
+    GAME_STATE.my_score += base_score * Math.pow(2, GAME_STATE.log2_rate);
+
+    const seasonProgressMap: {[P in Season]: Season | null} = {
+        0: 1,
+        1: 2,
+        2: 3,
+        3: null,
+    };
+    const new_season = seasonProgressMap[orig_season];
+    if (new_season == null) {
+        setTimeout(async () => {
+            await animateNode(denote_score, 1000 * 0.8093,
+                getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+                getDenoteScoreNodeTopLeft(orig_score));
+
+                alert(DICTIONARY.ja.gameEnd);
+            
+                if (GAME_STATE.my_score > 20) {
+                    alert("you win!"); // FIXME
+                    return;
+                } else if (GAME_STATE.my_score < 20) {
+                    alert("you lose..."); // FIXME
+                    return;
+                } else {
+                    alert("draw");
+                    return;
+                }
+        }, 200 * 0.8093);
+        return;
+    }
+
+    GAME_STATE.season = new_season;
+    setTimeout(async () => {
+        await animateNode(denote_score, 1000 * 0.8093,
+            getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+            getDenoteScoreNodeTopLeft(orig_score));
+
+        if (GAME_STATE.my_score >= 40) {
+            alert("you win!"); // FIXME
+            return;
+        } else if (GAME_STATE.my_score <= 0) {
+            alert("you lose..."); // FIXME
+            return;
+        }
+        await animateNode(denote_season, 700 * 0.8093,
+            getDenoteSeasonNodeTopLeft(GAME_STATE.season),
+            getDenoteSeasonNodeTopLeft(orig_season));
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        drawScoreboard();
+        alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
+
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        document.getElementById("protective_cover_over_field")?.classList.remove("nocover");
+        document.getElementById("protective_tam_cover_over_field")?.classList.remove("nocover");
+        
+        await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
+
+        GAME_STATE.f =  {
+            currentBoard: GAME_STATE.IA_is_down ? rotateBoard(rotateBoard(initial_board_with_IA_down)) : rotateBoard(initial_board_with_IA_down),
+            hop1zuo1OfDownward: [],
+            hop1zuo1OfUpward: [],
+        };
+    
+        GAME_STATE.log2_rate = 0;
+        allowPolling(); // reset another global state
+        drawField();
+
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+        document.getElementById("protective_cover_over_field")?.classList.add("nocover");
+        document.getElementById("protective_tam_cover_over_field")?.classList.add("nocover");
+        
+        // FIXME: should be asking the server
+        GAME_STATE.is_my_turn = Math.random() < 0.5;
+        document.getElementById("protective_cover_over_field_while_asyncawait")?.classList.add("nocover");
+
+    }, 200 * 0.8093);
+}
+
+function getDenoteSeasonNodeTopLeft(season: Season) {
+    return {top: 360 + 51 * season, left: 3};
+}
+
+function getDenoteScoreNodeTopLeft(score: number) {
+    return {top: 447 + 21.83333333333333 * (20 - score), left: 65};
+}
+
+function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
+    return {top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4};
+}
+
+function drawScoreboard() {
+    const denote_season = document.getElementById("denote_season")!;
+    denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top}px`;
+    denote_season.style.transition = ``; // needs to clear the animation
+    denote_season.style.transform = ``;
+
+    const denote_score = document.getElementById("denote_score")!;
+    denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top}px`;
+    denote_score.style.transition = ``;
+    denote_score.style.transform = ``;
+
+    const denote_rate = document.getElementById("denote_rate")!;
+    if (GAME_STATE.log2_rate === 0) {
+        denote_rate.style.display = "none";
+    } else {
+        denote_rate.style.display = "block";
+    }
+    denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top}px`;
+    denote_rate.style.transition = ``;
+    denote_rate.style.transform = ``;
+
+}
+
+function drawField() {
+    (function drawBoard(board: Board) {
         const contains_pieces_on_board = document.getElementById("contains_pieces_on_board")!;
-        GAME_STATE.f.currentBoard = board;
 
         // delete everything
         removeChildren(contains_pieces_on_board);
@@ -1198,11 +1460,10 @@ function drawField(field: Field) {
                 contains_pieces_on_board.appendChild(imgNode);
             }
         }
-    };
+    })(GAME_STATE.f.currentBoard);
 
-    const drawHop1zuo1OfUpward = function(list: NonTam2PieceUpward[]) {
+    (function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
         const contains_pieces_on_upward = document.getElementById("contains_pieces_on_upward")!;
-        GAME_STATE.f.hop1zuo1OfUpward = list;
 
         // delete everything
         removeChildren(contains_pieces_on_upward);
@@ -1218,11 +1479,10 @@ function drawField(field: Field) {
 
             contains_pieces_on_upward.appendChild(imgNode);
         }
-    };
+    })(GAME_STATE.f.hop1zuo1OfUpward);
 
-    const drawHop1zuo1OfDownward = function(list: NonTam2PieceDownward[]) {
+    (function drawHop1zuo1OfDownward(list: NonTam2PieceDownward[]) {
         const contains_pieces_on_downward = document.getElementById("contains_pieces_on_downward")!;
-        GAME_STATE.f.hop1zuo1OfDownward = list;
 
         // delete everything
         removeChildren(contains_pieces_on_downward);
@@ -1233,9 +1493,5 @@ function drawField(field: Field) {
             imgNode.id = `hop1zuo1OfDownward_${i}`;
             contains_pieces_on_downward.appendChild(imgNode);
         }
-    };
-
-    drawBoard(field.currentBoard);
-    drawHop1zuo1OfUpward(field.hop1zuo1OfUpward);
-    drawHop1zuo1OfDownward(field.hop1zuo1OfDownward);
+    })(GAME_STATE.f.hop1zuo1OfDownward);
 }

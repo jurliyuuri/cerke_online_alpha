@@ -6,14 +6,22 @@
 <script src="api2/type__message.js"></script>
 <script src="type__piece.js"></script>
 <script src="calculate_movable.js"></script>
-<script src="samples.js"></script>
+<script src="pure.js"></script>
 <script src="html_top_left.js"></script>
 <script src="create_html_element.js"></script>
 <script src="game_state.js"></script>
 <script src="opponent_move.js"></script>
+<script src="cerke_calculate_hands/calculate_hand.js"></script>
 <script src="main.js"></script>
 </head>
-<body onload="drawField(GAME_STATE.f); GAME_STATE.is_my_turn = Math.random() < 0.5;">
+<body onload="drawField();">
+<div id="everything">
+    <div id="scoreboard_containment">
+        <img src="image/scoreboard.png" style="position:absolute" height="912">
+        <img id="denote_season" src="image/piece/rtam.png" style="top: 360px;" width="48">
+        <img id="denote_score" src="image/wood_side.png" style="top: 447px;" width="48">
+        <img id="denote_rate" src="image/wood_side2.png" style="position: absolute; top: 873px; left: 4px; display: none" width="48">
+    </div>
     <div id="field">
     <div id="hop1zuo1_of_downward">
         <div id="contains_pieces_on_downward">
@@ -50,7 +58,7 @@
 
     </div>
 
-    <div id="protective_cover_over_field_while_waiting_for_opponent" class="nocover">
+    <div id="protective_cover_over_field_while_waiting_for_opponent">
 
     </div>
 
@@ -61,4 +69,10 @@
     <div id="larta_me"><img src="image/larta.png"></div>
     <div id="larta_opponent"><img src="image/larta.png"></div>
     <div id="arrows"></div>
+    <div id="score_display" class="nocover"></div>
+
+    <div id="kait_kaik">
+        <input type="image" id="kait_kaik_button" src="image/kait_kaik.png" onclick="document.getElementById('kait_kaik').classList.add('nocover'); GAME_STATE.is_my_turn = Math.random() < 0.5; /* FIXME: should be asking the server */" width="200">
+    </div>
+</div>
 </body>

@@ -37,6 +37,16 @@ img.water_entry {
   left: 20px;
 }
 
+#score_display {
+  position: absolute;
+  top: 250px;
+  left: 11px;
+  height: 450px;
+  width: 650px;
+  background-color: rgba(1, 1, 1, 0.7);
+  z-index: 2000;
+}
+
 #protective_cover_over_field_while_asyncawait {
   background-color: rgba(0, 0, 0, 0);
   width: 631px;
@@ -95,6 +105,40 @@ img.water_entry {
   width: 631px;
   height: 140px;
   position: relative;
+}
+
+#kait_kaik {
+  z-index: 3000;
+  position: absolute;
+  left: 235px;
+  top: 415px;
+}
+
+#kait_kaik_button {
+  background-color: #e0e0e0;
+  position: absolute;
+  border: 1px solid #aaaaaa;
+}
+
+#everything {
+  position: absolute;
+  left: 200px;
+}
+
+#denote_season {
+  position: absolute;
+  left: 3px;
+}
+
+#denote_score {
+  position: absolute;
+  left: 65px;
+}
+
+#scoreboard_containment {
+  position: absolute;
+  left: -185px;
+  top: 19.5px;
 }
 
 #board_containment {

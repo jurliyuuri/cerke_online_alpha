@@ -39,6 +39,12 @@ function createPieceSizeImageOnBoardByPath_Shifted(coord, path, className) {
     const { top, left } = coordToPieceXY_Shifted(coord);
     return createPieceSizeImageOnBoardByPathAndXY(top, left, path, className);
 }
+function createPieceSizeSelectionButtonOnBoard_Shifted(coord) {
+    const centralNode = createPieceSizeImageOnBoardByPath_Shifted(coord, "selection2", "selection");
+    centralNode.style.cursor = "pointer";
+    centralNode.style.zIndex = "200";
+    return centralNode;
+}
 function createCircleGuideImageAt(coord, path) {
     const [row_index, column_index] = coord;
     const img = document.createElement("img");
@@ -72,4 +78,16 @@ function createPieceImgToBePlacedOnHop1zuo1(ind, path) {
 }
 function createPieceImgToBePlacedOnBoard(coord, piece) {
     return createPieceSizeImageOnBoardByPath(coord, toPath_(piece), "piece_image_on_board");
+}
+function createImageButton(img_name, top) {
+    const node = document.createElement("input");
+    node.setAttribute("type", "image");
+    node.src = `image/${img_name}.png`;
+    node.height = 200;
+    node.style.backgroundColor = "#e0e0e0";
+    node.style.position = "absolute";
+    node.style.left = "660px";
+    node.style.top = `${top}px`;
+    node.style.border = "1px solid #aaaaaa";
+    return node;
 }

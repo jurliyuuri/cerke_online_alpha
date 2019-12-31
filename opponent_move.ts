@@ -139,7 +139,7 @@ function get_one_valid_opponent_move(): OpponentMove {
         }
     };
 
-    if (Math.random() < 0.03) {
+    if (Math.random() < 0.003) {
         const len = GAME_STATE.f.hop1zuo1OfDownward.length;
         if (len === 0) { return get_one_valid_opponent_move(); } // retry
 
@@ -465,18 +465,17 @@ async function animateOpponentInfAfterStep(p: {
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (result.water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
 
         if (!coordEq(p.src, dest)) { /* if same, the piece should not take itself */
-            const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
-            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+            takeTheUpwardPieceAndCheckHand(destPiece);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
+        drawField();
     } else {
         await animateNode(srcNode, 750 * 0.8093,
             coordToPieceXY(dest),
@@ -489,7 +488,7 @@ async function animateOpponentInfAfterStep(p: {
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (result.water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
@@ -498,7 +497,89 @@ async function animateOpponentInfAfterStep(p: {
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
+        drawField();
+    }
+}
+
+/**
+ * Unsafe function.
+ * @param destPiece Assumed to be upward; if not, an error is thrown
+ */
+function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
+    const flipped: NonTam2PieceDownward = (() => {
+        if (destPiece === "Tam2") {
+            throw new Error("tried to convert Tam2 into downward");
+        } else if (destPiece.side === Side.Downward) {
+            throw new Error("tried to convert an already downward piece to downward");
+        } else if (destPiece.side === Side.Upward) {
+            const flipped: NonTam2PieceDownward = {
+                color: destPiece.color,
+                prof: destPiece.prof,
+                side: Side.Downward,
+            };
+            return flipped;
+        } else {
+            const _should_not_reach_here: never = destPiece.side;
+            throw new Error("should not reach here");
+        }
+    })();
+
+    const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfDownward);
+    GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+    const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfDownward);
+
+    if (new_state.score === old_state.score) {
+        return;
+    }
+
+    // this will quite quickly be gone due to the setter of is_my_turn
+    document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.remove("nocover");
+
+    // hence add another transparent film
+    document.getElementById("protective_cover_over_field_while_asyncawait")!.classList.remove("nocover");
+
+    window.setTimeout(async () => {
+        await sendTyMok1OrTaXot1Poll(new_state.score);
+    }, 0);
+
+    window.setTimeout(() => {
+        drawScoreDisplay(new_state.hands);
+    }, 1000 * 0.8093);
+}
+
+async function sendTyMok1OrTaXot1Poll(base_score: number) {
+    console.log("poll whether ty mok1 or ta xot1");
+    if (Math.random() < 0.2) {
+        console.log("ding!");
+
+        // FIXME: you are supposed to send a request to the server and wait for the response
+        const is_tymok1 = Math.random() < 0.5;
+    
+        const score_display = document.getElementById("score_display")!;
+
+        await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+        // so that the ty mok1 / ta xot1 image is written after the score is written
+        // this is necessary because the scorewriting deletes scoredisplay.innerHTML
+        while (!score_display.hasChildNodes()) {
+            await new Promise((resolve) => setTimeout(resolve, 100 * 0.8093));
+        }
+
+        if (is_tymok1) {
+            score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
+            await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
+            console.log("go on with ty mok1");
+            increaseRateAndAnimate(false);
+        } else {
+            score_display.innerHTML += `<img src="image/dat2/終.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
+            await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
+            console.log("go on with ta xot1");
+            endSeason(-base_score); // since opponent, negative score
+        }
+    } else {
+        document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.remove("nocover");
+        await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+        await sendTyMok1OrTaXot1Poll(base_score);
     }
 }
 
@@ -551,18 +632,17 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
 
         if (!coordEq(src, dest)) { /* if same, the piece should not take itself */
-            const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
-            GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+            takeTheUpwardPieceAndCheckHand(destPiece);
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
+        drawField();
     } else {
         const imgNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
         await animateNode(imgNode, 750 * 0.8093,
@@ -583,7 +663,7 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
@@ -592,29 +672,7 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
             GAME_STATE.f.currentBoard[src_i][src_j] = null;
             GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
         }
-        drawField(GAME_STATE.f);
-    }
-}
-
-/**
- * Unsafe function. Takes an upward piece and turns it into a downward one. Panics if already downward or Tam2.
- * @param {Piece} upward
- */
-function downwardTakingUpward(upward: Piece): NonTam2PieceDownward {
-    if (upward === "Tam2") {
-        throw new Error("tried to convert Tam2 into downward");
-    } else if (upward.side === Side.Downward) {
-        throw new Error("tried to convert an already downward piece to downward");
-    } else if (upward.side === Side.Upward) {
-        const flipped: NonTam2PieceDownward = {
-            color: upward.color,
-            prof: upward.prof,
-            side: Side.Downward,
-        };
-        return flipped;
-    } else {
-        const _should_not_reach_here: never = upward.side;
-        throw new Error("should not reach here");
+        drawField();
     }
 }
 
@@ -662,17 +720,15 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
 
-        const flipped: NonTam2PieceDownward = downwardTakingUpward(destPiece);
-        GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
-
+        takeTheUpwardPieceAndCheckHand(destPiece);
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-        drawField(GAME_STATE.f);
+        drawField();
     } else {
         const imgNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
         await animateNode(imgNode, 1500 * 0.8093,
@@ -686,14 +742,14 @@ async function animateOpponentSrcDst_(src: Coord, dst: Coord, water_entry_ciurl?
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
             if (water_entry_ciurl.filter((a) => a).length < 3) {
                 alert(DICTIONARY.ja.failedWaterEntry);
-                drawField(GAME_STATE.f);
+                drawField();
                 return;
             }
         }
 
         GAME_STATE.f.currentBoard[src_i][src_j] = null;
         GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-        drawField(GAME_STATE.f);
+        drawField();
     }
 }
 
@@ -720,7 +776,7 @@ async function animateOpponentFromHand(piece: NonTam2PieceDownward, dest: Coord)
     );
 
     GAME_STATE.f.currentBoard[dest_i][dest_j] = removed;
-    drawField(GAME_STATE.f);
+    drawField();
 }
 
 async function animateOpponentTamNoStep(src: Coord, fstdst: Coord, snddst: Coord) {
@@ -736,7 +792,7 @@ async function animateOpponentTamNoStep(src: Coord, fstdst: Coord, snddst: Coord
     );
     GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
     GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
-    drawField(GAME_STATE.f);
+    drawField();
 
     const imgNode2: HTMLElement = document.getElementById(`field_piece_${fstdst[0]}_${fstdst[1]}`)!;
 
@@ -749,7 +805,7 @@ async function animateOpponentTamNoStep(src: Coord, fstdst: Coord, snddst: Coord
     );
     GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
     GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
-    drawField(GAME_STATE.f);
+    drawField();
 }
 
 async function animateOpponentTamSteppingDuringFormer(p: {src: Coord, firstDest: Coord, secondDest: Coord, step: Coord}) {
@@ -770,53 +826,53 @@ function eraseArrow() {
 
 function drawArrow(from: Coord, to: Coord) {
     if (from[1] === to[1] && from[0] > to[0]) { // up arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_up_head", to));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_up_head", to));
         for (let i = to[0]; i <= from[0] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_up_mid", [i, from[1]]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_up_mid", [i, from[1]]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_up_tail", [from[0] - 1, from[1]]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_up_tail", [from[0] - 1, from[1]]));
     } else if (from[1] === to[1] && from[0] < to[0]) { // up arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_down_tail", from));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_down_tail", from));
         for (let i = from[0]; i <= to[0] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_down_mid", [i, from[1]]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_down_mid", [i, from[1]]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_down_head", [to[0] - 1, to[1]]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_down_head", [to[0] - 1, to[1]]));
     } else if (from[0] === to[0] && from[1] > to[1]) { // left arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_left_head", to));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_left_head", to));
         for (let i = to[1]; i <= from[1] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_left_mid", [from[0], i]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_left_mid", [from[0], i]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_left_tail", [from[0], from[1] - 1]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_left_tail", [from[0], from[1] - 1]));
     } else if (from[0] === to[0] && from[1] < to[1]) { // right arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_right_tail", from));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_right_tail", from));
         for (let i = from[1]; i <= to[1] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_right_mid", [from[0], i]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_right_mid", [from[0], i]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_right_head", [to[0], to[1] - 1]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_right_head", [to[0], to[1] - 1]));
     } else if (from[0] > to[0] && from[1] < to[1] && (from[0] - to[0]) === (to[1] - from[1]) ) { // up right arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upright_head", [to[0], to[1] - 1]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_upright_head", [to[0], to[1] - 1]));
         for (let i = to[0]; i <= from[0] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upright_mid", [i, to[1] + to[0] - 1 - i]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_upright_mid", [i, to[1] + to[0] - 1 - i]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upright_tail", [from[0] - 1, from[1]]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_upright_tail", [from[0] - 1, from[1]]));
     } else if (from[0] < to[0] && from[1] > to[1] && (from[0] - to[0]) === (to[1] - from[1]) ) { // down left arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downleft_tail", [from[0], from[1] - 1]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_downleft_tail", [from[0], from[1] - 1]));
         for (let i = from[0]; i <= to[0] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downleft_mid", [i, from[1] + from[0] - 1 - i]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_downleft_mid", [i, from[1] + from[0] - 1 - i]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downleft_head", [to[0] - 1, to[1]]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_downleft_head", [to[0] - 1, to[1]]));
     } else if (from[0] > to[0] && from[1] > to[1] && (from[0] - to[0]) === (from[1] - to[1]) ) { // up left arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upleft_head", to));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_upleft_head", to));
         for (let i = to[0]; i <= from[0] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upleft_mid", [i, to[1] - to[0] + i]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_upleft_mid", [i, to[1] - to[0] + i]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_upleft_tail", [from[0] - 1, from[1] - 1]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_upleft_tail", [from[0] - 1, from[1] - 1]));
     } else if (from[0] < to[0] && from[1] < to[1] && (from[0] - to[0]) === (from[1] - to[1]) ) { // down right arrow
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downright_tail", from));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_downright_tail", from));
         for (let i = from[0]; i <= to[0] - 1; i++) {
-            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downright_mid", [i, from[1] - from[0] + i]));
+            document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_downright_mid", [i, from[1] - from[0] + i]));
         }
-        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow_downright_head", [to[0] - 1, to[1] - 1]));
+        document.getElementById("arrows")!.appendChild(createArrowPiece("arrow/arrow_downright_head", [to[0] - 1, to[1] - 1]));
     } else {
         throw new Error("unsupported direction for the arrow");
     }
