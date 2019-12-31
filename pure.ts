@@ -34,6 +34,7 @@ import Ret_NormalMove = type__message.Ret_NormalMove;
 import Ret_AfterHalfAcceptance = type__message.Ret_AfterHalfAcceptance;
 import SrcDst = type__message.SrcDst;
 import SrcStepDstFinite = type__message.SrcStepDstFinite;
+import MoveToBePolled = type__message.MoveToBePolled;
 import eightNeighborhood = calculate_movable.eightNeighborhood;
 import isTamHue = calculate_movable.isTamHue;
 import canGetOccupiedBy = calculate_movable.canGetOccupiedBy;

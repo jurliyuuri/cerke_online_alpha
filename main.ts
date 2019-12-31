@@ -27,11 +27,23 @@ async function sendMainPoll() {
     if (!isPollingAllowed()) {
         return;
     }
-    if (Math.random() < 0.2) {
+
+    const res: MoveToBePolled | "not yet" =
+        await sendEmpty<{}, MoveToBePolled | "not yet">(
+            "mainpoll",
+            "`polling for the opponent's move`",
+            {},
+            (response) => {
+                console.log("Success; the server returned:", JSON.stringify(response));
+                return response;
+            },
+        );
+    
+    if (res !== "not yet") {
         console.log("ding!");
 
         // FIXME: you are supposed to send a request to the server and wait for the response
-        const opponent_move = get_one_valid_opponent_move();
+        const opponent_move = res;
         console.log(opponent_move);
         if (opponent_move.type === "NonTamMove") {
             if (opponent_move.data.type === "SrcDst") {
@@ -80,12 +92,25 @@ async function sendMainPoll() {
                 throw new Error("does not happen");
             }
         } else if (opponent_move.type === "InfAfterStep") {
+            const finalResult = (() => {
+                if (opponent_move.finalResult == null) {
+                    return new Promise<{
+                        dest: AbsoluteCoord;
+                        water_entry_ciurl?: Ciurl;
+                    }>((resolve, reject) => {
+                        console.log("waiting infinitely for the poll");
+                        /* FIXME */
+                    });
+                } else {
+                    return Promise.resolve(opponent_move.finalResult);
+                }
+            })();
             await animateOpponentInfAfterStep({
                 src: fromAbsoluteCoord(opponent_move.src),
                 step: fromAbsoluteCoord(opponent_move.step),
                 plannedDirection: fromAbsoluteCoord(opponent_move.plannedDirection),
                 stepping_ciurl: opponent_move.stepping_ciurl,
-                finalResult: opponent_move.finalResult,
+                finalResult,
             });
             GAME_STATE.is_my_turn = true;
         } else {
@@ -466,6 +491,47 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
         drawField();
         GAME_STATE.is_my_turn = false;
     }
+}
+
+async function sendEmpty<T, U>(api_name: string, log: string, message: T, validateInput: (response: any) => U): Promise<U> {
+
+    // cover up the UI
+    const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait")!;
+    cover_while_asyncawait.classList.remove("nocover");
+
+    console.log(`Sending ${log}:`, JSON.stringify(message));
+    const url = `http://localhost:23564/${api_name}/`;
+    const data = {
+        id: (Math.random() * 100000) | 0,
+        message,
+    };
+
+    const res: void | U = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data), // data can be `string` or {object}!
+        headers: {
+            "Content-Type": "application/json",          
+            "Authorization": `Bearer ${sessionStorage.access_token}` 
+        },
+    }).then(function(res) {
+        cover_while_asyncawait.classList.add("nocover");
+        return res.json();
+    }).then(validateInput)
+        .catch(function(error) {
+            cover_while_asyncawait.classList.add("nocover");
+            console.error("Error:", error);
+            return;
+        });
+
+    console.log(res);
+    cover_while_asyncawait.classList.add("nocover");
+
+    if (!res) {
+        alert("network error!");
+        cover_while_asyncawait.classList.add("nocover");
+        throw new Error("network error!");
+    }
+    return res;
 }
 
 async function sendStuff<T, U>(log: string, message: T, validateInput: (response: any) => U): Promise<U> {
