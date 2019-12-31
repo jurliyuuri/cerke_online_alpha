@@ -44,6 +44,8 @@ async function sendCancel<U>(access_token: AccessToken, validateInput: (response
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(access_token: AccessToken) {
     alert("Let the game begin");
+    sessionStorage.access_token = access_token;
+    location.href = "main.html";
 }
 
 let RESULT: Res_RandomEntry | undefined;

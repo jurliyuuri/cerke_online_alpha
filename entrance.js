@@ -29,6 +29,8 @@ async function sendCancel(access_token, validateInput) {
 }
 function let_the_game_begin(access_token) {
     alert("Let the game begin");
+    sessionStorage.access_token = access_token;
+    location.href = "main.html";
 }
 let RESULT;
 function apply_for_random_game() {
