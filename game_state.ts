@@ -123,4 +123,4 @@ let GAME_STATE: GAME_STATE = ((p: {IA_is_down: boolean}) => {
     my_score: 20,
     season,
     log2_rate,
-}; })({IA_is_down: Math.random() < 0.5});
+}; })({IA_is_down: JSON.parse(sessionStorage.is_IA_down_for_me)});

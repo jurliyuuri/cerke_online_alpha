@@ -42,10 +42,11 @@ async function sendCancel<U>(access_token: AccessToken, validateInput: (response
 }
 
 type AccessToken = string & { __AccessTokenBrand: never };
-function let_the_game_begin(access_token: AccessToken, is_first_move_my_move: boolean) {
+function let_the_game_begin(access_token: AccessToken, is_first_move_my_move: boolean, is_IA_down_for_me: boolean) {
     alert("Let the game begin");
     sessionStorage.access_token = access_token;
-    sessionStorage.is_first_move_my_move = is_first_move_my_move;
+    sessionStorage.is_first_move_my_move = JSON.stringify(is_first_move_my_move);
+    sessionStorage.is_IA_down_for_me = JSON.stringify(is_IA_down_for_me);
     location.href = "main.html";
 }
 
@@ -67,7 +68,7 @@ function apply_for_random_game() {
                 RESULT = res;
             }
         }
-        let_the_game_begin(res.access_token as AccessToken, res.is_first_move_my_move);
+        let_the_game_begin(res.access_token as AccessToken, res.is_first_move_my_move, res.is_IA_down_for_me);
     })();
 }
 

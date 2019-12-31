@@ -27,10 +27,11 @@ async function sendCancel(access_token, validateInput) {
         access_token,
     }, validateInput);
 }
-function let_the_game_begin(access_token, is_first_move_my_move) {
+function let_the_game_begin(access_token, is_first_move_my_move, is_IA_down_for_me) {
     alert("Let the game begin");
     sessionStorage.access_token = access_token;
-    sessionStorage.is_first_move_my_move = is_first_move_my_move;
+    sessionStorage.is_first_move_my_move = JSON.stringify(is_first_move_my_move);
+    sessionStorage.is_IA_down_for_me = JSON.stringify(is_IA_down_for_me);
     location.href = "main.html";
 }
 let RESULT;
@@ -51,7 +52,7 @@ function apply_for_random_game() {
                 RESULT = res;
             }
         }
-        let_the_game_begin(res.access_token, res.is_first_move_my_move);
+        let_the_game_begin(res.access_token, res.is_first_move_my_move, res.is_IA_down_for_me);
     })();
 }
 async function sendPoll(access_token, validateInput) {
