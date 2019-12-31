@@ -378,6 +378,7 @@ async function sendStuff(log, message, validateInput) {
         body: JSON.stringify(data),
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.access_token}`
         },
     }).then(function (res) {
         cover_while_asyncawait.classList.add("nocover");
