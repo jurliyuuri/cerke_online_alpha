@@ -368,7 +368,7 @@ async function sendStuff(log, message, validateInput) {
     const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait");
     cover_while_asyncawait.classList.remove("nocover");
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    const url = "http://localhost:5000/slow/";
+    const url = "http://localhost:23564/slow/";
     const data = {
         id: (Math.random() * 100000) | 0,
         message,

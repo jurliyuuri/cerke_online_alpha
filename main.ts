@@ -475,7 +475,7 @@ async function sendStuff<T, U>(log: string, message: T, validateInput: (response
     cover_while_asyncawait.classList.remove("nocover");
 
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    const url = "http://localhost:5000/slow/";
+    const url = "http://localhost:23564/slow/";
     const data = {
         id: (Math.random() * 100000) | 0,
         message,
