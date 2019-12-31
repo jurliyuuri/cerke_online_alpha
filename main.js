@@ -1087,7 +1087,7 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
         increaseRateAndAnimate(true);
     });
     score_display.appendChild(ty_mok1_button);
-    const ta_xot1_button = createImageButton("dat2/終", 250);
+    const ta_xot1_button = createImageButton("dat2/終季", 250);
     ta_xot1_button.addEventListener("click", () => endSeason(base_score));
     score_display.appendChild(ta_xot1_button);
 }

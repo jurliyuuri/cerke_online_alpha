@@ -291,7 +291,7 @@ async function sendTyMok1OrTaXot1Poll(base_score: number) {
             console.log("go on with ty mok1");
             increaseRateAndAnimate(false);
         } else {
-            score_display.innerHTML += `<img src="image/dat2/終.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
+            score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
             await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
             console.log("go on with ta xot1");
             endSeason(-base_score); // since opponent, negative score
