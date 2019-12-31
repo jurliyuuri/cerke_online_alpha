@@ -1,18 +1,3 @@
-interface SrcDst {
-    type: "SrcDst";
-    src: AbsoluteCoord;
-    dest: AbsoluteCoord;
-    water_entry_ciurl?: Ciurl;
-}
-
-interface SrcStepDstFinite {
-    type: "SrcStepDstFinite";
-    src: AbsoluteCoord;
-    step: AbsoluteCoord;
-    dest: AbsoluteCoord;
-    water_entry_ciurl?: Ciurl;
-}
-
 interface OpponentMoveWithPotentialWaterEntry {
     type: "NonTamMove";
     data: SrcDst | SrcStepDstFinite;
