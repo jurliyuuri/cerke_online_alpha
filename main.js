@@ -82,9 +82,23 @@ async function sendMainPoll() {
         else if (opponent_move.type === "InfAfterStep") {
             const finalResult = (() => {
                 if (opponent_move.finalResult == null) {
-                    return new Promise((resolve, reject) => {
-                        console.log("waiting infinitely for the poll");
-                        /* FIXME */
+                    return new Promise(async (resolve, reject) => {
+                        while (true) {
+                            const res = await sendEmpty("infpoll", "`polling for the opponent's afterhalfacceptance`", {}, (response) => {
+                                console.log("Success; the server returned:", JSON.stringify(response));
+                                return response;
+                            });
+                            if (res === "not good") {
+                                throw new Error("not good!!!");
+                            }
+                            else if (res !== "not yet") {
+                                if (res.type !== "InfAfterStep") {
+                                    throw new Error("nooooooo");
+                                }
+                                resolve(res.finalResult);
+                            }
+                            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+                        }
                     });
                 }
                 else {

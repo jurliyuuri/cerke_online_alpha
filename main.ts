@@ -97,9 +97,28 @@ async function sendMainPoll() {
                     return new Promise<{
                         dest: AbsoluteCoord;
                         water_entry_ciurl?: Ciurl;
-                    }>((resolve, reject) => {
-                        console.log("waiting infinitely for the poll");
-                        /* FIXME */
+                    }>(async (resolve, reject) => {
+                        while (true) {
+                            const res: MoveToBePolled | "not yet" | "not good" =
+                                await sendEmpty<{}, MoveToBePolled | "not yet" | "not good">(
+                                    "infpoll",
+                                    "`polling for the opponent's afterhalfacceptance`",
+                                    {},
+                                    (response) => {
+                                        console.log("Success; the server returned:", JSON.stringify(response));
+                                        return response;
+                                    },
+                                );
+                            if (res === "not good") {
+                                throw new Error("not good!!!");
+                            } else if (res !== "not yet") {
+                                if (res.type !== "InfAfterStep") {
+                                    throw new Error("nooooooo");
+                                }
+                                resolve(res.finalResult!);
+                            }
+                            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+                        }
                     });
                 } else {
                     return Promise.resolve(opponent_move.finalResult);
