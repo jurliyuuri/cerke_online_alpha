@@ -96,6 +96,7 @@ async function sendMainPoll() {
                                     throw new Error("nooooooo");
                                 }
                                 resolve(res.finalResult);
+                                return;
                             }
                             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
                         }
