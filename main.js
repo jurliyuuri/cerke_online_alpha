@@ -1082,13 +1082,29 @@ function increaseRateAndAnimate(done_by_me) {
 function drawTyMok1AndTaXot1Buttons(base_score) {
     const score_display = document.getElementById("score_display");
     const ty_mok1_button = createImageButton("dat2/再行", 0);
-    ty_mok1_button.addEventListener("click", () => {
+    ty_mok1_button.addEventListener("click", async () => {
         // FIXME: must send server of this decision
         increaseRateAndAnimate(true);
+        const res = await sendEmpty("whethertymok", "`send whether ty mok1`", true, (response) => {
+            console.log("Success; the server returned:", JSON.stringify(response));
+            return response;
+        });
+        if (res.legal !== true) {
+            throw new Error("bad!!!!");
+        }
     });
     score_display.appendChild(ty_mok1_button);
     const ta_xot1_button = createImageButton("dat2/終季", 250);
-    ta_xot1_button.addEventListener("click", () => endSeason(base_score));
+    ta_xot1_button.addEventListener("click", async () => {
+        const res = await sendEmpty("whethertymok", "`send whether ty mok1`", false, (response) => {
+            console.log("Success; the server returned:", JSON.stringify(response));
+            return response;
+        });
+        if (res.legal !== true) {
+            throw new Error("bad!!!!");
+        }
+        endSeason(base_score);
+    });
     score_display.appendChild(ta_xot1_button);
 }
 function endSeason(base_score) {
