@@ -401,7 +401,7 @@ async function sendStuffTo(api_name, log, message, validateInput) {
     const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait");
     cover_while_asyncawait.classList.remove("nocover");
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    const url = `http://localhost:23564/${api_name}/`;
+    const url = `https://serene-reef-96808.herokuapp.com/${api_name}/`;
     const data = {
         id: (Math.random() * 100000) | 0,
         message,

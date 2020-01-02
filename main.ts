@@ -525,7 +525,7 @@ async function sendStuffTo<T, U>(api_name: string, log: string, message: T, vali
     cover_while_asyncawait.classList.remove("nocover");
 
     console.log(`Sending ${log}:`, JSON.stringify(message));
-    const url = `http://localhost:23564/${api_name}/`;
+    const url = `https://serene-reef-96808.herokuapp.com/${api_name}/`;
     const data = {
         id: (Math.random() * 100000) | 0,
         message,

@@ -36,7 +36,7 @@ window.addEventListener("beforeunload", function(e) {
 });
 
 async function sendCancel<U>(access_token: AccessToken, validateInput: (response: any) => U): Promise<U> {
-    return await sendSomethingSomewhere("http://localhost:23564/random/cancel", {
+    return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/cancel", {
         access_token,
     }, validateInput);
 }
@@ -73,7 +73,7 @@ function apply_for_random_game() {
 }
 
 async function sendPoll<U>(access_token: AccessToken, validateInput: (response: any) => U): Promise<U> {
-    return await sendSomethingSomewhere("http://localhost:23564/random/poll", {
+    return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/poll", {
         access_token,
     }, validateInput);
 }
@@ -103,5 +103,5 @@ async function sendSomethingSomewhere<T, U>(url: string, data: T, validateInput:
 }
 
 async function sendEntrance<U>(validateInput: (response: any) => U): Promise<U> {
-    return await sendSomethingSomewhere("http://localhost:23564/random/entry", {}, validateInput);
+    return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/entry", {}, validateInput);
 }

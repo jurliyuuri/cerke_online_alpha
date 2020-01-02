@@ -23,7 +23,7 @@ window.addEventListener("beforeunload", function (e) {
     })();
 });
 async function sendCancel(access_token, validateInput) {
-    return await sendSomethingSomewhere("http://localhost:23564/random/cancel", {
+    return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/cancel", {
         access_token,
     }, validateInput);
 }
@@ -56,7 +56,7 @@ function apply_for_random_game() {
     })();
 }
 async function sendPoll(access_token, validateInput) {
-    return await sendSomethingSomewhere("http://localhost:23564/random/poll", {
+    return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/poll", {
         access_token,
     }, validateInput);
 }
@@ -82,5 +82,5 @@ async function sendSomethingSomewhere(url, data, validateInput) {
     return res;
 }
 async function sendEntrance(validateInput) {
-    return await sendSomethingSomewhere("http://localhost:23564/random/entry", {}, validateInput);
+    return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/entry", {}, validateInput);
 }
