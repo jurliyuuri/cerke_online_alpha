@@ -35,25 +35,6 @@ async function animateNode(node, total_duration, to, from, zIndex = "100", rotat
     }
     await new Promise((resolve) => setTimeout(resolve, total_duration));
 }
-function add_ciurl_if_required(obj, dest, moving_piece_prof, src) {
-    if (isWater(dest) && !isWater(src) && moving_piece_prof !== Profession.Nuak1) {
-        obj.data.water_entry_ciurl = [
-            Math.random() < 0.5,
-            Math.random() < 0.5,
-            Math.random() < 0.5,
-            Math.random() < 0.5,
-            Math.random() < 0.5,
-        ];
-    }
-}
-const getOneEmptyNeighborOf = (c) => {
-    const empty_neighbors_of_c = eightNeighborhood(c).filter(([i, j]) => GAME_STATE.f.currentBoard[i][j] == null);
-    if (empty_neighbors_of_c.length === 0) {
-        return null;
-    } // retry
-    const empty_neighbor = empty_neighbors_of_c[empty_neighbors_of_c.length * Math.random() | 0];
-    return empty_neighbor;
-};
 async function animateOpponentSrcStepDstFinite(p) {
     await animateOpponentSrcStepDstFinite_(fromAbsoluteCoord(p.src), fromAbsoluteCoord(p.step), fromAbsoluteCoord(p.dest), p.water_entry_ciurl);
 }
