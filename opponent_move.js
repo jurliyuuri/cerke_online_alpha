@@ -151,7 +151,7 @@ function takeTheUpwardPieceAndCheckHand(destPiece) {
 }
 async function sendTyMok1OrTaXot1Poll(base_score) {
     console.log("poll whether ty mok1 or ta xot1");
-    const res = await sendEmpty("whethertymokpoll", "`polling for whether the declaration is ty mok1 or ta xot1`", {}, (response) => {
+    const res = await sendStuffTo("whethertymokpoll", "`polling for whether the declaration is ty mok1 or ta xot1`", {}, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
     });

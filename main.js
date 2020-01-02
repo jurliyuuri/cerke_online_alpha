@@ -22,7 +22,7 @@ async function sendMainPoll() {
     if (!isPollingAllowed()) {
         return;
     }
-    const res = await sendEmpty("mainpoll", "`polling for the opponent's move`", {}, (response) => {
+    const res = await sendStuffTo("mainpoll", "`polling for the opponent's move`", {}, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
     });
@@ -86,7 +86,7 @@ async function sendMainPoll() {
                 if (opponent_move.finalResult == null) {
                     return new Promise(async (resolve, reject) => {
                         while (true) {
-                            const res = await sendEmpty("infpoll", "`polling for the opponent's afterhalfacceptance`", {}, (response) => {
+                            const res = await sendStuffTo("infpoll", "`polling for the opponent's afterhalfacceptance`", {}, (response) => {
                                 console.log("Success; the server returned:", JSON.stringify(response));
                                 return response;
                             });
@@ -395,7 +395,7 @@ async function sendAfterHalfAcceptance(message, src, step) {
         GAME_STATE.is_my_turn = false;
     }
 }
-async function sendEmpty(api_name, log, message, validateInput) {
+async function sendStuffTo(api_name, log, message, validateInput) {
     // cover up the UI
     const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait");
     cover_while_asyncawait.classList.remove("nocover");
@@ -431,39 +431,7 @@ async function sendEmpty(api_name, log, message, validateInput) {
     return res;
 }
 async function sendStuff(log, message, validateInput) {
-    // cover up the UI
-    const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait");
-    cover_while_asyncawait.classList.remove("nocover");
-    console.log(`Sending ${log}:`, JSON.stringify(message));
-    const url = "http://localhost:23564/slow/";
-    const data = {
-        id: (Math.random() * 100000) | 0,
-        message,
-    };
-    const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.access_token}`
-        },
-    }).then(function (res) {
-        cover_while_asyncawait.classList.add("nocover");
-        return res.json();
-    }).then(validateInput)
-        .catch(function (error) {
-        cover_while_asyncawait.classList.add("nocover");
-        console.error("Error:", error);
-        return;
-    });
-    console.log(res);
-    cover_while_asyncawait.classList.add("nocover");
-    if (!res) {
-        alert("network error!");
-        cover_while_asyncawait.classList.add("nocover");
-        throw new Error("network error!");
-    }
-    return res;
+    return await sendStuffTo("slow", log, message, validateInput);
 }
 async function sendNormalMessage(message) {
     const res = await sendStuff("normal move", message, (response) => {
@@ -1088,7 +1056,7 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     ty_mok1_button.addEventListener("click", async () => {
         // FIXME: must send server of this decision
         increaseRateAndAnimate(true);
-        const res = await sendEmpty("whethertymok", "`send whether ty mok1`", true, (response) => {
+        const res = await sendStuffTo("whethertymok", "`send whether ty mok1`", true, (response) => {
             console.log("Success; the server returned:", JSON.stringify(response));
             return response;
         });
@@ -1099,7 +1067,7 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     score_display.appendChild(ty_mok1_button);
     const ta_xot1_button = createImageButton("dat2/終季", 250);
     ta_xot1_button.addEventListener("click", async () => {
-        const res = await sendEmpty("whethertymok", "`send whether ty mok1`", false, (response) => {
+        const res = await sendStuffTo("whethertymok", "`send whether ty mok1`", false, (response) => {
             console.log("Success; the server returned:", JSON.stringify(response));
             return response;
         });

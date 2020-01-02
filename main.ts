@@ -32,7 +32,7 @@ async function sendMainPoll() {
     }
 
     const res: Ret_MainPoll =
-        await sendEmpty<{}, Ret_MainPoll>(
+        await sendStuffTo<{}, Ret_MainPoll>(
             "mainpoll",
             "`polling for the opponent's move`",
             {},
@@ -108,7 +108,7 @@ async function sendMainPoll() {
                         
                         while (true) {
                             const res: Ret_InfPoll =
-                                await sendEmpty<{}, Ret_InfPoll>(
+                                await sendStuffTo<{}, Ret_InfPoll>(
                                     "infpoll",
                                     "`polling for the opponent's afterhalfacceptance`",
                                     {},
@@ -521,7 +521,7 @@ async function sendAfterHalfAcceptance(message: AfterHalfAcceptance, src: Coord,
     }
 }
 
-async function sendEmpty<T, U>(api_name: string, log: string, message: T, validateInput: (response: any) => U): Promise<U> {
+async function sendStuffTo<T, U>(api_name: string, log: string, message: T, validateInput: (response: any) => U): Promise<U> {
 
     // cover up the UI
     const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait")!;
@@ -563,44 +563,7 @@ async function sendEmpty<T, U>(api_name: string, log: string, message: T, valida
 }
 
 async function sendStuff<T, U>(log: string, message: T, validateInput: (response: any) => U): Promise<U> {
-
-    // cover up the UI
-    const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait")!;
-    cover_while_asyncawait.classList.remove("nocover");
-
-    console.log(`Sending ${log}:`, JSON.stringify(message));
-    const url = "http://localhost:23564/slow/";
-    const data = {
-        id: (Math.random() * 100000) | 0,
-        message,
-    };
-
-    const res: void | U = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(data), // data can be `string` or {object}!
-        headers: {
-            "Content-Type": "application/json",          
-            "Authorization": `Bearer ${sessionStorage.access_token}` 
-        },
-    }).then(function(res) {
-        cover_while_asyncawait.classList.add("nocover");
-        return res.json();
-    }).then(validateInput)
-        .catch(function(error) {
-            cover_while_asyncawait.classList.add("nocover");
-            console.error("Error:", error);
-            return;
-        });
-
-    console.log(res);
-    cover_while_asyncawait.classList.add("nocover");
-
-    if (!res) {
-        alert("network error!");
-        cover_while_asyncawait.classList.add("nocover");
-        throw new Error("network error!");
-    }
-    return res;
+    return await sendStuffTo<T, U>("slow", log, message, validateInput);
 }
 
 async function sendNormalMessage(message: NormalMove) {
@@ -1389,7 +1352,7 @@ function drawTyMok1AndTaXot1Buttons(base_score: number) {
 
         increaseRateAndAnimate(true);
         const res: {legal: boolean} = 
-            await sendEmpty<boolean, {legal: boolean}>(
+            await sendStuffTo<boolean, {legal: boolean}>(
                 "whethertymok",
                 "`send whether ty mok1`",
                 true,
@@ -1407,7 +1370,7 @@ function drawTyMok1AndTaXot1Buttons(base_score: number) {
     const ta_xot1_button = createImageButton("dat2/終季", 250);
     ta_xot1_button.addEventListener("click", async () => {
         const res: {legal: boolean, is_first_move_my_move: boolean | null} = 
-            await sendEmpty<boolean, {legal: boolean, is_first_move_my_move: boolean | null}>(
+            await sendStuffTo<boolean, {legal: boolean, is_first_move_my_move: boolean | null}>(
                 "whethertymok",
                 "`send whether ty mok1`",
                 false,
