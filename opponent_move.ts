@@ -248,10 +248,6 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
     }, 1000 * 0.8093);
 }
 
-type Ret_WhetherTyMokPoll = {
-    legal: true, content: "ty mok1" | {is_first_move_my_move: boolean | null} | "not yet"
-  } | {legal: false, whyIllegal: string};
-
 async function sendTyMok1OrTaXot1Poll(base_score: number) {
     console.log("poll whether ty mok1 or ta xot1");
 

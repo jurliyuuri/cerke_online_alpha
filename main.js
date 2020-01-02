@@ -17,6 +17,7 @@ const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
     };
     return { stopPolling, resumePolling, isPollingAllowed, allowPolling };
 })();
+// I repentfully use a global state
 async function sendMainPoll() {
     console.log("poll");
     if (!isPollingAllowed()) {

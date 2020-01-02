@@ -22,9 +22,6 @@ const {stopPolling, resumePolling, isPollingAllowed, allowPolling} = (() => {
 })();
 // I repentfully use a global state
 
-type Ret_MainPoll = {legal: true, content: MoveToBePolled | "not yet"} | {legal: false, whyIllegal: string}
-type Ret_InfPoll = {legal: true, content: MoveToBePolled | "not yet"} | {legal: false, whyIllegal: string};
-
 async function sendMainPoll() {
     console.log("poll");
     if (!isPollingAllowed()) {
