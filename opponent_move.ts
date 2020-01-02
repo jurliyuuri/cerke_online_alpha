@@ -251,8 +251,8 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
 async function sendTyMok1OrTaXot1Poll(base_score: number) {
     console.log("poll whether ty mok1 or ta xot1");
 
-    const res: "ty mok1" | "ta xot1" | "not yet" =
-        await sendEmpty<{}, "ty mok1" | "ta xot1" | "not yet">(
+    const res: "ty mok1" | {is_first_move_my_move: boolean | null}/* ta xot1 */ | "not yet" =
+        await sendEmpty<{}, "ty mok1" | {is_first_move_my_move: boolean | null} | "not yet">(
             "whethertymokpoll",
             "`polling for whether the declaration is ty mok1 or ta xot1`",
             {},
@@ -265,8 +265,6 @@ async function sendTyMok1OrTaXot1Poll(base_score: number) {
     if (res !== "not yet") {
         console.log("ding!");
 
-        const is_tymok1 = res === "ty mok1";
-    
         const score_display = document.getElementById("score_display")!;
 
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
@@ -277,7 +275,7 @@ async function sendTyMok1OrTaXot1Poll(base_score: number) {
             await new Promise((resolve) => setTimeout(resolve, 100 * 0.8093));
         }
 
-        if (is_tymok1) {
+        if (res === "ty mok1") {
             score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
             await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ty mok1");
@@ -286,7 +284,7 @@ async function sendTyMok1OrTaXot1Poll(base_score: number) {
             score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`
             await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ta xot1");
-            endSeason(-base_score); // since opponent, negative score
+            endSeason(-base_score, res.is_first_move_my_move); // since opponent, negative score
         }
     } else {
         document.getElementById("protective_cover_over_field_while_waiting_for_opponent")!.classList.remove("nocover");

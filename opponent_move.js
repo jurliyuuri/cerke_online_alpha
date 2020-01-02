@@ -157,7 +157,6 @@ async function sendTyMok1OrTaXot1Poll(base_score) {
     });
     if (res !== "not yet") {
         console.log("ding!");
-        const is_tymok1 = res === "ty mok1";
         const score_display = document.getElementById("score_display");
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         // so that the ty mok1 / ta xot1 image is written after the score is written
@@ -165,7 +164,7 @@ async function sendTyMok1OrTaXot1Poll(base_score) {
         while (!score_display.hasChildNodes()) {
             await new Promise((resolve) => setTimeout(resolve, 100 * 0.8093));
         }
-        if (is_tymok1) {
+        if (res === "ty mok1") {
             score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
             await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ty mok1");
@@ -175,7 +174,7 @@ async function sendTyMok1OrTaXot1Poll(base_score) {
             score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
             await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ta xot1");
-            endSeason(-base_score); // since opponent, negative score
+            endSeason(-base_score, res.is_first_move_my_move); // since opponent, negative score
         }
     }
     else {

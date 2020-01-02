@@ -1397,8 +1397,8 @@ function drawTyMok1AndTaXot1Buttons(base_score: number) {
 
     const ta_xot1_button = createImageButton("dat2/終季", 250);
     ta_xot1_button.addEventListener("click", async () => {
-        const res: {legal: boolean} = 
-            await sendEmpty<boolean, {legal: boolean}>(
+        const res: {legal: boolean, is_first_move_my_move: boolean | null} = 
+            await sendEmpty<boolean, {legal: boolean, is_first_move_my_move: boolean | null}>(
                 "whethertymok",
                 "`send whether ty mok1`",
                 false,
@@ -1410,12 +1410,13 @@ function drawTyMok1AndTaXot1Buttons(base_score: number) {
         if (res.legal !== true) {
             throw new Error("bad!!!!");
         }
-        endSeason(base_score)
+        const is_first_move_my_move_in_the_next_season: boolean | null = res.is_first_move_my_move;
+        endSeason(base_score, is_first_move_my_move_in_the_next_season)
     });
     score_display.appendChild(ta_xot1_button);
 }
 
-function endSeason(base_score: number) {
+function endSeason(base_score: number, is_first_move_my_move_in_the_next_season: boolean | null) {
     const score_display = document.getElementById("score_display")!;
     score_display.classList.add("nocover");
         // FIXME: must send server of this decision
@@ -1494,8 +1495,7 @@ function endSeason(base_score: number) {
         document.getElementById("protective_cover_over_field")?.classList.add("nocover");
         document.getElementById("protective_tam_cover_over_field")?.classList.add("nocover");
         
-        // FIXME: should be asking the server
-        GAME_STATE.is_my_turn = Math.random() < 0.5;
+        GAME_STATE.is_my_turn = is_first_move_my_move_in_the_next_season!;
         document.getElementById("protective_cover_over_field_while_asyncawait")?.classList.add("nocover");
 
     }, 200 * 0.8093);

@@ -1103,11 +1103,12 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
         if (res.legal !== true) {
             throw new Error("bad!!!!");
         }
-        endSeason(base_score);
+        const is_first_move_my_move_in_the_next_season = res.is_first_move_my_move;
+        endSeason(base_score, is_first_move_my_move_in_the_next_season);
     });
     score_display.appendChild(ta_xot1_button);
 }
-function endSeason(base_score) {
+function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
     const score_display = document.getElementById("score_display");
     score_display.classList.add("nocover");
     // FIXME: must send server of this decision
@@ -1173,8 +1174,7 @@ function endSeason(base_score) {
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         (_c = document.getElementById("protective_cover_over_field")) === null || _c === void 0 ? void 0 : _c.classList.add("nocover");
         (_d = document.getElementById("protective_tam_cover_over_field")) === null || _d === void 0 ? void 0 : _d.classList.add("nocover");
-        // FIXME: should be asking the server
-        GAME_STATE.is_my_turn = Math.random() < 0.5;
+        GAME_STATE.is_my_turn = is_first_move_my_move_in_the_next_season;
         (_e = document.getElementById("protective_cover_over_field_while_asyncawait")) === null || _e === void 0 ? void 0 : _e.classList.add("nocover");
     }, 200 * 0.8093);
 }
