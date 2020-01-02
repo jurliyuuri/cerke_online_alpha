@@ -90,14 +90,14 @@ async function sendMainPoll() {
                                 console.log("Success; the server returned:", JSON.stringify(response));
                                 return response;
                             });
-                            if (res === "not good") {
+                            if (res.legal === false) {
                                 throw new Error("not good!!!");
                             }
-                            else if (res !== "not yet") {
-                                if (res.type !== "InfAfterStep") {
+                            else if (res.content !== "not yet") {
+                                if (res.content.type !== "InfAfterStep") {
                                     throw new Error("nooooooo");
                                 }
-                                resolve(res.finalResult);
+                                resolve(res.content.finalResult);
                                 return;
                             }
                             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));

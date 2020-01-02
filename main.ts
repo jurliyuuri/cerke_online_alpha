@@ -23,6 +23,7 @@ const {stopPolling, resumePolling, isPollingAllowed, allowPolling} = (() => {
 // I repentfully use a global state
 
 type Ret_MainPoll = {legal: true, content: MoveToBePolled | "not yet"} | {legal: false, whyIllegal: string}
+type Ret_InfPoll = {legal: true, content: MoveToBePolled | "not yet"} | {legal: false, whyIllegal: string};
 
 async function sendMainPoll() {
     console.log("poll");
@@ -104,9 +105,10 @@ async function sendMainPoll() {
                         dest: AbsoluteCoord;
                         water_entry_ciurl?: Ciurl;
                     }>(async (resolve, reject) => {
+                        
                         while (true) {
-                            const res: MoveToBePolled | "not yet" | "not good" =
-                                await sendEmpty<{}, MoveToBePolled | "not yet" | "not good">(
+                            const res: Ret_InfPoll =
+                                await sendEmpty<{}, Ret_InfPoll>(
                                     "infpoll",
                                     "`polling for the opponent's afterhalfacceptance`",
                                     {},
@@ -115,13 +117,13 @@ async function sendMainPoll() {
                                         return response;
                                     },
                                 );
-                            if (res === "not good") {
+                            if (res.legal === false) {
                                 throw new Error("not good!!!");
-                            } else if (res !== "not yet") {
-                                if (res.type !== "InfAfterStep") {
+                            } else if (res.content !== "not yet") {
+                                if (res.content.type !== "InfAfterStep") {
                                     throw new Error("nooooooo");
                                 }
-                                resolve(res.finalResult!);
+                                resolve(res.content.finalResult!);
                                 return;
                             }
                             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
