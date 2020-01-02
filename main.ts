@@ -42,7 +42,6 @@ async function sendMainPoll() {
     if (res !== "not yet") {
         console.log("ding!");
 
-        // FIXME: you are supposed to send a request to the server and wait for the response
         const opponent_move = res;
         console.log(opponent_move);
         if (opponent_move.type === "NonTamMove") {

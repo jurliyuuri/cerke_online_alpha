@@ -151,10 +151,13 @@ function takeTheUpwardPieceAndCheckHand(destPiece) {
 }
 async function sendTyMok1OrTaXot1Poll(base_score) {
     console.log("poll whether ty mok1 or ta xot1");
-    if (Math.random() < 0.2) {
+    const res = await sendEmpty("whethertymokpoll", "`polling for whether the declaration is ty mok1 or ta xot1`", {}, (response) => {
+        console.log("Success; the server returned:", JSON.stringify(response));
+        return response;
+    });
+    if (res !== "not yet") {
         console.log("ding!");
-        // FIXME: you are supposed to send a request to the server and wait for the response
-        const is_tymok1 = Math.random() < 0.5;
+        const is_tymok1 = res === "ty mok1";
         const score_display = document.getElementById("score_display");
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
         // so that the ty mok1 / ta xot1 image is written after the score is written
@@ -164,13 +167,13 @@ async function sendTyMok1OrTaXot1Poll(base_score) {
         }
         if (is_tymok1) {
             score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
-            await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
+            await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ty mok1");
             increaseRateAndAnimate(false);
         }
         else {
             score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
-            await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
+            await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ta xot1");
             endSeason(-base_score); // since opponent, negative score
         }
