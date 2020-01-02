@@ -17,7 +17,6 @@ const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
     };
     return { stopPolling, resumePolling, isPollingAllowed, allowPolling };
 })();
-// I repentfully use a global state
 async function sendMainPoll() {
     console.log("poll");
     if (!isPollingAllowed()) {
@@ -27,9 +26,13 @@ async function sendMainPoll() {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
     });
-    if (res !== "not yet") {
+    if (!res.legal) {
+        alert(`sending MainPoll somehow resulted in an error: ${res.whyIllegal}`);
+        throw new Error(`sending MainPoll somehow resulted in an error: ${res.whyIllegal}`);
+    }
+    if (res.content !== "not yet") {
         console.log("ding!");
-        const opponent_move = res;
+        const opponent_move = res.content;
         console.log(opponent_move);
         if (opponent_move.type === "NonTamMove") {
             if (opponent_move.data.type === "SrcDst") {
