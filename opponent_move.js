@@ -155,7 +155,11 @@ async function sendTyMok1OrTaXot1Poll(base_score) {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
     });
-    if (res !== "not yet") {
+    if (!res.legal) {
+        alert(`sending TyMok1OrTaXot1Poll somehow resulted in an error: ${res.whyIllegal}`);
+        throw new Error(`sending TyMok1OrTaXot1Poll somehow resulted in an error: ${res.whyIllegal}`);
+    }
+    if (res.content !== "not yet") {
         console.log("ding!");
         const score_display = document.getElementById("score_display");
         await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
@@ -164,7 +168,7 @@ async function sendTyMok1OrTaXot1Poll(base_score) {
         while (!score_display.hasChildNodes()) {
             await new Promise((resolve) => setTimeout(resolve, 100 * 0.8093));
         }
-        if (res === "ty mok1") {
+        if (res.content === "ty mok1") {
             score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
             await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ty mok1");
@@ -174,7 +178,7 @@ async function sendTyMok1OrTaXot1Poll(base_score) {
             score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
             await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
             console.log("go on with ta xot1");
-            endSeason(-base_score, res.is_first_move_my_move); // since opponent, negative score
+            endSeason(-base_score, res.content.is_first_move_my_move); // since opponent, negative score
         }
     }
     else {
