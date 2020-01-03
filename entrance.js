@@ -22,6 +22,7 @@ window.addEventListener("beforeunload", function (e) {
         }
     })();
 });
+let give_network_error_alert = true;
 async function sendCancel(access_token, validateInput) {
     return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/cancel", {
         access_token,
@@ -29,6 +30,7 @@ async function sendCancel(access_token, validateInput) {
 }
 function let_the_game_begin(access_token, is_first_move_my_move, is_IA_down_for_me) {
     alert("Let the game begin");
+    give_network_error_alert = false;
     sessionStorage.access_token = access_token;
     sessionStorage.is_first_move_my_move = JSON.stringify(is_first_move_my_move);
     sessionStorage.is_IA_down_for_me = JSON.stringify(is_IA_down_for_me);
@@ -76,8 +78,10 @@ async function sendSomethingSomewhere(url, data, validateInput) {
     });
     console.log(res);
     if (!res) {
-        alert("network error!");
-        throw new Error("network error!");
+        if (give_network_error_alert) {
+            alert("network error, from entrance.ts!");
+        }
+        throw new Error("network error, from entrance.ts!");
     }
     return res;
 }

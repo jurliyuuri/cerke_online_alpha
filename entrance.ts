@@ -35,6 +35,8 @@ window.addEventListener("beforeunload", function(e) {
     })();
 });
 
+let give_network_error_alert = true;
+
 async function sendCancel<U>(access_token: AccessToken, validateInput: (response: any) => U): Promise<U> {
     return await sendSomethingSomewhere("https://serene-reef-96808.herokuapp.com/random/cancel", {
         access_token,
@@ -44,6 +46,7 @@ async function sendCancel<U>(access_token: AccessToken, validateInput: (response
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(access_token: AccessToken, is_first_move_my_move: boolean, is_IA_down_for_me: boolean) {
     alert("Let the game begin");
+    give_network_error_alert = false;
     sessionStorage.access_token = access_token;
     sessionStorage.is_first_move_my_move = JSON.stringify(is_first_move_my_move);
     sessionStorage.is_IA_down_for_me = JSON.stringify(is_IA_down_for_me);
@@ -96,8 +99,10 @@ async function sendSomethingSomewhere<T, U>(url: string, data: T, validateInput:
     console.log(res);
 
     if (!res) {
-        alert("network error!");
-        throw new Error("network error!");
+        if (give_network_error_alert) {
+            alert("network error, from entrance.ts!");
+        }
+        throw new Error("network error, from entrance.ts!");
     }
     return res;
 }
