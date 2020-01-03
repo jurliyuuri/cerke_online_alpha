@@ -1474,7 +1474,7 @@ function endSeason(base_score: number, is_first_move_my_move_in_the_next_season:
 }
 
 function getDenoteSeasonNodeTopLeft(season: Season) {
-    return {top: 360 + 51 * season, left: 3};
+    return {top: 360 + 51 * (3 - season), left: 3};
 }
 
 function getDenoteScoreNodeTopLeft(score: number) {
