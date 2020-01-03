@@ -1151,7 +1151,7 @@ function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
     }, 200 * 0.8093);
 }
 function getDenoteSeasonNodeTopLeft(season) {
-    return { top: 360 + 51 * season, left: 3 };
+    return { top: 360 + 51 * (3 - season), left: 3 };
 }
 function getDenoteScoreNodeTopLeft(score) {
     return { top: 447 + 21.83333333333333 * (20 - score), left: 65 };
