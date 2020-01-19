@@ -1224,13 +1224,16 @@ function removeChildren(parent: HTMLElement) {
     }
 }
 
-type Digit = "num00" | "num01" | "num02" | "num03" | "num04" | "num05" | "num06" | "num07" | "num08" | "num09" | "num10" | "neg";
+type Digit = "num00" | "num01" | "num02" | "num03" | "num04" | "num05" | "num06" | "num07" | "num08" | "num09" | "num10" | "neg" | "num100";
 function toDigits(num: number): Digit[] {
     if (num % 1 !== 0) {
         throw new Error("non-integer");
-    } else if (num >= 100 || num <= -100) {
-        alert("internal error: add linzi image for 100");
-        throw new Error("add linzi image for 100"); /* FIXME */
+    } else if (num >= 200) {
+        const lastHundredArr: Digit[] = num % 100 === 0 ? [] : toDigits(num % 100);
+        return [...toDigits(Math.floor(num / 100)), "num100", ...lastHundredArr];
+    } else if (num >= 100) {
+        const lastHundredArr: Digit[] = num % 100 === 0 ? [] : toDigits(num % 100);
+        return ["num100", ...lastHundredArr];
     } else if (num < 0) {
         return ["neg", ...toDigits(-num)];
     } else if (num == 0) {
