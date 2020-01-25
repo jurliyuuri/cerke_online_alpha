@@ -749,9 +749,8 @@ async function sendInfAfterStep(message) {
         if (coordEq(src, dest)) {
             continue; // yellow takes precedence over green
         }
-        const destPiece = GAME_STATE.f.currentBoard[i][j];
         // cannot step twice
-        if (destPiece === "Tam2" || (destPiece !== null && destPiece.side === Side.Upward)) {
+        if (!canGetOccupiedByNonTam(Side.Upward, dest, GAME_STATE.f.currentBoard, GAME_STATE.tam_itself_is_tam_hue)) {
             continue;
         }
         const img = createCircleGuideImageAt(filteredList[ind], "ct2");

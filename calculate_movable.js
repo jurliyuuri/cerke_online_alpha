@@ -96,6 +96,18 @@ var calculate_movable;
      * @param {boolean} tam_itself_is_tam_hue whether tam2 itself is tam2 hue
      */
     function canGetOccupiedBy(side, dest, piece_to_move, board, tam_itself_is_tam_hue) {
+        if (piece_to_move === "Tam2") {
+            const [i, j] = dest;
+            const destPiece = board[i][j];
+            /* It is allowed to enter an empty square */
+            return destPiece === null;
+        }
+        else {
+            return canGetOccupiedByNonTam(side, dest, board, tam_itself_is_tam_hue);
+        }
+    }
+    calculate_movable.canGetOccupiedBy = canGetOccupiedBy;
+    function canGetOccupiedByNonTam(side, dest, board, tam_itself_is_tam_hue) {
         /* Intentionally does not verify whether the piece itself is of opponent */
         const isProtectedByOpponentTamHueAUai = (side, coord) => eightNeighborhood(coord).filter(([a, b]) => {
             const piece = board[a][b];
@@ -118,12 +130,11 @@ var calculate_movable;
             return true;
         }
         else {
-            return (piece_to_move !== "Tam2" /* tam2 can never take a piece */
-                && destPiece.side !== side /* cannot take your own piece */
+            return (destPiece.side !== side /* cannot take your own piece */
                 && !isProtectedByOpponentTamHueAUai(side, dest) /* must not be protected by tam2 hue a uai1 */);
         }
     }
-    calculate_movable.canGetOccupiedBy = canGetOccupiedBy;
+    calculate_movable.canGetOccupiedByNonTam = canGetOccupiedByNonTam;
     /**
      * Calculates the possible squares to which the piece can MOVE to. THIS INCLUDES SQUARES OCCUPIED BY TAM2, ALLIES, OR OPPONENTS PROTECTED BY TAM2HUEAUAI1
      * @param coord the square from which the piece moves
