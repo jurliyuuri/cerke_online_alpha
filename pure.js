@@ -17,6 +17,7 @@ var rotateBoard = type__piece.rotateBoard;
 var eightNeighborhood = calculate_movable.eightNeighborhood;
 var isTamHue = calculate_movable.isTamHue;
 var canGetOccupiedBy = calculate_movable.canGetOccupiedBy;
+var canGetOccupiedByNonTam = calculate_movable.canGetOccupiedByNonTam;
 function filterInOneDirectionTillCiurlLimit(guideListGreen, step, plannedDirection, ciurl) {
     return guideListGreen.filter(function (c) {
         const subtractStep = function ([x, y]) {

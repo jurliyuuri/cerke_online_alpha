@@ -103,6 +103,17 @@ namespace calculate_movable {
      * @param {boolean} tam_itself_is_tam_hue whether tam2 itself is tam2 hue
      */
     export function canGetOccupiedBy(side: Side, dest: Coord, piece_to_move: Piece, board: Readonly<Board>, tam_itself_is_tam_hue: boolean) {
+        if (piece_to_move === "Tam2") {
+            const [i, j] = dest;
+            const destPiece = board[i][j];
+            /* It is allowed to enter an empty square */
+            return destPiece === null;
+        } else {
+            return canGetOccupiedByNonTam(side, dest, board, tam_itself_is_tam_hue);
+        }
+    }
+
+    export function canGetOccupiedByNonTam(side: Side, dest: Coord, board: Readonly<Board>, tam_itself_is_tam_hue: boolean) {
         /* Intentionally does not verify whether the piece itself is of opponent */
         const isProtectedByOpponentTamHueAUai = (side: Side, coord: Coord) => eightNeighborhood(coord).filter(([a, b]) => {
                 const piece = board[a][b];
@@ -122,8 +133,7 @@ namespace calculate_movable {
             return true;
         } else {
             return (
-                piece_to_move !== "Tam2" /* tam2 can never take a piece */
-                && destPiece.side !== side /* cannot take your own piece */
+                destPiece.side !== side /* cannot take your own piece */
                 && !isProtectedByOpponentTamHueAUai(side, dest) /* must not be protected by tam2 hue a uai1 */
             );
         }
