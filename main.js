@@ -714,6 +714,7 @@ function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     else {
         (async () => {
             await animateStepTamLogo();
+            await animatePunishStepTam(Side.Upward);
             await sendNormalMessage(message);
         })();
     }
@@ -730,6 +731,7 @@ async function sendInfAfterStep(message) {
     }
     if (isTamAt(fromAbsoluteCoord(message.step))) {
         await animateStepTamLogo();
+        await animatePunishStepTam(Side.Upward);
     }
     displayCiurl(res.ciurl);
     document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
@@ -1112,10 +1114,33 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     });
     score_display.appendChild(ta_xot1_button);
 }
+async function animatePunishStepTam(side) {
+    var _a, _b, _c;
+    const score_display = document.getElementById("score_display");
+    score_display.classList.add("nocover");
+    const denote_score = document.getElementById("denote_score");
+    const orig_score = GAME_STATE.my_score;
+    GAME_STATE.my_score += (side === Side.Upward ? -5 : 5) * Math.pow(2, GAME_STATE.log2_rate);
+    await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
+    await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
+    if (GAME_STATE.my_score >= 40) {
+        alert("you win!"); // FIXME
+        return;
+    }
+    else if (GAME_STATE.my_score <= 0) {
+        alert("you lose..."); // FIXME
+        return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+    drawScoreboard();
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+    (_a = document.getElementById("protective_cover_over_field")) === null || _a === void 0 ? void 0 : _a.classList.add("nocover");
+    (_b = document.getElementById("protective_tam_cover_over_field")) === null || _b === void 0 ? void 0 : _b.classList.add("nocover");
+    (_c = document.getElementById("protective_cover_over_field_while_asyncawait")) === null || _c === void 0 ? void 0 : _c.classList.add("nocover");
+}
 function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
     const score_display = document.getElementById("score_display");
     score_display.classList.add("nocover");
-    // FIXME: must send server of this decision
     const denote_season = document.getElementById("denote_season");
     const denote_score = document.getElementById("denote_score");
     const orig_score = GAME_STATE.my_score;

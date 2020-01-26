@@ -56,6 +56,10 @@ async function animateOpponentInfAfterStep(p) {
     if (stepPiece === null) {
         throw new Error("step is unoccupied");
     }
+    if (stepPiece === "Tam2") {
+        await animateStepTamLogo();
+        await animatePunishStepTam(Side.Downward);
+    }
     const srcNode = document.getElementById(`field_piece_${src_i}_${src_j}`);
     await animateNode(srcNode, 750 * 0.8093, coordToPieceXY_Shifted(p.step), coordToPieceXY(p.src));
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
@@ -198,6 +202,10 @@ async function animateOpponentSrcStepDstFinite_(src, step, dest, water_entry_ciu
     const stepPiece = GAME_STATE.f.currentBoard[step_i][step_j];
     if (stepPiece === null) {
         throw new Error("step is unoccupied");
+    }
+    if (stepPiece === "Tam2") {
+        await animateStepTamLogo();
+        await animatePunishStepTam(Side.Downward);
     }
     const destPiece = GAME_STATE.f.currentBoard[dest_i][dest_j];
     /* it IS possible that you are returning to the original position, in which case you don't do anything */

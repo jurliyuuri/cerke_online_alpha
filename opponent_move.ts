@@ -127,6 +127,11 @@ async function animateOpponentInfAfterStep(p: {
         throw new Error("step is unoccupied");
     }
 
+    if (stepPiece === "Tam2"){
+        await animateStepTamLogo(); 
+        await animatePunishStepTam(Side.Downward);
+    }
+
     const srcNode: HTMLElement = document.getElementById(`field_piece_${src_i}_${src_j}`)!;
     await animateNode(srcNode, 750 * 0.8093,
         coordToPieceXY_Shifted(p.step),
@@ -315,6 +320,11 @@ async function animateOpponentSrcStepDstFinite_(src: Coord, step: Coord, dest: C
     if (stepPiece === null) {
         throw new Error("step is unoccupied");
     }
+
+    if (stepPiece === "Tam2"){
+        await animateStepTamLogo(); 
+        await animatePunishStepTam(Side.Downward);
+    } 
 
     const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
 
