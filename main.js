@@ -690,6 +690,10 @@ function getThingsGoing(piece_to_move, from, to, ask_whether_to_step) {
         return;
     }
 }
+function isTamAt(step) {
+    const [i, j] = step;
+    return GAME_STATE.f.currentBoard[i][j] === "Tam2";
+}
 function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
     if (piece === "Tam2") {
         afterFirstTamMove(src, dest, step);
@@ -704,7 +708,15 @@ function getThingsGoingAfterStepping_Finite(src, step, piece, dest) {
             src: toAbsoluteCoord(src),
         },
     };
-    sendNormalMessage(message);
+    if (!isTamAt(step)) {
+        sendNormalMessage(message);
+    }
+    else {
+        (async () => {
+            await animateStepTamLogo();
+            await sendNormalMessage(message);
+        })();
+    }
     return;
 }
 async function sendInfAfterStep(message) {
@@ -715,6 +727,9 @@ async function sendInfAfterStep(message) {
     if (!res.legal) {
         alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+    }
+    if (isTamAt(fromAbsoluteCoord(message.step))) {
+        await animateStepTamLogo();
     }
     displayCiurl(res.ciurl);
     document.getElementById("cancelButton").remove(); // destroy the cancel button, since it can no longer be cancelled
@@ -765,6 +780,18 @@ async function sendInfAfterStep(message) {
         img.style.zIndex = "200";
         contains_guides.appendChild(img);
     }
+}
+async function animateStepTamLogo() {
+    const step_tam_logo = document.getElementById("step_tam_logo");
+    step_tam_logo.style.display = "block";
+    step_tam_logo.classList.add("step_tam");
+    const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait");
+    cover_while_asyncawait.classList.remove("nocover");
+    setTimeout(function () {
+        step_tam_logo.style.display = "none";
+        cover_while_asyncawait.classList.add("nocover");
+    }, 1200 * 0.8093);
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }
 async function animateWaterEntryLogo() {
     const water_entry_logo = document.getElementById("water_entry_logo");
