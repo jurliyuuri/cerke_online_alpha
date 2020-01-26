@@ -1115,7 +1115,7 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     score_display.appendChild(ta_xot1_button);
 }
 async function animatePunishStepTam(side) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e;
     const score_display = document.getElementById("score_display");
     score_display.classList.add("nocover");
     const denote_score = document.getElementById("denote_score");
@@ -1125,18 +1125,20 @@ async function animatePunishStepTam(side) {
     await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
     if (GAME_STATE.my_score >= 40) {
         alert("you win!"); // FIXME
+        (_a = document.getElementById("protective_cover_over_field_while_waiting_for_opponent")) === null || _a === void 0 ? void 0 : _a.classList.remove("nocover");
         return;
     }
     else if (GAME_STATE.my_score <= 0) {
         alert("you lose..."); // FIXME
+        (_b = document.getElementById("protective_cover_over_field_while_waiting_for_opponent")) === null || _b === void 0 ? void 0 : _b.classList.remove("nocover");
         return;
     }
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     drawScoreboard();
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
-    (_a = document.getElementById("protective_cover_over_field")) === null || _a === void 0 ? void 0 : _a.classList.add("nocover");
-    (_b = document.getElementById("protective_tam_cover_over_field")) === null || _b === void 0 ? void 0 : _b.classList.add("nocover");
-    (_c = document.getElementById("protective_cover_over_field_while_asyncawait")) === null || _c === void 0 ? void 0 : _c.classList.add("nocover");
+    (_c = document.getElementById("protective_cover_over_field")) === null || _c === void 0 ? void 0 : _c.classList.add("nocover");
+    (_d = document.getElementById("protective_tam_cover_over_field")) === null || _d === void 0 ? void 0 : _d.classList.add("nocover");
+    (_e = document.getElementById("protective_cover_over_field_while_asyncawait")) === null || _e === void 0 ? void 0 : _e.classList.add("nocover");
 }
 function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
     const score_display = document.getElementById("score_display");
