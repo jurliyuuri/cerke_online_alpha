@@ -1436,9 +1436,11 @@ async function animatePunishStepTam(side: Side) {
 
     if (GAME_STATE.my_score >= 40) {
         alert("you win!"); // FIXME
+        document.getElementById("protective_cover_over_field_while_waiting_for_opponent")?.classList.remove("nocover");
         return;
     } else if (GAME_STATE.my_score <= 0) {
         alert("you lose..."); // FIXME
+        document.getElementById("protective_cover_over_field_while_waiting_for_opponent")?.classList.remove("nocover");
         return;
     }
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
