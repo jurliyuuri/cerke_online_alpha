@@ -119,6 +119,7 @@ let GAME_STATE = ((p) => {
         },
         IA_is_down: p.IA_is_down,
         tam_itself_is_tam_hue: true,
+        opponent_has_just_moved_tam: false,
         set is_my_turn(i) {
             _is_my_turn = !!i;
             if (_is_my_turn) {

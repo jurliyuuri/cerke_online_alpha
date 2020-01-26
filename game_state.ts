@@ -23,6 +23,7 @@ interface GAME_STATE {
     season: Season;
     my_score: number;
     log2_rate: Log2_Rate;
+    opponent_has_just_moved_tam: boolean;
 }
 
 function toAbsoluteCoord_([row, col]: Coord, IA_is_down: boolean): AbsoluteCoord {
@@ -102,6 +103,7 @@ let GAME_STATE: GAME_STATE = ((p: {IA_is_down: boolean}) => {
     },
     IA_is_down: p.IA_is_down,
     tam_itself_is_tam_hue: true,
+    opponent_has_just_moved_tam: false,
     set is_my_turn(i: boolean) {
         _is_my_turn = !!i;
         if (_is_my_turn) {

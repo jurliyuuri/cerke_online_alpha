@@ -50,6 +50,7 @@ async function sendMainPoll() {
         const opponent_move = res.content;
         console.log(opponent_move);
         if (opponent_move.type === "NonTamMove") {
+            GAME_STATE.opponent_has_just_moved_tam = false;
             if (opponent_move.data.type === "SrcDst") {
                 await animateOpponentSrcDst(opponent_move.data);
                 GAME_STATE.is_my_turn = true;
@@ -68,6 +69,7 @@ async function sendMainPoll() {
                 throw new Error("does not happen");
             }
         } else if (opponent_move.type === "TamMove") {
+            GAME_STATE.opponent_has_just_moved_tam = true;
             if (opponent_move.stepStyle === "NoStep") {
                 await animateOpponentTamNoStep(
                     fromAbsoluteCoord(opponent_move.src),
@@ -96,6 +98,7 @@ async function sendMainPoll() {
                 throw new Error("does not happen");
             }
         } else if (opponent_move.type === "InfAfterStep") {
+            GAME_STATE.opponent_has_just_moved_tam = false;
             const finalResult = (() => {
                 if (opponent_move.finalResult == null) {
                     return new Promise<{
@@ -1524,11 +1527,13 @@ function drawField() {
                 const imgNode: HTMLImageElement = createPieceImgToBePlacedOnBoard(coord, piece);
                 imgNode.id = `field_piece_${i}_${j}`;
 
-                if (piece === "Tam2") {
-                    imgNode.style.cursor = "pointer";
-                    imgNode.addEventListener("click", function() {
-                        selectOwnPieceOnBoard(coord, piece);
-                    });
+                if (piece === "Tam2") { // prevent tam2 ty sak2
+                    if (!GAME_STATE.opponent_has_just_moved_tam) {
+                        imgNode.style.cursor = "pointer";
+                        imgNode.addEventListener("click", function() {
+                            selectOwnPieceOnBoard(coord, piece);
+                        });
+                    }
                 } else if (piece.side === Side.Upward) {
                     const q: NonTam2PieceUpward = {
                         prof: piece.prof,
