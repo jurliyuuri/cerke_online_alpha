@@ -745,7 +745,6 @@ async function sendInfAfterStep(message) {
     contains_guides.appendChild(passer);
     for (let ind = 0; ind < filteredList.length; ind++) {
         const dest = filteredList[ind];
-        const [i, j] = dest;
         if (coordEq(src, dest)) {
             continue; // yellow takes precedence over green
         }
