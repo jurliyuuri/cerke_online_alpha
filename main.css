@@ -1,3 +1,25 @@
+img.step_tam {
+  z-index: 500;
+  position: absolute;
+  top: 230px;
+  left: -500px;
+  animation: steptam1 0.8093s ease;
+}
+
+@keyframes steptam1 {
+  0% {
+    left: 900px;
+  }
+  33% {
+    left: 200px;
+  }
+  66% {
+    left: 200px;
+  }
+  100% {
+    left: -500px;
+  }
+}
 img.water_entry {
   z-index: 500;
   position: absolute;

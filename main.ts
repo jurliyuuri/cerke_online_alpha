@@ -886,6 +886,11 @@ function getThingsGoing(
     }
 }
 
+function isTamAt(step: Coord): boolean {
+    const [i,j] = step;
+    return GAME_STATE.f.currentBoard[i][j] === "Tam2";
+}
+
 function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piece, dest: Coord) {
     if (piece === "Tam2") {
         afterFirstTamMove(src, dest, step);
@@ -902,7 +907,15 @@ function getThingsGoingAfterStepping_Finite(src: Coord, step: Coord, piece: Piec
         },
     };
 
-    sendNormalMessage(message);
+    if (!isTamAt(step)) {
+        sendNormalMessage(message);
+    } else {
+        (async () => {
+        await animateStepTamLogo(); 
+        await animatePunishStepTam(Side.Upward);  
+        await sendNormalMessage(message);
+        })();
+    }   
     return;
 }
 
@@ -920,6 +933,11 @@ async function sendInfAfterStep(message: InfAfterStep) {
         alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
         throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
     }
+
+    if (isTamAt(fromAbsoluteCoord(message.step))){
+        await animateStepTamLogo(); 
+        await animatePunishStepTam(Side.Upward);
+    } 
 
     displayCiurl(res.ciurl);
 
@@ -994,6 +1012,20 @@ async function sendInfAfterStep(message: InfAfterStep) {
         img.style.zIndex = "200";
         contains_guides.appendChild(img);
     }
+}
+
+async function animateStepTamLogo() {
+    const step_tam_logo = document.getElementById("step_tam_logo")!;
+    step_tam_logo.style.display = "block";
+    step_tam_logo.classList.add("step_tam");
+    const cover_while_asyncawait = document.getElementById("protective_cover_over_field_while_asyncawait")!;
+    cover_while_asyncawait.classList.remove("nocover");
+
+    setTimeout(function() {
+        step_tam_logo.style.display = "none";
+        cover_while_asyncawait.classList.add("nocover");
+    }, 1200 * 0.8093);
+    await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }
 
 async function animateWaterEntryLogo() {
@@ -1389,10 +1421,39 @@ function drawTyMok1AndTaXot1Buttons(base_score: number) {
     score_display.appendChild(ta_xot1_button);
 }
 
+async function animatePunishStepTam(side: Side) {
+    const score_display = document.getElementById("score_display")!;
+    score_display.classList.add("nocover");
+    const denote_score = document.getElementById("denote_score")!;
+    const orig_score = GAME_STATE.my_score;
+    GAME_STATE.my_score += (side === Side.Upward ? -5 : 5) * Math.pow(2, GAME_STATE.log2_rate);
+
+    await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
+
+    await animateNode(denote_score, 1000 * 0.8093,
+        getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+        getDenoteScoreNodeTopLeft(orig_score));
+
+    if (GAME_STATE.my_score >= 40) {
+        alert("you win!"); // FIXME
+        return;
+    } else if (GAME_STATE.my_score <= 0) {
+        alert("you lose..."); // FIXME
+        return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+    drawScoreboard();
+
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+    document.getElementById("protective_cover_over_field")?.classList.add("nocover");
+    document.getElementById("protective_tam_cover_over_field")?.classList.add("nocover");
+    
+    document.getElementById("protective_cover_over_field_while_asyncawait")?.classList.add("nocover");
+}
+
 function endSeason(base_score: number, is_first_move_my_move_in_the_next_season: boolean | null) {
     const score_display = document.getElementById("score_display")!;
     score_display.classList.add("nocover");
-        // FIXME: must send server of this decision
     const denote_season = document.getElementById("denote_season")!;
     const denote_score = document.getElementById("denote_score")!;
     const orig_score = GAME_STATE.my_score;
