@@ -1298,8 +1298,6 @@ function drawTyMok1AndTaXot1Buttons(base_score: number) {
 
     const ty_mok1_button = createImageButton("dat2/再行", 0);
     ty_mok1_button.addEventListener("click", async () => {
-        // FIXME: must send server of this decision
-
         increaseRateAndAnimate(true);
         const res: {legal: boolean} = 
             await sendStuffTo<boolean, {legal: boolean}>(

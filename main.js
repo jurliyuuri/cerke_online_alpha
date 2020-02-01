@@ -1007,7 +1007,6 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     const score_display = document.getElementById("score_display");
     const ty_mok1_button = createImageButton("dat2/再行", 0);
     ty_mok1_button.addEventListener("click", async () => {
-        // FIXME: must send server of this decision
         increaseRateAndAnimate(true);
         const res = await sendStuffTo("whethertymok", "`send whether ty mok1`", true, (response) => {
             console.log("Success; the server returned:", JSON.stringify(response));
