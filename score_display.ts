@@ -67,7 +67,7 @@ function drawFinalScoreDisplay(scores_of_each_season: Array4<[number, ...number[
     final_score_display.classList.remove("nocover");
     final_score_display.innerHTML = [0, 0, 0, 0].map((_, ind) => {
         const a = ([] as number[]).concat(...scores_of_each_season.slice(0, ind)).length;
-    return `<img style="position:absolute; left: ${550 - 60 * a}px; top: 15px;" src="image/season${ind+1}.png" width="50">`
+    return `<img style="position:absolute; left: ${550 - 60 * a}px; top: 15px;" src="image/season_${ind}.png" width="50">`
     }
     ).join("") + scores.map(
         (a, ind) => createDigitsHTML(550 - 60 * ind, 23.5 * (2 - toDigits(a).length) + 239, 50, toDigits(a))
