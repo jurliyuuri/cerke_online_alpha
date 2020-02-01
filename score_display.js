@@ -67,7 +67,7 @@ const { drawScoreDisplay, drawFinalScoreDisplay } = (() => {
     const letter_spacing = -0.06;
     /**
      *
-     * @param scores_of_each_season each [number, ...number[]] contains the score obtained by the player on each season. The final element in the array is the hand with which the season has terminated, and kut2 tam2 comes before that if needed. Since there is no space to accomodate multiple kut2 tam2 for one season, multiple kut2 tam2 are combined into one.
+     * @param scores_of_each_season each [number] | [number, number] contains the score(s) obtained by the player on each season. kut2 tam2 comes first, if needed (Since there is no space to accomodate multiple kut2 tam2 for one season, multiple kut2 tam2 are combined into one.); then comes the score of the hand with which the season has terminated (or it might not come, if kut2 tam2 terminated the game)
      */
     function drawFinalScoreDisplay(scores_of_each_season) {
         const starting_position_left = 530;

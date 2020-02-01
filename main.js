@@ -1031,6 +1031,51 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     });
     score_display.appendChild(ta_xot1_button);
 }
+/**
+ * Group up all the kut2 tam2 to display neatly.
+ * @param is_final_cause_kuttam
+ * @param scores_of_each_season
+ */
+function cleanupScoresOfEachSeason(is_final_cause_kuttam, scores_of_each_season) {
+    const cleanup_ending_in_kuttam = (each_season) => {
+        return [each_season.reduce((a, b) => a + b, 0)];
+    };
+    const cleanup_not_ending_in_kuttam = (each_season) => {
+        return [each_season.slice(0, -1).reduce((a, b) => a + b, 0), each_season[each_season.length - 1]];
+    };
+    const cleanup_final_season = is_final_cause_kuttam ? cleanup_ending_in_kuttam : cleanup_not_ending_in_kuttam;
+    if (scores_of_each_season[0].length === 0) {
+        throw new Error("why did the game end without any movement of points?");
+    }
+    else if (scores_of_each_season[1].length === 0) {
+        return [cleanup_final_season(scores_of_each_season[0])];
+    }
+    else if (scores_of_each_season[2].length === 0) {
+        return [
+            cleanup_not_ending_in_kuttam(scores_of_each_season[0]),
+            cleanup_final_season(scores_of_each_season[1])
+        ];
+    }
+    else if (scores_of_each_season[3].length === 0) {
+        return [
+            cleanup_not_ending_in_kuttam(scores_of_each_season[0]),
+            cleanup_not_ending_in_kuttam(scores_of_each_season[1]),
+            cleanup_final_season(scores_of_each_season[2])
+        ];
+    }
+    else {
+        return [
+            cleanup_not_ending_in_kuttam(scores_of_each_season[0]),
+            cleanup_not_ending_in_kuttam(scores_of_each_season[1]),
+            cleanup_not_ending_in_kuttam(scores_of_each_season[2]),
+            cleanup_final_season(scores_of_each_season[3])
+        ];
+    }
+}
+function perzej(msg, is_cause_kuttam) {
+    alert(msg); // FIXME
+    drawFinalScoreDisplay(cleanupScoresOfEachSeason(is_cause_kuttam, GAME_STATE.scores_of_each_season));
+}
 async function animatePunishStepTam(side) {
     var _a, _b, _c, _d, _e;
     const score_display = document.getElementById("score_display");
@@ -1041,12 +1086,12 @@ async function animatePunishStepTam(side) {
     await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
     await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
     if (GAME_STATE.my_score >= 40) {
-        alert("you win!"); // FIXME
+        perzej("you win!", true);
         (_a = document.getElementById("protective_cover_over_field_while_waiting_for_opponent")) === null || _a === void 0 ? void 0 : _a.classList.remove("nocover");
         return;
     }
     else if (GAME_STATE.my_score <= 0) {
-        alert("you lose..."); // FIXME
+        perzej("you lose...", true);
         (_b = document.getElementById("protective_cover_over_field_while_waiting_for_opponent")) === null || _b === void 0 ? void 0 : _b.classList.remove("nocover");
         return;
     }
@@ -1077,15 +1122,15 @@ function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
             await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
             alert(DICTIONARY.ja.gameEnd);
             if (GAME_STATE.my_score > 20) {
-                alert("you win!"); // FIXME
+                perzej("you win!", false);
                 return;
             }
             else if (GAME_STATE.my_score < 20) {
-                alert("you lose..."); // FIXME
+                perzej("you lose...", false);
                 return;
             }
             else {
-                alert("draw");
+                perzej("draw", false);
                 return;
             }
         }, 200 * 0.8093);
@@ -1096,11 +1141,11 @@ function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
         var _a, _b, _c, _d, _e;
         await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
         if (GAME_STATE.my_score >= 40) {
-            alert("you win!"); // FIXME
+            perzej("you win!", false);
             return;
         }
         else if (GAME_STATE.my_score <= 0) {
-            alert("you lose..."); // FIXME
+            perzej("you lose...", false);
             return;
         }
         await animateNode(denote_season, 700 * 0.8093, getDenoteSeasonNodeTopLeft(GAME_STATE.season), getDenoteSeasonNodeTopLeft(orig_season));
