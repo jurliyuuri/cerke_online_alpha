@@ -1036,6 +1036,26 @@ function toDigitsSub(num) {
         }
     }
 }
+/**
+ *
+ * @param scores_of_each_season each [number, ...number[]] contains the score obtained by the player on each season. The final element in the array is the hand with which the season has terminated, and kut2 tam2 comes before that if needed. Since there is no space to accomodate multiple kut2 tam2 for one season, multiple kut2 tam2 are combined into one.
+ */
+function drawFinalScoreDisplay(scores_of_each_season) {
+    const scores = [].concat(...scores_of_each_season);
+    const final_score_display = document.getElementById("final_score_display");
+    final_score_display.classList.remove("nocover");
+    final_score_display.innerHTML = [0, 0, 0, 0].map((_, ind) => {
+        const a = [].concat(...scores_of_each_season.slice(0, ind)).length;
+        return `<img style="position:absolute; left: ${550 - 60 * a}px; top: 15px;" src="image/season${ind + 1}.png" width="50">`;
+    }).join("") + scores.map((a, ind) => drawDigits(550 - 60 * ind, 23.5 * (2 - toDigits(a).length) + 239, 50, toDigits(a))).join("") + drawTotalScore(scores.reduce((a, b) => a + b, 0));
+}
+function drawDigits(left, top, width, digits) {
+    const letter_spacing = -0.06;
+    return digits.map((digit, index) => `<img
+            src="image/dat2/${digit}.png"
+            style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
+        >`).join("");
+}
 function drawScoreDisplay(hands_) {
     const hands = hands_.sort((a, b) => {
         const hands_ordering = [
@@ -1060,13 +1080,6 @@ function drawScoreDisplay(hands_) {
     }
     const starting_position_left = [550, 550, 550, 550, 550, 550, 550, 550, 550, 575, 585, 595][hands.length];
     const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
-    function drawDigits(left, top, width, digits) {
-        const letter_spacing = -0.06;
-        return digits.map((digit, index) => `<img
-                src="image/dat2/${digit}.png"
-                style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
-            >`).join("");
-    }
     function drawHandAndScore(hand, left) {
         const digits = toDigits(hand_to_score[hand]);
         let ans = "";
@@ -1084,10 +1097,13 @@ function drawScoreDisplay(hands_) {
     const score_display = document.getElementById("score_display");
     score_display.classList.remove("nocover");
     const base_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
-    const base_score_digits = toDigits(base_score);
     score_display.innerHTML =
         hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
-            drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
+            drawTotalScore(base_score);
+}
+function drawTotalScore(total_score) {
+    const base_score_digits = toDigits(total_score);
+    return drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
 }
 function increaseRateAndAnimate(done_by_me) {
     const score_display = document.getElementById("score_display");
