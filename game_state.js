@@ -109,7 +109,9 @@ const initial_board_with_IA_down = [
 let GAME_STATE = ((p) => {
     console.log("0");
     let _is_my_turn = true; // override this by calling the setter
-    const season = 0;
+    let _my_score = 20;
+    const scores_of_each_season = [[], [], [], []];
+    let _season = 0;
     const log2_rate = 0;
     return {
         f: {
@@ -138,8 +140,30 @@ let GAME_STATE = ((p) => {
             return _is_my_turn;
         },
         backupDuringStepping: null,
-        my_score: 20,
-        season,
+        set my_score(score) {
+            scores_of_each_season[_season].push(score - _my_score);
+            _my_score = score;
+        },
+        get my_score() {
+            return _my_score;
+        },
+        get season() {
+            return _season;
+        },
+        set season(season) {
+            _season = season;
+        },
+        get scores_of_each_season() {
+            return [
+                scores_of_each_season[0].concat([]),
+                scores_of_each_season[1].concat([]),
+                scores_of_each_season[2].concat([]),
+                scores_of_each_season[3].concat([]),
+            ];
+        },
+        set scores_of_each_season(_) {
+            throw new Error("Cannot set scores_of_each_season. Please set my_score to reflect the change in the score.");
+        },
         log2_rate,
     };
 })({ IA_is_down: JSON.parse(sessionStorage.is_IA_down_for_me) });
