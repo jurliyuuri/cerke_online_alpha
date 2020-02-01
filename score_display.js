@@ -64,25 +64,30 @@ const { drawScoreDisplay, drawFinalScoreDisplay } = (() => {
             }
         }
     }
+    const letter_spacing = -0.06;
     /**
      *
      * @param scores_of_each_season each [number, ...number[]] contains the score obtained by the player on each season. The final element in the array is the hand with which the season has terminated, and kut2 tam2 comes before that if needed. Since there is no space to accomodate multiple kut2 tam2 for one season, multiple kut2 tam2 are combined into one.
      */
     function drawFinalScoreDisplay(scores_of_each_season) {
+        const starting_position_left = 530;
+        const spacing = 60;
+        const createDigitsMidHTML = (score, ind) => createDigitsHTML(starting_position_left - spacing * ind, 50 * (1 + letter_spacing) / 2 * (2 - toDigits(score).length) + 239, 50, toDigits(score));
         const scores = [].concat(...scores_of_each_season);
         const final_score_display = document.getElementById("final_score_display");
         final_score_display.classList.remove("nocover");
         final_score_display.innerHTML = [0, 0, 0, 0].map((_, ind) => {
             const a = [].concat(...scores_of_each_season.slice(0, ind)).length;
-            return `<img style="position:absolute; left: ${550 - 60 * a}px; top: 15px;" src="image/season_${ind}.png" width="50">`;
-        }).join("") + scores.map((a, ind) => createDigitsHTML(550 - 60 * ind, 23.5 * (2 - toDigits(a).length) + 239, 50, toDigits(a))).join("") + createTotalScoreHTML(scores.reduce((a, b) => a + b, 0));
+            return `<img style="position:absolute; left: ${starting_position_left - spacing * a}px; top: 15px;" src="image/season_${ind}.png" width="50">`;
+        }).join("") + scores.map((a, ind) => createDigitsMidHTML(a, ind)).join("")
+            + createDigitsMidHTML(20, -1)
+            + createTotalScoreHTML(20 + scores.reduce((a, b) => a + b, 0));
     }
     function createDigitsHTML(left, top, width, digits) {
-        const letter_spacing = -0.06;
         return digits.map((digit, index) => `<img
-            src="image/dat2/${digit}.png"
-            style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
-        >`).join("");
+        src="image/dat2/${digit}.png"
+        style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
+    >`).join("");
     }
     function drawScoreDisplay(hands_) {
         const hands = hands_.sort((a, b) => {
@@ -113,8 +118,8 @@ const { drawScoreDisplay, drawFinalScoreDisplay } = (() => {
             let ans = "";
             if (hand.slice(0, 2) === "同色") {
                 ans += `
-            <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
-            <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`;
+        <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
+        <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`;
             }
             else {
                 ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;

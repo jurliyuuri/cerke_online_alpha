@@ -1,6 +1,6 @@
-type Array4<T> = [T,T,T,T];
+type Array4<T> = [T, T, T, T];
 type Digit = "num00" | "num01" | "num02" | "num03" | "num04" | "num05" | "num06" | "num07" | "num08" | "num09" | "num10" | "neg" | "num100";
-const {drawScoreDisplay, drawFinalScoreDisplay} = (() => {
+const { drawScoreDisplay, drawFinalScoreDisplay } = (() => {
 function toDigits(num: number): Digit[] {
     if (num % 1 !== 0) {
         throw new Error("non-integer");
@@ -20,7 +20,7 @@ function toDigits(num: number): Digit[] {
     if (num >= 20) {
         return [`num0${Math.floor(num / 10)}` as Digit, "num10", ...lastDigitArr];
     } else if (num >= 10) {
-        return [ "num10", ...lastDigitArr];
+        return ["num10", ...lastDigitArr];
     } else {
         return lastDigitArr;
     }
@@ -40,7 +40,7 @@ function toDigitsSub(num: number): Digit[] {
         if (num >= 20) {
             return [`num0${Math.floor(num / 10)}` as Digit, "num10"];
         } else if (num == 10) {
-            return [ "num10"];
+            return ["num10"];
         } else {
             throw new Error("cannot happen");
         }
@@ -49,38 +49,49 @@ function toDigitsSub(num: number): Digit[] {
         if (num >= 20) {
             return [`num0${Math.floor(num / 10)}` as Digit, lastDigit];
         } else if (num >= 10) {
-            return [ "num10", lastDigit];
+            return ["num10", lastDigit];
         } else {
             return [lastDigit];
         }
     }
 }
 
+const letter_spacing = -0.06;
+
 /**
  * 
  * @param scores_of_each_season each [number, ...number[]] contains the score obtained by the player on each season. The final element in the array is the hand with which the season has terminated, and kut2 tam2 comes before that if needed. Since there is no space to accomodate multiple kut2 tam2 for one season, multiple kut2 tam2 are combined into one.
  */
 function drawFinalScoreDisplay(scores_of_each_season: Array4<[number, ...number[]]>) {
+    const starting_position_left = 530;
+    const spacing = 60;
+
+    const createDigitsMidHTML = (score: number, ind: number) => createDigitsHTML(
+        starting_position_left - spacing * ind, 
+        50 * (1 + letter_spacing) / 2 * (2 - toDigits(score).length) + 239, 
+        50, 
+        toDigits(score)
+    );
+
     const scores = ([] as number[]).concat(...scores_of_each_season);
 
     const final_score_display = document.getElementById("final_score_display")!;
     final_score_display.classList.remove("nocover");
     final_score_display.innerHTML = [0, 0, 0, 0].map((_, ind) => {
         const a = ([] as number[]).concat(...scores_of_each_season.slice(0, ind)).length;
-    return `<img style="position:absolute; left: ${550 - 60 * a}px; top: 15px;" src="image/season_${ind}.png" width="50">`
+        return `<img style="position:absolute; left: ${starting_position_left - spacing * a}px; top: 15px;" src="image/season_${ind}.png" width="50">`
     }
-    ).join("") + scores.map(
-        (a, ind) => createDigitsHTML(550 - 60 * ind, 23.5 * (2 - toDigits(a).length) + 239, 50, toDigits(a))
-    ).join("") + createTotalScoreHTML(scores.reduce((a,b)=>a+b, 0));
+    ).join("") + scores.map( (a, ind) => createDigitsMidHTML(a, ind) ).join("")
+    + createDigitsMidHTML(20, -1)
+    + createTotalScoreHTML(20 + scores.reduce((a, b) => a + b, 0));
 }
 
 function createDigitsHTML(left: number, top: number, width: number, digits: Digit[]) {
-    const letter_spacing = -0.06;
     return digits.map(
         (digit, index) => `<img
-            src="image/dat2/${digit}.png"
-            style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
-        >`,
+        src="image/dat2/${digit}.png"
+        style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
+    >`,
     ).join("");
 }
 
@@ -107,15 +118,15 @@ function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     if (hands.length > 11) { throw new Error("too many hands"); }
     const starting_position_left = [550, 550, 550, 550, 550, 550, 550, 550, 550, 575, 585, 595][hands.length];
     const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
-    
+
     function createHandAndScoreHTML(hand: HandAndNegativeHand, left: number): string {
         const digits: Digit[] = toDigits(hand_to_score[hand]);
         let ans = "";
         if (hand.slice(0, 2) === "同色") {
             ans += `
-            <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
-            <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`
-            ;
+        <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
+        <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`
+                ;
         } else {
             ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
         }
@@ -136,6 +147,6 @@ function createTotalScoreHTML(total_score: number): string {
     return createDigitsHTML(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
 }
 
-return {drawScoreDisplay, drawFinalScoreDisplay};
+return { drawScoreDisplay, drawFinalScoreDisplay };
 
 })();
