@@ -1,4 +1,4 @@
-type Array4<T> = [T, T, T, T];
+type ArrayUpTo4<T> = [T] | [T, T] | [T, T, T] | [T, T, T, T];
 type Digit = "num00" | "num01" | "num02" | "num03" | "num04" | "num05" | "num06" | "num07" | "num08" | "num09" | "num10" | "neg" | "num100";
 const { drawScoreDisplay, drawFinalScoreDisplay } = (() => {
 function toDigits(num: number): Digit[] {
@@ -62,7 +62,7 @@ const letter_spacing = -0.06;
  * 
  * @param scores_of_each_season each [number, ...number[]] contains the score obtained by the player on each season. The final element in the array is the hand with which the season has terminated, and kut2 tam2 comes before that if needed. Since there is no space to accomodate multiple kut2 tam2 for one season, multiple kut2 tam2 are combined into one.
  */
-function drawFinalScoreDisplay(scores_of_each_season: Array4<[number, ...number[]]>) {
+function drawFinalScoreDisplay(scores_of_each_season: ArrayUpTo4<[number, ...number[]]>) {
     const starting_position_left = 530;
     const spacing = 60;
 
@@ -77,7 +77,7 @@ function drawFinalScoreDisplay(scores_of_each_season: Array4<[number, ...number[
 
     const final_score_display = document.getElementById("final_score_display")!;
     final_score_display.classList.remove("nocover");
-    final_score_display.innerHTML = [0, 0, 0, 0].map((_, ind) => {
+    final_score_display.innerHTML = Array.from({length: scores_of_each_season.length}).map((_, ind) => {
         const a = ([] as number[]).concat(...scores_of_each_season.slice(0, ind)).length;
         return `<img style="position:absolute; left: ${starting_position_left - spacing * a}px; top: 15px;" src="image/season_${ind}.png" width="50">`
     }

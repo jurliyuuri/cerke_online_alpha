@@ -76,7 +76,7 @@ const { drawScoreDisplay, drawFinalScoreDisplay } = (() => {
         const scores = [].concat(...scores_of_each_season);
         const final_score_display = document.getElementById("final_score_display");
         final_score_display.classList.remove("nocover");
-        final_score_display.innerHTML = [0, 0, 0, 0].map((_, ind) => {
+        final_score_display.innerHTML = Array.from({ length: scores_of_each_season.length }).map((_, ind) => {
             const a = [].concat(...scores_of_each_season.slice(0, ind)).length;
             return `<img style="position:absolute; left: ${starting_position_left - spacing * a}px; top: 15px;" src="image/season_${ind}.png" width="50">`;
         }).join("") + scores.map((a, ind) => createDigitsMidHTML(a, ind)).join("")
