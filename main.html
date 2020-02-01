@@ -13,6 +13,7 @@
 <script src="game_state.js"></script>
 <script src="opponent_move.js"></script>
 <script src="cerke_calculate_hands/calculate_hand.js"></script>
+<script src="score_display.js"></script>
 <script src="main.js"></script>
 </head>
 <body onload="drawField();">
@@ -72,6 +73,7 @@
     <div id="larta_opponent"><img src="image/larta.png"></div>
     <div id="arrows"></div>
     <div id="score_display" class="nocover"></div>
+    <div id="final_score_display" class="nocover"></div>
 
     <div id="kait_kaik">
         <input type="image" id="kait_kaik_button" src="image/kait_kaik.png" onclick="document.getElementById('kait_kaik').classList.add('nocover'); GAME_STATE.is_my_turn = JSON.parse(sessionStorage.is_first_move_my_move); " width="200">

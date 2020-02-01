@@ -972,88 +972,6 @@ function removeChildren(parent) {
         parent.removeChild(parent.firstChild);
     }
 }
-function toDigits(num) {
-    if (num % 1 !== 0) {
-        throw new Error("non-integer");
-    }
-    else if (num >= 200) {
-        const lastHundredArr = num % 100 === 0 ? [] : toDigits(num % 100);
-        return [...toDigits(Math.floor(num / 100)), "num100", ...lastHundredArr];
-    }
-    else if (num >= 100) {
-        const lastHundredArr = num % 100 === 0 ? [] : toDigits(num % 100);
-        return ["num100", ...lastHundredArr];
-    }
-    else if (num < 0) {
-        return ["neg", ...toDigits(-num)];
-    }
-    else if (num == 0) {
-        return ["num00"];
-    }
-    const lastDigitArr = num % 10 === 0 ? [] : [`num0${num % 10}`];
-    if (num >= 20) {
-        return [`num0${Math.floor(num / 10)}`, "num10", ...lastDigitArr];
-    }
-    else if (num >= 10) {
-        return ["num10", ...lastDigitArr];
-    }
-    else {
-        return lastDigitArr;
-    }
-}
-function drawScoreDisplay(hands_) {
-    const hands = hands_.sort((a, b) => {
-        const hands_ordering = [
-            "同色無抗行処", "無抗行処",
-            "同色筆兵無傾", "筆兵無傾",
-            "同色地心", "地心",
-            "同色馬弓兵", "馬弓兵",
-            "同色行行", "行行",
-            "王",
-            "同色獣", "獣",
-            "同色戦集", "戦集",
-            "同色助友", "助友",
-            "同色闇戦之集", "闇戦之集",
-            "撃皇",
-            "皇再来",
-        ];
-        return hands_ordering.indexOf(a) - hands_ordering.indexOf(b);
-    });
-    const top_padding = 15;
-    if (hands.length > 11) {
-        throw new Error("too many hands");
-    }
-    const starting_position_left = [550, 550, 550, 550, 550, 550, 550, 550, 550, 575, 585, 595][hands.length];
-    const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
-    function drawDigits(left, top, width, digits) {
-        const letter_spacing = -0.06;
-        return digits.map((digit, index) => `<img
-                src="image/dat2/${digit}.png"
-                style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) * width * index + top}px;" width="${width}"
-            >`).join("");
-    }
-    function drawHandAndScore(hand, left) {
-        const digits = toDigits(hand_to_score[hand]);
-        let ans = "";
-        if (hand.slice(0, 2) === "同色") {
-            ans += `
-            <img src="image/dat2/${hand.slice(2)}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
-            <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 + top_padding}px;" width="50">`;
-        }
-        else {
-            ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
-        }
-        ans += drawDigits(left, 280 + top_padding, 50, digits);
-        return ans;
-    }
-    const score_display = document.getElementById("score_display");
-    score_display.classList.remove("nocover");
-    const base_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
-    const base_score_digits = toDigits(base_score);
-    score_display.innerHTML =
-        hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
-            drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
-}
 function increaseRateAndAnimate(done_by_me) {
     const score_display = document.getElementById("score_display");
     score_display.classList.add("nocover");
@@ -1089,7 +1007,6 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     const score_display = document.getElementById("score_display");
     const ty_mok1_button = createImageButton("dat2/再行", 0);
     ty_mok1_button.addEventListener("click", async () => {
-        // FIXME: must send server of this decision
         increaseRateAndAnimate(true);
         const res = await sendStuffTo("whethertymok", "`send whether ty mok1`", true, (response) => {
             console.log("Success; the server returned:", JSON.stringify(response));
@@ -1114,6 +1031,51 @@ function drawTyMok1AndTaXot1Buttons(base_score) {
     });
     score_display.appendChild(ta_xot1_button);
 }
+/**
+ * Group up all the kut2 tam2 to display neatly.
+ * @param is_final_cause_kuttam
+ * @param scores_of_each_season
+ */
+function cleanupScoresOfEachSeason(is_final_cause_kuttam, scores_of_each_season) {
+    const cleanup_ending_in_kuttam = (each_season) => {
+        return [each_season.reduce((a, b) => a + b, 0)];
+    };
+    const cleanup_not_ending_in_kuttam = (each_season) => {
+        return [each_season.slice(0, -1).reduce((a, b) => a + b, 0), each_season[each_season.length - 1]];
+    };
+    const cleanup_final_season = is_final_cause_kuttam ? cleanup_ending_in_kuttam : cleanup_not_ending_in_kuttam;
+    if (scores_of_each_season[0].length === 0) {
+        throw new Error("why did the game end without any movement of points?");
+    }
+    else if (scores_of_each_season[1].length === 0) {
+        return [cleanup_final_season(scores_of_each_season[0])];
+    }
+    else if (scores_of_each_season[2].length === 0) {
+        return [
+            cleanup_not_ending_in_kuttam(scores_of_each_season[0]),
+            cleanup_final_season(scores_of_each_season[1])
+        ];
+    }
+    else if (scores_of_each_season[3].length === 0) {
+        return [
+            cleanup_not_ending_in_kuttam(scores_of_each_season[0]),
+            cleanup_not_ending_in_kuttam(scores_of_each_season[1]),
+            cleanup_final_season(scores_of_each_season[2])
+        ];
+    }
+    else {
+        return [
+            cleanup_not_ending_in_kuttam(scores_of_each_season[0]),
+            cleanup_not_ending_in_kuttam(scores_of_each_season[1]),
+            cleanup_not_ending_in_kuttam(scores_of_each_season[2]),
+            cleanup_final_season(scores_of_each_season[3])
+        ];
+    }
+}
+function perzej(msg, is_cause_kuttam) {
+    alert(msg); // FIXME
+    drawFinalScoreDisplay(cleanupScoresOfEachSeason(is_cause_kuttam, GAME_STATE.scores_of_each_season));
+}
 async function animatePunishStepTam(side) {
     var _a, _b, _c, _d, _e;
     const score_display = document.getElementById("score_display");
@@ -1124,12 +1086,12 @@ async function animatePunishStepTam(side) {
     await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
     await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
     if (GAME_STATE.my_score >= 40) {
-        alert("you win!"); // FIXME
+        perzej("you win!", true);
         (_a = document.getElementById("protective_cover_over_field_while_waiting_for_opponent")) === null || _a === void 0 ? void 0 : _a.classList.remove("nocover");
         return;
     }
     else if (GAME_STATE.my_score <= 0) {
-        alert("you lose..."); // FIXME
+        perzej("you lose...", true);
         (_b = document.getElementById("protective_cover_over_field_while_waiting_for_opponent")) === null || _b === void 0 ? void 0 : _b.classList.remove("nocover");
         return;
     }
@@ -1160,15 +1122,15 @@ function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
             await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
             alert(DICTIONARY.ja.gameEnd);
             if (GAME_STATE.my_score > 20) {
-                alert("you win!"); // FIXME
+                perzej("you win!", false);
                 return;
             }
             else if (GAME_STATE.my_score < 20) {
-                alert("you lose..."); // FIXME
+                perzej("you lose...", false);
                 return;
             }
             else {
-                alert("draw");
+                perzej("draw", false);
                 return;
             }
         }, 200 * 0.8093);
@@ -1179,11 +1141,11 @@ function endSeason(base_score, is_first_move_my_move_in_the_next_season) {
         var _a, _b, _c, _d, _e;
         await animateNode(denote_score, 1000 * 0.8093, getDenoteScoreNodeTopLeft(GAME_STATE.my_score), getDenoteScoreNodeTopLeft(orig_score));
         if (GAME_STATE.my_score >= 40) {
-            alert("you win!"); // FIXME
+            perzej("you win!", false);
             return;
         }
         else if (GAME_STATE.my_score <= 0) {
-            alert("you lose..."); // FIXME
+            perzej("you lose...", false);
             return;
         }
         await animateNode(denote_season, 700 * 0.8093, getDenoteSeasonNodeTopLeft(GAME_STATE.season), getDenoteSeasonNodeTopLeft(orig_season));
