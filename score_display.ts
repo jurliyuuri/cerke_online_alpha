@@ -1,5 +1,6 @@
 type Array4<T> = [T,T,T,T];
 type Digit = "num00" | "num01" | "num02" | "num03" | "num04" | "num05" | "num06" | "num07" | "num08" | "num09" | "num10" | "neg" | "num100";
+const {drawScoreDisplay, drawFinalScoreDisplay} = (() => {
 function toDigits(num: number): Digit[] {
     if (num % 1 !== 0) {
         throw new Error("non-integer");
@@ -69,11 +70,11 @@ function drawFinalScoreDisplay(scores_of_each_season: Array4<[number, ...number[
     return `<img style="position:absolute; left: ${550 - 60 * a}px; top: 15px;" src="image/season${ind+1}.png" width="50">`
     }
     ).join("") + scores.map(
-        (a, ind) => drawDigits(550 - 60 * ind, 23.5 * (2 - toDigits(a).length) + 239, 50, toDigits(a))
-    ).join("") + drawTotalScore(scores.reduce((a,b)=>a+b, 0));
+        (a, ind) => createDigitsHTML(550 - 60 * ind, 23.5 * (2 - toDigits(a).length) + 239, 50, toDigits(a))
+    ).join("") + createTotalScoreHTML(scores.reduce((a,b)=>a+b, 0));
 }
 
-function drawDigits(left: number, top: number, width: number, digits: Digit[]) {
+function createDigitsHTML(left: number, top: number, width: number, digits: Digit[]) {
     const letter_spacing = -0.06;
     return digits.map(
         (digit, index) => `<img
@@ -107,7 +108,7 @@ function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     const starting_position_left = [550, 550, 550, 550, 550, 550, 550, 550, 550, 575, 585, 595][hands.length];
     const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][hands.length];
     
-    function drawHandAndScore(hand: HandAndNegativeHand, left: number) {
+    function createHandAndScoreHTML(hand: HandAndNegativeHand, left: number): string {
         const digits: Digit[] = toDigits(hand_to_score[hand]);
         let ans = "";
         if (hand.slice(0, 2) === "同色") {
@@ -118,7 +119,7 @@ function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
         } else {
             ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
         }
-        ans += drawDigits(left, 280 + top_padding, 50, digits);
+        ans += createDigitsHTML(left, 280 + top_padding, 50, digits);
         return ans;
     }
 
@@ -126,11 +127,15 @@ function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     score_display.classList.remove("nocover");
     const base_score = hands.map((h) => hand_to_score[h]).reduce((a, b) => a + b, 0);
     score_display.innerHTML =
-        hands.map((hand, index) => drawHandAndScore(hand, starting_position_left - spacing * index)).join("") +
-        drawTotalScore(base_score);
+        hands.map((hand, index) => createHandAndScoreHTML(hand, starting_position_left - spacing * index)).join("") +
+        createTotalScoreHTML(base_score);
 }
 
-function drawTotalScore(total_score: number) {
+function createTotalScoreHTML(total_score: number): string {
     const base_score_digits: Digit[] = toDigits(total_score);
-    return drawDigits(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
+    return createDigitsHTML(20, 234 - 70 * base_score_digits.length / 2, 70, base_score_digits);
 }
+
+return {drawScoreDisplay, drawFinalScoreDisplay};
+
+})();
