@@ -1262,8 +1262,8 @@ function toDigits(num: number): Digit[] {
     if (num % 1 !== 0) {
         throw new Error("non-integer");
     } else if (num >= 200) {
-        const lastHundredArr: Digit[] = num % 100 === 0 ? [] : toDigits(num % 100);
-        return [...toDigits(Math.floor(num / 100)), "num100", ...lastHundredArr];
+        const lastHundredArr: Digit[] = num % 100 === 0 ? [] : toDigitsSub(num % 100);
+        return [...toDigitsSub(Math.floor(num / 100)), "num100", ...lastHundredArr];
     } else if (num >= 100) {
         const lastHundredArr: Digit[] = num % 100 === 0 ? [] : toDigits(num % 100);
         return ["num100", ...lastHundredArr];
@@ -1283,6 +1283,35 @@ function toDigits(num: number): Digit[] {
     }
 }
 
+// -6848 should be 下六八百四八, not 下六十八百四十八. This function thus converts 68 to 六八, not 六十八.
+function toDigitsSub(num: number): Digit[] {
+    if (num % 1 !== 0) {
+        throw new Error("non-integer");
+    } else if (num >= 100) {
+        throw new Error("100 or more detected in toDigitsSub");
+    } else if (num <= 0) {
+        throw new Error("0 or less detected in toDigitsSub");
+    }
+
+    if (num % 10 === 0) {
+        if (num >= 20) {
+            return [`num0${Math.floor(num / 10)}` as Digit, "num10"];
+        } else if (num == 10) {
+            return [ "num10"];
+        } else {
+            throw new Error("cannot happen");
+        }
+    } else {
+        const lastDigit: Digit = `num0${num % 10}` as Digit;
+        if (num >= 20) {
+            return [`num0${Math.floor(num / 10)}` as Digit, lastDigit];
+        } else if (num >= 10) {
+            return [ "num10", lastDigit];
+        } else {
+            return [lastDigit];
+        }
+    }
+}
 function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     const hands = hands_.sort((a, b) => {
         const hands_ordering: HandAndNegativeHand[] = [
