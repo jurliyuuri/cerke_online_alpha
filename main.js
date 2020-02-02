@@ -203,9 +203,9 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc, fi
                     firstDest: toAbsoluteCoord(firstDest),
                     secondDest: toAbsoluteCoord(secondDest),
                 };
-                sendNormalMessage(message);
                 eraseGuide();
                 erasePhantomAndOptionallyCancelButton();
+                sendNormalMessage(message);
                 document.getElementById("protective_cover_over_field").classList.add("nocover");
                 document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
                 return;
@@ -271,11 +271,11 @@ function afterFirstTamMove(from, to, step) {
                                 firstDest: toAbsoluteCoord(firstDest),
                                 secondDest: toAbsoluteCoord(to),
                             };
-                            sendNormalMessage(message);
-                            document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
                             // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
                             erasePhantomAndOptionallyCancelButton();
                             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+                            sendNormalMessage(message);
+                            document.getElementById("protective_tam_cover_over_field").classList.add("nocover");
                             return;
                         })(from, coord, guideListYellow[ind]);
                     });
@@ -756,6 +756,7 @@ async function sendInfAfterStep(message) {
     const src = fromAbsoluteCoord(message.src);
     const passer = createCircleGuideImageAt(src, "ct");
     passer.addEventListener("click", function (ev) {
+        eraseGuide();
         sendAfterHalfAcceptance({
             type: "AfterHalfAcceptance",
             dest: null,
@@ -860,8 +861,10 @@ function display_guide_after_stepping(coord, q, parent, list) {
         }
         const img = createCircleGuideImageAt(list[ind], q.path);
         img.addEventListener("click", q.path === "ct" ? function () {
+            eraseGuide();
             getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
         } : function () {
+            eraseGuide();
             sendInfAfterStep({
                 type: "InfAfterStep",
                 color: q.piece.color,
@@ -881,9 +884,11 @@ function display_guides(coord, piece, parent, list) {
         const img = createCircleGuideImageAt(list[ind], "ct");
         // click on it to get things going
         img.addEventListener("click", function () {
+            eraseGuide();
             getThingsGoing(piece, coord, list[ind], /* ask whether to step, when clicked */ true);
         });
         img.addEventListener("contextmenu", function (e) {
+            eraseGuide();
             e.preventDefault();
             getThingsGoing(piece, coord, list[ind], /* when right-clicked, default to step */ false);
         });
@@ -938,6 +943,7 @@ function selectOwnPieceOnHop1zuo1(ind, piece) {
                 const img = createCircleGuideImageAt(ij, "ct");
                 // click on it to get things going
                 img.addEventListener("click", function () {
+                    eraseGuide();
                     (function getThingsGoingFromHop1zuo1(piece, to) {
                         const dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
                         // must parachute onto an empty square
