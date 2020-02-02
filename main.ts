@@ -250,10 +250,10 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(theVerySrc: Co
                     secondDest: toAbsoluteCoord(secondDest),
                 };
 
-                sendNormalMessage(message);
-
                 eraseGuide();
                 erasePhantomAndOptionallyCancelButton();
+
+                sendNormalMessage(message);
                 document.getElementById("protective_cover_over_field")!.classList.add("nocover");
                 document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
                 return;
@@ -345,15 +345,12 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
                                 secondDest: toAbsoluteCoord(to),
                             };
 
+                            // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
+                            erasePhantomAndOptionallyCancelButton();
+                            eraseGuide(); // this removes the central guide, as well as the yellow and green ones
                             sendNormalMessage(message);
 
                             document.getElementById("protective_tam_cover_over_field")!.classList.add("nocover");
-
-                            // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
-                            erasePhantomAndOptionallyCancelButton();
-
-                            eraseGuide(); // this removes the central guide, as well as the yellow and green ones
-
                             return;
                         })(from, coord, guideListYellow[ind]);
                     });
@@ -981,6 +978,7 @@ async function sendInfAfterStep(message: InfAfterStep) {
 
     const passer = createCircleGuideImageAt(src, "ct");
     passer.addEventListener("click", function(ev) {
+        eraseGuide();
         sendAfterHalfAcceptance({
             type: "AfterHalfAcceptance",
             dest: null,
@@ -1108,8 +1106,10 @@ function display_guide_after_stepping(
         const img = createCircleGuideImageAt(list[ind], q.path);
 
         img.addEventListener("click", q.path === "ct" ? function() {
+            eraseGuide();
             getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
         } : function() {
+            eraseGuide();
             sendInfAfterStep({
                 type: "InfAfterStep",
                 color: q.piece.color,
@@ -1132,10 +1132,12 @@ function display_guides(coord: Coord, piece: "Tam2" | NonTam2PieceUpward, parent
 
         // click on it to get things going
         img.addEventListener("click", function() {
+            eraseGuide();
             getThingsGoing(piece, coord, list[ind], /* ask whether to step, when clicked */ true);
         });
 
         img.addEventListener("contextmenu", function(e) {
+            eraseGuide();
             e.preventDefault();
             getThingsGoing(piece, coord, list[ind], /* when right-clicked, default to step */ false);
         });
@@ -1218,6 +1220,7 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
 
                 // click on it to get things going
                 img.addEventListener("click", function() {
+                    eraseGuide();
                     (function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, to: Coord) {
                         const dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
 
