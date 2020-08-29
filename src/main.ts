@@ -620,9 +620,9 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
       GAME_STATE.f.currentBoard,
       GAME_STATE.tam_itself_is_tam_hue,
     );
-    /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guide_after_stepping handles that. */
+    /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guides_after_stepping handles that. */
 
-    display_guide_after_stepping(
+    display_guides_after_stepping(
       coord,
       { piece, path: "ct" },
       contains_guides,
@@ -635,7 +635,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
       }
       return;
     }
-    display_guide_after_stepping(
+    display_guides_after_stepping(
       coord,
       { piece, path: "ct2" },
       contains_guides,
@@ -1354,7 +1354,7 @@ function clearCiurl() {
   removeChildren(document.getElementById("contains_ciurl")!);
 }
 
-function display_guide_after_stepping(
+function display_guides_after_stepping(
   coord: Coord,
   q: { piece: Piece; path: "ct" } | { piece: NonTam2Piece; path: "ct2" },
   parent: HTMLElement,
@@ -1409,7 +1409,7 @@ function display_guide_after_stepping(
   }
 }
 
-function display_guides(
+function display_guides_before_stepping(
   coord: Coord,
   piece: "Tam2" | NonTam2PieceUpward,
   parent: HTMLElement,
@@ -1486,7 +1486,7 @@ function selectOwnPieceOnBoard(
       GAME_STATE.tam_itself_is_tam_hue,
     );
 
-    display_guides(coord, piece, contains_guides, [
+    display_guides_before_stepping(coord, piece, contains_guides, [
       ...guideListFinite,
       ...guideListInfinite,
     ]);
