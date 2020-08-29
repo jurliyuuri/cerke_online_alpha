@@ -341,11 +341,8 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
       const [i, j] = secondDest;
       const destPiece = GAME_STATE.f.currentBoard[i][j];
 
-      // cannot step twice
-      if (
-        destPiece === "Tam2" ||
-        (destPiece !== null && destPiece.side === Side.Upward)
-      ) {
+      // cannot step twice and cannot get a piece
+      if (destPiece !== null) {
         continue;
       }
 
