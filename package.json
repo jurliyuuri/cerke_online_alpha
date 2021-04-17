@@ -20,17 +20,17 @@
   "homepage": "https://gitlab.com/jekto.vatimeliju/cerke_online#readme",
   "devDependencies": {
     "css-loader": "^3.5.3",
+    "kind-of": ">=6.0.3",
     "mini-css-extract-plugin": "^0.9.0",
+    "minimist": ">=1.2.3",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "ts-loader": "^6.2.2",
     "typescript": "^3.9.3",
-    "webpack": "^4.43.0",
+    "webpack": "^5.33.2",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0",
-    "minimist": ">=1.2.3",
-    "kind-of": ">=6.0.3"
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "cerke_hands_and_score": "^1.0.1",
