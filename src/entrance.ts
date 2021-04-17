@@ -125,6 +125,7 @@ async function sendSomethingSomewhere<T, U>(
     headers: {
       "Content-Type": "application/json",
     },
+    keepalive: true
   })
     .then(function(res) {
       return res.json();
