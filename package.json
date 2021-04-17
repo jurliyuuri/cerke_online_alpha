@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "build": "webpack -p --mode production",
+    "build": "API_ORIGIN=REMOTE webpack -p --mode production",
     "build:dev": "API_ORIGIN=LOCAL webpack --mode development",
     "start": "API_ORIGIN=LOCAL webpack-dev-server",
     "format": "prettier --write 'src/**/*.ts' 'src/**/*.tsx'"
