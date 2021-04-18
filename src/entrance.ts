@@ -22,6 +22,8 @@ document.addEventListener('visibilitychange', function logData() {
 
     // cancel if out of focus
     if (typeof RESULT !== "undefined") {
+      const token = RESULT.access_token;
+      RESULT = undefined;
       /*
 
       // somehow this fails with CORS
@@ -33,10 +35,11 @@ document.addEventListener('visibilitychange', function logData() {
       */
 
       (async () => {
-        await sendSomethingSomewhere(`${API_ORIGIN}/random/cancel`, { access_token: RESULT.access_token as AccessToken }, a => a)
+        console.log(`trying to cancel ${token}:`);
+        await sendSomethingSomewhere(`${API_ORIGIN}/random/cancel`, { access_token: token as AccessToken }, a => a)
       })();
     }
-    RESULT = undefined;
+    
   } else {
 
     // re-register if focused
