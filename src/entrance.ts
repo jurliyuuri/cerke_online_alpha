@@ -13,27 +13,25 @@ type Ret_RandomCancel =
       cancellable: boolean;
     };
 
-document.addEventListener('visibilitychange', function logData() {
-  if (document.visibilityState === 'hidden') {
-    if (!UNLOAD_TRIGGERED_BY_USER) {
-      // should only capture what has been triggered by the user
-      return;
-    }
+/////////////////////////////////////////////////////////
+// The following function magically does the following:
+//
+// a. if the page is out of focus:
+//    1. The current token is revoked
+//    2. Somehow a new token is generated
+// 
+// b. 
+document.addEventListener('visibilitychange', () => {
+  if (!UNLOAD_TRIGGERED_BY_USER) {
+    // should only capture what has been triggered by the user
+    return;
+  }
 
+  if (document.visibilityState === 'hidden') {
     // cancel if out of focus
     if (typeof RESULT !== "undefined") {
       const token = RESULT.access_token;
       RESULT = undefined;
-      /*
-
-      // somehow this fails with CORS
-      const blob = new Blob(
-        [JSON.stringify({ access_token: RESULT.access_token as AccessToken })],
-        { type: 'application/json' }
-      );
-      navigator.sendBeacon(`${API_ORIGIN}/random/cancel`, blob);
-      */
-
       (async () => {
         console.log(`trying to cancel ${token}:`);
         const newRes: Ret_RandomCancel = await sendCancel<Ret_RandomCancel>(token as AccessToken, a => a);  
