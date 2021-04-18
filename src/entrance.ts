@@ -13,23 +13,27 @@ type Ret_RandomCancel =
       cancellable: boolean;
     };
 
-function send_beacon() {
-  // you already have an access token
-  if (typeof RESULT !== "undefined") {
-    const blob = new Blob(
-      [JSON.stringify({ access_token: RESULT.access_token as AccessToken })],
-      { type: 'application/json; charset=UTF-8' }
-    );
-    navigator.sendBeacon(`${API_ORIGIN}/random/cancel`, blob);
-  }
-}
+document.addEventListener('visibilitychange', function logData() {
+  if (document.visibilityState === 'hidden') {
+    if (!UNLOAD_TRIGGERED_BY_USER) {
+      // should only capture what has been triggered by the user
+      return;
+    }
 
-window.addEventListener("beforeunload", function(e) {
-  if (!UNLOAD_TRIGGERED_BY_USER) {
-    // beforeunload should only capture what has been triggered by the user
-    return;
+    // cancel if out of focus
+    if (typeof RESULT !== "undefined") {
+      const blob = new Blob(
+        [JSON.stringify({ access_token: RESULT.access_token as AccessToken })],
+        { type: 'application/json; charset=UTF-8' }
+      );
+      navigator.sendBeacon(`${API_ORIGIN}/random/cancel`, blob);
+    }
+    RESULT = undefined;
+  } else {
+
+    // re-register if focused
+    apply_for_random_game();
   }
-  send_beacon();
 });
 
 type AccessToken = string & { __AccessTokenBrand: never };
