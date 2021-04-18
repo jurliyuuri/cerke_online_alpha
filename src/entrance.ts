@@ -19,43 +19,15 @@ window.addEventListener("beforeunload", function(e) {
     return;
   }
 
-  (async () => {
-    if (typeof RESULT !== "undefined") {
-      // you already have an access token
-      const r = await sendCancel<Ret_RandomCancel>(
-        RESULT.access_token as AccessToken,
-        a => a,
-      );
-      if (!r.legal) {
-        alert(`sending cancel somehow resulted in an error: ${r.whyIllegal}`);
-        throw new Error(
-          `sending cancel somehow resulted in an error: ${r.whyIllegal}`,
-        );
-      }
-
-      if (r.cancellable) {
-        // successfully cancelled; you can exit the page
-        return;
-      } else {
-        e.preventDefault();
-        e.returnValue = "cannot cancel the game, as it is already ready";
-      }
-    }
-  })();
+  // you already have an access token
+  if (typeof RESULT !== "undefined") {
+    const blob = new Blob(
+      [JSON.stringify({ access_token: RESULT.access_token as AccessToken })],
+      { type: 'application/json; charset=UTF-8' }
+    );
+    navigator.sendBeacon(`${API_ORIGIN}/random/cancel`, blob);
+  }
 });
-
-async function sendCancel<U>(
-  access_token: AccessToken,
-  validateInput: (response: any) => U,
-): Promise<U> {
-  return await sendSomethingSomewhere(
-    `${API_ORIGIN}/random/cancel`,
-    {
-      access_token,
-    },
-    validateInput,
-  );
-}
 
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(
