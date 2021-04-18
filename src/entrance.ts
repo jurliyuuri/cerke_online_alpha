@@ -13,12 +13,7 @@ type Ret_RandomCancel =
       cancellable: boolean;
     };
 
-window.addEventListener("beforeunload", function(e) {
-  if (!UNLOAD_TRIGGERED_BY_USER) {
-    // beforeunload should only capture what has been triggered by the user
-    return;
-  }
-
+function send_beacon() {
   // you already have an access token
   if (typeof RESULT !== "undefined") {
     const blob = new Blob(
@@ -27,6 +22,14 @@ window.addEventListener("beforeunload", function(e) {
     );
     navigator.sendBeacon(`${API_ORIGIN}/random/cancel`, blob);
   }
+}
+
+window.addEventListener("beforeunload", function(e) {
+  if (!UNLOAD_TRIGGERED_BY_USER) {
+    // beforeunload should only capture what has been triggered by the user
+    return;
+  }
+  send_beacon();
 });
 
 type AccessToken = string & { __AccessTokenBrand: never };
