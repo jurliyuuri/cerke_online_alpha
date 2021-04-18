@@ -36,15 +36,16 @@ document.addEventListener('visibilitychange', function logData() {
 
       (async () => {
         console.log(`trying to cancel ${token}:`);
-        const newRes: Ret_RandomCancel = await sendCancel<Ret_RandomCancel>(token as AccessToken, a=>a);  
+        const newRes: Ret_RandomCancel = await sendCancel<Ret_RandomCancel>(token as AccessToken, a => a);  
         console.log(`got result ${JSON.stringify(newRes)}`);   
       })();
     }
     
   } else {
-
     // re-register if focused
-    apply_for_random_game();
+    if (typeof RESULT === "undefined") {
+      apply_for_random_game();
+    }
   }
 });
 
