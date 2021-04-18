@@ -22,11 +22,19 @@ document.addEventListener('visibilitychange', function logData() {
 
     // cancel if out of focus
     if (typeof RESULT !== "undefined") {
+      /*
+
+      // somehow this fails with CORS
       const blob = new Blob(
         [JSON.stringify({ access_token: RESULT.access_token as AccessToken })],
         { type: 'application/json' }
       );
       navigator.sendBeacon(`${API_ORIGIN}/random/cancel`, blob);
+      */
+
+      (async () => {
+        await sendSomethingSomewhere(`${API_ORIGIN}/random/cancel`, { access_token: RESULT.access_token as AccessToken }, a => a)
+      })();
     }
     RESULT = undefined;
   } else {
