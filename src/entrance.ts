@@ -24,7 +24,7 @@ document.addEventListener('visibilitychange', function logData() {
     if (typeof RESULT !== "undefined") {
       const blob = new Blob(
         [JSON.stringify({ access_token: RESULT.access_token as AccessToken })],
-        { type: 'application/json; charset=UTF-8' }
+        { type: 'application/json' }
       );
       navigator.sendBeacon(`${API_ORIGIN}/random/cancel`, blob);
     }
