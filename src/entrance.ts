@@ -36,7 +36,8 @@ document.addEventListener('visibilitychange', function logData() {
 
       (async () => {
         console.log(`trying to cancel ${token}:`);
-        await sendSomethingSomewhere(`${API_ORIGIN}/random/cancel`, { access_token: token as AccessToken }, a => a)
+        const newRes: Ret_RandomCancel = await sendCancel<Ret_RandomCancel>(token as AccessToken, a=>a);  
+        console.log(`got result ${JSON.stringify(newRes)}`);   
       })();
     }
     
@@ -103,6 +104,20 @@ async function sendPoll<U>(
     validateInput,
   );
 }
+
+async function sendCancel<U>(
+  access_token: AccessToken,
+  validateInput: (response: any) => U,
+): Promise<U> {
+  return await sendSomethingSomewhere(
+    `${API_ORIGIN}/random/cancel`,
+    {
+      access_token,
+    },
+    validateInput,
+  );
+}
+
 
 async function sendSomethingSomewhere<T, U>(
   url: string,
