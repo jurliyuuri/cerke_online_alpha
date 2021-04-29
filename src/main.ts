@@ -130,6 +130,9 @@ export async function sendMainPoll() {
   if (res.content !== "not yet") {
     console.log("ding!");
 
+    const sound = new Audio("sound/thud.ogg");
+    sound.play();
+
     const opponent_move = res.content;
     console.log(opponent_move);
     if (opponent_move.type === "NonTamMove") {
