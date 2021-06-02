@@ -277,7 +277,7 @@ function cancelStepping() {
 
   UI_STATE.selectedCoord = null;
 
-  drawField();
+  drawField([0,0]/*FIXME*/);
 }
 
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
@@ -299,7 +299,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
 
   document.getElementById("cancelButton")!.remove();
 
-  drawField();
+  drawField([0,0]/*FIXME*/);
   drawPhantomAt(firstDest, "Tam2");
   drawCancel(function() {
     eraseGuide();
@@ -317,7 +317,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
 
     UI_STATE.selectedCoord = null;
 
-    drawField();
+    drawField([0,0]/*FIXME*/);
   });
   drawHoverAt_<"Tam2">(stepsOn, "Tam2", function(coord: Coord, piece: "Tam2") {
     const contains_guides = document.getElementById("contains_guides")!;
@@ -401,7 +401,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
   GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
-  drawField();
+  drawField([0,0]/*FIXME*/);
 
   const drawTam2HoverNonshiftedAt = function(coord: Coord) {
     const contains_phantom = document.getElementById("contains_phantom")!;
@@ -530,7 +530,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
     UI_STATE.selectedCoord = null;
 
-    drawField();
+    drawField([0,0]/*FIXME*/);
   });
   drawTam2HoverNonshiftedAt(to);
 }
@@ -599,7 +599,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   GAME_STATE.backupDuringStepping = [from, piece];
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
-  drawField();
+  drawField([0,0]/*FIXME*/);
   drawPhantomAt(from, piece);
   drawCancel(cancelStepping);
   drawHoverAt_(to, piece, function(
@@ -666,7 +666,7 @@ async function sendAfterHalfAcceptance(
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateFieldAfterHalfAcceptance(message, src, step);
-    drawField();
+    drawField([0,0]/*FIXME*/);
     GAME_STATE.is_my_turn = false;
     return;
   }
@@ -686,7 +686,7 @@ async function sendAfterHalfAcceptance(
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateFieldAfterHalfAcceptance(message, src, step);
-    drawField();
+    drawField([0,0]/*FIXME*/);
     GAME_STATE.is_my_turn = false;
   }
 }
@@ -767,7 +767,7 @@ async function sendNormalMessage(message: NormalMove) {
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateField(message);
-    drawField();
+    drawField([0,0]/*FIXME*/);
     GAME_STATE.is_my_turn = false;
     return;
   }
@@ -792,7 +792,7 @@ async function sendNormalMessage(message: NormalMove) {
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateField(message);
-    drawField();
+    drawField([0,0]/*FIXME*/);
     GAME_STATE.is_my_turn = false;
   }
 }
@@ -1863,7 +1863,7 @@ export function endSeason(
 
     GAME_STATE.log2_rate = 0;
     allowPolling(); // reset another global state
-    drawField();
+    drawField([0,0]/*FIXME*/);
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
     document
@@ -1920,7 +1920,7 @@ function drawScoreboard() {
   denote_rate.style.transform = ``;
 }
 
-export function drawField() {
+export function drawField(focus? : Coord) {
   (function drawBoard(board: Board) {
     const contains_pieces_on_board = document.getElementById(
       "contains_pieces_on_board",
@@ -1942,6 +1942,10 @@ export function drawField() {
           piece,
         );
         imgNode.id = `field_piece_${i}_${j}`;
+
+        if (coord === focus) {
+          imgNode.style.border = "10px solid #01ff34"
+        }
 
         if (piece === "Tam2") {
           // prevent tam2 ty sak2
