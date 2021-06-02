@@ -44,40 +44,40 @@ interface OpponentMoveWithPotentialWaterEntry {
 type OpponentMove =
   | OpponentMoveWithPotentialWaterEntry
   | {
-      type: "NonTamMove";
-      data: {
-        type: "FromHand";
-        color: Color;
-        prof: Profession;
-        dest: AbsoluteCoord;
-      };
-    }
-  | {
-      type: "TamMove";
-      stepStyle: "NoStep";
-      src: AbsoluteCoord;
-      firstDest: AbsoluteCoord;
-      secondDest: AbsoluteCoord;
-    }
-  | {
-      type: "TamMove";
-      stepStyle: "StepsDuringFormer" | "StepsDuringLatter";
-      src: AbsoluteCoord;
-      step: AbsoluteCoord;
-      firstDest: AbsoluteCoord;
-      secondDest: AbsoluteCoord;
-    }
-  | {
-      type: "InfAfterStep";
-      src: AbsoluteCoord;
-      step: AbsoluteCoord;
-      plannedDirection: AbsoluteCoord;
-      stepping_ciurl: Ciurl;
-      finalResult: Promise<{
-        dest: AbsoluteCoord;
-        water_entry_ciurl?: Ciurl;
-      }>;
+    type: "NonTamMove";
+    data: {
+      type: "FromHand";
+      color: Color;
+      prof: Profession;
+      dest: AbsoluteCoord;
     };
+  }
+  | {
+    type: "TamMove";
+    stepStyle: "NoStep";
+    src: AbsoluteCoord;
+    firstDest: AbsoluteCoord;
+    secondDest: AbsoluteCoord;
+  }
+  | {
+    type: "TamMove";
+    stepStyle: "StepsDuringFormer" | "StepsDuringLatter";
+    src: AbsoluteCoord;
+    step: AbsoluteCoord;
+    firstDest: AbsoluteCoord;
+    secondDest: AbsoluteCoord;
+  }
+  | {
+    type: "InfAfterStep";
+    src: AbsoluteCoord;
+    step: AbsoluteCoord;
+    plannedDirection: AbsoluteCoord;
+    stepping_ciurl: Ciurl;
+    finalResult: Promise<{
+      dest: AbsoluteCoord;
+      water_entry_ciurl?: Ciurl;
+    }>;
+  };
 
 /**
  * @param total_duration total duration in millisecond
@@ -205,7 +205,9 @@ export async function animateOpponentInfAfterStep(p: {
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
-        drawField({focus: [0,0]/*FIXME*/});
+
+        GAME_STATE.last_move_focus = [src_i, src_j];
+        drawField({ focus: [src_i, src_j] });
         return;
       }
     }
@@ -216,7 +218,9 @@ export async function animateOpponentInfAfterStep(p: {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
-    drawField({focus: [0,0]/*FIXME*/});
+
+    GAME_STATE.last_move_focus = [dest_i, dest_j];
+    drawField({ focus: [dest_i, dest_j] });
   } else {
     await animateNode(
       srcNode,
@@ -231,7 +235,8 @@ export async function animateOpponentInfAfterStep(p: {
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
-        drawField({focus: [0,0]/*FIXME*/});
+        GAME_STATE.last_move_focus = [src_i, src_j];
+        drawField({ focus: [src_i, src_j] });
         return;
       }
     }
@@ -240,7 +245,8 @@ export async function animateOpponentInfAfterStep(p: {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
-    drawField({focus: [0,0]/*FIXME*/});
+    GAME_STATE.last_move_focus = [dest_i, dest_j];
+    drawField({ focus: [dest_i, dest_j] });
   }
 }
 
@@ -300,12 +306,12 @@ async function sendTyMok1OrTaXot1Poll(base_score: number) {
   const res: Ret_WhetherTyMokPoll = await sendStuffTo<
     {},
     | {
-        legal: true;
-        content:
-          | "ty mok1"
-          | { is_first_move_my_move: boolean | null }
-          | "not yet";
-      }
+      legal: true;
+      content:
+      | "ty mok1"
+      | { is_first_move_my_move: boolean | null }
+      | "not yet";
+    }
     | { legal: false; whyIllegal: string }
   >(
     "whethertymokpoll",
@@ -429,7 +435,8 @@ async function animateOpponentSrcStepDstFinite_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
-        drawField({focus: [0,0]/*FIXME*/});
+        GAME_STATE.last_move_focus = [src_i, src_j];
+        drawField({ focus: [src_i, src_j] });
         return;
       }
     }
@@ -440,7 +447,8 @@ async function animateOpponentSrcStepDstFinite_(
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
-    drawField({focus: [0,0]/*FIXME*/});
+    GAME_STATE.last_move_focus = [dest_i, dest_j];
+    drawField({ focus: [dest_i, dest_j] });
   } else {
     const imgNode: HTMLElement = document.getElementById(
       `field_piece_${src_i}_${src_j}`,
@@ -467,7 +475,8 @@ async function animateOpponentSrcStepDstFinite_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
-        drawField({focus: [0,0]/*FIXME*/});
+        GAME_STATE.last_move_focus = [src_i, src_j];
+        drawField({ focus: [src_i, src_j] });
         return;
       }
     }
@@ -476,7 +485,8 @@ async function animateOpponentSrcStepDstFinite_(
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
-    drawField({focus: [0,0]/*FIXME*/});
+    GAME_STATE.last_move_focus = [dest_i, dest_j];
+    drawField({ focus: [dest_i, dest_j] });
   }
 }
 
@@ -539,7 +549,8 @@ async function animateOpponentSrcDst_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
-        drawField({focus: [0,0]/*FIXME*/});
+        GAME_STATE.last_move_focus = [src_i, src_j];
+        drawField({ focus: [src_i, src_j] });
         return;
       }
     }
@@ -547,7 +558,8 @@ async function animateOpponentSrcDst_(
     takeTheUpwardPieceAndCheckHand(destPiece);
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-    drawField({focus: [0,0]/*FIXME*/});
+    GAME_STATE.last_move_focus = [dest_i, dest_j];
+    drawField({ focus: [dest_i, dest_j] });
   } else {
     const imgNode: HTMLElement = document.getElementById(
       `field_piece_${src_i}_${src_j}`,
@@ -565,14 +577,16 @@ async function animateOpponentSrcDst_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
-        drawField({focus: [0,0]/*FIXME*/});
+        GAME_STATE.last_move_focus = [src_i, src_j];
+        drawField({ focus: [src_i, src_j] });
         return;
       }
     }
 
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
-    drawField({focus: [0,0]/*FIXME*/});
+    GAME_STATE.last_move_focus = [dest_i, dest_j];
+    drawField({ focus: [dest_i, dest_j] });
   }
 }
 
@@ -587,7 +601,7 @@ export async function animateOpponentFromHand(
   if (ind === -1) {
     throw new Error("What should exist in the hand does not exist");
   }
-  const [removed] = GAME_STATE.f.hop1zuo1OfDownward.splice(ind, 1);
+  const [removed_from_hop1zuo1] = GAME_STATE.f.hop1zuo1OfDownward.splice(ind, 1);
 
   // add the removed piece to the destination
   const [dest_i, dest_j] = dest;
@@ -608,8 +622,9 @@ export async function animateOpponentFromHand(
     indToHo1Zuo1OfDownward(ind),
   );
 
-  GAME_STATE.f.currentBoard[dest_i][dest_j] = removed;
-  drawField({focus: [0,0]/*FIXME*/});
+  GAME_STATE.f.currentBoard[dest_i][dest_j] = removed_from_hop1zuo1;
+  GAME_STATE.last_move_focus = [dest_i, dest_j];
+  drawField({ focus: [dest_i, dest_j] });
 }
 
 export async function animateOpponentTamNoStep(
@@ -633,7 +648,7 @@ export async function animateOpponentTamNoStep(
   );
   GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
-  drawField({focus: [0,0]/*FIXME*/});
+  drawField({ focus: null }); /* Temporary animation. Hence no focus. */
 
   const imgNode2: HTMLElement = document.getElementById(
     `field_piece_${fstdst[0]}_${fstdst[1]}`,
@@ -650,7 +665,8 @@ export async function animateOpponentTamNoStep(
   );
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
   GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
-  drawField({focus: [0,0]/*FIXME*/});
+  GAME_STATE.last_move_focus = [snddst[0], snddst[1]];
+  drawField({ focus: [snddst[0], snddst[1]]/*FIXME*/ });
 }
 
 export async function animateOpponentTamSteppingDuringFormer(p: {

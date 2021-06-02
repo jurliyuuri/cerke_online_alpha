@@ -277,7 +277,8 @@ function cancelStepping() {
 
   UI_STATE.selectedCoord = null;
 
-  drawField({ focus: [0, 0]/*FIXME*/ });
+  console.log("drawField #", 1);
+  drawField({ focus: GAME_STATE.last_move_focus });
 }
 
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
@@ -299,6 +300,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
 
   document.getElementById("cancelButton")!.remove();
 
+  console.log("drawField #", 2);
   drawField({ focus: [0, 0]/*FIXME*/ });
   drawPhantomAt(firstDest, "Tam2");
   drawCancel(function () {
@@ -317,6 +319,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
 
     UI_STATE.selectedCoord = null;
 
+    console.log("drawField #", 3);
     drawField({ focus: [0, 0]/*FIXME*/ });
   });
   drawHoverAt_<"Tam2">(stepsOn, "Tam2", function (coord: Coord, piece: "Tam2") {
@@ -401,7 +404,10 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
   GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
-  drawField({ focus: [0, 0]/*FIXME*/ });
+  GAME_STATE.last_move_focus = [to[0], to[1]];
+
+  console.log("drawField #", 4);
+  drawField({ focus: [to[0], to[1]]/*FIXME*/ });
 
   const drawTam2HoverNonshiftedAt = function (coord: Coord) {
     const contains_phantom = document.getElementById("contains_phantom")!;
@@ -530,6 +536,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
     UI_STATE.selectedCoord = null;
 
+    console.log("drawField #", 5);
     drawField({ focus: [0, 0]/*FIXME*/ });
   });
   drawTam2HoverNonshiftedAt(to);
@@ -599,6 +606,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   GAME_STATE.backupDuringStepping = [from, piece];
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
+  console.log("drawField #", 6);
   drawField({ focus: [0, 0]/*FIXME*/ });
   drawPhantomAt(from, piece);
   drawCancel(cancelStepping);
@@ -666,6 +674,8 @@ async function sendAfterHalfAcceptance(
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateFieldAfterHalfAcceptance(message, src, step);
+
+    console.log("drawField #", 7);
     drawField({ focus: [0, 0]/*FIXME*/ });
     GAME_STATE.is_my_turn = false;
     return;
@@ -686,6 +696,8 @@ async function sendAfterHalfAcceptance(
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateFieldAfterHalfAcceptance(message, src, step);
+
+    console.log("drawField #", 8);
     drawField({ focus: [0, 0]/*FIXME*/ });
     GAME_STATE.is_my_turn = false;
   }
@@ -767,7 +779,9 @@ async function sendNormalMessage(message: NormalMove) {
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateField(message);
-    drawField({ focus: [0, 0]/*FIXME*/ });
+
+    console.log("drawField #", 9);
+    drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     return;
   }
@@ -792,11 +806,14 @@ async function sendNormalMessage(message: NormalMove) {
     eraseGuide();
     UI_STATE.selectedCoord = null;
     updateField(message);
-    drawField({ focus: [0, 0]/*FIXME*/ });
+
+    console.log("drawField #", 10);
+    drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
   }
 }
 
+/// HOPEFULLY, This function sets `GAME_STATE.last_move_focus` appropriately.
 function updateFieldAfterHalfAcceptance(
   message: AfterHalfAcceptance,
   src: Coord,
@@ -917,6 +934,7 @@ function toObtainablePiece(color: Color, prof: Profession): ObtainablePieces {
   return a[color][prof];
 }
 
+/// This function also sets `GAME_STATE.last_move_focus` appropriately.
 function updateField(message: NormalMove) {
   if (message.type === "NonTamMove") {
     if (message.data.type === "FromHand") {
@@ -934,7 +952,7 @@ function updateField(message: NormalMove) {
       if (ind === -1) {
         throw new Error("What should exist in the hand does not exist");
       }
-      const [removed] = GAME_STATE.f.hop1zuo1OfUpward.splice(ind, 1);
+      const [removed_from_hop1zuo1] = GAME_STATE.f.hop1zuo1OfUpward.splice(ind, 1);
 
       // add the removed piece to the destination
       const [i, j] = fromAbsoluteCoord(k.dest);
@@ -942,7 +960,8 @@ function updateField(message: NormalMove) {
         throw new Error("Trying to parachute the piece onto an occupied space");
       }
 
-      GAME_STATE.f.currentBoard[i][j] = removed;
+      GAME_STATE.f.currentBoard[i][j] = removed_from_hop1zuo1;
+      GAME_STATE.last_move_focus = [i, j];
     } else if (message.data.type === "SrcDst") {
       const k: {
         type: "SrcDst";
@@ -968,6 +987,7 @@ function updateField(message: NormalMove) {
 
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      GAME_STATE.last_move_focus = [dest_i, dest_j];
     } else if (message.data.type === "SrcStepDstFinite") {
       const k: {
         type: "SrcStepDstFinite";
@@ -1007,6 +1027,7 @@ function updateField(message: NormalMove) {
 
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      GAME_STATE.last_move_focus = [dest_i, dest_j];
     } else {
       const _should_not_reach_here: never = message.data;
     }
@@ -1017,6 +1038,7 @@ function updateField(message: NormalMove) {
     if (message.stepStyle === "StepsDuringLatter") {
       // We decided that Tam2 should not be present on the board if it is StepsDuringLatter
       GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = "Tam2";
+      GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
       return;
     }
 
@@ -1033,11 +1055,13 @@ function updateField(message: NormalMove) {
 
     /* it's possible that you are returning to the original position, in which case you don't do anything */
     if (coordEq([firstDest_i, firstDest_j], [secondDest_i, secondDest_j])) {
+      GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
       return;
     }
 
     GAME_STATE.f.currentBoard[firstDest_i][firstDest_j] = null;
     GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
+    GAME_STATE.last_move_focus = [secondDest_i, secondDest_j]
   } else {
     const _should_not_reach_here: never = message;
   }
@@ -1863,7 +1887,10 @@ export function endSeason(
 
     GAME_STATE.log2_rate = 0;
     allowPolling(); // reset another global state
-    drawField({ focus: [0, 0]/*FIXME*/ });
+    GAME_STATE.last_move_focus = null; /* the board is initialized; no focus */
+
+    console.log("drawField #", 11);
+    drawField({ focus: null }); /* the board is initialized; no focus */
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
     document
@@ -1917,7 +1944,7 @@ function drawScoreboard() {
   denote_rate.style.transform = ``;
 }
 
-export function drawField(o: { focus?: Coord }) {
+export function drawField(o: { focus?: Coord | null }) {
   console.log(`focusing:`, o.focus);
   (function drawBoard(board: Board) {
     const contains_pieces_on_board = document.getElementById(
