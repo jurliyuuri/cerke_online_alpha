@@ -1,7 +1,7 @@
 import { drawField } from "./main";
 import { GAME_STATE } from "./game_state";
 
-drawField();
+drawField([0,0]/*FIXME*/);
 
 document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
   document.getElementById("kait_kaik")!.classList.add("nocover");

@@ -1945,7 +1945,9 @@ export function drawField(focus? : Coord) {
         imgNode.id = `field_piece_${i}_${j}`;
 
         if (focus && coord[0] === focus[0] && coord[1] === focus[1]) {
-          imgNode.style.border = "10px solid #01ff34"
+          imgNode.style.border = "12px solid #01ff34";
+          imgNode.style.margin = "-10px";
+          imgNode.style.padding = "-2px";
         }
 
         if (piece === "Tam2") {
