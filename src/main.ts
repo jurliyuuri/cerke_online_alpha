@@ -40,7 +40,7 @@ import {
   BoardIndex,
   rotateBoard,
 } from "cerke_online_utility/lib";
-import { toPath_, toPath } from "./type__piece";
+import { toPath_, toPath } from "./piece_to_path";
 import {
   AbsoluteCoord,
   Profession,

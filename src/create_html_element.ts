@@ -5,7 +5,7 @@
  */
 
 import { Coord, Piece } from "cerke_online_utility/lib";
-import { toPath_ } from "./type__piece";
+import { toPath_ } from "./piece_to_path";
 import {
   BOX_SIZE,
   PIECE_SIZE,
