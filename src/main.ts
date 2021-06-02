@@ -404,7 +404,6 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
   GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
-  GAME_STATE.last_move_focus = [to[0], to[1]];
 
   console.log("drawField #", 4.1);
   drawField({ focus: null }); // temporary display, hence no focus
@@ -823,6 +822,7 @@ function updateFieldAfterHalfAcceptance(
   console.log(src, step);
   if (message.dest === null) {
     cancelStepping();
+    console.log("lone assignment to last_move_focus, #", 0);
     GAME_STATE.last_move_focus = src;
     return;
   }
@@ -845,6 +845,7 @@ function updateFieldAfterHalfAcceptance(
 
   /* it's possible that you are returning to the original position, in which case you don't do anything */
   if (coordEq([src_i, src_j], [dest_i, dest_j])) {
+    console.log("lone assignment to last_move_focus, #", 1);
     GAME_STATE.last_move_focus = [src_i, src_j];
     return;
   }
@@ -855,6 +856,7 @@ function updateFieldAfterHalfAcceptance(
 
   GAME_STATE.f.currentBoard[src_i][src_j] = null;
   GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+  console.log("lone assignment to last_move_focus, #", 2);
   GAME_STATE.last_move_focus = [dest_i, dest_j];
 }
 
@@ -965,6 +967,7 @@ function updateField(message: NormalMove) {
       }
 
       GAME_STATE.f.currentBoard[i][j] = removed_from_hop1zuo1;
+      console.log("lone assignment to last_move_focus, #", 3);
       GAME_STATE.last_move_focus = [i, j];
     } else if (message.data.type === "SrcDst") {
       const k: {
@@ -991,6 +994,7 @@ function updateField(message: NormalMove) {
 
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      console.log("lone assignment to last_move_focus, #", 4);
       GAME_STATE.last_move_focus = [dest_i, dest_j];
     } else if (message.data.type === "SrcStepDstFinite") {
       const k: {
@@ -1032,6 +1036,7 @@ function updateField(message: NormalMove) {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
       GAME_STATE.last_move_focus = [dest_i, dest_j];
+      console.log("lone assignment to last_move_focus, #", 5);
     } else {
       const _should_not_reach_here: never = message.data;
     }
@@ -1043,6 +1048,7 @@ function updateField(message: NormalMove) {
       // We decided that Tam2 should not be present on the board if it is StepsDuringLatter
       GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = "Tam2";
       GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
+      console.log("lone assignment to last_move_focus, #", 6);
       return;
     }
 
@@ -1060,12 +1066,14 @@ function updateField(message: NormalMove) {
     /* it's possible that you are returning to the original position, in which case you don't do anything */
     if (coordEq([firstDest_i, firstDest_j], [secondDest_i, secondDest_j])) {
       GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
+      console.log("lone assignment to last_move_focus, #", 7);
       return;
     }
 
     GAME_STATE.f.currentBoard[firstDest_i][firstDest_j] = null;
     GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
-    GAME_STATE.last_move_focus = [secondDest_i, secondDest_j]
+    GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
+    console.log("lone assignment to last_move_focus, #", 8);
   } else {
     const _should_not_reach_here: never = message;
   }
