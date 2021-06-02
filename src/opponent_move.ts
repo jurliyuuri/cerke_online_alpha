@@ -666,7 +666,7 @@ export async function animateOpponentTamNoStep(
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
   GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
   GAME_STATE.last_move_focus = [snddst[0], snddst[1]];
-  drawField({ focus: [snddst[0], snddst[1]]/*FIXME*/ });
+  drawField({ focus: [snddst[0], snddst[1]] });
 }
 
 export async function animateOpponentTamSteppingDuringFormer(p: {

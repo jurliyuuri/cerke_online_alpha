@@ -301,7 +301,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   document.getElementById("cancelButton")!.remove();
 
   console.log("drawField #", 2);
-  drawField({ focus: [0, 0]/*FIXME*/ });
+  drawField({ focus: null });
   drawPhantomAt(firstDest, "Tam2");
   drawCancel(function () {
     eraseGuide();
@@ -320,7 +320,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
     UI_STATE.selectedCoord = null;
 
     console.log("drawField #", 3);
-    drawField({ focus: [0, 0]/*FIXME*/ });
+    drawField({ focus: [theVerySrc[0], theVerySrc[1]] });
   });
   drawHoverAt_<"Tam2">(stepsOn, "Tam2", function (coord: Coord, piece: "Tam2") {
     const contains_guides = document.getElementById("contains_guides")!;
@@ -407,7 +407,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   GAME_STATE.last_move_focus = [to[0], to[1]];
 
   console.log("drawField #", 4);
-  drawField({ focus: [to[0], to[1]]/*FIXME*/ });
+  drawField({ focus: [to[0], to[1]] });
 
   const drawTam2HoverNonshiftedAt = function (coord: Coord) {
     const contains_phantom = document.getElementById("contains_phantom")!;
@@ -537,7 +537,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     UI_STATE.selectedCoord = null;
 
     console.log("drawField #", 5);
-    drawField({ focus: [0, 0]/*FIXME*/ });
+    drawField({ focus: [from[0], from[1]] });
   });
   drawTam2HoverNonshiftedAt(to);
 }
@@ -607,7 +607,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
   console.log("drawField #", 6);
-  drawField({ focus: [0, 0]/*FIXME*/ });
+  drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
   drawCancel(cancelStepping);
   drawHoverAt_(to, piece, function (
@@ -676,7 +676,7 @@ async function sendAfterHalfAcceptance(
     updateFieldAfterHalfAcceptance(message, src, step);
 
     console.log("drawField #", 7);
-    drawField({ focus: [0, 0]/*FIXME*/ });
+    drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     return;
   }
@@ -698,7 +698,7 @@ async function sendAfterHalfAcceptance(
     updateFieldAfterHalfAcceptance(message, src, step);
 
     console.log("drawField #", 8);
-    drawField({ focus: [0, 0]/*FIXME*/ });
+    drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
   }
 }
@@ -822,6 +822,7 @@ function updateFieldAfterHalfAcceptance(
   console.log(src, step);
   if (message.dest === null) {
     cancelStepping();
+    GAME_STATE.last_move_focus = src;
     return;
   }
 
@@ -843,6 +844,7 @@ function updateFieldAfterHalfAcceptance(
 
   /* it's possible that you are returning to the original position, in which case you don't do anything */
   if (coordEq([src_i, src_j], [dest_i, dest_j])) {
+    GAME_STATE.last_move_focus = [src_i, src_j];
     return;
   }
 
@@ -852,6 +854,7 @@ function updateFieldAfterHalfAcceptance(
 
   GAME_STATE.f.currentBoard[src_i][src_j] = null;
   GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+  GAME_STATE.last_move_focus = [dest_i, dest_j];
 }
 
 /**
