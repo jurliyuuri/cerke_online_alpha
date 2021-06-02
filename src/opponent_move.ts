@@ -504,16 +504,16 @@ export async function animateOpponentSrcDst(p: SrcDst) {
   const src: Coord = fromAbsoluteCoord(p.src);
   const dst: Coord = fromAbsoluteCoord(p.dest);
   if (p.water_entry_ciurl) {
-    await animateOpponentSrcDst_(src, dst, p.water_entry_ciurl);
+    await animateOpponentSrcDst_(src, dst, { water_entry_ciurl: p.water_entry_ciurl });
   } else {
-    await animateOpponentSrcDst_(src, dst);
+    await animateOpponentSrcDst_(src, dst, {});
   }
 }
 
 async function animateOpponentSrcDst_(
   src: Coord,
   dst: Coord,
-  water_entry_ciurl?: Ciurl,
+  o: { water_entry_ciurl?: Ciurl, disable_focus?: boolean }
 ) {
   const [src_i, src_j] = src;
   const [dest_i, dest_j] = dst;
@@ -553,11 +553,11 @@ async function animateOpponentSrcDst_(
       180,
     );
 
-    if (water_entry_ciurl) {
+    if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(water_entry_ciurl, Side.Downward);
+      displayCiurl(o.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (water_entry_ciurl.filter(a => a).length < 3) {
+      if (o.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
 
         console.log("drawField opponent #", 20);
@@ -585,11 +585,11 @@ async function animateOpponentSrcDst_(
       coordToPieceXY([src_i, src_j]),
     );
 
-    if (water_entry_ciurl) {
+    if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(water_entry_ciurl, Side.Downward);
+      displayCiurl(o.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (water_entry_ciurl.filter(a => a).length < 3) {
+      if (o.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
 
         console.log("drawField opponent #", 22);
@@ -602,9 +602,16 @@ async function animateOpponentSrcDst_(
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
 
-    console.log("drawField opponent #", 23);
-    GAME_STATE.last_move_focus = [dest_i, dest_j];
-    drawField({ focus: [dest_i, dest_j] });
+    if (!o.disable_focus) {
+      console.log("drawField opponent #", 23);
+      GAME_STATE.last_move_focus = [dest_i, dest_j];
+      drawField({ focus: [dest_i, dest_j] });
+    } else {
+      /* This branch should be taken, for example, 
+         while depicting the former half of the animation of Tam2's movement */
+      drawField({ focus: null });
+    }
+
   }
 }
 
@@ -701,7 +708,7 @@ export async function animateOpponentTamSteppingDuringFormer(p: {
 }) {
   await animateOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
-  await animateOpponentSrcDst_(p.firstDest, p.secondDest);
+  await animateOpponentSrcDst_(p.firstDest, p.secondDest, {});
 }
 
 export async function animateOpponentTamSteppingDuringLatter(p: {
@@ -710,7 +717,8 @@ export async function animateOpponentTamSteppingDuringLatter(p: {
   secondDest: Coord;
   step: Coord;
 }) {
-  await animateOpponentSrcDst_(p.src, p.firstDest);
+  /* This is the former half; hence no need to show the focus */
+  await animateOpponentSrcDst_(p.src, p.firstDest, { disable_focus: true });
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
   await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }
