@@ -206,6 +206,7 @@ export async function animateOpponentInfAfterStep(p: {
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
 
+        console.log("drawField opponent #", 12);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         return;
@@ -219,6 +220,7 @@ export async function animateOpponentInfAfterStep(p: {
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
 
+    console.log("drawField opponent #", 13);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   } else {
@@ -235,6 +237,7 @@ export async function animateOpponentInfAfterStep(p: {
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
+        console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         return;
@@ -245,6 +248,7 @@ export async function animateOpponentInfAfterStep(p: {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
+    console.log("drawField opponent #", 15);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   }
@@ -435,6 +439,7 @@ async function animateOpponentSrcStepDstFinite_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
+        console.log("drawField opponent #", 16);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         return;
@@ -447,6 +452,7 @@ async function animateOpponentSrcStepDstFinite_(
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
+    console.log("drawField opponent #", 17);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   } else {
@@ -475,6 +481,8 @@ async function animateOpponentSrcStepDstFinite_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
+
+        console.log("drawField opponent #", 18);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         return;
@@ -485,6 +493,8 @@ async function animateOpponentSrcStepDstFinite_(
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
     }
+
+    console.log("drawField opponent #", 19);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   }
@@ -549,6 +559,8 @@ async function animateOpponentSrcDst_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
+
+        console.log("drawField opponent #", 20);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         return;
@@ -558,6 +570,8 @@ async function animateOpponentSrcDst_(
     takeTheUpwardPieceAndCheckHand(destPiece);
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+
+    console.log("drawField opponent #", 21);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   } else {
@@ -577,6 +591,8 @@ async function animateOpponentSrcDst_(
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
+
+        console.log("drawField opponent #", 22);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         return;
@@ -585,6 +601,8 @@ async function animateOpponentSrcDst_(
 
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+
+    console.log("drawField opponent #", 23);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   }
@@ -623,6 +641,8 @@ export async function animateOpponentFromHand(
   );
 
   GAME_STATE.f.currentBoard[dest_i][dest_j] = removed_from_hop1zuo1;
+
+  console.log("drawField opponent #", 24);
   GAME_STATE.last_move_focus = [dest_i, dest_j];
   drawField({ focus: [dest_i, dest_j] });
 }
@@ -648,6 +668,8 @@ export async function animateOpponentTamNoStep(
   );
   GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
+
+  console.log("drawField opponent #", 25);
   drawField({ focus: null }); /* Temporary animation. Hence no focus. */
 
   const imgNode2: HTMLElement = document.getElementById(
@@ -665,6 +687,8 @@ export async function animateOpponentTamNoStep(
   );
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
   GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
+
+  console.log("drawField opponent #", 26);
   GAME_STATE.last_move_focus = [snddst[0], snddst[1]];
   drawField({ focus: [snddst[0], snddst[1]] });
 }
