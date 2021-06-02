@@ -319,8 +319,8 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
 
     UI_STATE.selectedCoord = null;
 
-    console.log("drawField #", 3);
-    drawField({ focus: [theVerySrc[0], theVerySrc[1]] });
+    console.log("drawField #", 3.1);
+    drawField({ focus: GAME_STATE.last_move_focus }); // This is within cancel; hence we must not overwrite the last_move_focus
   });
   drawHoverAt_<"Tam2">(stepsOn, "Tam2", function (coord: Coord, piece: "Tam2") {
     const contains_guides = document.getElementById("contains_guides")!;
