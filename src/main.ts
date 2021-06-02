@@ -1921,6 +1921,7 @@ function drawScoreboard() {
 }
 
 export function drawField(focus? : Coord) {
+  console.log(`focusing:`, focus);
   (function drawBoard(board: Board) {
     const contains_pieces_on_board = document.getElementById(
       "contains_pieces_on_board",
@@ -1943,7 +1944,7 @@ export function drawField(focus? : Coord) {
         );
         imgNode.id = `field_piece_${i}_${j}`;
 
-        if (coord === focus) {
+        if (focus && coord[0] === focus[0] && coord[1] === focus[1]) {
           imgNode.style.border = "10px solid #01ff34"
         }
 
