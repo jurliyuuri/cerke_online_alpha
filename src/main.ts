@@ -406,7 +406,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
   GAME_STATE.last_move_focus = [to[0], to[1]];
 
-  console.log("drawField #", 4);
+  console.log("drawField #", 4.1);
   drawField({ focus: null }); // temporary display, hence no focus
 
   const drawTam2HoverNonshiftedAt = function (coord: Coord) {
@@ -536,7 +536,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
     UI_STATE.selectedCoord = null;
 
-    console.log("drawField #", 5);
+    console.log("drawField #", 5.1);
     drawField({ focus: GAME_STATE.last_move_focus }); 
     /* This is a canceling; hence we must not overwrite last_move_focus */
   });
@@ -607,7 +607,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   GAME_STATE.backupDuringStepping = [from, piece];
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
 
-  console.log("drawField #", 6);
+  console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
   drawCancel(cancelStepping);
