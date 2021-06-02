@@ -407,7 +407,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   GAME_STATE.last_move_focus = [to[0], to[1]];
 
   console.log("drawField #", 4);
-  drawField({ focus: [to[0], to[1]] });
+  drawField({ focus: null }); // temporary display, hence no focus
 
   const drawTam2HoverNonshiftedAt = function (coord: Coord) {
     const contains_phantom = document.getElementById("contains_phantom")!;
