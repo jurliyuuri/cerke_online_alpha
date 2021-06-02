@@ -537,7 +537,8 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     UI_STATE.selectedCoord = null;
 
     console.log("drawField #", 5);
-    drawField({ focus: [from[0], from[1]] });
+    drawField({ focus: GAME_STATE.last_move_focus }); 
+    /* This is a canceling; hence we must not overwrite last_move_focus */
   });
   drawTam2HoverNonshiftedAt(to);
 }
