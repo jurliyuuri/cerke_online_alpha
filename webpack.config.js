@@ -4,7 +4,9 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: {
-    entrance: ["./src/entrance.ts", "./styles/entrance.scss"],
+    entrance: ["", "./styles/entrance.scss"],
+    vs_cpu_pending: ["./src/vs_cpu_pending.ts"],
+    random_pending: ["./src/random_pending.ts"],
     main: ["./src/main_entry.ts", "./styles/main.scss"]
   },
   output: {
