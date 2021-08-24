@@ -25,5 +25,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          only_changed: True
           prettier_options: --write **/*.{json,js,ts,scss}
           commit_message: "Format by prettier"
