@@ -8,14 +8,21 @@ on:
     types: [opend, synchronize, reopened]
 
 jobs:
-  npm:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: "12"
+      - uses: reviewdog/action-setup@v1.0.3
+        with:
+          reviewdog_version: latest
       - name: build
         run: |
           npm ci
           npm run build
+      - name: type check
+        run: tsc --pretty false --noEmit | reviewdog -f=tsc -reporter=github-pr-review -fail-on-error=true
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
