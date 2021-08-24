@@ -1,5 +1,10 @@
 import { API_ORIGIN } from "./env";
-type Ret_VsCpuEntry = { "state": "let_the_game_begin"; "access_token": string; "is_first_move_my_move": boolean; "is_IA_down_for_me": boolean; } 
+type Ret_VsCpuEntry = {
+  "state": "let_the_game_begin";
+  "access_token": string; 
+  "is_first_move_my_move": boolean; 
+  "is_IA_down_for_me": boolean;
+}
 
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(

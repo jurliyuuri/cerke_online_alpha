@@ -23,7 +23,7 @@
     "kind-of": ">=6.0.3",
     "mini-css-extract-plugin": "^1.6.0",
     "minimist": ">=1.2.3",
-    "node-sass": "^6.0.0",
+    "node-sass": "^6.0.1",
     "sass-loader": "^12.0.0",
     "style-loader": "^2.0.0",
     "ts-loader": "^9.2.2",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "cerke_hands_and_score": "^1.0.1",
-    "cerke_online_api": "^1.0.0",
+    "cerke_online_api": "1.0.0",
     "cerke_online_utility": "0.0.2",
     "prettier": "^2.3.0"
   }
