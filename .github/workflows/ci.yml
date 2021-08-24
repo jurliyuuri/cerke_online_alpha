@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    types: [opend, synchronize, reopened]
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+      - name: build
+        run: |
+          npm ci
+          npm run build
