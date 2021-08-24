@@ -18,11 +18,20 @@ jobs:
       - uses: reviewdog/action-setup@v1.0.3
         with:
           reviewdog_version: latest
-      - name: build
-        run: |
-          npm ci
-          npm run build
+
+      - name: prepare
+        run: npm ci
+
+      - name: lint
+        uses: mooyoul/tslint-actions@v1.1.4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: '*.ts'
+
       - name: type check
         run: tsc --pretty false --noEmit | reviewdog -f=tsc -reporter=github-pr-review -fail-on-error=true
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: build
+        run: npm run build
