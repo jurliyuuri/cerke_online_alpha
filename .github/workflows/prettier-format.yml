@@ -1,0 +1,30 @@
+name: Prettier Format
+
+on:
+  pull_request:
+    paths:
+      - '*.json'
+      - 'src/**'
+      - 'styles/**'
+      - '.github/workflows/prettier-format.yml'
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+          # This is important to fetch the changes to the previous commit
+          fetch-depth: 0
+
+      - name: prettier
+        uses: creyD/prettier_action@v3.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          only_changed: True
+          prettier_options: --write **/*.{json,js,ts,scss}
+          commit_message: "Format by prettier"
