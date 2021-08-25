@@ -159,6 +159,7 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
       } else {
         document.getElementById("larta_me")!.style.display = "none";
         document.getElementById("larta_opponent")!.style.display = "block";
+        if (sessionStorage.vs === "cpu") { document.getElementById("larta_opponent")!.innerHTML = `<img src="image/nystiper.png">` }
         document
           .getElementById(
             "protective_cover_over_field_while_waiting_for_opponent",

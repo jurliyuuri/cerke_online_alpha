@@ -7,8 +7,8 @@ function let_the_game_begin(
   is_first_move_my_move: boolean,
   is_IA_down_for_me: boolean,
 ) {
-  alert("Let the game begin");
   sessionStorage.access_token = access_token;
+  sessionStorage.vs = "cpu";
   sessionStorage.is_first_move_my_move = JSON.stringify(is_first_move_my_move);
   sessionStorage.is_IA_down_for_me = JSON.stringify(is_IA_down_for_me);
   location.href = "main.html";
