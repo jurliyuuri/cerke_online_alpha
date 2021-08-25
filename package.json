@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "cerke_hands_and_score": "^1.0.1",
-    "cerke_online_api": "1.0.0",
+    "cerke_online_api": "^1.0.4",
     "cerke_online_utility": "0.0.2",
     "prettier": "^2.3.0"
   }
