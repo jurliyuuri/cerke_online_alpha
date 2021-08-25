@@ -200,4 +200,13 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
     },
     log2_rate,
   };
-})({ IA_is_down: JSON.parse(sessionStorage.is_IA_down_for_me) });
+})({
+  IA_is_down: (() => {
+    try {
+      return JSON.parse(sessionStorage.is_IA_down_for_me)
+    } catch {
+      // Maybe you entered this page without registering. Go back to entrance.html.
+      location.href = "entrance.html";
+    }
+  })()
+});
