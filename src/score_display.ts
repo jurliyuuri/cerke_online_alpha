@@ -105,12 +105,16 @@ export function drawFinalScoreDisplay(
         ).length;
         return `<img style="position:absolute; left: ${starting_position_left -
           spacing *
-            a}px; top: 15px;" src="image/season_${ind}.png" width="50">`;
+          a}px; top: 15px;" src="image/season_${ind}.png" width="50">`;
       })
       .join("") +
     scores.map((a, ind) => createDigitsMidHTML(a, ind)).join("") +
     createDigitsMidHTML(20, -1) +
     createTotalScoreHTML(20 + scores.reduce((a, b) => a + b, 0));
+
+  // show both sides' icon
+  document.getElementById("larta_me")!.style.display = "block";
+  document.getElementById("larta_opponent")!.style.display = "block";
 }
 
 function createDigitsHTML(
@@ -191,8 +195,8 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     if (hand.slice(0, 2) === "同色") {
       ans += `
         <img src="image/dat2/${hand.slice(
-          2,
-        )}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
+        2,
+      )}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
         <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 +
         top_padding}px;" width="50">`;
     } else {
