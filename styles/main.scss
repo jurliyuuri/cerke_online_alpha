@@ -151,16 +151,33 @@ top: 0px;
   top: 415px;
 }
 
+$kaitkaik_width: 200px;
+$kaitkaik_ratio: 1146 / 2025;
+
 #kait_kaik_button {
   background-color: #d0d0d0; 
   position: absolute; 
-  border: 1px solid #aaaaaa
+  border: 1px solid #aaaaaa;
+  max-width: $kaitkaik_width;
+  width: $kaitkaik_width;
+  height: $kaitkaik_width * $kaitkaik_ratio;
+}
+
+$kaitkaik_hover_width: 220px;
+#kait_kaik:hover {
+  z-index: 3000; 
+  position: absolute; 
+  left: 235px - ($kaitkaik_hover_width - $kaitkaik_width) / 2; 
+  top: 415px - ($kaitkaik_hover_width - $kaitkaik_width) * $kaitkaik_ratio / 2;
 }
 
 #kait_kaik_button:hover {
-  background-color: #f0f0f0; 
+  background-color: #e7e7e7; 
   position: absolute; 
-  border: 1px solid #aaaaaa
+  border: 1px solid #aaaaaa;
+  max-width: $kaitkaik_width;
+  width: $kaitkaik_width;
+  height: auto;
 }
 
 #everything {
