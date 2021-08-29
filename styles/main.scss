@@ -152,7 +152,13 @@ top: 0px;
 }
 
 #kait_kaik_button {
-  background-color: #e0e0e0; 
+  background-color: #d0d0d0; 
+  position: absolute; 
+  border: 1px solid #aaaaaa
+}
+
+#kait_kaik_button:hover {
+  background-color: #f0f0f0; 
   position: absolute; 
   border: 1px solid #aaaaaa
 }
