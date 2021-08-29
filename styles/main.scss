@@ -175,8 +175,8 @@ $kaitkaik_hover_width: 220px;
   background-color: #e7e7e7; 
   position: absolute; 
   border: 1px solid #aaaaaa;
-  max-width: $kaitkaik_width;
-  width: $kaitkaik_width;
+  max-width: $kaitkaik_hover_width;
+  width: $kaitkaik_hover_width;
   height: auto;
 }
 
