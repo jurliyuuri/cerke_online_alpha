@@ -39,6 +39,7 @@ $min-entirety-aspect-ratio: 29/41;
     position: absolute;
     left: $random_left - $gap_between_buttons - $cpu_or_random_width;
     top: 2/3 * $container-height;
+    cursor: pointer;
 
     &:hover {
       width: $cpu_or_random_width * $hover_ratio;
@@ -55,6 +56,7 @@ $min-entirety-aspect-ratio: 29/41;
     position: absolute;
     left: $random_left;
     top: 2/3 * $container-height;
+    cursor: pointer;
     
     &:hover {
       width: $cpu_or_random_width * $hover_ratio;
