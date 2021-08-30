@@ -111,11 +111,6 @@ export function drawFinalScoreDisplay(
     scores.map((a, ind) => createDigitsMidHTML(a, ind)).join("") +
     createDigitsMidHTML(20, -1) +
     createTotalScoreHTML(total_score);
-
-  // show both sides' icon
-  document.getElementById("larta_me")!.style.display = "block";
-  document.getElementById("larta_opponent")!.style.display = "block";
-  document.getElementById("opponent_message")!.innerHTML = total_score > 0 ? "あなたの勝ちです" : total_score === 0 ? "引き分けです" : "あなたの負けです"
 }
 
 function createDigitsHTML(

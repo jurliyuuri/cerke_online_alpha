@@ -1186,7 +1186,7 @@ function getThingsGoingAfterStepping_Finite(
   return;
 }
 
-async function sendInfAfterStep(message: InfAfterStep, o: {color: Color, prof: Profession}) {
+async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: Profession }) {
   const res = await sendStuff<InfAfterStep, Ret_InfAfterStep>(
     "inf after step",
     message,
@@ -1754,13 +1754,19 @@ function perzej(
   msg: "you win!" | "you lose..." | "draw",
   is_cause_kuttam: boolean,
 ) {
-  alert(msg); // FIXME
   drawFinalScoreDisplay(
     cleanupScoresOfEachSeason(
       is_cause_kuttam,
       GAME_STATE.scores_of_each_season,
     ),
   );
+
+  // show both sides' icon
+  document.getElementById("larta_me")!.style.display = "block";
+  document.getElementById("larta_opponent")!.style.display = "block";
+  document.getElementById("opponent_message")!.innerHTML =
+    msg === "you win!" ? "あなたの勝ちです" :
+      msg === "draw" ? "引き分けです" : "あなたの負けです"
 }
 
 export async function animatePunishStepTam(side: Side) {
