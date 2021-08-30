@@ -718,7 +718,6 @@ export async function sendStuffTo<T, U>(
   console.log(`Sending ${log}:`, JSON.stringify(message));
   const url = `${API_ORIGIN}/${api_name}/`;
   const data = {
-    id: (Math.random() * 100000) | 0,
     message,
   };
 
