@@ -129,7 +129,7 @@ export async function sendMainPoll() {
 
   if (res.content !== "not yet") {
     console.log("ding!");
-
+    document.getElementById("opponent_message")!.innerHTML = res.message ?? "";
     const sound = new Audio("sound/thud.ogg");
     sound.play();
 
