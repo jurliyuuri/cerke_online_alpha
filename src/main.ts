@@ -536,7 +536,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     UI_STATE.selectedCoord = null;
 
     console.log("drawField #", 5.1);
-    drawField({ focus: GAME_STATE.last_move_focus }); 
+    drawField({ focus: GAME_STATE.last_move_focus });
     /* This is a canceling; hence we must not overwrite last_move_focus */
   });
   drawTam2HoverNonshiftedAt(to);
@@ -1186,7 +1186,7 @@ function getThingsGoingAfterStepping_Finite(
   return;
 }
 
-async function sendInfAfterStep(message: InfAfterStep) {
+async function sendInfAfterStep(message: InfAfterStep, o: {color: Color, prof: Profession}) {
   const res = await sendStuff<InfAfterStep, Ret_InfAfterStep>(
     "inf after step",
     message,
@@ -1226,8 +1226,8 @@ async function sendInfAfterStep(message: InfAfterStep) {
   contains_guides.appendChild(centralNode);
 
   const piece: NonTam2PieceUpward = {
-    color: message.color,
-    prof: message.prof,
+    color: o.color,
+    prof: o.prof,
     side: Side.Upward,
   };
 
@@ -1430,11 +1430,12 @@ function display_guides_after_stepping(
           eraseGuide();
           sendInfAfterStep({
             type: "InfAfterStep",
-            color: q.piece.color,
-            prof: q.piece.prof,
             step: toAbsoluteCoord(coord),
             plannedDirection: toAbsoluteCoord(list[ind]),
             src: toAbsoluteCoord(src),
+          }, {
+            color: q.piece.color,
+            prof: q.piece.prof,
           });
         },
     );
