@@ -151,6 +151,7 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
       if (_is_my_turn) {
         document.getElementById("larta_me")!.style.display = "block";
         document.getElementById("larta_opponent")!.style.display = "none";
+        document.getElementById("opponent_message")!.innerHTML = "";
         document
           .getElementById(
             "protective_cover_over_field_while_waiting_for_opponent",

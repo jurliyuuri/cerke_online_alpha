@@ -94,7 +94,7 @@ export function drawFinalScoreDisplay(
     );
 
   const scores = ([] as number[]).concat(...scores_of_each_season);
-
+  const total_score = 20 + scores.reduce((a, b) => a + b, 0);
   const final_score_display = document.getElementById("final_score_display")!;
   final_score_display.classList.remove("nocover");
   final_score_display.innerHTML =
@@ -110,11 +110,12 @@ export function drawFinalScoreDisplay(
       .join("") +
     scores.map((a, ind) => createDigitsMidHTML(a, ind)).join("") +
     createDigitsMidHTML(20, -1) +
-    createTotalScoreHTML(20 + scores.reduce((a, b) => a + b, 0));
+    createTotalScoreHTML(total_score);
 
   // show both sides' icon
   document.getElementById("larta_me")!.style.display = "block";
   document.getElementById("larta_opponent")!.style.display = "block";
+  document.getElementById("opponent_message")!.innerHTML = total_score > 0 ? "あなたの勝ちです" : total_score === 0 ? "引き分けです" : "あなたの負けです"
 }
 
 function createDigitsHTML(
