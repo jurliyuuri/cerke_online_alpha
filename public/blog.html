@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>cerke_online開発ログ</title>
+    <style>
+        nav#posts {
+            margin-right: 10px;
+        }
+
+        article.post {
+            border: 3px solid #005242;
+            padding: 5px 20px;
+            margin: 10px 0;
+        }
+
+        article.post hr {
+            border-top: 2px solid rgb(39, 26, 20);
+        }
+
+        article.post p.date {
+            font-weight: normal;
+            text-align: center;
+        }
+
+        article.post article h2 {
+            font-size: 120%;
+            font-weight: normal;
+        }
+
+        aside#sidebar {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        aside#sidebar>* {
+            border: 2px solid rgb(39, 26, 20);
+
+        }
+
+        div#calendar-navigation {
+            display: flex;
+            justify-content: space-between;
+            padding-inline-start: 10px;
+            padding-inline-end: 10px;
+            padding-top: 5px;
+        }
+
+        div.calendar-button {
+            background-color: #005242;
+            color: white;
+            font-weight: bold;
+            padding: 2px;
+            width: 26px;
+            height: 26px;
+            border-radius: 15px;
+            vertical-align: middle;
+        }
+
+        @font-face {
+            font-family: 'cirlipa';
+            src: url('https://sozysozbot.github.io/fonts/cirlxarli_liparxe_1.woff') format('woff');
+        }
+
+        @font-face {
+            font-family: 'pektak';
+            src: url('https://sozysozbot.github.io/fonts/pek_tak.woff') format('woff');
+        }
+
+        :lang(x-lineparine) {
+            font-family: 'cirlipa';
+        }
+
+        a:lang(x-lineparine) {
+            text-decoration: none;
+            /* f とかのディセンダーと衝突して読みづらい */
+            font-weight: bold;
+        }
+
+        :lang(x-pemecepe) {
+            font-family: 'pektak';
+        }
+
+        .header-logo-container {
+            display: flex;
+        }
+
+        img.glyph {
+            filter: brightness(65%)contrast(500%);
+            vertical-align: middle;
+        }
+
+        .header-genres-container>ul {
+            display: flex;
+            justify-content: space-between;
+            list-style: none;
+            font-weight: bold;
+            font-size: 80%;
+            padding-inline-start: 40px;
+            padding-inline-end: 40px;
+        }
+
+        .header-genres-container>ul>li {
+            position: relative;
+            text-align: center;
+        }
+
+        .header-genres-container>ul>li:hover {
+            color: #005242;
+        }
+    </style>
+</head>
+
+<body>
+    <header style="margin: 0 auto; max-width: 970px;">
+        <div class="header-logo-container">
+            <img src="imgs/huep2_hia1.png" width="60" height="60" style="margin-right: 10px" />
+            <div>
+                <div lang="ja" style="font-size: 135%">cerke_online開発ログ</div>
+                <div lang="x-lineparine" style="font-size: 110%">jekto.vatimeliju krante</div>
+            </div>
+        </div>
+        <hr>
+        <div class="header-genres-container">
+            <ul lang="ja">
+                <li>トップ</li>
+                <li>概論</li>
+                <li>燐帝字母</li>
+                <li>テクスト読解</li>
+                <li>教材紹介</li>
+            </ul>
+        </div>
+    </header>
+    <hr>
+    <div style="margin: 0 auto; max-width: 970px; display: flex;">
+        <nav id="posts" style="width: 970px;">
+            <article class="post">
+                <p class="date">西暦2021年8月31日</p>
+                <hr>
+                <article lang="ja">
+                    <h2>月末アップデート（2021年8月）内容告知</h2>
+                    <p>
+                        最近あまり cerke_online に機能が追加されていないことを憂えて、ひとつ時間を区切って一気に大きめのアップデートを入れようと考え、日本時間8月24日16:00～8月31日23:59でメンテを行いました。ということで、以下の告知ツイートを打ち、メンテを開始しました。
+                    </p>
+                    <div style="height: 700px;"><!-- to prevent the slow load of tweet to interfere with the design -->
+                    <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online は日本時間8月24日 16:00よりメンテナンス（というか機能追加）を行う予定です。終了時刻は8月31日 23:59を予定しておりますが、状況により前後する場合がございますのでご了承ください。</p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1430060784952823810?ref_src=twsrc%5Etfw">August 24, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <blockquote class="twitter-tweet" data-conversation="none"><p lang="ja" dir="ltr">具体的なメンテ内容ですが、ご要望が多く、またトップページにボタンがあるにも関わらず、なぜか実装されていなかった対CPU戦を優先して実装します。棋譜を楽にエクスポートするための機構も実装したいと思っています。フレンド対戦はアカウントシステムが必要なので次回メンテに回すつもりです。</p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1430072593004982278?ref_src=twsrc%5Etfw">August 24, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    </div>
+                    <hr>
+                    <p>
+                        結果としては、以下の改善を入れることができました。
+                    </p>
+                    <ul>
+                        <li>
+                            CPU対戦の実装
+                            <ul>
+                                <li>CPUとプレイヤーを表すためのいい感じのアイコン<img src="image/nystiper2.png" width="50" height="50" style="vertical-align: middle;"><img src="image/larta2.png" width="50" height="50" style="vertical-align: middle;">を、<a href="https://yustier.github.io/">藍碌(Airoku)さん</a><img src="https://avatars.githubusercontent.com/u/47571113?v=4" width="40" height="40" style="vertical-align: middle;">に書いて頂けました。ありがとうございます。</li>
+                                <li>CPUが考えるのに使った戦略を通知・表示する仕組みを実装しました。現時点では日本語での表示にのみ対応していますが、今後は燐文対応も考えていきたいと思います。</li>
+                            </ul>
+                        </li>
+                        <li>
+                            画面サイズの修正
+                            <ul>
+                                <li>main.htmlが全体的に少し大きく、ユーザー側で拡大率を下げるなど工夫が必要だったのを、修正しました。</li>
+                            </ul>
+                        </li>
+                        <li>
+                            点数盤のレンダリング高速化
+                            <ul>
+                                <li>今までは点数盤を単一画像としてレンダリングしていましたが、木目付きの背景と点数盤の文字を別画像に分けることによって、回線の遅い環境でも文字と目盛りはサッサとレンダリングされるようになりました。</li>
+                            </ul>
+                        </li>
+                        <li>
+                            UI改良
+                            <ul><li>勝敗の表示にalertを使っていたのを、「CPUが考えるのに使った戦略を通知・表示する仕組み」があることを利用してそこに表示するようにしました。</li></ul>
+                            <ul><li>試合開始ボタンにマウスカーソルを載せるとサイズが変化するようにし、ボタンであるということが伝わりやすくなりました。</li></ul>
+                            <ul><li>試合終了後、両方のアイコンが表示されるようになりました。</li></ul>
+                            <ul><li>main.htmlに直接リンクしたなどの原因によりセッションが無効な場合、entrance.htmlに戻されるようになりました。</li></ul>
+                        </li>
+                        <li>
+                            内部的改良
+                            <ul>
+                                <li>今までは、cerke_onlineのサーバーにメッセージを送る際、毎回乱数を生成してidというフィールドに入れて送っていましたが、これは本当に何にも使っていない全くの無駄フィールドだったので、削除しました。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </article>
+            </article>
+
+        </nav>
+        
+    </div>
+</body>
+
+</html>
