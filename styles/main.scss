@@ -212,6 +212,14 @@ $kaitkaik_hover_width: 220px;
   left: 0px;
 }
 
+#kiar_ark {
+  position: absolute;
+  left: 950px;
+  top: 15px;
+  width: 300px;
+  height: 910px;
+}
+
 img.selection {
   position: absolute;
   animation: anime1 $stususn ease -2 * $stususn infinite alternate;
