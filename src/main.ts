@@ -654,8 +654,12 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
 
 async function sendAfterHalfAcceptance(
   message: AfterHalfAcceptance,
-  src: Coord,
-  step: Coord,
+  o: {
+    src: Coord,
+    step: Coord,
+    stepping_ciurl: Ciurl,
+    planned_destination: AbsoluteCoord
+  }
 ) {
   const res: Ret_AfterHalfAcceptance = await sendStuff<
     AfterHalfAcceptance,
@@ -673,11 +677,16 @@ async function sendAfterHalfAcceptance(
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
     UI_STATE.selectedCoord = null;
-    updateFieldAfterHalfAcceptance(message, src, step);
+    updateFieldAfterHalfAcceptance(message, o.src, o.step);
 
     console.log("drawField #", 7);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+    if (message.dest) {
+      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}`
+    } else {
+      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}此無`
+    }
     return;
   }
 
@@ -692,14 +701,26 @@ async function sendAfterHalfAcceptance(
 
     cancelStepping();
     GAME_STATE.is_my_turn = false;
+
+    if (message.dest) {
+      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}此無`
+    } else {
+      throw new Error("This should not happen; it should have been rejected before the water entry");
+    }
   } else {
     eraseGuide();
     UI_STATE.selectedCoord = null;
-    updateFieldAfterHalfAcceptance(message, src, step);
+    updateFieldAfterHalfAcceptance(message, o.src, o.step);
 
     console.log("drawField #", 8);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+
+    if (message.dest) {
+      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}`
+    } else {
+      throw new Error("This should not happen; it should have been rejected before the water entry");
+    }
   }
 }
 
@@ -771,8 +792,8 @@ function serializeAbsoluteCoord(coord: AbsoluteCoord) {
   return `${coord[1]}${coord[0]}`;
 }
 
-function serializeWaterCiurlCount(water_ciurl_count: number) {
-  return ["無", "一", "二", "三", "四", "五"][water_ciurl_count]
+function serializeCiurlCount(ciurl_count: number) {
+  return ["無", "一", "二", "三", "四", "五"][ciurl_count]
 }
 
 function normalMessageToKiarArk(message: NormalMove, water_ciurl_count?: number): string {
@@ -784,17 +805,17 @@ function normalMessageToKiarArk(message: NormalMove, water_ciurl_count?: number)
         return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}無撃裁`
       } else if (water_ciurl_count < 3) {
         // failed entry
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}此無`
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}此無`
       } else {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}`
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}`
       }
     } else if (message.data.type === "SrcStepDstFinite") {
       if (water_ciurl_count === undefined) {
         return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}無撃裁`
       } else if (water_ciurl_count < 3) {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}此無`
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}此無`
       } else {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}`
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}`
       }
     } else {
       const _should_not_reach_here: never = message.data;
@@ -1319,8 +1340,12 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
         type: "AfterHalfAcceptance",
         dest: null,
       },
-      src,
-      step,
+      {
+        src,
+        step,
+        stepping_ciurl: res.ciurl,
+        planned_destination: message.plannedDirection
+      }
     );
   });
   passer.style.zIndex = "200";
@@ -1352,8 +1377,12 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
           type: "AfterHalfAcceptance",
           dest: toAbsoluteCoord(dest),
         },
-        src,
-        step,
+        {
+          src,
+          step,
+          stepping_ciurl: res.ciurl,
+          planned_destination: message.plannedDirection
+        }
       );
     });
 
