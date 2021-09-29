@@ -18,4 +18,6 @@ if (sessionStorage.vs === "cpu") {
   location.href = "entrance.html";
 }
 
-document.getElementById("kiar_ark")!.innerHTML = `{始時:${(new Date()).toISOString()}}\n`
+document.getElementById("kiar_ark")!.innerHTML = `{始時:${(new Date()).toISOString()}}
+{一位色:${GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤"}}
+`;
