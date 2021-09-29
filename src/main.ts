@@ -759,6 +759,64 @@ async function sendStuff<T, U>(
   return await sendStuffTo<T, U>("slow", log, message, validateInput);
 }
 
+function serializeColor(color: Color) {
+  return color === Color.Huok2 ? "黒" : "赤";
+}
+
+function serializeProf(prof: Profession) {
+  return ["船", "兵", "弓", "車", "虎", "馬", "筆", "巫", "将", "王"][prof];
+}
+
+function serializeAbsoluteCoord(coord: AbsoluteCoord) {
+  return `${coord[1]}${coord[0]}`;
+}
+
+function serializeWaterCiurlCount(water_ciurl_count: number) {
+  return ["無", "一", "二", "三", "四", "五"][water_ciurl_count]
+}
+
+function normalMessageToKiarArk(message: NormalMove, water_ciurl_count?: number): string {
+  if (message.type === "NonTamMove") {
+    if (message.data.type === "FromHand") {
+      return `${serializeColor(message.data.color)}${serializeProf(message.data.prof)}${serializeAbsoluteCoord(message.data.dest)}`
+    } else if (message.data.type === "SrcDst") {
+      if (water_ciurl_count === undefined) {
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}無撃裁`
+      } else if (water_ciurl_count < 3) {
+        // failed entry
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}此無`
+      } else {
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}`
+      }
+    } else if (message.data.type === "SrcStepDstFinite") {
+      if (water_ciurl_count === undefined) {
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}無撃裁`
+      } else if (water_ciurl_count < 3) {
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}此無`
+      } else {
+        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeWaterCiurlCount(water_ciurl_count)}`
+      }
+    } else {
+      const _should_not_reach_here: never = message.data;
+      throw new Error("should not reach here")
+    }
+  } else if (message.type === "TamMove") {
+    if (message.stepStyle === "NoStep") {
+      return `${serializeAbsoluteCoord(message.src)}皇[${serializeAbsoluteCoord(message.firstDest)}]${serializeAbsoluteCoord(message.secondDest)}`
+    } else if (message.stepStyle === "StepsDuringFormer") {
+      return `${serializeAbsoluteCoord(message.src)}皇${serializeAbsoluteCoord(message.step)}[${serializeAbsoluteCoord(message.firstDest)}]${serializeAbsoluteCoord(message.secondDest)}`
+    } else if (message.stepStyle === "StepsDuringLatter") {
+      return `${serializeAbsoluteCoord(message.src)}皇[${serializeAbsoluteCoord(message.firstDest)}]${serializeAbsoluteCoord(message.step)}${serializeAbsoluteCoord(message.secondDest)}`
+    } else {
+      const _should_not_reach_here: never = message.stepStyle;
+      throw new Error("should not reach here")
+    }
+  } else {
+    const _should_not_reach_here: never = message;
+    throw new Error("should not reach here")
+  }
+}
+
 async function sendNormalMessage(message: NormalMove) {
   const res: Ret_NormalMove = await sendStuff<NormalMove, Ret_NormalMove>(
     "normal move",
@@ -782,14 +840,15 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+    document.getElementById("kiar_ark")!.innerHTML += normalMessageToKiarArk(message) + "\n";
     return;
   }
 
   await animateWaterEntryLogo();
   displayCiurl(res.dat.ciurl);
   await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-
-  if (res.dat.ciurl.filter(a => a).length < 3) {
+  const water_ciurl_count = res.dat.ciurl.filter(a => a).length;
+  if (water_ciurl_count < 3) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
     UI_STATE.selectedCoord = null;
@@ -810,6 +869,7 @@ async function sendNormalMessage(message: NormalMove) {
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
   }
+  document.getElementById("kiar_ark")!.innerHTML += normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length) + "\n";
 }
 
 /// HOPEFULLY, This function sets `GAME_STATE.last_move_focus` appropriately.
