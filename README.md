@@ -1,5 +1,5 @@
 ## オンラインのフロントエンド + Herokuバックエンド
-[https://jurliyuuri.com/cerke_online_alpha/entrance.html](https://jurliyuuri.com/cerke_online_alpha/entrance.html) にデプロイされているものがある。
+[http://jurliyuuri.com/cerke_online_alpha/entrance.html](http://jurliyuuri.com/cerke_online_alpha/entrance.html) にデプロイされているものがある。
 
 ## ローカルのフロントエンド（MacかLinuxで） + ローカルのバックエンド
 1. まず `npm install`
