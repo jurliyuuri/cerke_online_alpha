@@ -1,7 +1,7 @@
 import { HandAndNegativeHand, hand_to_score } from "cerke_hands_and_score";
 
 export type ArrayUpTo4<T> = [T] | [T, T] | [T, T, T] | [T, T, T, T];
-export type Digit =
+type Digit =
   | "num00"
   | "num01"
   | "num02"
@@ -15,6 +15,43 @@ export type Digit =
   | "num10"
   | "neg"
   | "num100";
+
+export type DigitLinzklar =
+  | "無"
+  | "一"
+  | "二"
+  | "三"
+  | "四"
+  | "五"
+  | "六"
+  | "七"
+  | "八"
+  | "九"
+  | "十"
+  | "下"
+  | "百";
+
+export function toDigitsLinzklar(num: number): DigitLinzklar[] {
+  function toLinzklar(a: Digit): DigitLinzklar {
+    const obj: { [key in Digit]: DigitLinzklar } = {
+      neg: "下",
+      num00: "無",
+      num01: "一",
+      num02: "二",
+      num03: "三",
+      num04: "四",
+      num05: "五",
+      num06: "六",
+      num07: "七",
+      num08: "八",
+      num09: "九",
+      num10: "十",
+      num100: "百"
+    };
+    return obj[a];
+  }
+  return toDigits(num).map(toLinzklar);
+}
 
 function toDigits(num: number): Digit[] {
   if (num % 1 !== 0) {

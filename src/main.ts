@@ -74,6 +74,7 @@ import {
   drawFinalScoreDisplay,
   drawScoreDisplay,
   ArrayUpTo4,
+  toDigitsLinzklar,
 } from "./score_display";
 import {
   ObtainablePieces,
@@ -1818,7 +1819,7 @@ function drawTyMok1AndTaXot1Buttons(o: { hands: Hand[], score: number }) {
     const is_first_move_my_move_in_the_next_season: boolean | null =
       res.is_first_move_my_move;
     endSeason(base_score, is_first_move_my_move_in_the_next_season);
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${base_score * Math.pow(2, GAME_STATE.log2_rate)}\n終季` }]
+    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季` }]
   });
   score_display.appendChild(ta_xot1_button);
 }
