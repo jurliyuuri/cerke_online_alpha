@@ -19,7 +19,7 @@ function groupTwoAndRender(input: Elem[]) {
             ans += "\n" + current.dat + "\n\n";
             i += 1;
         } else if (current?.type === "movement" && next?.type === "tymoktaxot") {
-            ans += current.dat + (current.piece_capture_comment ?? "") + "\n\n" + current.dat + "\n\n";
+            ans += current.dat + (current.piece_capture_comment ?? "") + "\n\n" + next.dat + "\n\n";
             i += 2;
         } else {
             throw new Error(`Unexpected: the types passed to KIAR_ARK.body are "${current?.type}" followed by "${next?.type}".`)
