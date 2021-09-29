@@ -359,13 +359,13 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[], score: number }) {
 
     if (res.content === "ty mok1") {
       score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
-      await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
+      await new Promise(resolve => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ty mok1");
       increaseRateAndAnimate(false);
       KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` }]
     } else {
       score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
-      await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
+      await new Promise(resolve => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ta xot1");
       const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(-base_score, res.content.is_first_move_my_move); // since opponent, negative score
