@@ -684,9 +684,9 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}`);
+      KIAR_ARK.body = [...KIAR_ARK.body, (`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}`)];
     } else {
-      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}此無`);
+      KIAR_ARK.body = [...KIAR_ARK.body, (`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}此無`)];
     }
     return;
   }
@@ -704,7 +704,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}此無`)
+      KIAR_ARK.body = [...KIAR_ARK.body, (`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}此無`)]
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
@@ -718,7 +718,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}`);
+      KIAR_ARK.body = [...KIAR_ARK.body, (`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}`)];
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
@@ -862,7 +862,7 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body.push(normalMessageToKiarArk(message));
+    KIAR_ARK.body = [...KIAR_ARK.body, (normalMessageToKiarArk(message))];
     return;
   }
 
@@ -891,7 +891,7 @@ async function sendNormalMessage(message: NormalMove) {
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
   }
-  KIAR_ARK.body.push(normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length));
+  KIAR_ARK.body = [...KIAR_ARK.body, (normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length))];
 }
 
 /// HOPEFULLY, This function sets `GAME_STATE.last_move_focus` appropriately.
