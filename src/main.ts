@@ -79,6 +79,7 @@ import {
   ObtainablePieces,
   calculate_hands_and_score_from_pieces,
 } from "cerke_hands_and_score";
+import { KIAR_ARK } from "./kiar_ark"
 
 const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
   let POLLING_ALLOWED = true;
@@ -683,9 +684,9 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}\n`
+      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}`);
     } else {
-      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}此無\n`
+      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}此無`);
     }
     return;
   }
@@ -703,7 +704,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}此無\n`
+      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}此無`)
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
@@ -717,7 +718,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      document.getElementById("kiar_ark")!.innerHTML += `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}\n`
+      KIAR_ARK.body.push(`${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}`);
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
@@ -861,7 +862,7 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    document.getElementById("kiar_ark")!.innerHTML += normalMessageToKiarArk(message) + "\n";
+    KIAR_ARK.body.push(normalMessageToKiarArk(message));
     return;
   }
 
@@ -890,7 +891,7 @@ async function sendNormalMessage(message: NormalMove) {
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
   }
-  document.getElementById("kiar_ark")!.innerHTML += normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length) + "\n";
+  KIAR_ARK.body.push(normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length));
 }
 
 /// HOPEFULLY, This function sets `GAME_STATE.last_move_focus` appropriately.
