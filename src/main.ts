@@ -142,9 +142,9 @@ export async function sendMainPoll() {
         await animateOpponentSrcDst(opponent_move.data);
         GAME_STATE.is_my_turn = true;
         if (opponent_move.data.water_entry_ciurl) {
-          KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length)]
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length) }]
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move)]
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
         }
       } else if (opponent_move.data.type === "FromHand") {
         const piece: NonTam2PieceDownward = {
@@ -157,14 +157,14 @@ export async function sendMainPoll() {
           fromAbsoluteCoord(opponent_move.data.dest),
         );
         GAME_STATE.is_my_turn = true;
-        KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move)]
+        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
       } else if (opponent_move.data.type === "SrcStepDstFinite") {
         await animateOpponentSrcStepDstFinite(opponent_move.data);
         GAME_STATE.is_my_turn = true;
         if (opponent_move.data.water_entry_ciurl) {
-          KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length)]
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length) }]
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move)]
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
         }
       } else {
         const a: never = opponent_move.data;
@@ -179,7 +179,7 @@ export async function sendMainPoll() {
           fromAbsoluteCoord(opponent_move.secondDest),
         );
         GAME_STATE.is_my_turn = true;
-        KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move)]
+        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
       } else if (opponent_move.stepStyle === "StepsDuringFormer") {
         await animateOpponentTamSteppingDuringFormer({
           src: fromAbsoluteCoord(opponent_move.src),
@@ -188,7 +188,7 @@ export async function sendMainPoll() {
           step: fromAbsoluteCoord(opponent_move.step),
         });
         GAME_STATE.is_my_turn = true;
-        KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move)]
+        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
       } else if (opponent_move.stepStyle === "StepsDuringLatter") {
         await animateOpponentTamSteppingDuringLatter({
           src: fromAbsoluteCoord(opponent_move.src),
@@ -197,7 +197,7 @@ export async function sendMainPoll() {
           step: fromAbsoluteCoord(opponent_move.step),
         });
         GAME_STATE.is_my_turn = true;
-        KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(opponent_move)]
+        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
       } else {
         const a: never = opponent_move.stepStyle;
         throw new Error("does not happen");
@@ -253,15 +253,15 @@ export async function sendMainPoll() {
 
       if (finalResult_resolved.water_entry_ciurl) {
         if (opponent_move.finalResult != null) {
-          KIAR_ARK.body = [...KIAR_ARK.body, `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurlCount(opponent_move.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(finalResult_resolved.water_entry_ciurl.filter(a => a).length)}此無`]
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurlCount(opponent_move.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(finalResult_resolved.water_entry_ciurl.filter(a => a).length)}此無` }]
         } else {
           throw new Error("This should not happen; it should have been rejected before the water entry");
         }
       } else {
         if (opponent_move.finalResult != null) {
-          KIAR_ARK.body = [...KIAR_ARK.body, `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurlCount(opponent_move.stepping_ciurl.filter(a => a).length)}`];
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurlCount(opponent_move.stepping_ciurl.filter(a => a).length)}` }];
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurlCount(opponent_move.stepping_ciurl.filter(a => a).length)}此無`];
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurlCount(opponent_move.stepping_ciurl.filter(a => a).length)}此無` }];
         }
       }
     } else {
@@ -715,9 +715,9 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      KIAR_ARK.body = [...KIAR_ARK.body, `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}`];
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}` }];
     } else {
-      KIAR_ARK.body = [...KIAR_ARK.body, `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}此無`];
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}此無` }];
     }
     return;
   }
@@ -735,7 +735,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      KIAR_ARK.body = [...KIAR_ARK.body, `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}此無`]
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}此無` }]
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
@@ -749,7 +749,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      KIAR_ARK.body = [...KIAR_ARK.body, `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}`];
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurlCount(o.stepping_ciurl.filter(a => a).length)}水${serializeCiurlCount(res.dat.ciurl.filter(a => a).length)}` }];
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
@@ -893,7 +893,7 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(message)];
+    KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(message) }];
     return;
   }
 
@@ -922,7 +922,7 @@ async function sendNormalMessage(message: NormalMove) {
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
   }
-  KIAR_ARK.body = [...KIAR_ARK.body, normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length)];
+  KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length) }];
 }
 
 /// HOPEFULLY, This function sets `GAME_STATE.last_move_focus` appropriately.
