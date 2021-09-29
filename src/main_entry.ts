@@ -18,4 +18,4 @@ if (sessionStorage.vs === "cpu") {
   location.href = "entrance.html";
 }
 
-
+document.getElementById("kiar_ark")!.innerHTML = `{始時:${(new Date()).toISOString()}}\n`
