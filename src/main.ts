@@ -1894,6 +1894,7 @@ function perzej(
   document.getElementById("opponent_message")!.innerHTML =
     msg === "you win!" ? "あなたの勝ちです" :
       msg === "draw" ? "引き分けです" : "あなたの負けです"
+  KIAR_ARK.body = [...KIAR_ARK.body, {type: "tymoktaxot", dat: "星一周"}]
 }
 
 export async function animatePunishStepTam(side: Side) {
