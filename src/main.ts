@@ -74,8 +74,8 @@ import {
   drawFinalScoreDisplay,
   drawScoreDisplay,
   ArrayUpTo4,
-  toDigitsLinzklar,
 } from "./score_display";
+import { toDigitsLinzklar } from "./to_digits";
 import {
   ObtainablePieces,
   calculate_hands_and_score_from_pieces,
