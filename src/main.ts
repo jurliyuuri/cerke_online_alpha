@@ -276,13 +276,9 @@ export async function sendMainPoll() {
   }
 }
 
-interface UI_STATE {
-  selectedCoord: null | Coord | ["Hop1zuo1", number];
-}
+type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
-let UI_STATE: UI_STATE = {
-  selectedCoord: null,
-};
+let SELECTED_COORD_UI: SelectedCoord = null;
 
 function eraseGuide(): void {
   removeChildren(document.getElementById("contains_guides")!);
@@ -309,7 +305,7 @@ function cancelStepping() {
   GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
   GAME_STATE.backupDuringStepping = null;
 
-  UI_STATE.selectedCoord = null;
+  SELECTED_COORD_UI = null;
 
   console.log("drawField #", 1);
   drawField({ focus: GAME_STATE.last_move_focus });
@@ -351,7 +347,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
     GAME_STATE.f.currentBoard[theVerySrc[0]][theVerySrc[1]] = "Tam2";
     GAME_STATE.backupDuringStepping = null;
 
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
 
     console.log("drawField #", 3.1);
     drawField({ focus: GAME_STATE.last_move_focus }); // This is within cancel; hence we must not overwrite the last_move_focus
@@ -567,7 +563,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     GAME_STATE.f.currentBoard[to[0]][to[1]] = null;
     GAME_STATE.f.currentBoard[from[0]][from[1]] = "Tam2";
 
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
 
     console.log("drawField #", 5.1);
     drawField({ focus: GAME_STATE.last_move_focus });
@@ -710,7 +706,7 @@ async function sendAfterHalfAcceptance(
 
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
     updateFieldAfterHalfAcceptance(message, o.src, o.step);
 
     console.log("drawField #", 7);
@@ -731,7 +727,7 @@ async function sendAfterHalfAcceptance(
   if (res.dat.ciurl.filter(a => a).length < 3) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
 
     cancelStepping();
     GAME_STATE.is_my_turn = false;
@@ -743,7 +739,7 @@ async function sendAfterHalfAcceptance(
     }
   } else {
     eraseGuide();
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
     updateFieldAfterHalfAcceptance(message, o.src, o.step);
 
     console.log("drawField #", 8);
@@ -893,7 +889,7 @@ async function sendNormalMessage(message: NormalMove) {
 
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
     updateField(message);
 
     console.log("drawField #", 9);
@@ -910,7 +906,7 @@ async function sendNormalMessage(message: NormalMove) {
   if (water_ciurl_count < 3) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
 
     if (
       message.type === "NonTamMove" &&
@@ -921,7 +917,7 @@ async function sendNormalMessage(message: NormalMove) {
     GAME_STATE.is_my_turn = false;
   } else {
     eraseGuide();
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
     updateField(message);
 
     console.log("drawField #", 10);
@@ -1522,7 +1518,7 @@ function display_guides_after_stepping(
   parent: HTMLElement,
   list: Coord[],
 ): void {
-  const src = UI_STATE.selectedCoord;
+  const src = SELECTED_COORD_UI;
 
   if (src == null) {
     throw new Error("though stepping, null startpoint!!!!!");
@@ -1616,11 +1612,11 @@ function selectOwnPieceOnBoard(
   eraseGuide();
 
   if (
-    UI_STATE.selectedCoord == null ||
-    UI_STATE.selectedCoord[0] === "Hop1zuo1" ||
-    !coordEq(UI_STATE.selectedCoord, coord)
+    SELECTED_COORD_UI == null ||
+    SELECTED_COORD_UI[0] === "Hop1zuo1" ||
+    !coordEq(SELECTED_COORD_UI, coord)
   ) {
-    UI_STATE.selectedCoord = coord;
+    SELECTED_COORD_UI = coord;
 
     const contains_guides = document.getElementById("contains_guides")!;
 
@@ -1634,7 +1630,7 @@ function selectOwnPieceOnBoard(
     // click on it to erase
     centralNode.addEventListener("click", function () {
       eraseGuide();
-      UI_STATE.selectedCoord = null;
+      SELECTED_COORD_UI = null;
     });
 
     contains_guides.appendChild(centralNode);
@@ -1655,7 +1651,7 @@ function selectOwnPieceOnBoard(
     ]);
   } else {
     /* Clicking what was originally selected will make it deselect */
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
   }
 }
 
@@ -1664,11 +1660,11 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
   eraseGuide();
 
   if (
-    UI_STATE.selectedCoord == null ||
-    UI_STATE.selectedCoord[0] !== "Hop1zuo1" ||
-    UI_STATE.selectedCoord[1] !== ind
+    SELECTED_COORD_UI == null ||
+    SELECTED_COORD_UI[0] !== "Hop1zuo1" ||
+    SELECTED_COORD_UI[1] !== ind
   ) {
-    UI_STATE.selectedCoord = ["Hop1zuo1", ind];
+    SELECTED_COORD_UI = ["Hop1zuo1", ind];
 
     const contains_guides_on_upward = document.getElementById(
       "contains_guides_on_upward",
@@ -1685,7 +1681,7 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
     // click on it to erase
     centralNode.addEventListener("click", function () {
       eraseGuide();
-      UI_STATE.selectedCoord = null;
+      SELECTED_COORD_UI = null;
     });
     contains_guides_on_upward.appendChild(centralNode);
 
@@ -1734,7 +1730,7 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
     }
   } else {
     /* re-click: deselect */
-    UI_STATE.selectedCoord = null;
+    SELECTED_COORD_UI = null;
   }
 }
 
