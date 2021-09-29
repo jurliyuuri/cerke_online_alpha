@@ -1,6 +1,5 @@
 export type Elem = { type: "header", dat: string }
-    | { type: "movement", dat: string }
-    | { type: "comment", dat: string }
+    | { type: "movement", dat: string, piece_capture_comment?: string }
     | { type: "tymoktaxot", dat: string };
 
 const _kiar_ark: {
@@ -10,8 +9,21 @@ const _kiar_ark: {
 
 function groupTwoAndRender(input: Elem[]) {
     let ans: string = "";
-    for (let i = 0; i < input.length; i += 2) {
-        ans += (input[i] ?? "") + "\t" + (input[i + 1] ?? "") + "\n";
+    for (let i = 0; i < input.length;) {
+        const current: Elem | undefined = input[i];
+        const next: Elem | undefined = input[i + 1];
+        if (current?.type === "movement" && next?.type === "movement") {
+            ans += current.dat + (current.piece_capture_comment ?? "") + "\t" + next.dat + (next.piece_capture_comment ?? "") + "\n";
+            i += 2;
+        } else if (current?.type === "tymoktaxot") {
+            ans += "\n" + current.dat + "\n\n";
+            i += 1;
+        } else if (current?.type === "movement" && next?.type === "tymoktaxot") {
+            ans += current.dat + (current.piece_capture_comment ?? "") + "\n\n" + current.dat + "\n\n";
+            i += 2;
+        } else {
+            throw new Error(`Unexpected: the types passed to KIAR_ARK.body are "${current?.type}" followed by "${next?.type}".`)
+        }
     }
     return ans;
 }
