@@ -1818,8 +1818,9 @@ function drawTyMok1AndTaXot1Buttons(o: { hands: Hand[], score: number }) {
     }
     const is_first_move_my_move_in_the_next_season: boolean | null =
       res.is_first_move_my_move;
+    const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
     endSeason(base_score, is_first_move_my_move_in_the_next_season);
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季` }]
+    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
   });
   score_display.appendChild(ta_xot1_button);
 }

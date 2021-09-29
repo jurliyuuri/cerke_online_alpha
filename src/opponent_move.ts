@@ -35,6 +35,9 @@ import {
 } from "./main";
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
+import { KIAR_ARK } from "./kiar_ark";
+import { toDigitsLinzklar } from "./to_digits";
+import { Hand } from "cerke_hands_and_score";
 
 interface OpponentMoveWithPotentialWaterEntry {
   type: "NonTamMove";
@@ -300,7 +303,7 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
     .classList.remove("nocover");
 
   window.setTimeout(async () => {
-    await sendTyMok1OrTaXot1Poll(new_state.score);
+    await sendTyMok1OrTaXot1Poll(new_state);
   }, 0);
 
   window.setTimeout(() => {
@@ -308,7 +311,8 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
   }, 1000 * 0.8093);
 }
 
-async function sendTyMok1OrTaXot1Poll(base_score: number) {
+async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[], score: number }) {
+  const base_score: number = o.score;
   console.log("poll whether ty mok1 or ta xot1");
 
   const res: Ret_WhetherTyMokPoll = await sendStuffTo<
@@ -358,18 +362,21 @@ async function sendTyMok1OrTaXot1Poll(base_score: number) {
       await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
       console.log("go on with ty mok1");
       increaseRateAndAnimate(false);
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` }]
     } else {
       score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
       await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
       console.log("go on with ta xot1");
+      const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(-base_score, res.content.is_first_move_my_move); // since opponent, negative score
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
     }
   } else {
     document
       .getElementById("protective_cover_over_field_while_waiting_for_opponent")!
       .classList.remove("nocover");
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-    await sendTyMok1OrTaXot1Poll(base_score);
+    await sendTyMok1OrTaXot1Poll(o);
   }
 }
 
