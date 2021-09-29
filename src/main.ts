@@ -255,15 +255,15 @@ export async function sendMainPoll() {
 
       if (finalResult_resolved.water_entry_ciurl) {
         if (opponent_move.finalResult != null) {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無` }]
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無FIXME` }]
         } else {
           throw new Error("This should not happen; it should have been rejected before the water entry");
         }
       } else {
         if (opponent_move.finalResult != null) {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}` }];
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}FIXME` }];
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無` }];
+          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無FIXME` }];
         }
       }
     } else {
