@@ -57,7 +57,7 @@ $min-entirety-aspect-ratio: 29/41;
     left: $random_left;
     top: 2/3 * $container-height;
     cursor: pointer;
-    
+
     &:hover {
       width: $cpu_or_random_width * $hover_ratio;
       height: $button_height * $hover_ratio;
@@ -88,16 +88,15 @@ $min-entirety-aspect-ratio: 29/41;
     width: $friend_width;
     height: $button_height;
     position: absolute;
-    left: $random_left + $cpu_or_random_width + $gap_between_buttons -
-      $friend_protrusion_ratio * $friend_width;
+    left: $random_left + $cpu_or_random_width + $gap_between_buttons - $friend_protrusion_ratio * $friend_width;
     top: 2/3 * $container-height;
 
     &:hover {
       width: $friend_width * $hover_ratio;
       height: $button_height * $hover_ratio;
       position: absolute;
-      left: $random_left + $cpu_or_random_width + $gap_between_buttons -
-      $friend_protrusion_ratio * $friend_width - $friend_width * (($hover_ratio - 1) / 2);
+      left: $random_left + $cpu_or_random_width + $gap_between_buttons - $friend_protrusion_ratio * $friend_width -
+        $friend_width * (($hover_ratio - 1) / 2);
       top: 2/3 * $container-height - $button_height * (($hover_ratio - 1) / 2);
     }
   }
@@ -133,6 +132,16 @@ $min-entirety-aspect-ratio: 29/41;
     top: 0px;
     left: 0px;
   }
+
+  #blog_link_container {
+    text-align: center;
+  }
+
+  #blog_link {
+    position: absolute;
+    left: $container-width / 2;
+    top: $container-height * 0.95;
+  }
 }
 
 @media (max-aspect-ratio: 29/41) {
@@ -165,7 +174,7 @@ $min-entirety-aspect-ratio: 29/41;
     position: absolute;
     left: $random_left - $gap_between_buttons - $cpu_or_random_width;
     top: 2/3 * $container-height;
- 
+
     &:hover {
       width: $cpu_or_random_width * $hover_ratio;
       height: $button_height * $hover_ratio;
@@ -181,7 +190,7 @@ $min-entirety-aspect-ratio: 29/41;
     position: absolute;
     left: $random_left;
     top: 2/3 * $container-height;
-  
+
     &:hover {
       width: $cpu_or_random_width * $hover_ratio;
       height: $button_height * $hover_ratio;
@@ -197,7 +206,7 @@ $min-entirety-aspect-ratio: 29/41;
     position: absolute;
     left: $random_left;
     top: 2/3 * $container-height;
-  
+
     &:hover {
       width: $cpu_or_random_width * $hover_ratio;
       height: $cpu_or_random_width * $hover_ratio;
@@ -212,16 +221,15 @@ $min-entirety-aspect-ratio: 29/41;
     width: $friend_width;
     height: $button_height;
     position: absolute;
-    left: $random_left + $cpu_or_random_width + $gap_between_buttons -
-      $friend_protrusion_ratio * $friend_width;
+    left: $random_left + $cpu_or_random_width + $gap_between_buttons - $friend_protrusion_ratio * $friend_width;
     top: 2/3 * $container-height;
-  
+
     &:hover {
       width: $friend_width * $hover_ratio;
       height: $button_height * $hover_ratio;
       position: absolute;
-      left: $random_left + $cpu_or_random_width + $gap_between_buttons -
-      $friend_protrusion_ratio * $friend_width - $friend_width * (($hover_ratio - 1) / 2);
+      left: $random_left + $cpu_or_random_width + $gap_between_buttons - $friend_protrusion_ratio * $friend_width -
+        $friend_width * (($hover_ratio - 1) / 2);
       top: 2/3 * $container-height - $button_height * (($hover_ratio - 1) / 2);
     }
   }
@@ -256,5 +264,15 @@ $min-entirety-aspect-ratio: 29/41;
     position: relative;
     top: 0px;
     left: 0px;
+  }
+
+  #blog_link_container {
+    text-align: center;
+  }
+
+  #blog_link {
+    position: absolute;
+    left: $container-width / 2;
+    top: $container-height * 0.95;
   }
 }
