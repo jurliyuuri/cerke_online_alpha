@@ -15,13 +15,14 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
   (document.getElementById("krut_cruop_button")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
 });
 
+const BACKGROUND_MUSIC_GLOBALLY_ALLOCATED = new Audio('sound/cetkaik_leti_duxe_.ogg');
 class BackgroundMusic {
   volume_when_unmuted: number;
   enabled: boolean;
   music: HTMLAudioElement;
   user_interaction: boolean;
   constructor() {
-    this.music = new Audio('sound/cetkaik_leti_duxe_.ogg');
+    this.music = BACKGROUND_MUSIC_GLOBALLY_ALLOCATED;
     this.music.loop = true;
     this.user_interaction = false;
 
