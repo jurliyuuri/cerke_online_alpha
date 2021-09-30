@@ -296,6 +296,12 @@ function erasePhantomAndOptionallyCancelButton() {
   }
 }
 
+function cancelSteppingButUpdateTheFocus(new_focus: Coord) {
+  cancelStepping();
+  console.log("drawField #", 1.1);
+  drawField({ focus: new_focus });
+}
+
 function cancelStepping() {
   eraseGuide();
   erasePhantomAndOptionallyCancelButton();
@@ -337,7 +343,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   console.log("drawField #", 2);
   drawField({ focus: null });
   drawPhantomAt(firstDest, "Tam2");
-  drawCancel(function () {
+  drawCancelButton(function () {
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
     document
@@ -553,7 +559,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   };
 
   drawPhantomAt(from, "Tam2");
-  drawCancel(function cancelTam2FirstMove() {
+  drawCancelButton(function cancelTam2FirstMove() {
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
     document
@@ -588,7 +594,7 @@ function drawPhantomAt(coord: Coord, piece: Piece) {
   contains_phantom.appendChild(phantom);
 }
 
-function drawCancel(fn: () => void) {
+function drawCancelButton(fn: () => void) {
   const contains_phantom = document.getElementById("contains_phantom")!;
 
   const cancelButton = createCancelButton();
@@ -643,7 +649,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
-  drawCancel(cancelStepping);
+  drawCancelButton(cancelStepping);
   drawHoverAt_(to, piece, function (
     coord: Coord,
     piece: "Tam2" | NonTam2PieceUpward,
@@ -733,18 +739,14 @@ async function sendAfterHalfAcceptance(
     eraseGuide();
     SELECTED_COORD_UI = null;
 
-    cancelStepping();
+    // must redraw the board with the focus on `o.src` to denote that a failed operation happened.
+    cancelSteppingButUpdateTheFocus(o.src);
     GAME_STATE.is_my_turn = false;
 
-    if (message.dest) {
-      // Always 此無, because in the outer `if` it is already checked
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}此無` }]
-    } else {
-      throw new Error("This should not happen; it should have been rejected before the water entry");
-    }
+    const dest: AbsoluteCoord = message.dest ?? (() => { throw new Error("This should not happen; it should have been rejected before the water entry"); })();
 
-    console.log("drawField #", 8.1);
-    drawField({ focus: o.src }); // must redraw the board with the focus on `o.src` to denote that a failed operation happened.
+    // Always 此無, because in the outer `if` it is already checked
+    KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}此無` }]
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -920,7 +922,7 @@ async function sendNormalMessage(message: NormalMove) {
       message.type === "NonTamMove" &&
       message.data.type === "SrcStepDstFinite"
     ) {
-      cancelStepping();
+      cancelSteppingButUpdateTheFocus(fromAbsoluteCoord(message.data.src));
     }
     GAME_STATE.is_my_turn = false;
   } else {
