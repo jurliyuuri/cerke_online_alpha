@@ -23,7 +23,8 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
 
 const BACKGROUND_MUSIC = new Audio('sound/cetkaik_leti_duxe_.ogg');
 BACKGROUND_MUSIC.loop = true;
-BACKGROUND_MUSIC.play();
+
+let user_interaction: boolean = false;
 
 // toggles the music.
 export let LORK_LIAR_ENABLED: boolean = false; // must start with false because otherwise the browser blocks the autoplay
@@ -32,6 +33,10 @@ BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
 
 document.getElementById("lork_liar_button")!.addEventListener("click", () => {
   LORK_LIAR_ENABLED = !LORK_LIAR_ENABLED;
+  if (!user_interaction) {
+    BACKGROUND_MUSIC.play();
+    user_interaction = true;
+  }
   (document.getElementById("lork_liar_button")! as HTMLInputElement).src = LORK_LIAR_ENABLED ? "image/lok1_lia1_active.png" : "image/lok1_lia1_inactive.png";
   (document.getElementById("volume_slidebar")! as HTMLInputElement).disabled = !LORK_LIAR_ENABLED;
   BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
