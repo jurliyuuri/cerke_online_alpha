@@ -211,6 +211,37 @@ $krut_cruop_hover_width: 55px * 1.1;
   height: auto;
 }
 
+#lork_liar {
+  z-index: 3000;
+  position: absolute;
+  left: 665px;
+  top: 490px;
+}
+
+$lork_liar_width: 55px;
+$lork_liar_ratio: 720 / 360;
+#lork_liar_button {
+  position: absolute;
+  max-width: $lork_liar_width;
+  width: $lork_liar_width;
+  height: $lork_liar_width * $lork_liar_ratio;
+}
+
+$lork_liar_hover_width: 55px * 1.1;
+#lork_liar:hover {
+  z-index: 3000;
+  position: absolute;
+  left: 665px - ($lork_liar_hover_width - $lork_liar_width) / 2;
+  top: 490px - ($lork_liar_hover_width - $lork_liar_width) * $lork_liar_ratio / 2;
+}
+
+#lork_liar_button:hover {
+  position: absolute;
+  max-width: $lork_liar_hover_width;
+  width: $lork_liar_hover_width;
+  height: auto;
+}
+
 #everything {
   position: absolute;
   left: 200px;

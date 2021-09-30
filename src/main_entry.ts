@@ -21,6 +21,15 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
   (document.getElementById("krut_cruop_button")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
 });
 
+export let LORK_LIAR: number = 50;
+export let LORK_LIAR_ENABLED: boolean = true;
+// toggles the music.
+
+document.getElementById("lork_liar_button")!.addEventListener("click", () => {
+  LORK_LIAR_ENABLED = !LORK_LIAR_ENABLED;
+  (document.getElementById("lork_liar_button")! as HTMLInputElement).src = LORK_LIAR_ENABLED ? "image/lok1_lia1_active.png" : "image/lok1_lia1_inactive.png";
+});
+
 if (sessionStorage.vs === "cpu") {
   document.getElementById("larta_opponent_img")!.innerHTML = `<img src="image/nystiper2.png">`;
 } else if (sessionStorage.vs === "someone") {
