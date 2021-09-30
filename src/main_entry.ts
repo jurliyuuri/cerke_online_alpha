@@ -12,7 +12,7 @@ document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
   KIAR_ARK.header = [...KIAR_ARK.header, { type: "header", dat: `{一位色:${GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤"}}` }];
 });
 
-export let KRUT_CRUOP: boolean = true; 
+export let KRUT_CRUOP: boolean = true;
 // toggles `sound/ciurl4.ogg` and `sound/thud.ogg`.
 
 document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
@@ -21,14 +21,19 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
   (document.getElementById("krut_cruop_button")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
 });
 
-export let LORK_LIAR: number = 50;
+export let LORK_LIAR: number = 80;
 export let LORK_LIAR_ENABLED: boolean = true;
 // toggles the music.
 
 document.getElementById("lork_liar_button")!.addEventListener("click", () => {
   LORK_LIAR_ENABLED = !LORK_LIAR_ENABLED;
   (document.getElementById("lork_liar_button")! as HTMLInputElement).src = LORK_LIAR_ENABLED ? "image/lok1_lia1_active.png" : "image/lok1_lia1_inactive.png";
+  (document.getElementById("volume_slidebar")! as HTMLInputElement).disabled = !LORK_LIAR_ENABLED;
 });
+
+(document.getElementById("volume_slidebar")! as HTMLInputElement).addEventListener("change", () => {
+  LORK_LIAR = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value);
+})
 
 if (sessionStorage.vs === "cpu") {
   document.getElementById("larta_opponent_img")!.innerHTML = `<img src="image/nystiper2.png">`;
