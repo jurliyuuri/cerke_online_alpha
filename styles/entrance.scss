@@ -135,11 +135,11 @@ $min-entirety-aspect-ratio: 29/41;
 
   #blog_link_container {
     text-align: center;
+    left: $container-width / 2;
   }
 
   #blog_link {
     position: absolute;
-    left: $container-width / 2;
     top: $container-height * 0.95;
   }
 }
@@ -268,11 +268,11 @@ $min-entirety-aspect-ratio: 29/41;
 
   #blog_link_container {
     text-align: center;
+    left: $container-width / 2;
   }
 
   #blog_link {
     position: absolute;
-    left: $container-width / 2;
     top: $container-height * 0.95;
   }
 }
