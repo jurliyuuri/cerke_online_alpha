@@ -183,7 +183,7 @@ $kaitkaik_hover_width: 220px;
 #krut_cruop {
   z-index: 3000;
   position: absolute;
-  left: 720px;
+  left: 665px;
   top: 350px;
 }
 
@@ -200,7 +200,7 @@ $krut_cruop_hover_width: 55px * 1.1;
 #krut_cruop:hover {
   z-index: 3000;
   position: absolute;
-  left: 720px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
+  left: 665px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
   top: 350px - ($krut_cruop_hover_width - $krut_cruop_width) * $krut_cruop_ratio / 2;
 }
 
