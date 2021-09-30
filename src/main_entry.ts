@@ -26,7 +26,7 @@ BACKGROUND_MUSIC.loop = true;
 BACKGROUND_MUSIC.play();
 
 // toggles the music.
-export let LORK_LIAR_ENABLED: boolean = true;
+export let LORK_LIAR_ENABLED: boolean = false; // must start with false because otherwise the browser blocks the autoplay
 export let LORK_LIAR: number = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value);
 BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
 
