@@ -137,8 +137,8 @@ export async function sendMainPoll() {
   if (res.content !== "not yet") {
     console.log("ding!");
     document.getElementById("opponent_message")!.innerHTML = res.message ?? "";
-    const sound = new Audio("sound/thud.ogg");
-    sound.play();
+    const thud_sound = new Audio("sound/thud.ogg");
+    thud_sound.play();
 
     const opponent_move = res.content;
     console.log(opponent_move);
@@ -1512,8 +1512,8 @@ export function displayCiurl(ciurl: Ciurl, side?: Side) {
     contains_ciurl.appendChild(imgs[i]);
   }
 
-  const sound = new Audio("sound/ciurl4.ogg");
-  sound.play();
+  const ciurl_sound = new Audio("sound/ciurl4.ogg");
+  ciurl_sound.play();
 }
 
 function clearCiurl() {
