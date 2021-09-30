@@ -18,7 +18,7 @@ export let KRUT_CRUOP: boolean = true;
 document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
   KRUT_CRUOP = !KRUT_CRUOP;
   console.log("KRUT_CRUOP now set to", KRUT_CRUOP);
-  (document.getElementById("krut_cruop")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
+  (document.getElementById("krut_cruop_button")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
 });
 
 if (sessionStorage.vs === "cpu") {
