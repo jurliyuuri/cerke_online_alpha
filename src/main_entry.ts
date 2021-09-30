@@ -38,18 +38,18 @@ class BackgroundMusic {
     }
     (document.getElementById("lork_liar_button")! as HTMLInputElement).src = this.enabled ? "image/lok1_lia1_active.png" : "image/lok1_lia1_inactive.png";
     (document.getElementById("volume_slidebar")! as HTMLInputElement).disabled = !this.enabled;
-    this.music.volume = this.enabled ? (this.volume_when_unmuted) : 0;
+    this.music.volume = this.enabled ? this.volume_when_unmuted : 0;
   }
 
-  read_input() {
+  read_from_slidebar() {
     this.volume_when_unmuted = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value) / 100;
-    this.music.volume = this.enabled ? (this.volume_when_unmuted) : 0;
+    this.music.volume = this.enabled ? this.volume_when_unmuted : 0;
   }
 }
 
 const BGM = new BackgroundMusic();
 document.getElementById("lork_liar_button")!.addEventListener("click", BGM.toggleBackgroundMusic);
-(document.getElementById("volume_slidebar")! as HTMLInputElement).addEventListener("input", BGM.read_input);
+(document.getElementById("volume_slidebar")! as HTMLInputElement).addEventListener("input", BGM.read_from_slidebar);
 
 document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
   document.getElementById("kait_kaik")!.classList.add("nocover");
