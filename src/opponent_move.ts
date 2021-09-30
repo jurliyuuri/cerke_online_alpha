@@ -104,8 +104,8 @@ export async function animateNode(
   await new Promise(resolve => setTimeout(resolve, total_duration));
 }
 
-export async function animateOpponentSrcStepDstFinite(p: SrcStepDstFinite) {
-  await animateOpponentSrcStepDstFinite_(
+export async function animateOpponentSrcStepDstFinite(p: SrcStepDstFinite): Promise<CaptureInfo> {
+  return await animateOpponentSrcStepDstFinite_(
     fromAbsoluteCoord(p.src),
     fromAbsoluteCoord(p.step),
     fromAbsoluteCoord(p.dest),
@@ -398,7 +398,7 @@ async function animateOpponentSrcStepDstFinite_(
   step: Coord,
   dest: Coord,
   water_entry_ciurl?: Ciurl,
-) {
+): Promise<CaptureInfo> {
   const [src_i, src_j] = src;
   const [step_i, step_j] = step;
   const [dest_i, dest_j] = dest;
@@ -466,7 +466,7 @@ async function animateOpponentSrcStepDstFinite_(
         console.log("drawField opponent #", 16);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return;
+        return toColorProf(destPiece);
       }
     }
 
@@ -509,7 +509,7 @@ async function animateOpponentSrcStepDstFinite_(
         console.log("drawField opponent #", 18);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return;
+        return toColorProf(destPiece);
       }
     }
 
@@ -522,23 +522,42 @@ async function animateOpponentSrcStepDstFinite_(
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   }
+  return toColorProf(destPiece);
 }
 
-export async function animateOpponentSrcDst(p: SrcDst) {
+export type CaptureInfo = [Color, Profession] | null;
+
+export function toComment(c: CaptureInfo): string {
+  if (c === null) { return ""; }
+  const [color, prof] = c;
+  return `手${serializeColor(color)}${serializeProf(prof)}`
+}
+
+export async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
   const src: Coord = fromAbsoluteCoord(p.src);
   const dst: Coord = fromAbsoluteCoord(p.dest);
   if (p.water_entry_ciurl) {
-    await animateOpponentSrcDst_(src, dst, { water_entry_ciurl: p.water_entry_ciurl });
+    return await animateOpponentSrcDst_(src, dst, { water_entry_ciurl: p.water_entry_ciurl });
   } else {
-    await animateOpponentSrcDst_(src, dst, {});
+    return await animateOpponentSrcDst_(src, dst, {});
   }
 }
 
+export function toColorProf(p: Piece | null): CaptureInfo {
+  if (p === "Tam2") { throw new Error("Tam2 was passed")}
+  if (p === null) { return null; }
+  return [p.color, p.prof]
+}
+
+/**
+ * Animates opponent's move that simply consists of a src and a destination.
+ * @returns the color and the profession of the captured piece to help with KIAR_ARK.
+ */
 async function animateOpponentSrcDst_(
   src: Coord,
   dst: Coord,
   o: { water_entry_ciurl?: Ciurl, disable_focus?: boolean }
-) {
+): Promise<CaptureInfo> {
   const [src_i, src_j] = src;
   const [dest_i, dest_j] = dst;
 
@@ -587,7 +606,7 @@ async function animateOpponentSrcDst_(
         console.log("drawField opponent #", 20);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return;
+        return toColorProf(destPiece);
       }
     }
 
@@ -619,7 +638,7 @@ async function animateOpponentSrcDst_(
         console.log("drawField opponent #", 22);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return;
+        return toColorProf(destPiece);
       }
     }
 
@@ -637,6 +656,7 @@ async function animateOpponentSrcDst_(
     }
 
   }
+  return toColorProf(destPiece);
 }
 
 export async function animateOpponentFromHand(
@@ -913,3 +933,11 @@ function drawArrow(from: Coord, to: Coord) {
     throw new Error("unsupported direction for the arrow");
   }
 }
+function serializeColor(color: Color) {
+  throw new Error("Function not implemented.");
+}
+
+function serializeProf(prof: Profession) {
+  throw new Error("Function not implemented.");
+}
+

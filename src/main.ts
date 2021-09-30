@@ -27,6 +27,9 @@ import {
   animateOpponentSrcStepDstFinite,
   animateOpponentInfAfterStep,
   animateNode,
+  toComment,
+  toColorProf,
+  CaptureInfo,
 } from "./opponent_move";
 import {
   Coord,
@@ -148,12 +151,20 @@ export async function sendMainPoll() {
     if (opponent_move.type === "NonTamMove") {
       GAME_STATE.opponent_has_just_moved_tam = false;
       if (opponent_move.data.type === "SrcDst") {
-        await animateOpponentSrcDst(opponent_move.data);
+        const maybe_capture = await animateOpponentSrcDst(opponent_move.data);
         GAME_STATE.is_my_turn = true;
         if (opponent_move.data.water_entry_ciurl) {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length) }]
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
+            piece_capture_comment: toComment(maybe_capture)
+          }]
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: normalMessageToKiarArk(opponent_move),
+            piece_capture_comment: toComment(maybe_capture)
+          }]
         }
       } else if (opponent_move.data.type === "FromHand") {
         const piece: NonTam2PieceDownward = {
@@ -166,14 +177,23 @@ export async function sendMainPoll() {
           fromAbsoluteCoord(opponent_move.data.dest),
         );
         GAME_STATE.is_my_turn = true;
+        // piece_capture_comment is impossible
         KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
       } else if (opponent_move.data.type === "SrcStepDstFinite") {
-        await animateOpponentSrcStepDstFinite(opponent_move.data);
+        const maybe_capture = await animateOpponentSrcStepDstFinite(opponent_move.data);
         GAME_STATE.is_my_turn = true;
         if (opponent_move.data.water_entry_ciurl) {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length) }]
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
+            piece_capture_comment: toComment(maybe_capture)
+          }]
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: normalMessageToKiarArk(opponent_move),
+            piece_capture_comment: toComment(maybe_capture)
+          }]
         }
       } else {
         const a: never = opponent_move.data;
@@ -724,15 +744,23 @@ async function sendAfterHalfAcceptance(
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    updateFieldAfterHalfAcceptance(message, o.src, o.step);
+    const maybe_capture = updateFieldAfterHalfAcceptance(message, o.src, o.step);
 
     console.log("drawField #", 7);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}` }];
+      KIAR_ARK.body = [...KIAR_ARK.body, {
+        type: "movement",
+        dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}`,
+        piece_capture_comment: toComment(maybe_capture)
+      }];
     } else {
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(o.stepping_ciurl)}此無` }];
+      KIAR_ARK.body = [...KIAR_ARK.body, {
+        type: "movement",
+        dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(o.stepping_ciurl)}此無`,
+        piece_capture_comment: toComment(maybe_capture)
+      }];
     }
     return;
   }
@@ -753,18 +781,23 @@ async function sendAfterHalfAcceptance(
     const dest: AbsoluteCoord = message.dest ?? (() => { throw new Error("This should not happen; it should have been rejected before the water entry"); })();
 
     // Always 此無, because in the outer `if` it is already checked
+    // No capture occurs
     KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}此無` }]
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    updateFieldAfterHalfAcceptance(message, o.src, o.step);
+    const maybe_capture = updateFieldAfterHalfAcceptance(message, o.src, o.step);
 
     console.log("drawField #", 8);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}` }];
+      KIAR_ARK.body = [...KIAR_ARK.body, {
+        type: "movement",
+        dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}`,
+        piece_capture_comment: toComment(maybe_capture)
+      }];
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
@@ -907,12 +940,16 @@ async function sendNormalMessage(message: NormalMove) {
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    updateField(message);
+    const maybe_capture = updateField(message);
 
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(message) }];
+    KIAR_ARK.body = [...KIAR_ARK.body, {
+      type: "movement",
+      dat: normalMessageToKiarArk(message),
+      piece_capture_comment: toComment(maybe_capture)
+    }];
     return;
   }
 
@@ -932,16 +969,22 @@ async function sendNormalMessage(message: NormalMove) {
       cancelSteppingButUpdateTheFocus(fromAbsoluteCoord(message.data.src));
     }
     GAME_STATE.is_my_turn = false;
+    // no capture possible
+    KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length) }];
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    updateField(message);
+    const maybe_capture = updateField(message);
 
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+    KIAR_ARK.body = [...KIAR_ARK.body, { 
+      type: "movement", 
+      dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length),
+      piece_capture_comment: toComment(maybe_capture)
+     }];
   }
-  KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length) }];
 }
 
 /// HOPEFULLY, This function sets `GAME_STATE.last_move_focus` appropriately.
@@ -949,13 +992,13 @@ function updateFieldAfterHalfAcceptance(
   message: AfterHalfAcceptance,
   src: Coord,
   step: Coord,
-) {
+): CaptureInfo {
   console.log(src, step);
   if (message.dest === null) {
     cancelStepping();
     console.log("lone assignment to last_move_focus, #", 0);
     GAME_STATE.last_move_focus = src;
-    return;
+    return null; // cancelled; no capture was made
   }
 
   const [dest_i, dest_j] = fromAbsoluteCoord(message.dest);
@@ -978,7 +1021,7 @@ function updateFieldAfterHalfAcceptance(
   if (coordEq([src_i, src_j], [dest_i, dest_j])) {
     console.log("lone assignment to last_move_focus, #", 1);
     GAME_STATE.last_move_focus = [src_i, src_j];
-    return;
+    return null; // no capture was made
   }
 
   if (destPiece !== null) {
@@ -989,6 +1032,7 @@ function updateFieldAfterHalfAcceptance(
   GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
   console.log("lone assignment to last_move_focus, #", 2);
   GAME_STATE.last_move_focus = [dest_i, dest_j];
+  return toColorProf(destPiece)
 }
 
 /**
@@ -1072,7 +1116,7 @@ function toObtainablePiece(color: Color, prof: Profession): ObtainablePieces {
 }
 
 /// This function also sets `GAME_STATE.last_move_focus` appropriately.
-function updateField(message: NormalMove) {
+function updateField(message: NormalMove): CaptureInfo {
   if (message.type === "NonTamMove") {
     if (message.data.type === "FromHand") {
       const k: {
@@ -1100,6 +1144,7 @@ function updateField(message: NormalMove) {
       GAME_STATE.f.currentBoard[i][j] = removed_from_hop1zuo1;
       console.log("lone assignment to last_move_focus, #", 3);
       GAME_STATE.last_move_focus = [i, j];
+      return null; // no capture possible
     } else if (message.data.type === "SrcDst") {
       const k: {
         type: "SrcDst";
@@ -1127,6 +1172,7 @@ function updateField(message: NormalMove) {
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
       console.log("lone assignment to last_move_focus, #", 4);
       GAME_STATE.last_move_focus = [dest_i, dest_j];
+      return toColorProf(destPiece);
     } else if (message.data.type === "SrcStepDstFinite") {
       const k: {
         type: "SrcStepDstFinite";
@@ -1157,7 +1203,7 @@ function updateField(message: NormalMove) {
 
       /* it's possible that you are returning to the original position, in which case you don't do anything */
       if (coordEq([src_i, src_j], [dest_i, dest_j])) {
-        return;
+        return null; // no capture
       }
 
       if (destPiece !== null) {
@@ -1168,8 +1214,10 @@ function updateField(message: NormalMove) {
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
       GAME_STATE.last_move_focus = [dest_i, dest_j];
       console.log("lone assignment to last_move_focus, #", 5);
+      return toColorProf(destPiece);
     } else {
       const _should_not_reach_here: never = message.data;
+      throw new Error("should not reach here")
     }
   } else if (message.type === "TamMove") {
     const k = message;
@@ -1180,7 +1228,7 @@ function updateField(message: NormalMove) {
       GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = "Tam2";
       GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
       console.log("lone assignment to last_move_focus, #", 6);
-      return;
+      return null; // no capture possible
     }
 
     // If not StepsDuringLatter, we decided that the piece should actually be located in firstDest after the first move
@@ -1198,15 +1246,17 @@ function updateField(message: NormalMove) {
     if (coordEq([firstDest_i, firstDest_j], [secondDest_i, secondDest_j])) {
       GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
       console.log("lone assignment to last_move_focus, #", 7);
-      return;
+      return null; // no capture possible in TamMove
     }
 
     GAME_STATE.f.currentBoard[firstDest_i][firstDest_j] = null;
     GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
     GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
     console.log("lone assignment to last_move_focus, #", 8);
+    return null; // no capture possible in TamMove
   } else {
     const _should_not_reach_here: never = message;
+    throw new Error("should not reach here")
   }
 }
 
