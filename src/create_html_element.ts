@@ -162,6 +162,7 @@ export function createImageButton(
   node.style.position = "absolute";
   node.style.left = "660px";
   node.style.top = `${top}px`;
+  node.style.zIndex = "6000";
   node.style.border = "1px solid #aaaaaa";
   return node;
 }

@@ -369,14 +369,14 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[], score: number }) {
     }
 
     if (res.content === "ty mok1") {
-      score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
+      score_display.innerHTML += `<img src="image/dat2/再行.png" style="position: absolute; left: 660px; top: 125px; z-index: 6000;" height="200">`;
       console.log("score_display:", score_display.innerHTML);
       await new Promise(resolve => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ty mok1");
       increaseRateAndAnimate(false);
       KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` }]
     } else {
-      score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
+      score_display.innerHTML += `<img src="image/dat2/終季.png" style="position: absolute; left: 660px; top: 125px; z-index: 6000;" height="200">`;
       console.log("score_display:", score_display.innerHTML);
       await new Promise(resolve => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ta xot1");
