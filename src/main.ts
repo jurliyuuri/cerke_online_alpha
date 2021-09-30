@@ -82,6 +82,7 @@ import {
   Hand,
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
+import { KRUT_CRUOP } from "./main_entry";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -137,8 +138,10 @@ export async function sendMainPoll() {
   if (res.content !== "not yet") {
     console.log("ding!");
     document.getElementById("opponent_message")!.innerHTML = res.message ?? "";
-    const thud_sound = new Audio("sound/thud.ogg");
-    thud_sound.play();
+    if (KRUT_CRUOP) {
+      const thud_sound = new Audio("sound/thud.ogg");
+      thud_sound.play();
+    }
 
     const opponent_move = res.content;
     console.log(opponent_move);
@@ -1518,8 +1521,10 @@ export function displayCiurl(ciurl: Ciurl, side?: Side) {
     contains_ciurl.appendChild(imgs[i]);
   }
 
-  const ciurl_sound = new Audio("sound/ciurl4.ogg");
-  ciurl_sound.play();
+  if (KRUT_CRUOP) {
+    const ciurl_sound = new Audio("sound/ciurl4.ogg");
+    ciurl_sound.play();
+  }
 }
 
 function clearCiurl() {

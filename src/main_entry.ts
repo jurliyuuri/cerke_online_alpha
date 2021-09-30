@@ -12,6 +12,14 @@ document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
   KIAR_ARK.header = [...KIAR_ARK.header, { type: "header", dat: `{一位色:${GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤"}}` }];
 });
 
+export let KRUT_CRUOP: boolean = true; 
+// toggles `sound/ciurl4.ogg` and `sound/thud.ogg`.
+
+document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
+  KRUT_CRUOP = !KRUT_CRUOP;
+  (document.getElementById("krut_cruop")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
+});
+
 if (sessionStorage.vs === "cpu") {
   document.getElementById("larta_opponent_img")!.innerHTML = `<img src="image/nystiper2.png">`;
 } else if (sessionStorage.vs === "someone") {
