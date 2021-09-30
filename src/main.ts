@@ -258,7 +258,7 @@ export async function sendMainPoll() {
       GAME_STATE.is_my_turn = true;
 
       if (finalResult_resolved.water_entry_ciurl) {
-        if (finalResult_resolved.water_entry_ciurl.filter(a=>a).length < 3) {
+        if (finalResult_resolved.water_entry_ciurl.filter(a => a).length < 3) {
           KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無` }];
         } else {
           KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}` }];
@@ -737,14 +737,14 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      if (res.dat.ciurl.filter(a => a).length < 3) {
-        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}此無` }]
-      } else {
-        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}` }]
-      }
+      // Always 此無, because in the outer `if` it is already checked
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}此無` }]
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
     }
+
+    console.log("drawField #", 8.1);
+    drawField({ focus: o.src }); // must redraw the board with the focus on `o.src` to denote that a failed operation happened.
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -1902,7 +1902,7 @@ function perzej(
   document.getElementById("opponent_message")!.innerHTML =
     msg === "you win!" ? "あなたの勝ちです" :
       msg === "draw" ? "引き分けです" : "あなたの負けです"
-  KIAR_ARK.body = [...KIAR_ARK.body, {type: "tymoktaxot", dat: "星一周"}]
+  KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }]
 }
 
 export async function animatePunishStepTam(side: Side) {
