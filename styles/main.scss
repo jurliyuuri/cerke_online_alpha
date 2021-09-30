@@ -180,6 +180,37 @@ $kaitkaik_hover_width: 220px;
   height: auto;
 }
 
+#krut_cruop {
+  z-index: 3000;
+  position: absolute;
+  left: 720px;
+  top: 350px;
+}
+
+$krut_cruop_width: 55px;
+$krut_cruop_ratio: 660 / 330;
+#krut_cruop_button {
+  position: absolute;
+  max-width: $krut_cruop_width;
+  width: $krut_cruop_width;
+  height: $krut_cruop_width * $krut_cruop_ratio;
+}
+
+$krut_cruop_hover_width: 55px * 1.1;
+#krut_cruop:hover {
+  z-index: 3000;
+  position: absolute;
+  left: 720px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
+  top: 350px - ($krut_cruop_hover_width - $krut_cruop_width) * $krut_cruop_ratio / 2;
+}
+
+#krut_cruop_button:hover {
+  position: absolute;
+  max-width: $krut_cruop_hover_width;
+  width: $krut_cruop_hover_width;
+  height: auto;
+}
+
 #everything {
   position: absolute;
   left: 200px;
