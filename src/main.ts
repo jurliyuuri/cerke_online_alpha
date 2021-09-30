@@ -215,6 +215,7 @@ export async function sendMainPoll() {
           return new Promise<{
             dest: AbsoluteCoord;
             water_entry_ciurl?: Ciurl;
+            thwarted_by_failing_water_entry_ciurl: Ciurl | null;
           }>(async (resolve, reject) => {
             while (true) {
               const res: Ret_InfPoll = await sendStuffTo<{}, Ret_InfPoll>(
@@ -247,7 +248,8 @@ export async function sendMainPoll() {
       })();
       const finalResult_resolved: ({
         dest: AbsoluteCoord;
-        water_entry_ciurl?: Ciurl | undefined;
+        water_entry_ciurl?: Ciurl;
+        thwarted_by_failing_water_entry_ciurl: Ciurl | null;
       }) = await animateOpponentInfAfterStep({
         src: fromAbsoluteCoord(opponent_move.src),
         step: fromAbsoluteCoord(opponent_move.step),
@@ -263,6 +265,8 @@ export async function sendMainPoll() {
         } else {
           KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}` }];
         }
+      } else if (finalResult_resolved.thwarted_by_failing_water_entry_ciurl) {
+        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.thwarted_by_failing_water_entry_ciurl)}此無` }];
       } else {
         if (absoluteCoordEq(opponent_move.plannedDirection, finalResult_resolved.dest)) {
           KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}` }];

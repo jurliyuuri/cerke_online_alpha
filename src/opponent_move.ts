@@ -133,10 +133,12 @@ export async function animateOpponentInfAfterStep(p: {
   finalResult: Promise<{
     dest: AbsoluteCoord;
     water_entry_ciurl?: Ciurl;
+    thwarted_by_failing_water_entry_ciurl: Ciurl | null;
   }>;
 }): Promise<{
   dest: AbsoluteCoord;
   water_entry_ciurl?: Ciurl;
+  thwarted_by_failing_water_entry_ciurl: Ciurl | null;
 }> {
   const [src_i, src_j] = p.src;
   const [step_i, step_j] = p.step;
@@ -248,6 +250,15 @@ export async function animateOpponentInfAfterStep(p: {
         drawField({ focus: [src_i, src_j] });
         return result;
       }
+    } else if (result.thwarted_by_failing_water_entry_ciurl) {
+      await animateWaterEntryLogo();
+      displayCiurl(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
+      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+      alert(DICTIONARY.ja.failedWaterEntry);
+      console.log("drawField opponent #", 14);
+      GAME_STATE.last_move_focus = [src_i, src_j];
+      drawField({ focus: [src_i, src_j] });
+      return result;
     }
 
     if (!coordEq(p.src, dest)) {
