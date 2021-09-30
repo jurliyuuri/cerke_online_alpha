@@ -133,10 +133,12 @@ $min-entirety-aspect-ratio: 29/41;
     left: 0px;
   }
 
+  $blog_link_container_width: 100px;
   #blog_link_container {
     text-align: center;
     position: absolute;
-    left: $container-width / 2;
+    width: $blog_link_container_width;
+    left: $container-width / 2 - $blog_link_container_width / 2;
     top: $container-height * 0.95;
   }
 }
@@ -263,10 +265,12 @@ $min-entirety-aspect-ratio: 29/41;
     left: 0px;
   }
 
+  $blog_link_container_width: 100px;
   #blog_link_container {
-    position: absolute;
     text-align: center;
-    left: $container-width / 2;
+    position: absolute;
+    width: $blog_link_container_width;
+    left: $container-width / 2 - $blog_link_container_width / 2;
     top: $container-height * 0.95;
   }
 }
