@@ -21,18 +21,25 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
   (document.getElementById("krut_cruop_button")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
 });
 
-export let LORK_LIAR: number = 80;
-export let LORK_LIAR_ENABLED: boolean = true;
+const BACKGROUND_MUSIC = new Audio('sound/cetkaik_leti_duxe_.ogg');
+BACKGROUND_MUSIC.loop = true;
+BACKGROUND_MUSIC.play();
+
 // toggles the music.
+export let LORK_LIAR_ENABLED: boolean = true;
+export let LORK_LIAR: number = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value);
+BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
 
 document.getElementById("lork_liar_button")!.addEventListener("click", () => {
   LORK_LIAR_ENABLED = !LORK_LIAR_ENABLED;
   (document.getElementById("lork_liar_button")! as HTMLInputElement).src = LORK_LIAR_ENABLED ? "image/lok1_lia1_active.png" : "image/lok1_lia1_inactive.png";
   (document.getElementById("volume_slidebar")! as HTMLInputElement).disabled = !LORK_LIAR_ENABLED;
+  BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
 });
 
 (document.getElementById("volume_slidebar")! as HTMLInputElement).addEventListener("change", () => {
   LORK_LIAR = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value);
+  BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
 })
 
 if (sessionStorage.vs === "cpu") {
