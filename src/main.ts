@@ -27,7 +27,6 @@ import {
   animateOpponentSrcStepDstFinite,
   animateOpponentInfAfterStep,
   animateNode,
-  toComment,
   toColorProf,
   CaptureInfo,
 } from "./opponent_move";
@@ -157,13 +156,13 @@ export async function sendMainPoll() {
           KIAR_ARK.body = [...KIAR_ARK.body, {
             type: "movement",
             dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
-            piece_capture_comment: toComment(maybe_capture)
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
           }]
         } else {
           KIAR_ARK.body = [...KIAR_ARK.body, {
             type: "movement",
             dat: normalMessageToKiarArk(opponent_move),
-            piece_capture_comment: toComment(maybe_capture)
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
           }]
         }
       } else if (opponent_move.data.type === "FromHand") {
@@ -186,13 +185,13 @@ export async function sendMainPoll() {
           KIAR_ARK.body = [...KIAR_ARK.body, {
             type: "movement",
             dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
-            piece_capture_comment: toComment(maybe_capture)
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
           }]
         } else {
           KIAR_ARK.body = [...KIAR_ARK.body, {
             type: "movement",
             dat: normalMessageToKiarArk(opponent_move),
-            piece_capture_comment: toComment(maybe_capture)
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
           }]
         }
       } else {
@@ -753,13 +752,13 @@ async function sendAfterHalfAcceptance(
       KIAR_ARK.body = [...KIAR_ARK.body, {
         type: "movement",
         dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}`,
-        piece_capture_comment: toComment(maybe_capture)
+        piece_capture_comment: toPieceCaptureComment(maybe_capture)
       }];
     } else {
       KIAR_ARK.body = [...KIAR_ARK.body, {
         type: "movement",
         dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(o.stepping_ciurl)}此無`,
-        piece_capture_comment: toComment(maybe_capture)
+        piece_capture_comment: toPieceCaptureComment(maybe_capture)
       }];
     }
     return;
@@ -796,7 +795,7 @@ async function sendAfterHalfAcceptance(
       KIAR_ARK.body = [...KIAR_ARK.body, {
         type: "movement",
         dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}`,
-        piece_capture_comment: toComment(maybe_capture)
+        piece_capture_comment: toPieceCaptureComment(maybe_capture)
       }];
     } else {
       throw new Error("This should not happen; it should have been rejected before the water entry");
@@ -866,6 +865,12 @@ function serializeColor(color: Color) {
 
 function serializeProf(prof: Profession) {
   return ["船", "兵", "弓", "車", "虎", "馬", "筆", "巫", "将", "王"][prof];
+}
+
+function toPieceCaptureComment(c: CaptureInfo): string {
+  if (c === null) { return ""; }
+  const [color, prof] = c;
+  return `手${serializeColor(color)}${serializeProf(prof)}`
 }
 
 function serializeAbsoluteCoord(coord: AbsoluteCoord) {
@@ -948,7 +953,7 @@ async function sendNormalMessage(message: NormalMove) {
     KIAR_ARK.body = [...KIAR_ARK.body, {
       type: "movement",
       dat: normalMessageToKiarArk(message),
-      piece_capture_comment: toComment(maybe_capture)
+      piece_capture_comment: toPieceCaptureComment(maybe_capture)
     }];
     return;
   }
@@ -982,7 +987,7 @@ async function sendNormalMessage(message: NormalMove) {
     KIAR_ARK.body = [...KIAR_ARK.body, { 
       type: "movement", 
       dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length),
-      piece_capture_comment: toComment(maybe_capture)
+      piece_capture_comment: toPieceCaptureComment(maybe_capture)
      }];
   }
 }

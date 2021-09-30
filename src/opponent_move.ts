@@ -527,12 +527,6 @@ async function animateOpponentSrcStepDstFinite_(
 
 export type CaptureInfo = [Color, Profession] | null;
 
-export function toComment(c: CaptureInfo): string {
-  if (c === null) { return ""; }
-  const [color, prof] = c;
-  return `手${serializeColor(color)}${serializeProf(prof)}`
-}
-
 export async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
   const src: Coord = fromAbsoluteCoord(p.src);
   const dst: Coord = fromAbsoluteCoord(p.dest);
@@ -932,12 +926,5 @@ function drawArrow(from: Coord, to: Coord) {
   } else {
     throw new Error("unsupported direction for the arrow");
   }
-}
-function serializeColor(color: Color) {
-  throw new Error("Function not implemented.");
-}
-
-function serializeProf(prof: Profession) {
-  throw new Error("Function not implemented.");
 }
 
