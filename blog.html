@@ -135,7 +135,38 @@
     <div style="margin: 0 auto; max-width: 970px; display: flex;">
         <nav id="posts" style="width: 970px;">
             <article class="post">
-                <p class="date">西暦2021年8月31日</p>
+                <p class="date">2021年10月1日</p>
+                <hr>
+                <article lang="ja">
+                    <h2>月末アップデート（2021年9月）内容告知</h2>
+                    <p>
+                        nヶ月メンテしないと再びやり始めるのがだいぶしんどいので、月末アップデートを定期化するようにしてみようと考え、とりあえず以下の告知ツイートを打ち、打った後にアプデ内容を考え、太平洋夏時間9月28日正午～太平洋夏時間9月30日23:59（日本時間9月29日04:00～10月1日15:59）でメンテを行いました。
+                    </p>
+                    <div style="height: 500px;"><!-- to prevent the slow load of tweet to interfere with the design -->
+                        <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online は今月も月末アップデートを行おうと思います。太平洋夏時間9月28日正午～太平洋夏時間9月30日23:59（日本時間9月29日04:00～10月1日15:59）を予定しておりますが、状況により多分前後するのでご了承ください。 <a href="https://t.co/2CDWWKfWP2">https://t.co/2CDWWKfWP2</a></p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1442918530324652032?ref_src=twsrc%5Etfw">September 28, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    </div>
+                    <hr>
+                    <p>
+                        結果としては、以下の改善を入れることができました。
+                    </p>
+                    <ul>
+                        <li>このブログの開設<ul><li>更新を追いやすくなりました。</li></ul></li>
+                        <li><strong>棋譜表示機能</strong><ul><li>前々から皆に望まれていた棋譜表示機能が、ついに追加されました。</li></ul></li>
+                        <li>役早見表の追加<ul><li>これにより、役を覚えていない人も別窓で役の一覧などを開く必要がなくなりました。</li></ul></li>
+                        <li>UI改良<ul><li>相手側が「再行」「終季」を押した際に、自分側には相手の選択が表示されるのですが、その表示時間が少し短かったので長くしました。</li></ul></li>
+                        <li>バグ修正<ul>
+                            <li>踏越え後に入水判定が失敗すると、最後に指した位置を表す黄色の枠線が正しく表示されないというバグがあったので、修正しました。</li>
+                            <li><strong>相手側が踏越え判定に成功した後に入水判定に失敗した場合に、入水判定がまるで行われなかったかのように表示されるという深刻なバグがあったので修正しました。</strong></li>
+                        </ul></li>
+                        <li>内部的改良<ul>
+                            <li>点数表示時の数字の画像をリネームしました。</li>
+                            <li>依存ライブラリのバージョンを上げまくりました。</li>
+                        </ul></li>
+                    </ul>
+                </article>
+            </article>
+            <article class="post">
+                <p class="date">2021年8月31日</p>
                 <hr>
                 <article lang="ja">
                     <h2>月末アップデート（2021年8月）内容告知</h2>
@@ -152,7 +183,7 @@
                     </p>
                     <ul>
                         <li>
-                            CPU対戦の実装
+                            <strong>CPU対戦の実装</strong>
                             <ul>
                                 <li>CPUとプレイヤーを表すためのいい感じのアイコン<img src="image/nystiper2.png" width="50" height="50" style="vertical-align: middle;"><img src="image/larta2.png" width="50" height="50" style="vertical-align: middle;">を、<a href="https://yustier.github.io/">藍碌(Airoku)さん</a><img src="https://avatars.githubusercontent.com/u/47571113?v=4" width="40" height="40" style="vertical-align: middle;">に書いて頂けました。ありがとうございます。</li>
                                 <li>CPUが考えるのに使った戦略を通知・表示する仕組みを実装しました。現時点では日本語での表示にのみ対応していますが、今後は燐文対応も考えていきたいと思います。</li>
@@ -183,7 +214,7 @@
                         </li>
                         <li>
                             UI改良
-                            <ul><li>勝敗の表示にalertを使っていたのを、「CPUが考えるのに使った戦略を通知・表示する仕組み」があることを利用してそこに表示するようにしました。</li></ul>
+                            <ul><li>勝敗の表示にalertを使っていたのを、「CPUが考えるのに使った戦略を通知・表示する仕組み」があることを利用してそこに表示するようにしました。今後もalertの数を減らしていきたいと思います。</li></ul>
                             <ul><li>試合開始ボタンにマウスカーソルを載せるとサイズが変化するようにし、ボタンであるということが伝わりやすくなりました。</li></ul>
                             <ul><li>試合終了後、両方のアイコンが表示されるようになりました。</li></ul>
                             <ul><li>main.htmlに直接リンクしたなどの原因によりセッションが無効な場合、entrance.htmlに戻されるようになりました。</li></ul>
