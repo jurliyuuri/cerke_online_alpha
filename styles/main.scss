@@ -183,7 +183,7 @@ $kaitkaik_hover_width: 220px;
 #krut_cruop {
   z-index: 3000;
   position: absolute;
-  left: 665px;
+  left: 675px;
   top: 350px;
 }
 
@@ -200,7 +200,7 @@ $krut_cruop_hover_width: 55px * 1.1;
 #krut_cruop:hover {
   z-index: 3000;
   position: absolute;
-  left: 665px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
+  left: 675px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
   top: 350px - ($krut_cruop_hover_width - $krut_cruop_width) * $krut_cruop_ratio / 2;
 }
 
@@ -214,7 +214,7 @@ $krut_cruop_hover_width: 55px * 1.1;
 #lork_liar {
   z-index: 3000;
   position: absolute;
-  left: 665px;
+  left: 675px;
   top: 490px;
 }
 
@@ -231,7 +231,7 @@ $lork_liar_hover_width: 55px * 1.1;
 #lork_liar:hover {
   z-index: 3000;
   position: absolute;
-  left: 665px - ($lork_liar_hover_width - $lork_liar_width) / 2;
+  left: 675px - ($lork_liar_hover_width - $lork_liar_width) / 2;
   top: 490px - ($lork_liar_hover_width - $lork_liar_width) * $lork_liar_ratio / 2;
 }
 
