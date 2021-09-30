@@ -187,7 +187,7 @@ $kaitkaik_hover_width: 220px;
   top: 350px;
 }
 
-$krut_cruop_width: 55px;
+$krut_cruop_width: 44px;
 $krut_cruop_ratio: 660 / 330;
 #krut_cruop_button {
   position: absolute;
@@ -196,7 +196,7 @@ $krut_cruop_ratio: 660 / 330;
   height: $krut_cruop_width * $krut_cruop_ratio;
 }
 
-$krut_cruop_hover_width: 55px * 1.1;
+$krut_cruop_hover_width: 44px * 1.1;
 #krut_cruop:hover {
   z-index: 3000;
   position: absolute;
@@ -218,7 +218,7 @@ $krut_cruop_hover_width: 55px * 1.1;
   top: 490px;
 }
 
-$lork_liar_width: 55px;
+$lork_liar_width: 44px;
 $lork_liar_ratio: 720 / 360;
 #lork_liar_button {
   position: absolute;
@@ -227,7 +227,7 @@ $lork_liar_ratio: 720 / 360;
   height: $lork_liar_width * $lork_liar_ratio;
 }
 
-$lork_liar_hover_width: 55px * 1.1;
+$lork_liar_hover_width: 44px * 1.1;
 #lork_liar:hover {
   z-index: 3000;
   position: absolute;
