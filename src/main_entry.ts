@@ -15,48 +15,39 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
   (document.getElementById("krut_cruop_button")! as HTMLInputElement).src = KRUT_CRUOP ? "image/kut2_cuop2_active.png" : "image/kut2_cuop2_inactive.png";
 });
 
-const BACKGROUND_MUSIC_GLOBALLY_ALLOCATED = new Audio('sound/cetkaik_leti_duxe_.ogg');
-class BackgroundMusic {
-  volume_when_unmuted: number;
-  enabled: boolean;
-  music: HTMLAudioElement;
-  user_interaction: boolean;
-  constructor() {
-    this.music = BACKGROUND_MUSIC_GLOBALLY_ALLOCATED;
-    this.music.loop = true;
-    this.user_interaction = false;
+const BACKGROUND_MUSIC = new Audio('sound/cetkaik_leti_duxe_.ogg');
+BACKGROUND_MUSIC.loop = true;
 
-    this.enabled = false; // must start with false because otherwise the browser blocks the autoplay
-    this.music.volume = 0;
-    this.volume_when_unmuted = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value) / 100;
-  }
+let user_interaction: boolean = false;
 
-  toggleBackgroundMusic() {
-    this.enabled = !this.enabled;
-    if (!this.user_interaction && this.enabled) {
-      this.music.play();
-      this.user_interaction = true;
-    }
-    (document.getElementById("lork_liar_button")! as HTMLInputElement).src = this.enabled ? "image/lok1_lia1_active.png" : "image/lok1_lia1_inactive.png";
-    (document.getElementById("volume_slidebar")! as HTMLInputElement).disabled = !this.enabled;
-    this.music.volume = this.enabled ? this.volume_when_unmuted : 0;
-  }
+// toggles the music.
+export let LORK_LIAR_ENABLED: boolean = false; // must start with false because otherwise the browser blocks the autoplay
+export let LORK_LIAR: number = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value);
+BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
 
-  read_from_slidebar() {
-    this.volume_when_unmuted = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value) / 100;
-    this.music.volume = this.enabled ? this.volume_when_unmuted : 0;
+function toggleBackgroundMusic() {
+  LORK_LIAR_ENABLED = !LORK_LIAR_ENABLED;
+  if (!user_interaction && LORK_LIAR_ENABLED) {
+    BACKGROUND_MUSIC.play();
+    user_interaction = true;
   }
+  (document.getElementById("lork_liar_button")! as HTMLInputElement).src = LORK_LIAR_ENABLED ? "image/lok1_lia1_active.png" : "image/lok1_lia1_inactive.png";
+  (document.getElementById("volume_slidebar")! as HTMLInputElement).disabled = !LORK_LIAR_ENABLED;
+  BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
 }
 
-const BGM = new BackgroundMusic();
-document.getElementById("lork_liar_button")!.addEventListener("click", BGM.toggleBackgroundMusic);
-(document.getElementById("volume_slidebar")! as HTMLInputElement).addEventListener("input", BGM.read_from_slidebar);
+document.getElementById("lork_liar_button")!.addEventListener("click", toggleBackgroundMusic);
+
+(document.getElementById("volume_slidebar")! as HTMLInputElement).addEventListener("input", () => {
+  LORK_LIAR = Number((document.getElementById("volume_slidebar")! as HTMLInputElement).value);
+  BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? (LORK_LIAR / 100) : 0;
+});
 
 document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
   document.getElementById("kait_kaik")!.classList.add("nocover");
   GAME_STATE.is_my_turn = JSON.parse(sessionStorage.is_first_move_my_move);
   KIAR_ARK.header = [...KIAR_ARK.header, { type: "header", dat: `{一位色:${GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤"}}` }];
-  BGM.toggleBackgroundMusic();
+  toggleBackgroundMusic();
 });
 
 if (sessionStorage.vs === "cpu") {
