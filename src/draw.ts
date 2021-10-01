@@ -1,8 +1,8 @@
 import { Coord, Board, Piece, BoardIndex, Side, NonTam2PieceUpward, NonTam2PieceDownward } from "cerke_online_utility/lib";
-import { createCancelButton, createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1 } from "./create_html_element";
+import { createCancelButton, createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1, createPieceSizeImageOnBoardByPath_Shifted } from "./create_html_element";
 import { Season, Log2_Rate, GAME_STATE } from "./game_state";
 import { removeChildren, selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
-import { toPath } from "./piece_to_path";
+import { toPath, toPath_ } from "./piece_to_path";
 
 export function getDenoteSeasonNodeTopLeft(season: Season) {
   return { top: 360 + 51 * (3 - season), left: 3 };
@@ -14,6 +14,57 @@ export function getDenoteScoreNodeTopLeft(score: number) {
 
 export function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
   return { top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4 };
+}
+
+export function eraseGuide(): void {
+  removeChildren(document.getElementById("contains_guides")!);
+  removeChildren(document.getElementById("contains_guides_on_upward")!);
+}
+
+export function erasePhantomAndOptionallyCancelButton() {
+  const contains_phantom = document.getElementById("contains_phantom")!;
+  while (contains_phantom.firstChild) {
+    contains_phantom.removeChild(contains_phantom.firstChild);
+  }
+}
+
+export function drawPhantomAt(coord: Coord, piece: Piece) {
+  const contains_phantom = document.getElementById("contains_phantom")!;
+  erasePhantomAndOptionallyCancelButton();
+
+  const phantom: HTMLImageElement = createPieceImgToBePlacedOnBoard(
+    coord,
+    piece,
+  );
+  phantom.style.opacity = "0.1";
+  contains_phantom.appendChild(phantom);
+}
+
+export function drawHoverAt_<T extends "Tam2" | NonTam2PieceUpward>(
+  coord: Coord,
+  piece: T,
+  selectHover_: (coord: Coord, piece: T) => void,
+) {
+  const contains_phantom = document.getElementById("contains_phantom")!;
+
+  const img = createPieceSizeImageOnBoardByPath_Shifted(
+    coord,
+    toPath_(piece),
+    "piece_image_on_board",
+  );
+
+  img.style.zIndex = "100";
+  img.style.cursor = "pointer";
+
+  const selectHover = function () {
+    selectHover_(coord, piece);
+  };
+
+  img.addEventListener("click", selectHover);
+  contains_phantom.appendChild(img);
+
+  // draw as already selected
+  selectHover();
 }
 
 export function drawCancelButton(fn: () => void) {

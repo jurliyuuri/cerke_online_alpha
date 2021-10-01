@@ -84,7 +84,7 @@ import {
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
-import { drawCancelButton, drawField, drawScoreboard, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
+import { drawCancelButton, drawField, drawHoverAt_, drawPhantomAt, drawScoreboard, eraseGuide, erasePhantomAndOptionallyCancelButton, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -332,18 +332,6 @@ export async function sendMainPoll() {
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
 let SELECTED_COORD_UI: SelectedCoord = null;
-
-function eraseGuide(): void {
-  removeChildren(document.getElementById("contains_guides")!);
-  removeChildren(document.getElementById("contains_guides_on_upward")!);
-}
-
-function erasePhantomAndOptionallyCancelButton() {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-  while (contains_phantom.firstChild) {
-    contains_phantom.removeChild(contains_phantom.firstChild);
-  }
-}
 
 function cancelSteppingButUpdateTheFocus(new_focus: Coord) {
   cancelStepping();
@@ -625,45 +613,6 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     /* This is a canceling; hence we must not overwrite last_move_focus */
   });
   drawTam2HoverNonshiftedAt(to);
-}
-
-function drawPhantomAt(coord: Coord, piece: Piece) {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-  erasePhantomAndOptionallyCancelButton();
-
-  const phantom: HTMLImageElement = createPieceImgToBePlacedOnBoard(
-    coord,
-    piece,
-  );
-  phantom.style.opacity = "0.1";
-  contains_phantom.appendChild(phantom);
-}
-
-function drawHoverAt_<T extends "Tam2" | NonTam2PieceUpward>(
-  coord: Coord,
-  piece: T,
-  selectHover_: (coord: Coord, piece: T) => void,
-) {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-
-  const img = createPieceSizeImageOnBoardByPath_Shifted(
-    coord,
-    toPath_(piece),
-    "piece_image_on_board",
-  );
-
-  img.style.zIndex = "100";
-  img.style.cursor = "pointer";
-
-  const selectHover = function () {
-    selectHover_(coord, piece);
-  };
-
-  img.addEventListener("click", selectHover);
-  contains_phantom.appendChild(img);
-
-  // draw as already selected
-  selectHover();
 }
 
 function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
@@ -1082,7 +1031,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 
   setTimeout(() => {
     drawScoreDisplay(new_state.hands);
-    drawTyMok1AndTaXot1Buttons(new_state);
+    generateTyMok1AndTaXot1Buttons(new_state);
   }, 1000 * 0.8093);
   stopPolling();
 }
@@ -1888,7 +1837,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
   }, 200 * 0.8093);
 }
 
-function drawTyMok1AndTaXot1Buttons(o: { hands: Hand[], score: number }) {
+function generateTyMok1AndTaXot1Buttons(o: { hands: Hand[], score: number }) {
   const base_score: number = o.score;
   const score_display = document.getElementById("score_display")!;
 
