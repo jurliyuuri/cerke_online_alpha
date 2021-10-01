@@ -84,7 +84,7 @@ import {
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
-import { drawCancelButton, drawField, drawHoverAt_, drawPhantomAt, drawScoreboard, eraseGuide, erasePhantomAndOptionallyCancelButton, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
+import { drawCancelButton, drawCiurl, drawField, drawHoverAt_, drawPhantomAt, drawScoreboard, eraseGuide, erasePhantomAndOptionallyCancelButton, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -718,7 +718,7 @@ async function sendAfterHalfAcceptance(
   }
 
   await animateWaterEntryLogo();
-  displayCiurl(res.dat.ciurl);
+  drawCiurlWithAudio(res.dat.ciurl);
   await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
 
   if (res.dat.ciurl.filter(a => a).length < 3) {
@@ -912,7 +912,7 @@ async function sendNormalMessage(message: NormalMove) {
   }
 
   await animateWaterEntryLogo();
-  displayCiurl(res.dat.ciurl);
+  drawCiurlWithAudio(res.dat.ciurl);
   await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
   const water_ciurl_count = res.dat.ciurl.filter(a => a).length;
   if (water_ciurl_count < 3) {
@@ -1421,7 +1421,7 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
     await animatePunishStepTam(Side.Upward);
   }
 
-  displayCiurl(res.ciurl);
+  drawCiurlWithAudio(res.ciurl);
 
   document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
 
@@ -1557,61 +1557,12 @@ export async function animateWaterEntryLogo() {
   await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
 }
 
-export function displayCiurl(ciurl: Ciurl, side?: Side) {
-  // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
-  // Standard Normal variate using Box-Muller transform.
-  const randn_bm = function (): number {
-    let u = 0,
-      v = 0;
-    while (u === 0) {
-      u = Math.random();
-    } // Converting [0,1) to (0,1)
-    while (v === 0) {
-      v = Math.random();
-    }
-    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-  };
-
-  const contains_ciurl = document.getElementById("contains_ciurl")!;
-
-  clearCiurl();
-
-  const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
-  const hop1zuo1_height = 140;
-  const board_height = 631;
-  const averageTop =
-    84 +
-    (side == null || side === Side.Upward ? hop1zuo1_height + board_height : 0);
-
-  const imgs: HTMLImageElement[] = ciurl.map((side, ind) =>
-    createCiurl(side, {
-      left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
-      top:
-        averageTop +
-        (ind + 0.5 - ciurl.length / 2) * 26 +
-        BOX_SIZE * 0.05 * randn_bm(),
-      rotateDeg: Math.random() * 40 - 20,
-    }),
-  );
-
-  // Fisher-Yates
-  for (let i = imgs.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [imgs[i], imgs[j]] = [imgs[j], imgs[i]];
-  }
-
-  for (let i = 0; i < imgs.length; i++) {
-    contains_ciurl.appendChild(imgs[i]);
-  }
-
+export function drawCiurlWithAudio(ciurl: Ciurl, side?: Side) {
+  drawCiurl(ciurl, side);
   if (KRUT_CRUOP) {
     const ciurl_sound = new Audio("sound/ciurl4.ogg");
     ciurl_sound.play();
   }
-}
-
-function clearCiurl() {
-  removeChildren(document.getElementById("contains_ciurl")!);
 }
 
 function display_guides_after_stepping(

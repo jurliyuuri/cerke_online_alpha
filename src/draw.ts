@@ -1,6 +1,8 @@
+import { Ciurl } from "cerke_online_api";
 import { Coord, Board, Piece, BoardIndex, Side, NonTam2PieceUpward, NonTam2PieceDownward } from "cerke_online_utility/lib";
-import { createCancelButton, createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1, createPieceSizeImageOnBoardByPath_Shifted } from "./create_html_element";
+import { createCancelButton, createCiurl, createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1, createPieceSizeImageOnBoardByPath_Shifted } from "./create_html_element";
 import { Season, Log2_Rate, GAME_STATE } from "./game_state";
+import { BOX_SIZE } from "./html_top_left";
 import { removeChildren, selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath, toPath_ } from "./piece_to_path";
 
@@ -14,6 +16,58 @@ export function getDenoteScoreNodeTopLeft(score: number) {
 
 export function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
   return { top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4 };
+}
+
+export function drawCiurl(ciurl: Ciurl, side?: Side) {
+  // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
+  // Standard Normal variate using Box-Muller transform.
+  const randn_bm = function (): number {
+    let u = 0,
+      v = 0;
+    while (u === 0) {
+      u = Math.random();
+    } // Converting [0,1) to (0,1)
+    while (v === 0) {
+      v = Math.random();
+    }
+    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+  };
+
+  const contains_ciurl = document.getElementById("contains_ciurl")!;
+
+  eraseCiurl();
+
+  const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
+  const hop1zuo1_height = 140;
+  const board_height = 631;
+  const averageTop =
+    84 +
+    (side == null || side === Side.Upward ? hop1zuo1_height + board_height : 0);
+
+  const imgs: HTMLImageElement[] = ciurl.map((side, ind) =>
+    createCiurl(side, {
+      left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
+      top:
+        averageTop +
+        (ind + 0.5 - ciurl.length / 2) * 26 +
+        BOX_SIZE * 0.05 * randn_bm(),
+      rotateDeg: Math.random() * 40 - 20,
+    }),
+  );
+
+  // Fisher-Yates
+  for (let i = imgs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [imgs[i], imgs[j]] = [imgs[j], imgs[i]];
+  }
+
+  for (let i = 0; i < imgs.length; i++) {
+    contains_ciurl.appendChild(imgs[i]);
+  }
+}
+
+function eraseCiurl() {
+  removeChildren(document.getElementById("contains_ciurl")!);
 }
 
 export function eraseGuide(): void {

@@ -1,4 +1,4 @@
-import { drawField } from "./main";
+import { drawField } from "./draw";
 import { GAME_STATE } from "./game_state";
 import { KIAR_ARK } from "./kiar_ark";
 

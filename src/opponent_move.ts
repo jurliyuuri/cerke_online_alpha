@@ -22,17 +22,16 @@ import {
 } from "./html_top_left";
 import { createArrowPiece } from "./create_html_element";
 import {
-  displayCiurl,
   animateStepTamLogo,
   animateWaterEntryLogo,
   animatePunishStepTam,
-  drawField,
   calculateHandsAndScore,
   sendStuffTo,
   endSeason,
   increaseRateAndAnimate,
   removeChildren,
 } from "./main";
+import { drawCiurl, drawField } from "./draw";
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
 import { KIAR_ARK } from "./kiar_ark";
@@ -120,7 +119,7 @@ async function animateOpponentSteppingOverCiurl(
 ) {
   drawArrow(step, plannedDirection);
   await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
-  displayCiurl(stepping_ciurl, Side.Downward);
+  drawCiurl(stepping_ciurl, Side.Downward);
   await new Promise(resolve => setTimeout(resolve, 600 * 0.8093));
   eraseArrow();
 }
@@ -210,7 +209,7 @@ export async function animateOpponentInfAfterStep(p: {
 
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(result.water_entry_ciurl, Side.Downward);
+      drawCiurl(result.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -246,7 +245,7 @@ export async function animateOpponentInfAfterStep(p: {
 
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(result.water_entry_ciurl, Side.Downward);
+      drawCiurl(result.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -257,7 +256,7 @@ export async function animateOpponentInfAfterStep(p: {
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
+      drawCiurl(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       alert(DICTIONARY.ja.failedWaterEntry);
       console.log("drawField opponent #", 14);
@@ -464,7 +463,7 @@ async function animateOpponentSrcStepDstFinite_(
 
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(water_entry_ciurl, Side.Downward);
+      drawCiurl(water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -508,7 +507,7 @@ async function animateOpponentSrcStepDstFinite_(
 
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(water_entry_ciurl, Side.Downward);
+      drawCiurl(water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -600,7 +599,7 @@ async function animateOpponentSrcDst_(
 
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(o.water_entry_ciurl, Side.Downward);
+      drawCiurl(o.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -633,7 +632,7 @@ async function animateOpponentSrcDst_(
 
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(o.water_entry_ciurl, Side.Downward);
+      drawCiurl(o.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
