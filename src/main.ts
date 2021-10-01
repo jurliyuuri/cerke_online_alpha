@@ -302,7 +302,10 @@ export async function sendMainPoll() {
           piece_capture_comment: toPieceCaptureComment(maybe_capture)
         }];
       } else {
-        if (absoluteCoordEq(opponent_move.plannedDirection, finalResult_resolved.dest)) {
+        
+        if (absoluteCoordEq(opponent_move.plannedDirection, finalResult_resolved.dest) /* it went as planned, so no need to add 此無 */
+        || !absoluteCoordEq(finalResult_resolved.dest, opponent_move.src) /* the end is different from the source, so it cannot be 此無 */
+        ) {
           KIAR_ARK.body = [...KIAR_ARK.body, {
             type: "movement",
             dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
