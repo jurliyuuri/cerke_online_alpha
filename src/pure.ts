@@ -12,7 +12,7 @@ export function filterInOneDirectionTillCiurlLimit(
   plannedDirection: Coord,
   ciurl: Ciurl,
 ) {
-  return guideListGreen.filter(function(c: Coord) {
+  return guideListGreen.filter((c: Coord) => {
     const subtractStep = function([x, y]: Coord): [number, number] {
       const [step_x, step_y] = step;
       return [x - step_x, y - step_y];

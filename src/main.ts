@@ -392,7 +392,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   console.log("drawField #", 2);
   drawField({ focus: null });
   drawPhantomAt(firstDest, "Tam2");
-  drawCancelButton(function () {
+  drawCancelButton(() => {
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
     document
@@ -411,7 +411,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
     console.log("drawField #", 3.1);
     drawField({ focus: GAME_STATE.last_move_focus }); // This is within cancel; hence we must not overwrite the last_move_focus
   });
-  drawHoverAt_<"Tam2">(stepsOn, "Tam2", function (coord: Coord, piece: "Tam2") {
+  drawHoverAt_<"Tam2">(stepsOn, "Tam2", (coord: Coord, piece: "Tam2") => {
     const contains_guides = document.getElementById("contains_guides")!;
 
     const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
@@ -549,41 +549,36 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
         const img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
 
         if (destPiece === null) {
-          img.addEventListener("click", function () {
-            (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(
-              theVerySrc: Coord,
-              firstDest: Coord,
-              to: Coord,
-            ) {
-              console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
+          img.addEventListener("click", () => {
+            const theVerySrc: Coord = from;
+            const firstDest: Coord = coord;
+            const to: Coord = guideListYellow[ind];
+            console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
+            const message: NormalMove = step
+              ? {
+                type: "TamMove",
+                stepStyle: "StepsDuringFormer",
+                src: toAbsoluteCoord(theVerySrc),
+                step: toAbsoluteCoord(step),
+                firstDest: toAbsoluteCoord(firstDest),
+                secondDest: toAbsoluteCoord(to),
+              }
+              : {
+                type: "TamMove",
+                stepStyle: "NoStep",
+                src: toAbsoluteCoord(theVerySrc),
+                firstDest: toAbsoluteCoord(firstDest),
+                secondDest: toAbsoluteCoord(to),
+              };
 
-              const message: NormalMove = step
-                ? {
-                  type: "TamMove",
-                  stepStyle: "StepsDuringFormer",
-                  src: toAbsoluteCoord(theVerySrc),
-                  step: toAbsoluteCoord(step),
-                  firstDest: toAbsoluteCoord(firstDest),
-                  secondDest: toAbsoluteCoord(to),
-                }
-                : {
-                  type: "TamMove",
-                  stepStyle: "NoStep",
-                  src: toAbsoluteCoord(theVerySrc),
-                  firstDest: toAbsoluteCoord(firstDest),
-                  secondDest: toAbsoluteCoord(to),
-                };
+            // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
+            erasePhantomAndOptionallyCancelButton();
+            eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+            sendNormalMessage(message);
 
-              // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
-              erasePhantomAndOptionallyCancelButton();
-              eraseGuide(); // this removes the central guide, as well as the yellow and green ones
-              sendNormalMessage(message);
-
-              document
-                .getElementById("protective_tam_cover_over_field")!
-                .classList.add("nocover");
-              return;
-            })(from, coord, guideListYellow[ind]);
+            document
+              .getElementById("protective_tam_cover_over_field")!
+              .classList.add("nocover");
           });
         } else {
           img.addEventListener("click", function () {
@@ -608,7 +603,8 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   };
 
   drawPhantomAt(from, "Tam2");
-  drawCancelButton(function cancelTam2FirstMove() {
+  drawCancelButton(() => {
+    // cancel Tam2's first move
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
     document
@@ -852,12 +848,12 @@ export async function sendStuffTo<T, U>(
       Authorization: `Bearer ${sessionStorage.access_token}`,
     },
   })
-    .then(function (res) {
+    .then(res => {
       cover_while_asyncawait.classList.add("nocover");
       return res.json();
     })
     .then(validateInput)
-    .catch(function (error) {
+    .catch(error => {
       cover_while_asyncawait.classList.add("nocover");
       console.error("Error:", error);
       return;
@@ -1534,7 +1530,7 @@ export async function animateStepTamLogo() {
   )!;
   cover_while_asyncawait.classList.remove("nocover");
 
-  setTimeout(function () {
+  setTimeout(() => {
     step_tam_logo.style.display = "none";
     cover_while_asyncawait.classList.add("nocover");
   }, 1200 * 0.8093);
@@ -1550,7 +1546,7 @@ export async function animateWaterEntryLogo() {
   )!;
   cover_while_asyncawait.classList.remove("nocover");
 
-  setTimeout(function () {
+  setTimeout(() => {
     water_entry_logo.style.display = "none";
     cover_while_asyncawait.classList.add("nocover");
   }, 1200 * 0.8093);
