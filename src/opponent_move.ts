@@ -135,11 +135,11 @@ export async function animateOpponentInfAfterStep(p: {
     water_entry_ciurl?: Ciurl;
     thwarted_by_failing_water_entry_ciurl: Ciurl | null;
   }>;
-}): Promise<{
+}): Promise<[{
   dest: AbsoluteCoord;
   water_entry_ciurl?: Ciurl;
   thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-}> {
+}, CaptureInfo]> {
   const [src_i, src_j] = p.src;
   const [step_i, step_j] = p.step;
 
@@ -217,7 +217,7 @@ export async function animateOpponentInfAfterStep(p: {
         console.log("drawField opponent #", 12);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return result;
+        return [result, toColorProf(destPiece)];
       }
     }
 
@@ -248,7 +248,7 @@ export async function animateOpponentInfAfterStep(p: {
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return result;
+        return [result, toColorProf(destPiece)];
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
@@ -258,7 +258,7 @@ export async function animateOpponentInfAfterStep(p: {
       console.log("drawField opponent #", 14);
       GAME_STATE.last_move_focus = [src_i, src_j];
       drawField({ focus: [src_i, src_j] });
-      return result;
+      return [result, toColorProf(destPiece)];
     }
 
     if (!coordEq(p.src, dest)) {
@@ -269,7 +269,7 @@ export async function animateOpponentInfAfterStep(p: {
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
   }
-  return result;
+  return [result, toColorProf(destPiece)];
 }
 
 /**

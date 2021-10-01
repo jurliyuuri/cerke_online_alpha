@@ -268,11 +268,11 @@ export async function sendMainPoll() {
           return Promise.resolve(opponent_move.finalResult);
         }
       })();
-      const finalResult_resolved: ({
+      const [finalResult_resolved, maybe_capture]: ([{
         dest: AbsoluteCoord;
         water_entry_ciurl?: Ciurl;
         thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-      }) = await animateOpponentInfAfterStep({
+      }, CaptureInfo]) = await animateOpponentInfAfterStep({
         src: fromAbsoluteCoord(opponent_move.src),
         step: fromAbsoluteCoord(opponent_move.step),
         plannedDirection: fromAbsoluteCoord(opponent_move.plannedDirection),
@@ -283,17 +283,37 @@ export async function sendMainPoll() {
 
       if (finalResult_resolved.water_entry_ciurl) {
         if (finalResult_resolved.water_entry_ciurl.filter(a => a).length < 3) {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無` }];
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無`,
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
+          }];
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}` }];
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}`,
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
+          }];
         }
       } else if (finalResult_resolved.thwarted_by_failing_water_entry_ciurl) {
-        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.thwarted_by_failing_water_entry_ciurl)}此無` }];
+        KIAR_ARK.body = [...KIAR_ARK.body, {
+          type: "movement",
+          dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.thwarted_by_failing_water_entry_ciurl)}此無`,
+          piece_capture_comment: toPieceCaptureComment(maybe_capture)
+        }];
       } else {
         if (absoluteCoordEq(opponent_move.plannedDirection, finalResult_resolved.dest)) {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}` }];
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
+          }];
         } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無` }];
+          KIAR_ARK.body = [...KIAR_ARK.body, {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無`,
+            piece_capture_comment: toPieceCaptureComment(maybe_capture)
+          }];
         }
       }
     } else {
@@ -984,11 +1004,11 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body = [...KIAR_ARK.body, { 
-      type: "movement", 
+    KIAR_ARK.body = [...KIAR_ARK.body, {
+      type: "movement",
       dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length),
       piece_capture_comment: toPieceCaptureComment(maybe_capture)
-     }];
+    }];
   }
 }
 
