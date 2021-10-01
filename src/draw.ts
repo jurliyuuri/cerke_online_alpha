@@ -1,5 +1,5 @@
 import { Coord, Board, Piece, BoardIndex, Side, NonTam2PieceUpward, NonTam2PieceDownward } from "cerke_online_utility/lib";
-import { createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1 } from "./create_html_element";
+import { createCancelButton, createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1 } from "./create_html_element";
 import { Season, Log2_Rate, GAME_STATE } from "./game_state";
 import { removeChildren, selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath } from "./piece_to_path";
@@ -14,6 +14,21 @@ export function getDenoteScoreNodeTopLeft(score: number) {
 
 export function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
   return { top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4 };
+}
+
+export function drawCancelButton(fn: () => void) {
+  const contains_phantom = document.getElementById("contains_phantom")!;
+
+  const cancelButton = createCancelButton();
+  cancelButton.width = 80;
+  cancelButton.height = 80;
+
+  cancelButton.style.zIndex = "100";
+  cancelButton.style.cursor = "pointer";
+  cancelButton.setAttribute("id", "cancelButton");
+
+  cancelButton.addEventListener("click", fn);
+  contains_phantom.appendChild(cancelButton);
 }
 
 export function drawScoreboard() {

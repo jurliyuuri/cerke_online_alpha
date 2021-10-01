@@ -84,7 +84,7 @@ import {
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
-import { drawField, drawScoreboard, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
+import { drawCancelButton, drawField, drawScoreboard, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -637,21 +637,6 @@ function drawPhantomAt(coord: Coord, piece: Piece) {
   );
   phantom.style.opacity = "0.1";
   contains_phantom.appendChild(phantom);
-}
-
-function drawCancelButton(fn: () => void) {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-
-  const cancelButton = createCancelButton();
-  cancelButton.width = 80;
-  cancelButton.height = 80;
-
-  cancelButton.style.zIndex = "100";
-  cancelButton.style.cursor = "pointer";
-  cancelButton.setAttribute("id", "cancelButton");
-
-  cancelButton.addEventListener("click", fn);
-  contains_phantom.appendChild(cancelButton);
 }
 
 function drawHoverAt_<T extends "Tam2" | NonTam2PieceUpward>(
