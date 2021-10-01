@@ -1031,7 +1031,49 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 
   setTimeout(() => {
     drawScoreDisplay(new_state.hands);
-    generateTyMok1AndTaXot1Buttons(new_state);
+
+    const base_score: number = new_state.score;
+    const score_display = document.getElementById("score_display")!;
+
+    const ty_mok1_button = createImageButton("dat2/再行", 0);
+    ty_mok1_button.addEventListener("click", async () => {
+      increaseRateAndAnimate(true);
+      const res: { legal: boolean } = await sendStuffTo<
+        boolean,
+        { legal: boolean }
+      >("whethertymok", "`send whether ty mok1`", true, response => {
+        console.log("Success; the server returned:", JSON.stringify(response));
+        return response;
+      });
+      if (res.legal !== true) {
+        throw new Error("bad!!!!");
+      }
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}\n再行` }]
+    });
+    score_display.appendChild(ty_mok1_button);
+
+    const ta_xot1_button = createImageButton("dat2/終季", 250);
+    ta_xot1_button.addEventListener("click", async () => {
+      const res: {
+        legal: boolean;
+        is_first_move_my_move: boolean | null;
+      } = await sendStuffTo<
+        boolean,
+        { legal: boolean; is_first_move_my_move: boolean | null }
+      >("whethertymok", "`send whether ty mok1`", false, response => {
+        console.log("Success; the server returned:", JSON.stringify(response));
+        return response;
+      });
+      if (res.legal !== true) {
+        throw new Error("bad!!!!");
+      }
+      const is_first_move_my_move_in_the_next_season: boolean | null =
+        res.is_first_move_my_move;
+      const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
+      endSeason(base_score, is_first_move_my_move_in_the_next_season);
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
+    });
+    score_display.appendChild(ta_xot1_button);
   }, 1000 * 0.8093);
   stopPolling();
 }
@@ -1338,7 +1380,7 @@ function filterInOneDirectionTillCiurlLimit(
   ciurl: Ciurl,
 ) {
   return guideListGreen.filter((c: Coord) => {
-    const subtractStep = function([x, y]: Coord): [number, number] {
+    const subtractStep = function ([x, y]: Coord): [number, number] {
       const [step_x, step_y] = step;
       return [x - step_x, y - step_y];
     };
@@ -1835,51 +1877,6 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
       .getElementById("protective_cover_over_field_while_asyncawait")!
       .classList.add("nocover");
   }, 200 * 0.8093);
-}
-
-function generateTyMok1AndTaXot1Buttons(o: { hands: Hand[], score: number }) {
-  const base_score: number = o.score;
-  const score_display = document.getElementById("score_display")!;
-
-  const ty_mok1_button = createImageButton("dat2/再行", 0);
-  ty_mok1_button.addEventListener("click", async () => {
-    increaseRateAndAnimate(true);
-    const res: { legal: boolean } = await sendStuffTo<
-      boolean,
-      { legal: boolean }
-    >("whethertymok", "`send whether ty mok1`", true, response => {
-      console.log("Success; the server returned:", JSON.stringify(response));
-      return response;
-    });
-    if (res.legal !== true) {
-      throw new Error("bad!!!!");
-    }
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` }]
-  });
-  score_display.appendChild(ty_mok1_button);
-
-  const ta_xot1_button = createImageButton("dat2/終季", 250);
-  ta_xot1_button.addEventListener("click", async () => {
-    const res: {
-      legal: boolean;
-      is_first_move_my_move: boolean | null;
-    } = await sendStuffTo<
-      boolean,
-      { legal: boolean; is_first_move_my_move: boolean | null }
-    >("whethertymok", "`send whether ty mok1`", false, response => {
-      console.log("Success; the server returned:", JSON.stringify(response));
-      return response;
-    });
-    if (res.legal !== true) {
-      throw new Error("bad!!!!");
-    }
-    const is_first_move_my_move_in_the_next_season: boolean | null =
-      res.is_first_move_my_move;
-    const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
-    endSeason(base_score, is_first_move_my_move_in_the_next_season);
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
-  });
-  score_display.appendChild(ta_xot1_button);
 }
 
 /**
