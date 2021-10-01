@@ -1803,28 +1803,25 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
         // click on it to get things going
         img.addEventListener("click", function () {
           eraseGuide();
-          (function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, to: Coord) {
-            const dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+          const dest = GAME_STATE.f.currentBoard[ij[0]][ij[1]];
 
-            // must parachute onto an empty square
-            if (dest != null) {
-              alert("Cannot parachute onto an occupied square");
-              throw new Error("Cannot parachute onto an occupied square");
-            }
+          if (dest != null) {
+            alert("Cannot parachute onto an occupied square");
+            throw new Error("Cannot parachute onto an occupied square");
+          }
 
-            const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
-            const message: NormalNonTamMove = {
-              type: "NonTamMove",
-              data: {
-                type: "FromHand",
-                color: piece.color,
-                prof: piece.prof,
-                dest: abs_dst,
-              },
-            };
+          const abs_dst: AbsoluteCoord = toAbsoluteCoord(ij);
+          const message: NormalNonTamMove = {
+            type: "NonTamMove",
+            data: {
+              type: "FromHand",
+              color: piece.color,
+              prof: piece.prof,
+              dest: abs_dst,
+            },
+          };
 
-            sendNormalMessage(message);
-          })(piece, ij);
+          sendNormalMessage(message);
         });
 
         contains_guides.appendChild(img);
