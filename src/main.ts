@@ -91,7 +91,7 @@ import {
   drawPhantomAt, drawMak2Io1, 
   eraseGuide, erasePhantomAndOptionallyCancelButton,
   getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
-} from "./draw";
+} from "./draw_erase_animate";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]

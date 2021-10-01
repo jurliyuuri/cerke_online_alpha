@@ -36,7 +36,7 @@ import {
   drawCiurl, 
   drawField,
   eraseArrow
-} from "./draw";
+} from "./draw_erase_animate";
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
 import { KIAR_ARK } from "./kiar_ark";
