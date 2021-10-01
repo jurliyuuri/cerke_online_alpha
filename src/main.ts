@@ -1,6 +1,6 @@
 import {
   createPieceSizeImageOnBoardByPath,
-  createCircleGuideImageAt,
+  createGuideImageAt,
   createPieceImgToBePlacedOnBoard,
   createCancelButton,
   createPieceSizeImageOnBoardByPath_Shifted,
@@ -436,7 +436,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
         continue;
       }
 
-      const img = createCircleGuideImageAt(secondDest, "ctam");
+      const img = createGuideImageAt(secondDest, "yellow_diamond_for_tam");
 
       img.addEventListener("click", function () {
         const message: NormalMove = {
@@ -541,7 +541,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
           continue;
         }
 
-        const img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
+        const img = createGuideImageAt(guideListYellow[ind], "yellow_diamond_for_tam");
 
         if (destPiece === null) {
           img.addEventListener("click", () => {
@@ -658,7 +658,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
 
     display_guides_after_stepping(
       coord,
-      { piece, path: "ct" },
+      { piece, path: "yellow_circle" },
       contains_guides,
       guideListYellow,
     );
@@ -671,7 +671,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     }
     display_guides_after_stepping(
       coord,
-      { piece, path: "ct2" },
+      { piece, path: "green_circle" },
       contains_guides,
       guideListGreen,
     );
@@ -1473,7 +1473,7 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
 
   const src: Coord = fromAbsoluteCoord(message.src);
 
-  const passer = createCircleGuideImageAt(src, "ct");
+  const passer = createGuideImageAt(src, "yellow_circle");
   passer.addEventListener("click", function (ev) {
     eraseGuide();
     sendAfterHalfAcceptance(
@@ -1510,7 +1510,7 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
       continue;
     }
 
-    const img = createCircleGuideImageAt(filteredList[ind], "ct2");
+    const img = createGuideImageAt(filteredList[ind], "green_circle");
 
     img.addEventListener("click", function (ev) {
       sendAfterHalfAcceptance(
@@ -1542,7 +1542,7 @@ export function drawCiurlWithAudio(ciurl: Ciurl, side?: Side) {
 
 function display_guides_after_stepping(
   coord: Coord,
-  q: { piece: Piece; path: "ct" } | { piece: NonTam2Piece; path: "ct2" },
+  q: { piece: Piece; path: "yellow_circle" } | { piece: NonTam2Piece; path: "green_circle" },
   parent: HTMLElement,
   list: Coord[],
 ): void {
@@ -1568,11 +1568,11 @@ function display_guides_after_stepping(
       continue;
     }
 
-    const img = createCircleGuideImageAt(list[ind], q.path);
+    const img = createGuideImageAt(list[ind], q.path);
 
     img.addEventListener(
       "click",
-      q.path === "ct"
+      q.path === "yellow_circle"
         ? function () {
           eraseGuide();
           getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
@@ -1604,7 +1604,7 @@ function display_guides_before_stepping(
 ) {
   for (let ind = 0; ind < list.length; ind++) {
     // draw the yellow guides
-    const img = createCircleGuideImageAt(list[ind], "ct");
+    const img = createGuideImageAt(list[ind], "yellow_circle");
 
     // click on it to get things going
     img.addEventListener("click", function () {
@@ -1724,7 +1724,7 @@ export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
         }
 
         // draw the yellow guides
-        const img = createCircleGuideImageAt(ij, "ct");
+        const img = createGuideImageAt(ij, "yellow_circle");
 
         // click on it to get things going
         img.addEventListener("click", function () {

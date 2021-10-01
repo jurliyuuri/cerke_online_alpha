@@ -87,9 +87,9 @@ export function createPieceSizeSelectionButtonOnBoard_Shifted(coord: Coord) {
   return centralNode;
 }
 
-export function createCircleGuideImageAt(
+export function createGuideImageAt(
   coord: Coord,
-  path: string,
+  path: "yellow_circle" | "green_circle" | "yellow_diamond_for_tam",
 ): HTMLImageElement {
   const [row_index, column_index] = coord;
   const img = document.createElement("img");
