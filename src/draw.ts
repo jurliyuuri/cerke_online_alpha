@@ -190,7 +190,7 @@ export function drawCancelButton(fn: () => void) {
   contains_phantom.appendChild(cancelButton);
 }
 
-export function drawScoreboard() {
+export function drawMak2Io1() {
   const denote_season = document.getElementById("denote_season")!;
   denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
     }px`;

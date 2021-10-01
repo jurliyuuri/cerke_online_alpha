@@ -88,7 +88,7 @@ import {
   animateStepTamLogo,
   animateWaterEntryLogo,
   drawCancelButton, drawCiurl, drawField, drawHoverAt_,
-  drawPhantomAt, drawScoreboard, 
+  drawPhantomAt, drawMak2Io1, 
   eraseGuide, erasePhantomAndOptionallyCancelButton,
   getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
 } from "./draw";
@@ -1778,7 +1778,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
     5: 6,
     6: 6, // does not go beyond x64, because the total score is 40
   };
-  drawScoreboard(); // cargo cult
+  drawMak2Io1(); // cargo cult
   GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
 
   const denote_rate = document.getElementById("denote_rate")!;
@@ -1792,7 +1792,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
       getDenoteRateNodeTopLeft(orig_log2_rate),
     );
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-    drawScoreboard();
+    drawMak2Io1();
     if (done_by_me) {
       resumePolling();
     } else {
@@ -1908,7 +1908,7 @@ export async function animatePunishStepTam(side: Side) {
     return;
   }
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
-  drawScoreboard();
+  drawMak2Io1();
 
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
   document
@@ -1990,7 +1990,7 @@ export function endSeason(
       getDenoteSeasonNodeTopLeft(orig_season),
     );
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
-    drawScoreboard();
+    drawMak2Io1();
     alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
