@@ -136,6 +136,10 @@ export function erasePhantomAndOptionallyCancelButton() {
   }
 }
 
+export function eraseArrow() {
+  removeChildren(document.getElementById("arrows")!);
+}
+
 export function drawPhantomAt(coord: Coord, piece: Piece) {
   const contains_phantom = document.getElementById("contains_phantom")!;
   erasePhantomAndOptionallyCancelButton();

@@ -34,7 +34,8 @@ import {
   animateStepTamLogo,
   animateWaterEntryLogo,
   drawCiurl, 
-  drawField
+  drawField,
+  eraseArrow
 } from "./draw";
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
@@ -750,10 +751,6 @@ export async function animateOpponentTamSteppingDuringLatter(p: {
   await animateOpponentSrcDst_(p.src, p.firstDest, { disable_focus: true });
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
   await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
-}
-
-function eraseArrow() {
-  removeChildren(document.getElementById("arrows")!);
 }
 
 function drawArrow(from: Coord, to: Coord) {
