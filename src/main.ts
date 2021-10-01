@@ -84,7 +84,7 @@ import {
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
-import { drawScoreboard, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
+import { drawField, drawScoreboard, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -1730,7 +1730,7 @@ function display_guides_before_stepping(
   }
 }
 
-function selectOwnPieceOnBoard(
+export function selectOwnPieceOnBoard(
   coord: Coord,
   piece: "Tam2" | NonTam2PieceUpward,
 ) {
@@ -1781,7 +1781,7 @@ function selectOwnPieceOnBoard(
   }
 }
 
-function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
+export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
   // erase the existing guide in all circumstances
   eraseGuide();
 
@@ -2174,97 +2174,4 @@ export function endSeason(
       .getElementById("protective_cover_over_field_while_asyncawait")
       ?.classList.add("nocover");
   }, 200 * 0.8093);
-}
-
-export function drawField(o: { focus?: Coord | null }) {
-  console.log(`focusing:`, o.focus);
-  (function drawBoard(board: Board) {
-    const contains_pieces_on_board = document.getElementById(
-      "contains_pieces_on_board",
-    )!;
-
-    // delete everything
-    removeChildren(contains_pieces_on_board);
-
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        const piece: Piece | null = board[i][j];
-        if (piece == null) {
-          continue;
-        }
-
-        const coord: Coord = [i as BoardIndex, j as BoardIndex];
-        const imgNode: HTMLImageElement = createPieceImgToBePlacedOnBoard(
-          coord,
-          piece,
-        );
-        imgNode.id = `field_piece_${i}_${j}`;
-
-        if (o.focus && coord[0] === o.focus[0] && coord[1] === o.focus[1]) {
-          // Add a border for the focus
-          imgNode.style.border = "8px solid #ff6";
-          imgNode.style.margin = "-8px";
-        }
-
-        if (piece === "Tam2") {
-          // prevent tam2 ty sak2
-          if (!GAME_STATE.opponent_has_just_moved_tam) {
-            imgNode.style.cursor = "pointer";
-            imgNode.addEventListener("click", function () {
-              selectOwnPieceOnBoard(coord, piece);
-            });
-          }
-        } else if (piece.side === Side.Upward) {
-          const q: NonTam2PieceUpward = {
-            prof: piece.prof,
-            side: Side.Upward,
-            color: piece.color,
-          };
-          imgNode.style.cursor = "pointer";
-          imgNode.addEventListener("click", function () {
-            selectOwnPieceOnBoard(coord, q);
-          });
-        }
-
-        contains_pieces_on_board.appendChild(imgNode);
-      }
-    }
-  })(GAME_STATE.f.currentBoard);
-
-  (function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
-    const contains_pieces_on_upward = document.getElementById(
-      "contains_pieces_on_upward",
-    )!;
-
-    // delete everything
-    removeChildren(contains_pieces_on_upward);
-
-    for (let i = 0; i < list.length; i++) {
-      const piece: NonTam2PieceUpward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-
-      imgNode.style.cursor = "pointer";
-      imgNode.addEventListener("click", function () {
-        selectOwnPieceOnHop1zuo1(i, piece);
-      });
-
-      contains_pieces_on_upward.appendChild(imgNode);
-    }
-  })(GAME_STATE.f.hop1zuo1OfUpward);
-
-  (function drawHop1zuo1OfDownward(list: NonTam2PieceDownward[]) {
-    const contains_pieces_on_downward = document.getElementById(
-      "contains_pieces_on_downward",
-    )!;
-
-    // delete everything
-    removeChildren(contains_pieces_on_downward);
-
-    for (let i = 0; i < list.length; i++) {
-      const piece: NonTam2PieceDownward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-      imgNode.id = `hop1zuo1OfDownward_${i}`;
-      contains_pieces_on_downward.appendChild(imgNode);
-    }
-  })(GAME_STATE.f.hop1zuo1OfDownward);
 }
