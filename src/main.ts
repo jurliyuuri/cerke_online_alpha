@@ -1373,7 +1373,7 @@ function getThingsGoingAfterStepping_Finite(
   } else {
     (async () => {
       await animateStepTamLogo();
-      await animatePunishStepTam(Side.Upward);
+      await animatePunishStepTamAndCheckPerzej(Side.Upward);
       await sendNormalMessage(message);
     })();
   }
@@ -1425,7 +1425,7 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
 
   if (isTamAt(fromAbsoluteCoord(message.step))) {
     await animateStepTamLogo();
-    await animatePunishStepTam(Side.Upward);
+    await animatePunishStepTamAndCheckPerzej(Side.Upward);
   }
 
   drawCiurlWithAudio(res.ciurl);
@@ -1877,7 +1877,7 @@ function perzej(
   KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }]
 }
 
-export async function animatePunishStepTam(side: Side) {
+export async function animatePunishStepTamAndCheckPerzej(side: Side) {
   const score_display = document.getElementById("score_display")!;
   score_display.classList.add("nocover");
   const denote_score = document.getElementById("denote_score")!;

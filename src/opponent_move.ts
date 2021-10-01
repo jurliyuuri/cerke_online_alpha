@@ -22,7 +22,7 @@ import {
 } from "./html_top_left";
 import { createArrowPiece } from "./create_html_element";
 import {
-  animatePunishStepTam,
+  animatePunishStepTamAndCheckPerzej,
   calculateHandsAndScore,
   sendStuffTo,
   endSeason,
@@ -137,7 +137,7 @@ export async function animateOpponentInfAfterStep(p: {
 
   if (stepPiece === "Tam2") {
     await animateStepTamLogo();
-    await animatePunishStepTam(Side.Downward);
+    await animatePunishStepTamAndCheckPerzej(Side.Downward);
   }
 
   const srcNode: HTMLElement = document.getElementById(
@@ -402,7 +402,7 @@ async function animateOpponentSrcStepDstFinite_(
 
   if (stepPiece === "Tam2") {
     await animateStepTamLogo();
-    await animatePunishStepTam(Side.Downward);
+    await animatePunishStepTamAndCheckPerzej(Side.Downward);
   }
 
   const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
