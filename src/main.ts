@@ -302,9 +302,9 @@ export async function sendMainPoll() {
           piece_capture_comment: toPieceCaptureComment(maybe_capture)
         }];
       } else {
-        
+
         if (absoluteCoordEq(opponent_move.plannedDirection, finalResult_resolved.dest) /* it went as planned, so no need to add 此無 */
-        || !absoluteCoordEq(finalResult_resolved.dest, opponent_move.src) /* the end is different from the source, so it cannot be 此無 */
+          || !absoluteCoordEq(finalResult_resolved.dest, opponent_move.src) /* the end is different from the source, so it cannot be 此無 */
         ) {
           KIAR_ARK.body = [...KIAR_ARK.body, {
             type: "movement",
@@ -995,7 +995,12 @@ async function sendNormalMessage(message: NormalMove) {
       message.data.type === "SrcStepDstFinite"
     ) {
       cancelSteppingButUpdateTheFocus(fromAbsoluteCoord(message.data.src));
+    } else if (message.type === "NonTamMove" && message.data.type !== "FromHand") {
+      // The focus must be updated
+      console.log("drawField #", 10.1);
+      drawField({ focus: fromAbsoluteCoord(message.data.src) });
     }
+
     GAME_STATE.is_my_turn = false;
     // no capture possible
     KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length) }];
