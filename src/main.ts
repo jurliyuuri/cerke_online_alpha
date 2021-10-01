@@ -1759,12 +1759,6 @@ export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
   }
 }
 
-export function removeChildren(parent: HTMLElement) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-}
-
 export function increaseRateAndAnimate(done_by_me: boolean) {
   const score_display = document.getElementById("score_display")!;
   score_display.classList.add("nocover");

@@ -3,8 +3,14 @@ import { Coord, Board, Piece, BoardIndex, Side, NonTam2PieceUpward, NonTam2Piece
 import { createCancelButton, createCiurl, createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1, createPieceSizeImageOnBoardByPath_Shifted } from "./create_html_element";
 import { Season, Log2_Rate, GAME_STATE } from "./game_state";
 import { BOX_SIZE } from "./html_top_left";
-import { removeChildren, selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
+import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath, toPath_ } from "./piece_to_path";
+
+function removeChildren(parent: HTMLElement) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
 
 export function getDenoteSeasonNodeTopLeft(season: Season) {
   return { top: 360 + 51 * (3 - season), left: 3 };

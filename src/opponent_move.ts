@@ -27,7 +27,6 @@ import {
   sendStuffTo,
   endSeason,
   increaseRateAndAnimate,
-  removeChildren,
 } from "./main";
 import {
   animateNode,
