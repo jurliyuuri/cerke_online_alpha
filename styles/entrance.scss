@@ -133,13 +133,15 @@ $min-entirety-aspect-ratio: 29/41;
     left: 0px;
   }
 
-  $blog_link_container_width: 100px;
+  $blog_link_container_font_size: $container-height * 0.04;
+  $blog_link_container_width: $blog_link_container_font_size * 5;
   #blog_link_container {
     text-align: center;
     position: absolute;
     width: $blog_link_container_width;
     left: calc(#{$container-width / 2} - #{$blog_link_container_width / 2});
     top: $container-height * 0.95;
+    font-size: $blog_link_container_font_size;
   }
 }
 
@@ -265,12 +267,14 @@ $min-entirety-aspect-ratio: 29/41;
     left: 0px;
   }
 
-  $blog_link_container_width: 100px;
+  $blog_link_container_font_size: $container-height * 0.04;
+  $blog_link_container_width: $blog_link_container_font_size * 5;
   #blog_link_container {
     text-align: center;
     position: absolute;
     width: $blog_link_container_width;
     left: calc(#{$container-width / 2} - #{$blog_link_container_width / 2});
     top: $container-height * 0.95;
+    font-size: $blog_link_container_font_size;
   }
 }
