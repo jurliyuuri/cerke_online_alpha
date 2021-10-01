@@ -43,7 +43,10 @@ export function drawScoreboard() {
 
 export function drawField(o: { focus?: Coord | null }) {
   console.log(`focusing:`, o.focus);
-  (function drawBoard(board: Board) {
+
+  // First, draw the board.
+  {
+    const board = GAME_STATE.f.currentBoard;
     const contains_pieces_on_board = document.getElementById(
       "contains_pieces_on_board",
     )!;
@@ -94,9 +97,11 @@ export function drawField(o: { focus?: Coord | null }) {
         contains_pieces_on_board.appendChild(imgNode);
       }
     }
-  })(GAME_STATE.f.currentBoard);
+  }
 
-  (function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
+  // Then, draw the Upward's hop1zuo1
+  {
+    const list: NonTam2PieceUpward[] = GAME_STATE.f.hop1zuo1OfUpward;
     const contains_pieces_on_upward = document.getElementById(
       "contains_pieces_on_upward",
     )!;
@@ -115,9 +120,11 @@ export function drawField(o: { focus?: Coord | null }) {
 
       contains_pieces_on_upward.appendChild(imgNode);
     }
-  })(GAME_STATE.f.hop1zuo1OfUpward);
+  }
 
-  (function drawHop1zuo1OfDownward(list: NonTam2PieceDownward[]) {
+  // Then, draw the Downward's hop1zuo1
+  {
+    const list: NonTam2PieceDownward[] = GAME_STATE.f.hop1zuo1OfDownward;
     const contains_pieces_on_downward = document.getElementById(
       "contains_pieces_on_downward",
     )!;
@@ -131,5 +138,5 @@ export function drawField(o: { focus?: Coord | null }) {
       imgNode.id = `hop1zuo1OfDownward_${i}`;
       contains_pieces_on_downward.appendChild(imgNode);
     }
-  })(GAME_STATE.f.hop1zuo1OfDownward);
+  }
 }
