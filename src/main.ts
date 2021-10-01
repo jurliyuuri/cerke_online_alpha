@@ -1293,7 +1293,7 @@ function updateField(message: NormalMove): CaptureInfo {
   }
 }
 
-function getThingsGoing(
+function getThingsGoingAfterAGuideIsClicked(
   piece_to_move: "Tam2" | NonTam2PieceUpward,
   from: Coord,
   to: Coord,
@@ -1683,7 +1683,7 @@ function display_guides_before_stepping(
     // click on it to get things going
     img.addEventListener("click", function () {
       eraseGuide();
-      getThingsGoing(
+      getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
@@ -1694,7 +1694,7 @@ function display_guides_before_stepping(
     img.addEventListener("contextmenu", function (e) {
       eraseGuide();
       e.preventDefault();
-      getThingsGoing(
+      getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
