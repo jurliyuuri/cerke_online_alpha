@@ -186,6 +186,7 @@ export async function animateOpponentInfAfterStep(p: {
 
   /* it IS possible that you are returning to the original position, in which case you don't do anything */
   if (destPiece !== null && !coordEq(p.src, dest)) {
+    // this is when the capture happens
     const destNode: HTMLElement = document.getElementById(
       `field_piece_${dest_i}_${dest_j}`,
     )!;
@@ -231,7 +232,9 @@ export async function animateOpponentInfAfterStep(p: {
     console.log("drawField opponent #", 13);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
+    return [result, toColorProf(destPiece)];
   } else {
+    // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     await animateNode(
       srcNode,
       750 * 0.8093,
@@ -248,7 +251,7 @@ export async function animateOpponentInfAfterStep(p: {
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return [result, toColorProf(destPiece)];
+        return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
@@ -258,7 +261,7 @@ export async function animateOpponentInfAfterStep(p: {
       console.log("drawField opponent #", 14);
       GAME_STATE.last_move_focus = [src_i, src_j];
       drawField({ focus: [src_i, src_j] });
-      return [result, toColorProf(destPiece)];
+      return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     }
 
     if (!coordEq(p.src, dest)) {
@@ -268,8 +271,8 @@ export async function animateOpponentInfAfterStep(p: {
     console.log("drawField opponent #", 15);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
+    return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
   }
-  return [result, toColorProf(destPiece)];
 }
 
 /**
