@@ -131,11 +131,9 @@ async function sendSomethingSomewhere<T, U>(
     },
     keepalive: true
   })
-    .then(function(res) {
-      return res.json();
-    })
+    .then(res => res.json())
     .then(validateInput)
-    .catch(function(error) {
+    .catch(error => {
       console.error("Error:", error);
       return;
     });

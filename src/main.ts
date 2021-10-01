@@ -1,6 +1,6 @@
 import {
   createPieceSizeImageOnBoardByPath,
-  createCircleGuideImageAt,
+  createGuideImageAt,
   createPieceImgToBePlacedOnBoard,
   createCancelButton,
   createPieceSizeImageOnBoardByPath_Shifted,
@@ -26,7 +26,6 @@ import {
   animateOpponentTamSteppingDuringLatter,
   animateOpponentSrcStepDstFinite,
   animateOpponentInfAfterStep,
-  animateNode,
   toColorProf,
   CaptureInfo,
 } from "./opponent_move";
@@ -63,7 +62,6 @@ import {
   canGetOccupiedByNonTam,
   canGetOccupiedBy,
 } from "cerke_online_utility/lib";
-import { filterInOneDirectionTillCiurlLimit } from "./pure";
 import {
   BOX_SIZE,
   MAX_PIECE_SIZE,
@@ -85,6 +83,15 @@ import {
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
+import {
+  animateNode,
+  animateStepTamLogo,
+  animateWaterEntryLogo,
+  drawCancelButton, drawCiurl, drawField, drawHoverAt_,
+  drawPhantomAt, drawMak2Io1, 
+  eraseGuide, erasePhantomAndOptionallyCancelButton,
+  getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
+} from "./draw_erase_animate";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -333,18 +340,6 @@ type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
 let SELECTED_COORD_UI: SelectedCoord = null;
 
-function eraseGuide(): void {
-  removeChildren(document.getElementById("contains_guides")!);
-  removeChildren(document.getElementById("contains_guides_on_upward")!);
-}
-
-function erasePhantomAndOptionallyCancelButton() {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-  while (contains_phantom.firstChild) {
-    contains_phantom.removeChild(contains_phantom.firstChild);
-  }
-}
-
 function cancelSteppingButUpdateTheFocus(new_focus: Coord) {
   cancelStepping();
   console.log("drawField #", 1.1);
@@ -392,7 +387,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   console.log("drawField #", 2);
   drawField({ focus: null });
   drawPhantomAt(firstDest, "Tam2");
-  drawCancelButton(function () {
+  drawCancelButton(() => {
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
     document
@@ -411,7 +406,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
     console.log("drawField #", 3.1);
     drawField({ focus: GAME_STATE.last_move_focus }); // This is within cancel; hence we must not overwrite the last_move_focus
   });
-  drawHoverAt_<"Tam2">(stepsOn, "Tam2", function (coord: Coord, piece: "Tam2") {
+  drawHoverAt_<"Tam2">(stepsOn, "Tam2", (coord: Coord, piece: "Tam2") => {
     const contains_guides = document.getElementById("contains_guides")!;
 
     const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
@@ -441,7 +436,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
         continue;
       }
 
-      const img = createCircleGuideImageAt(secondDest, "ctam");
+      const img = createGuideImageAt(secondDest, "yellow_diamond_for_tam");
 
       img.addEventListener("click", function () {
         const message: NormalMove = {
@@ -546,44 +541,39 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
           continue;
         }
 
-        const img = createCircleGuideImageAt(guideListYellow[ind], "ctam");
+        const img = createGuideImageAt(guideListYellow[ind], "yellow_diamond_for_tam");
 
         if (destPiece === null) {
-          img.addEventListener("click", function () {
-            (function getThingsGoingAfterSecondTamMoveThatDoesNotStepInTheLatterHalf(
-              theVerySrc: Coord,
-              firstDest: Coord,
-              to: Coord,
-            ) {
-              console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
+          img.addEventListener("click", () => {
+            const theVerySrc: Coord = from;
+            const firstDest: Coord = coord;
+            const to: Coord = guideListYellow[ind];
+            console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
+            const message: NormalMove = step
+              ? {
+                type: "TamMove",
+                stepStyle: "StepsDuringFormer",
+                src: toAbsoluteCoord(theVerySrc),
+                step: toAbsoluteCoord(step),
+                firstDest: toAbsoluteCoord(firstDest),
+                secondDest: toAbsoluteCoord(to),
+              }
+              : {
+                type: "TamMove",
+                stepStyle: "NoStep",
+                src: toAbsoluteCoord(theVerySrc),
+                firstDest: toAbsoluteCoord(firstDest),
+                secondDest: toAbsoluteCoord(to),
+              };
 
-              const message: NormalMove = step
-                ? {
-                  type: "TamMove",
-                  stepStyle: "StepsDuringFormer",
-                  src: toAbsoluteCoord(theVerySrc),
-                  step: toAbsoluteCoord(step),
-                  firstDest: toAbsoluteCoord(firstDest),
-                  secondDest: toAbsoluteCoord(to),
-                }
-                : {
-                  type: "TamMove",
-                  stepStyle: "NoStep",
-                  src: toAbsoluteCoord(theVerySrc),
-                  firstDest: toAbsoluteCoord(firstDest),
-                  secondDest: toAbsoluteCoord(to),
-                };
+            // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
+            erasePhantomAndOptionallyCancelButton();
+            eraseGuide(); // this removes the central guide, as well as the yellow and green ones
+            sendNormalMessage(message);
 
-              // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
-              erasePhantomAndOptionallyCancelButton();
-              eraseGuide(); // this removes the central guide, as well as the yellow and green ones
-              sendNormalMessage(message);
-
-              document
-                .getElementById("protective_tam_cover_over_field")!
-                .classList.add("nocover");
-              return;
-            })(from, coord, guideListYellow[ind]);
+            document
+              .getElementById("protective_tam_cover_over_field")!
+              .classList.add("nocover");
           });
         } else {
           img.addEventListener("click", function () {
@@ -608,7 +598,8 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   };
 
   drawPhantomAt(from, "Tam2");
-  drawCancelButton(function cancelTam2FirstMove() {
+  drawCancelButton(() => {
+    // cancel Tam2's first move
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
     document
@@ -629,60 +620,6 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     /* This is a canceling; hence we must not overwrite last_move_focus */
   });
   drawTam2HoverNonshiftedAt(to);
-}
-
-function drawPhantomAt(coord: Coord, piece: Piece) {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-  erasePhantomAndOptionallyCancelButton();
-
-  const phantom: HTMLImageElement = createPieceImgToBePlacedOnBoard(
-    coord,
-    piece,
-  );
-  phantom.style.opacity = "0.1";
-  contains_phantom.appendChild(phantom);
-}
-
-function drawCancelButton(fn: () => void) {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-
-  const cancelButton = createCancelButton();
-  cancelButton.width = 80;
-  cancelButton.height = 80;
-
-  cancelButton.style.zIndex = "100";
-  cancelButton.style.cursor = "pointer";
-  cancelButton.setAttribute("id", "cancelButton");
-
-  cancelButton.addEventListener("click", fn);
-  contains_phantom.appendChild(cancelButton);
-}
-
-function drawHoverAt_<T extends "Tam2" | NonTam2PieceUpward>(
-  coord: Coord,
-  piece: T,
-  selectHover_: (coord: Coord, piece: T) => void,
-) {
-  const contains_phantom = document.getElementById("contains_phantom")!;
-
-  const img = createPieceSizeImageOnBoardByPath_Shifted(
-    coord,
-    toPath_(piece),
-    "piece_image_on_board",
-  );
-
-  img.style.zIndex = "100";
-  img.style.cursor = "pointer";
-
-  const selectHover = function () {
-    selectHover_(coord, piece);
-  };
-
-  img.addEventListener("click", selectHover);
-  contains_phantom.appendChild(img);
-
-  // draw as already selected
-  selectHover();
 }
 
 function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
@@ -721,7 +658,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
 
     display_guides_after_stepping(
       coord,
-      { piece, path: "ct" },
+      { piece, path: "yellow_circle" },
       contains_guides,
       guideListYellow,
     );
@@ -734,7 +671,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
     }
     display_guides_after_stepping(
       coord,
-      { piece, path: "ct2" },
+      { piece, path: "green_circle" },
       contains_guides,
       guideListGreen,
     );
@@ -788,7 +725,7 @@ async function sendAfterHalfAcceptance(
   }
 
   await animateWaterEntryLogo();
-  displayCiurl(res.dat.ciurl);
+  drawCiurlWithAudio(res.dat.ciurl);
   await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
 
   if (res.dat.ciurl.filter(a => a).length < 3) {
@@ -852,12 +789,12 @@ export async function sendStuffTo<T, U>(
       Authorization: `Bearer ${sessionStorage.access_token}`,
     },
   })
-    .then(function (res) {
+    .then(res => {
       cover_while_asyncawait.classList.add("nocover");
       return res.json();
     })
     .then(validateInput)
-    .catch(function (error) {
+    .catch(error => {
       cover_while_asyncawait.classList.add("nocover");
       console.error("Error:", error);
       return;
@@ -982,7 +919,7 @@ async function sendNormalMessage(message: NormalMove) {
   }
 
   await animateWaterEntryLogo();
-  displayCiurl(res.dat.ciurl);
+  drawCiurlWithAudio(res.dat.ciurl);
   await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
   const water_ciurl_count = res.dat.ciurl.filter(a => a).length;
   if (water_ciurl_count < 3) {
@@ -1101,7 +1038,49 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 
   setTimeout(() => {
     drawScoreDisplay(new_state.hands);
-    drawTyMok1AndTaXot1Buttons(new_state);
+
+    const base_score: number = new_state.score;
+    const score_display = document.getElementById("score_display")!;
+
+    const ty_mok1_button = createImageButton("dat2/再行", 0);
+    ty_mok1_button.addEventListener("click", async () => {
+      increaseRateAndAnimate(true);
+      const res: { legal: boolean } = await sendStuffTo<
+        boolean,
+        { legal: boolean }
+      >("whethertymok", "`send whether ty mok1`", true, response => {
+        console.log("Success; the server returned:", JSON.stringify(response));
+        return response;
+      });
+      if (res.legal !== true) {
+        throw new Error("bad!!!!");
+      }
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}\n再行` }]
+    });
+    score_display.appendChild(ty_mok1_button);
+
+    const ta_xot1_button = createImageButton("dat2/終季", 250);
+    ta_xot1_button.addEventListener("click", async () => {
+      const res: {
+        legal: boolean;
+        is_first_move_my_move: boolean | null;
+      } = await sendStuffTo<
+        boolean,
+        { legal: boolean; is_first_move_my_move: boolean | null }
+      >("whethertymok", "`send whether ty mok1`", false, response => {
+        console.log("Success; the server returned:", JSON.stringify(response));
+        return response;
+      });
+      if (res.legal !== true) {
+        throw new Error("bad!!!!");
+      }
+      const is_first_move_my_move_in_the_next_season: boolean | null =
+        res.is_first_move_my_move;
+      const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
+      endSeason(base_score, is_first_move_my_move_in_the_next_season);
+      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
+    });
+    score_display.appendChild(ta_xot1_button);
   }, 1000 * 0.8093);
   stopPolling();
 }
@@ -1293,7 +1272,7 @@ function updateField(message: NormalMove): CaptureInfo {
   }
 }
 
-function getThingsGoing(
+function getThingsGoingAfterAGuideIsClicked(
   piece_to_move: "Tam2" | NonTam2PieceUpward,
   from: Coord,
   to: Coord,
@@ -1394,11 +1373,39 @@ function getThingsGoingAfterStepping_Finite(
   } else {
     (async () => {
       await animateStepTamLogo();
-      await animatePunishStepTam(Side.Upward);
+      await animatePunishStepTamAndCheckPerzej(Side.Upward);
       await sendNormalMessage(message);
     })();
   }
   return;
+}
+
+function filterInOneDirectionTillCiurlLimit(
+  guideListGreen: Coord[],
+  step: Coord,
+  plannedDirection: Coord,
+  ciurl: Ciurl,
+) {
+  return guideListGreen.filter((c: Coord) => {
+    const subtractStep = function ([x, y]: Coord): [number, number] {
+      const [step_x, step_y] = step;
+      return [x - step_x, y - step_y];
+    };
+
+    const limit: number = ciurl.filter(x => x).length;
+
+    const [deltaC_x, deltaC_y] = subtractStep(c);
+    const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
+
+    return (
+      // 1. (c - step) crossed with (plannedDirection - step) gives zero
+      deltaC_x * deltaPlan_y - deltaPlan_x * deltaC_y === 0 &&
+      // 2.  (c - step) dotted with (plannedDirection - step) gives positive
+      deltaC_x * deltaPlan_x + deltaC_y * deltaPlan_y > 0 &&
+      // 3. deltaC must not exceed the limit enforced by ciurl
+      Math.max(Math.abs(deltaC_x), Math.abs(deltaC_y)) <= limit
+    );
+  });
 }
 
 async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: Profession }) {
@@ -1418,10 +1425,10 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
 
   if (isTamAt(fromAbsoluteCoord(message.step))) {
     await animateStepTamLogo();
-    await animatePunishStepTam(Side.Upward);
+    await animatePunishStepTamAndCheckPerzej(Side.Upward);
   }
 
-  displayCiurl(res.ciurl);
+  drawCiurlWithAudio(res.ciurl);
 
   document.getElementById("cancelButton")!.remove(); // destroy the cancel button, since it can no longer be cancelled
 
@@ -1466,7 +1473,7 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
 
   const src: Coord = fromAbsoluteCoord(message.src);
 
-  const passer = createCircleGuideImageAt(src, "ct");
+  const passer = createGuideImageAt(src, "yellow_circle");
   passer.addEventListener("click", function (ev) {
     eraseGuide();
     sendAfterHalfAcceptance(
@@ -1503,7 +1510,7 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
       continue;
     }
 
-    const img = createCircleGuideImageAt(filteredList[ind], "ct2");
+    const img = createGuideImageAt(filteredList[ind], "green_circle");
 
     img.addEventListener("click", function (ev) {
       sendAfterHalfAcceptance(
@@ -1525,98 +1532,17 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
   }
 }
 
-export async function animateStepTamLogo() {
-  const step_tam_logo = document.getElementById("step_tam_logo")!;
-  step_tam_logo.style.display = "block";
-  step_tam_logo.classList.add("step_tam");
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
-
-  setTimeout(function () {
-    step_tam_logo.style.display = "none";
-    cover_while_asyncawait.classList.add("nocover");
-  }, 1200 * 0.8093);
-  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
-}
-
-export async function animateWaterEntryLogo() {
-  const water_entry_logo = document.getElementById("water_entry_logo")!;
-  water_entry_logo.style.display = "block";
-  water_entry_logo.classList.add("water_entry");
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
-
-  setTimeout(function () {
-    water_entry_logo.style.display = "none";
-    cover_while_asyncawait.classList.add("nocover");
-  }, 1200 * 0.8093);
-  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
-}
-
-export function displayCiurl(ciurl: Ciurl, side?: Side) {
-  // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
-  // Standard Normal variate using Box-Muller transform.
-  const randn_bm = function (): number {
-    let u = 0,
-      v = 0;
-    while (u === 0) {
-      u = Math.random();
-    } // Converting [0,1) to (0,1)
-    while (v === 0) {
-      v = Math.random();
-    }
-    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-  };
-
-  const contains_ciurl = document.getElementById("contains_ciurl")!;
-
-  clearCiurl();
-
-  const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
-  const hop1zuo1_height = 140;
-  const board_height = 631;
-  const averageTop =
-    84 +
-    (side == null || side === Side.Upward ? hop1zuo1_height + board_height : 0);
-
-  const imgs: HTMLImageElement[] = ciurl.map((side, ind) =>
-    createCiurl(side, {
-      left: averageLeft + BOX_SIZE * 0.2 * randn_bm(),
-      top:
-        averageTop +
-        (ind + 0.5 - ciurl.length / 2) * 26 +
-        BOX_SIZE * 0.05 * randn_bm(),
-      rotateDeg: Math.random() * 40 - 20,
-    }),
-  );
-
-  // Fisher-Yates
-  for (let i = imgs.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [imgs[i], imgs[j]] = [imgs[j], imgs[i]];
-  }
-
-  for (let i = 0; i < imgs.length; i++) {
-    contains_ciurl.appendChild(imgs[i]);
-  }
-
+export function drawCiurlWithAudio(ciurl: Ciurl, side?: Side) {
+  drawCiurl(ciurl, side);
   if (KRUT_CRUOP) {
     const ciurl_sound = new Audio("sound/ciurl4.ogg");
     ciurl_sound.play();
   }
 }
 
-function clearCiurl() {
-  removeChildren(document.getElementById("contains_ciurl")!);
-}
-
 function display_guides_after_stepping(
   coord: Coord,
-  q: { piece: Piece; path: "ct" } | { piece: NonTam2Piece; path: "ct2" },
+  q: { piece: Piece; path: "yellow_circle" } | { piece: NonTam2Piece; path: "green_circle" },
   parent: HTMLElement,
   list: Coord[],
 ): void {
@@ -1642,11 +1568,11 @@ function display_guides_after_stepping(
       continue;
     }
 
-    const img = createCircleGuideImageAt(list[ind], q.path);
+    const img = createGuideImageAt(list[ind], q.path);
 
     img.addEventListener(
       "click",
-      q.path === "ct"
+      q.path === "yellow_circle"
         ? function () {
           eraseGuide();
           getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
@@ -1678,12 +1604,12 @@ function display_guides_before_stepping(
 ) {
   for (let ind = 0; ind < list.length; ind++) {
     // draw the yellow guides
-    const img = createCircleGuideImageAt(list[ind], "ct");
+    const img = createGuideImageAt(list[ind], "yellow_circle");
 
     // click on it to get things going
     img.addEventListener("click", function () {
       eraseGuide();
-      getThingsGoing(
+      getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
@@ -1694,7 +1620,7 @@ function display_guides_before_stepping(
     img.addEventListener("contextmenu", function (e) {
       eraseGuide();
       e.preventDefault();
-      getThingsGoing(
+      getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
@@ -1706,7 +1632,7 @@ function display_guides_before_stepping(
   }
 }
 
-function selectOwnPieceOnBoard(
+export function selectOwnPieceOnBoard(
   coord: Coord,
   piece: "Tam2" | NonTam2PieceUpward,
 ) {
@@ -1757,7 +1683,7 @@ function selectOwnPieceOnBoard(
   }
 }
 
-function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
+export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
   // erase the existing guide in all circumstances
   eraseGuide();
 
@@ -1798,33 +1724,30 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
         }
 
         // draw the yellow guides
-        const img = createCircleGuideImageAt(ij, "ct");
+        const img = createGuideImageAt(ij, "yellow_circle");
 
         // click on it to get things going
         img.addEventListener("click", function () {
           eraseGuide();
-          (function getThingsGoingFromHop1zuo1(piece: NonTam2Piece, to: Coord) {
-            const dest = GAME_STATE.f.currentBoard[to[0]][to[1]];
+          const dest = GAME_STATE.f.currentBoard[ij[0]][ij[1]];
 
-            // must parachute onto an empty square
-            if (dest != null) {
-              alert("Cannot parachute onto an occupied square");
-              throw new Error("Cannot parachute onto an occupied square");
-            }
+          if (dest != null) {
+            alert("Cannot parachute onto an occupied square");
+            throw new Error("Cannot parachute onto an occupied square");
+          }
 
-            const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
-            const message: NormalNonTamMove = {
-              type: "NonTamMove",
-              data: {
-                type: "FromHand",
-                color: piece.color,
-                prof: piece.prof,
-                dest: abs_dst,
-              },
-            };
+          const abs_dst: AbsoluteCoord = toAbsoluteCoord(ij);
+          const message: NormalNonTamMove = {
+            type: "NonTamMove",
+            data: {
+              type: "FromHand",
+              color: piece.color,
+              prof: piece.prof,
+              dest: abs_dst,
+            },
+          };
 
-            sendNormalMessage(message);
-          })(piece, ij);
+          sendNormalMessage(message);
         });
 
         contains_guides.appendChild(img);
@@ -1833,12 +1756,6 @@ function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
   } else {
     /* re-click: deselect */
     SELECTED_COORD_UI = null;
-  }
-}
-
-export function removeChildren(parent: HTMLElement) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
   }
 }
 
@@ -1855,7 +1772,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
     5: 6,
     6: 6, // does not go beyond x64, because the total score is 40
   };
-  drawScoreboard(); // cargo cult
+  drawMak2Io1(); // cargo cult
   GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
 
   const denote_rate = document.getElementById("denote_rate")!;
@@ -1869,7 +1786,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
       getDenoteRateNodeTopLeft(orig_log2_rate),
     );
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-    drawScoreboard();
+    drawMak2Io1();
     if (done_by_me) {
       resumePolling();
     } else {
@@ -1880,51 +1797,6 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
       .getElementById("protective_cover_over_field_while_asyncawait")!
       .classList.add("nocover");
   }, 200 * 0.8093);
-}
-
-function drawTyMok1AndTaXot1Buttons(o: { hands: Hand[], score: number }) {
-  const base_score: number = o.score;
-  const score_display = document.getElementById("score_display")!;
-
-  const ty_mok1_button = createImageButton("dat2/再行", 0);
-  ty_mok1_button.addEventListener("click", async () => {
-    increaseRateAndAnimate(true);
-    const res: { legal: boolean } = await sendStuffTo<
-      boolean,
-      { legal: boolean }
-    >("whethertymok", "`send whether ty mok1`", true, response => {
-      console.log("Success; the server returned:", JSON.stringify(response));
-      return response;
-    });
-    if (res.legal !== true) {
-      throw new Error("bad!!!!");
-    }
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` }]
-  });
-  score_display.appendChild(ty_mok1_button);
-
-  const ta_xot1_button = createImageButton("dat2/終季", 250);
-  ta_xot1_button.addEventListener("click", async () => {
-    const res: {
-      legal: boolean;
-      is_first_move_my_move: boolean | null;
-    } = await sendStuffTo<
-      boolean,
-      { legal: boolean; is_first_move_my_move: boolean | null }
-    >("whethertymok", "`send whether ty mok1`", false, response => {
-      console.log("Success; the server returned:", JSON.stringify(response));
-      return response;
-    });
-    if (res.legal !== true) {
-      throw new Error("bad!!!!");
-    }
-    const is_first_move_my_move_in_the_next_season: boolean | null =
-      res.is_first_move_my_move;
-    const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
-    endSeason(base_score, is_first_move_my_move_in_the_next_season);
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
-  });
-  score_display.appendChild(ta_xot1_button);
 }
 
 /**
@@ -1999,7 +1871,7 @@ function perzej(
   KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }]
 }
 
-export async function animatePunishStepTam(side: Side) {
+export async function animatePunishStepTamAndCheckPerzej(side: Side) {
   const score_display = document.getElementById("score_display")!;
   score_display.classList.add("nocover");
   const denote_score = document.getElementById("denote_score")!;
@@ -2030,7 +1902,7 @@ export async function animatePunishStepTam(side: Side) {
     return;
   }
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
-  drawScoreboard();
+  drawMak2Io1();
 
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
   document
@@ -2112,7 +1984,7 @@ export function endSeason(
       getDenoteSeasonNodeTopLeft(orig_season),
     );
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
-    drawScoreboard();
+    drawMak2Io1();
     alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
@@ -2153,134 +2025,4 @@ export function endSeason(
       .getElementById("protective_cover_over_field_while_asyncawait")
       ?.classList.add("nocover");
   }, 200 * 0.8093);
-}
-
-function getDenoteSeasonNodeTopLeft(season: Season) {
-  return { top: 360 + 51 * (3 - season), left: 3 };
-}
-
-function getDenoteScoreNodeTopLeft(score: number) {
-  return { top: 447 + 21.83333333333333 * (20 - score), left: 65 };
-}
-
-function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
-  return { top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4 };
-}
-
-function drawScoreboard() {
-  const denote_season = document.getElementById("denote_season")!;
-  denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
-    }px`;
-  denote_season.style.transition = ``; // needs to clear the animation
-  denote_season.style.transform = ``;
-
-  const denote_score = document.getElementById("denote_score")!;
-  denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
-    }px`;
-  denote_score.style.transition = ``;
-  denote_score.style.transform = ``;
-
-  const denote_rate = document.getElementById("denote_rate")!;
-  if (GAME_STATE.log2_rate === 0) {
-    denote_rate.style.display = "none";
-  } else {
-    denote_rate.style.display = "block";
-  }
-  denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
-    }px`;
-  denote_rate.style.transition = ``;
-  denote_rate.style.transform = ``;
-}
-
-export function drawField(o: { focus?: Coord | null }) {
-  console.log(`focusing:`, o.focus);
-  (function drawBoard(board: Board) {
-    const contains_pieces_on_board = document.getElementById(
-      "contains_pieces_on_board",
-    )!;
-
-    // delete everything
-    removeChildren(contains_pieces_on_board);
-
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[i].length; j++) {
-        const piece: Piece | null = board[i][j];
-        if (piece == null) {
-          continue;
-        }
-
-        const coord: Coord = [i as BoardIndex, j as BoardIndex];
-        const imgNode: HTMLImageElement = createPieceImgToBePlacedOnBoard(
-          coord,
-          piece,
-        );
-        imgNode.id = `field_piece_${i}_${j}`;
-
-        if (o.focus && coord[0] === o.focus[0] && coord[1] === o.focus[1]) {
-          // Add a border for the focus
-          imgNode.style.border = "8px solid #ff6";
-          imgNode.style.margin = "-8px";
-        }
-
-        if (piece === "Tam2") {
-          // prevent tam2 ty sak2
-          if (!GAME_STATE.opponent_has_just_moved_tam) {
-            imgNode.style.cursor = "pointer";
-            imgNode.addEventListener("click", function () {
-              selectOwnPieceOnBoard(coord, piece);
-            });
-          }
-        } else if (piece.side === Side.Upward) {
-          const q: NonTam2PieceUpward = {
-            prof: piece.prof,
-            side: Side.Upward,
-            color: piece.color,
-          };
-          imgNode.style.cursor = "pointer";
-          imgNode.addEventListener("click", function () {
-            selectOwnPieceOnBoard(coord, q);
-          });
-        }
-
-        contains_pieces_on_board.appendChild(imgNode);
-      }
-    }
-  })(GAME_STATE.f.currentBoard);
-
-  (function drawHop1zuo1OfUpward(list: NonTam2PieceUpward[]) {
-    const contains_pieces_on_upward = document.getElementById(
-      "contains_pieces_on_upward",
-    )!;
-
-    // delete everything
-    removeChildren(contains_pieces_on_upward);
-
-    for (let i = 0; i < list.length; i++) {
-      const piece: NonTam2PieceUpward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-
-      imgNode.style.cursor = "pointer";
-      imgNode.addEventListener("click", function () {
-        selectOwnPieceOnHop1zuo1(i, piece);
-      });
-
-      contains_pieces_on_upward.appendChild(imgNode);
-    }
-  })(GAME_STATE.f.hop1zuo1OfUpward);
-
-  (function drawHop1zuo1OfDownward(list: NonTam2PieceDownward[]) {
-    const contains_pieces_on_downward = document.getElementById(
-      "contains_pieces_on_downward",
-    )!;
-
-    // delete everything
-    removeChildren(contains_pieces_on_downward);
-
-    for (let i = 0; i < list.length; i++) {
-      const piece: NonTam2PieceDownward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece));
-      imgNode.id = `hop1zuo1OfDownward_${i}`;
-      contains_pieces_on_downward.appendChild(imgNode);
-    }
-  })(GAME_STATE.f.hop1zuo1OfDownward);
 }

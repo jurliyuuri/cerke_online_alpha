@@ -20,7 +20,7 @@ export function createArrowPiece(
   coord: readonly [number, number],
 ) {
   const [row_index, column_index] = coord;
-  const top = 1 + row_index * BOX_SIZE + 159.5;
+  const top = row_index * BOX_SIZE + 160.5;
   const left = column_index * BOX_SIZE + 19.25;
   const i = document.createElement("img");
   i.classList.add("selection");
@@ -87,9 +87,9 @@ export function createPieceSizeSelectionButtonOnBoard_Shifted(coord: Coord) {
   return centralNode;
 }
 
-export function createCircleGuideImageAt(
+export function createGuideImageAt(
   coord: Coord,
-  path: string,
+  path: "yellow_circle" | "green_circle" | "yellow_diamond_for_tam",
 ): HTMLImageElement {
   const [row_index, column_index] = coord;
   const img = document.createElement("img");

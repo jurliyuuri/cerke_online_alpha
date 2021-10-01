@@ -22,17 +22,20 @@ import {
 } from "./html_top_left";
 import { createArrowPiece } from "./create_html_element";
 import {
-  displayCiurl,
-  animateStepTamLogo,
-  animateWaterEntryLogo,
-  animatePunishStepTam,
-  drawField,
+  animatePunishStepTamAndCheckPerzej,
   calculateHandsAndScore,
   sendStuffTo,
   endSeason,
   increaseRateAndAnimate,
-  removeChildren,
 } from "./main";
+import {
+  animateNode,
+  animateStepTamLogo,
+  animateWaterEntryLogo,
+  drawCiurl, 
+  drawField,
+  eraseArrow
+} from "./draw_erase_animate";
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
 import { KIAR_ARK } from "./kiar_ark";
@@ -82,28 +85,6 @@ type OpponentMove =
     }>;
   };
 
-/**
- * @param total_duration total duration in millisecond
- * @param rotate angle to rotate, in degrees
- */
-export async function animateNode(
-  node: HTMLElement,
-  total_duration: number,
-  to: { top: number; left: number },
-  from: { top: number; left: number },
-  zIndex: string = "100",
-  rotate?: number,
-) {
-  node.style.transition = `transform ${total_duration / 1000}s ease`;
-  node.style.zIndex = zIndex; // so that it doesn't go under another piece
-  node.style.transform = `translateY(${to.top - from.top}px)`;
-  node.style.transform += `translateX(${to.left - from.left}px)`;
-  if (rotate != null) {
-    node.style.transform += `rotate(${rotate}deg)`;
-  }
-  await new Promise(resolve => setTimeout(resolve, total_duration));
-}
-
 export async function animateOpponentSrcStepDstFinite(p: SrcStepDstFinite): Promise<CaptureInfo> {
   return await animateOpponentSrcStepDstFinite_(
     fromAbsoluteCoord(p.src),
@@ -120,7 +101,7 @@ async function animateOpponentSteppingOverCiurl(
 ) {
   drawArrow(step, plannedDirection);
   await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
-  displayCiurl(stepping_ciurl, Side.Downward);
+  drawCiurl(stepping_ciurl, Side.Downward);
   await new Promise(resolve => setTimeout(resolve, 600 * 0.8093));
   eraseArrow();
 }
@@ -156,7 +137,7 @@ export async function animateOpponentInfAfterStep(p: {
 
   if (stepPiece === "Tam2") {
     await animateStepTamLogo();
-    await animatePunishStepTam(Side.Downward);
+    await animatePunishStepTamAndCheckPerzej(Side.Downward);
   }
 
   const srcNode: HTMLElement = document.getElementById(
@@ -210,7 +191,7 @@ export async function animateOpponentInfAfterStep(p: {
 
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(result.water_entry_ciurl, Side.Downward);
+      drawCiurl(result.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -246,7 +227,7 @@ export async function animateOpponentInfAfterStep(p: {
 
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(result.water_entry_ciurl, Side.Downward);
+      drawCiurl(result.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -257,7 +238,7 @@ export async function animateOpponentInfAfterStep(p: {
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
+      drawCiurl(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       alert(DICTIONARY.ja.failedWaterEntry);
       console.log("drawField opponent #", 14);
@@ -421,7 +402,7 @@ async function animateOpponentSrcStepDstFinite_(
 
   if (stepPiece === "Tam2") {
     await animateStepTamLogo();
-    await animatePunishStepTam(Side.Downward);
+    await animatePunishStepTamAndCheckPerzej(Side.Downward);
   }
 
   const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
@@ -464,7 +445,7 @@ async function animateOpponentSrcStepDstFinite_(
 
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(water_entry_ciurl, Side.Downward);
+      drawCiurl(water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -508,7 +489,7 @@ async function animateOpponentSrcStepDstFinite_(
 
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(water_entry_ciurl, Side.Downward);
+      drawCiurl(water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -600,7 +581,7 @@ async function animateOpponentSrcDst_(
 
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(o.water_entry_ciurl, Side.Downward);
+      drawCiurl(o.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -633,7 +614,7 @@ async function animateOpponentSrcDst_(
 
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      displayCiurl(o.water_entry_ciurl, Side.Downward);
+      drawCiurl(o.water_entry_ciurl, Side.Downward);
       await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter(a => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -769,10 +750,6 @@ export async function animateOpponentTamSteppingDuringLatter(p: {
   await animateOpponentSrcDst_(p.src, p.firstDest, { disable_focus: true });
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
   await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
-}
-
-function eraseArrow() {
-  removeChildren(document.getElementById("arrows")!);
 }
 
 function drawArrow(from: Coord, to: Coord) {
