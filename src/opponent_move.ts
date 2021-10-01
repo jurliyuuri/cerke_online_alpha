@@ -22,8 +22,6 @@ import {
 } from "./html_top_left";
 import { createArrowPiece } from "./create_html_element";
 import {
-  animateStepTamLogo,
-  animateWaterEntryLogo,
   animatePunishStepTam,
   calculateHandsAndScore,
   sendStuffTo,
@@ -31,7 +29,13 @@ import {
   increaseRateAndAnimate,
   removeChildren,
 } from "./main";
-import { drawCiurl, drawField } from "./draw";
+import {
+  animateNode,
+  animateStepTamLogo,
+  animateWaterEntryLogo,
+  drawCiurl, 
+  drawField
+} from "./draw";
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
 import { KIAR_ARK } from "./kiar_ark";
@@ -80,28 +84,6 @@ type OpponentMove =
       water_entry_ciurl?: Ciurl;
     }>;
   };
-
-/**
- * @param total_duration total duration in millisecond
- * @param rotate angle to rotate, in degrees
- */
-export async function animateNode(
-  node: HTMLElement,
-  total_duration: number,
-  to: { top: number; left: number },
-  from: { top: number; left: number },
-  zIndex: string = "100",
-  rotate?: number,
-) {
-  node.style.transition = `transform ${total_duration / 1000}s ease`;
-  node.style.zIndex = zIndex; // so that it doesn't go under another piece
-  node.style.transform = `translateY(${to.top - from.top}px)`;
-  node.style.transform += `translateX(${to.left - from.left}px)`;
-  if (rotate != null) {
-    node.style.transform += `rotate(${rotate}deg)`;
-  }
-  await new Promise(resolve => setTimeout(resolve, total_duration));
-}
 
 export async function animateOpponentSrcStepDstFinite(p: SrcStepDstFinite): Promise<CaptureInfo> {
   return await animateOpponentSrcStepDstFinite_(

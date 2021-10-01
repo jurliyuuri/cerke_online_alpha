@@ -26,7 +26,6 @@ import {
   animateOpponentTamSteppingDuringLatter,
   animateOpponentSrcStepDstFinite,
   animateOpponentInfAfterStep,
-  animateNode,
   toColorProf,
   CaptureInfo,
 } from "./opponent_move";
@@ -84,7 +83,15 @@ import {
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
-import { drawCancelButton, drawCiurl, drawField, drawHoverAt_, drawPhantomAt, drawScoreboard, eraseGuide, erasePhantomAndOptionallyCancelButton, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
+import {
+  animateNode,
+  animateStepTamLogo,
+  animateWaterEntryLogo,
+  drawCancelButton, drawCiurl, drawField, drawHoverAt_,
+  drawPhantomAt, drawScoreboard, 
+  eraseGuide, erasePhantomAndOptionallyCancelButton,
+  getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
+} from "./draw";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -1523,38 +1530,6 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
     img.style.zIndex = "200";
     contains_guides.appendChild(img);
   }
-}
-
-export async function animateStepTamLogo() {
-  const step_tam_logo = document.getElementById("step_tam_logo")!;
-  step_tam_logo.style.display = "block";
-  step_tam_logo.classList.add("step_tam");
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
-
-  setTimeout(() => {
-    step_tam_logo.style.display = "none";
-    cover_while_asyncawait.classList.add("nocover");
-  }, 1200 * 0.8093);
-  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
-}
-
-export async function animateWaterEntryLogo() {
-  const water_entry_logo = document.getElementById("water_entry_logo")!;
-  water_entry_logo.style.display = "block";
-  water_entry_logo.classList.add("water_entry");
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
-
-  setTimeout(() => {
-    water_entry_logo.style.display = "none";
-    cover_while_asyncawait.classList.add("nocover");
-  }, 1200 * 0.8093);
-  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
 }
 
 export function drawCiurlWithAudio(ciurl: Ciurl, side?: Side) {

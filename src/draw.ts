@@ -18,6 +18,60 @@ export function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
   return { top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4 };
 }
 
+/**
+ * @param total_duration total duration in millisecond
+ * @param rotate angle to rotate, in degrees
+ */
+ export async function animateNode(
+  node: HTMLElement,
+  total_duration: number,
+  to: { top: number; left: number },
+  from: { top: number; left: number },
+  zIndex: string = "100",
+  rotate?: number,
+) {
+  node.style.transition = `transform ${total_duration / 1000}s ease`;
+  node.style.zIndex = zIndex; // so that it doesn't go under another piece
+  node.style.transform = `translateY(${to.top - from.top}px)`;
+  node.style.transform += `translateX(${to.left - from.left}px)`;
+  if (rotate != null) {
+    node.style.transform += `rotate(${rotate}deg)`;
+  }
+  await new Promise(resolve => setTimeout(resolve, total_duration));
+}
+
+export async function animateStepTamLogo() {
+  const step_tam_logo = document.getElementById("step_tam_logo")!;
+  step_tam_logo.style.display = "block";
+  step_tam_logo.classList.add("step_tam");
+  const cover_while_asyncawait = document.getElementById(
+    "protective_cover_over_field_while_asyncawait",
+  )!;
+  cover_while_asyncawait.classList.remove("nocover");
+
+  setTimeout(() => {
+    step_tam_logo.style.display = "none";
+    cover_while_asyncawait.classList.add("nocover");
+  }, 1200 * 0.8093);
+  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
+}
+
+export async function animateWaterEntryLogo() {
+  const water_entry_logo = document.getElementById("water_entry_logo")!;
+  water_entry_logo.style.display = "block";
+  water_entry_logo.classList.add("water_entry");
+  const cover_while_asyncawait = document.getElementById(
+    "protective_cover_over_field_while_asyncawait",
+  )!;
+  cover_while_asyncawait.classList.remove("nocover");
+
+  setTimeout(() => {
+    water_entry_logo.style.display = "none";
+    cover_while_asyncawait.classList.add("nocover");
+  }, 1200 * 0.8093);
+  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
+}
+
 export function drawCiurl(ciurl: Ciurl, side?: Side) {
   // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
   // Standard Normal variate using Box-Muller transform.
