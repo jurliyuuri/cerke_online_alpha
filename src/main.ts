@@ -84,6 +84,7 @@ import {
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
+import { drawScoreboard, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./draw";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
   return a[0] === b[0] && a[1] === b[1]
@@ -2173,43 +2174,6 @@ export function endSeason(
       .getElementById("protective_cover_over_field_while_asyncawait")
       ?.classList.add("nocover");
   }, 200 * 0.8093);
-}
-
-function getDenoteSeasonNodeTopLeft(season: Season) {
-  return { top: 360 + 51 * (3 - season), left: 3 };
-}
-
-function getDenoteScoreNodeTopLeft(score: number) {
-  return { top: 447 + 21.83333333333333 * (20 - score), left: 65 };
-}
-
-function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
-  return { top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4 };
-}
-
-function drawScoreboard() {
-  const denote_season = document.getElementById("denote_season")!;
-  denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
-    }px`;
-  denote_season.style.transition = ``; // needs to clear the animation
-  denote_season.style.transform = ``;
-
-  const denote_score = document.getElementById("denote_score")!;
-  denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
-    }px`;
-  denote_score.style.transition = ``;
-  denote_score.style.transform = ``;
-
-  const denote_rate = document.getElementById("denote_rate")!;
-  if (GAME_STATE.log2_rate === 0) {
-    denote_rate.style.display = "none";
-  } else {
-    denote_rate.style.display = "block";
-  }
-  denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
-    }px`;
-  denote_rate.style.transition = ``;
-  denote_rate.style.transform = ``;
 }
 
 export function drawField(o: { focus?: Coord | null }) {
