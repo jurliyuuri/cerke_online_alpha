@@ -218,7 +218,9 @@ export async function animateOpponentInfAfterStep(p: {
         console.log("drawField opponent #", 12);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return [result, toColorProf(destPiece)];
+
+        // no piece capture is possible if water entry has failed
+        return [result, null];
       }
     }
 
@@ -469,7 +471,9 @@ async function animateOpponentSrcStepDstFinite_(
         console.log("drawField opponent #", 16);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return toColorProf(destPiece);
+
+        // no piece capture is possible if water entry failed
+        return null;
       }
     }
 
@@ -512,7 +516,8 @@ async function animateOpponentSrcStepDstFinite_(
         console.log("drawField opponent #", 18);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return toColorProf(destPiece);
+        // no piece capture is possible if water entry failed
+        return null;
       }
     }
 
@@ -541,7 +546,7 @@ export async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
 }
 
 export function toColorProf(p: Piece | null): CaptureInfo {
-  if (p === "Tam2") { throw new Error("Tam2 was passed")}
+  if (p === "Tam2") { throw new Error("Tam2 was passed") }
   if (p === null) { return null; }
   return [p.color, p.prof]
 }
@@ -603,7 +608,8 @@ async function animateOpponentSrcDst_(
         console.log("drawField opponent #", 20);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return toColorProf(destPiece);
+        // it FAILED, so no piece was captured
+        return null;
       }
     }
 
@@ -635,7 +641,8 @@ async function animateOpponentSrcDst_(
         console.log("drawField opponent #", 22);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return toColorProf(destPiece);
+        // it FAILED, so no piece was captured
+        return null;
       }
     }
 

@@ -283,10 +283,10 @@ export async function sendMainPoll() {
 
       if (finalResult_resolved.water_entry_ciurl) {
         if (finalResult_resolved.water_entry_ciurl.filter(a => a).length < 3) {
+          // water entry has failed; no piece was captured
           KIAR_ARK.body = [...KIAR_ARK.body, {
             type: "movement",
             dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
           }];
         } else {
           KIAR_ARK.body = [...KIAR_ARK.body, {
