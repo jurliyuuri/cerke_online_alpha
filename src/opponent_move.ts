@@ -846,26 +846,13 @@ function drawArrow(from: Coord, to: Coord) {
     from[0] < to[0] &&
     from[1] < to[1] &&
     from[0] - to[0] === from[1] - to[1]
-  ) {
-    // down right arrow
+  ) { // down right arrow
+    const delta = to[0] - from[0];
     document
       .getElementById("arrows")!
-      .appendChild(createArrowPiece("arrow/arrow_downright_tail", from));
-    for (let i = from[0]; i <= to[0] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(
-          createArrowPiece("arrow/arrow_downright_mid", [
-            i,
-            from[1] - from[0] + i,
-          ]),
-        );
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_downright_head", [to[0] - 1, to[1] - 1]),
-      );
+      .appendChild(createArrowSvg(
+        `m${32.9 + BOX_SIZE * delta} ${35.2 + BOX_SIZE * delta}-19.8-5.6-1.8 5.9 41 10.7 ${-(32.4 + BOX_SIZE * delta)} ${-(32.4 + BOX_SIZE * delta)}-4.2 4.2z`
+        , from));
   } else {
     throw new Error("unsupported direction for the arrow");
   }
