@@ -758,6 +758,15 @@ export async function animateOpponentTamSteppingDuringLatter(p: {
 function drawArrow(from: Coord, to: Coord) {
   if (from[1] === to[1] && from[0] > to[0]) {
     // up arrow
+
+    // new, smarter implementation with SVG
+    document
+      .getElementById("arrows")!
+      .appendChild(createArrowSvg(
+        `m31.6 ${51.3 + BOX_SIZE * (from[0] - to[0])}h5.8v${-(34.5 + BOX_SIZE * (to[0] - from[0]))}l-21.3 31 4.5 3.2 10.3-14.8z`
+        , from));
+
+    // OLD; REMOVE LATER
     document
       .getElementById("arrows")!
       .appendChild(createArrowPiece("arrow/arrow_up_head", to));
@@ -781,7 +790,7 @@ function drawArrow(from: Coord, to: Coord) {
         `m31.6 18.7h5.8v${34.5 + BOX_SIZE * (to[0] - from[0])}l-21.3-31 4.5-3.2 10.3 14.8z`
         , from));
 
-    // OLD; FIXME
+    // OLD; REMOVE LATER
     document
       .getElementById("arrows")!
       .appendChild(createArrowPiece("arrow/arrow_down_tail", from));
