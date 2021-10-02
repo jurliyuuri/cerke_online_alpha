@@ -761,28 +761,28 @@ function drawArrow(from: Coord, to: Coord) {
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
-        `m31.6 ${51.3 + BOX_SIZE * (from[0] - to[0])}h5.8v${-(34.5 + BOX_SIZE * (to[0] - from[0]))}l-21.3 31 4.5 3.2 10.3-14.8z`
+        `m31.6 ${51.3 + BOX_SIZE * (from[0] - to[0])}h5.8v${-(34.5 + BOX_SIZE * (to[0] - from[0]))}l-21.3 31 4.5 3.2 11-16z`
         , from));
   } else if (from[1] === to[1] && from[0] < to[0]) {
     // down arrow
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
-        `m31.6 18.7h5.8v${34.5 + BOX_SIZE * (to[0] - from[0])}l-21.3-31 4.5-3.2 10.3 14.8z`
+        `m31.6 18.7h5.8v${34.5 + BOX_SIZE * (to[0] - from[0])}l-21.3-31 4.5-3.2 11 16z`
         , from));
   } else if (from[0] === to[0] && from[1] > to[1]) {
     // left arrow
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
-        `m${51.3 + BOX_SIZE * (from[1] - to[1])} 31.6v5.8h${-(34.5 + BOX_SIZE * (from[1] - to[1]))}l31-21.3 3.2 4.5-14.8 10.3z`
+        `m${51.3 + BOX_SIZE * (from[1] - to[1])} 31.6v5.8h${-(34.5 + BOX_SIZE * (from[1] - to[1]))}l31-21.3 3.2 4.5-16 11z`
         , from));
   } else if (from[0] === to[0] && from[1] < to[1]) {
     // right arrow
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
-        `m18.7 31.6v5.8h${34.5 + BOX_SIZE *(to[1] - from[1])}l-31-21.3-3.2 4.5 14.8 10.3z`
+        `m18.7 31.6v5.8h${34.5 + BOX_SIZE *(to[1] - from[1])}l-31-21.3-3.2 4.5 16 11z`
         , from));
   } else if (
     from[0] > to[0] &&
