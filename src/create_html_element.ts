@@ -31,6 +31,7 @@ export function createArrowSvg(
   path.setAttributeNS(null, 'fill', "#aeff01");
   path.setAttributeNS(null, 'stroke', "#000");
   path.setAttributeNS(null, 'stroke-width', "2");
+  i.appendChild(path);
   return i;
 }
 
