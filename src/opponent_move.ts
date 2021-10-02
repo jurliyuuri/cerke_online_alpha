@@ -830,6 +830,15 @@ function drawArrow(from: Coord, to: Coord) {
       );
   } else if (from[0] === to[0] && from[1] < to[1]) {
     // right arrow
+
+    // new, smarter implementation with SVG
+    document
+      .getElementById("arrows")!
+      .appendChild(createArrowSvg(
+        `m18.7 31.6v5.8h${34.5 + BOX_SIZE *(to[1] - from[1])}l-31-21.3-3.2 4.5 14.8 10.3z`
+        , from));
+
+    // OLD; REMOVE LATER
     document
       .getElementById("arrows")!
       .appendChild(createArrowPiece("arrow/arrow_right_tail", from));
