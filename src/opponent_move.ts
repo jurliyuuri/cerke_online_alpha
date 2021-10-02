@@ -467,6 +467,7 @@ async function animateOpponentSrcStepDstFinite_(
     console.log("drawField opponent #", 17);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
+    return coordEq(src, dest) ? null : toColorProf(destPiece);
   } else {
     const imgNode: HTMLElement = document.getElementById(
       `field_piece_${src_i}_${src_j}`,
@@ -510,8 +511,9 @@ async function animateOpponentSrcStepDstFinite_(
     console.log("drawField opponent #", 19);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
+
+    return coordEq(src, dest) ? null : toColorProf(destPiece);
   }
-  return toColorProf(destPiece);
 }
 
 export type CaptureInfo = [Color, Profession] | null;
@@ -527,7 +529,7 @@ export async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
 }
 
 export function toColorProf(p: Piece | null): CaptureInfo {
-  if (p === "Tam2") { throw new Error("Tam2 was passed") }
+  if (p === "Tam2") { throw new Error("Tam2 was passed to the function `toColorProf`") }
   if (p === null) { return null; }
   return [p.color, p.prof]
 }
