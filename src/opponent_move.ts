@@ -788,28 +788,13 @@ function drawArrow(from: Coord, to: Coord) {
     from[0] > to[0] &&
     from[1] < to[1] &&
     from[0] - to[0] === to[1] - from[1]
-  ) {
-    // up right arrow
+  ) { // up right arrow
+    const delta = from[0] - to[0];
     document
       .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_upright_head", [to[0], to[1] - 1]),
-      );
-    for (let i = to[0]; i <= from[0] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(
-          createArrowPiece("arrow/arrow_upright_mid", [
-            i,
-            to[1] + to[0] - 1 - i,
-          ]),
-        );
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_upright_tail", [from[0] - 1, from[1]]),
-      );
+      .appendChild(createArrowSvg(
+        `m${32.9 + BOX_SIZE * delta} 34.8-19.8 5.6-1.8-5.9 41-10.7 ${-(32.4 + BOX_SIZE * delta)} ${32.4 + BOX_SIZE * delta}-4.2-4.2z`
+        , from));
   } else if (
     from[0] < to[0] &&
     from[1] > to[1] &&
