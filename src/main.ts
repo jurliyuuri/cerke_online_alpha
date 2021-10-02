@@ -88,7 +88,7 @@ import {
   animateStepTamLogo,
   animateWaterEntryLogo,
   drawCancelButton, drawCiurl, drawField, drawHoverAt_,
-  drawPhantomAt, drawMak2Io1, 
+  drawPhantomAt, drawMak2Io1,
   eraseGuide, erasePhantomAndOptionallyCancelButton,
   getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
 } from "./draw_erase_animate";
@@ -1762,6 +1762,8 @@ export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
 export function increaseRateAndAnimate(done_by_me: boolean) {
   const score_display = document.getElementById("score_display")!;
   score_display.classList.add("nocover");
+  // the score display has ended; move the yaku_all back to `left: 750px`
+  document.getElementById("yaku_all")!.style.left = "750px";
   const orig_log2_rate = GAME_STATE.log2_rate;
   const log2RateProgressMap: { [P in Log2_Rate]: Log2_Rate } = {
     0: 1,
@@ -1874,6 +1876,8 @@ function perzej(
 export async function animatePunishStepTamAndCheckPerzej(side: Side) {
   const score_display = document.getElementById("score_display")!;
   score_display.classList.add("nocover");
+  // the score display has ended; move the yaku_all back to `left: 750px`
+  document.getElementById("yaku_all")!.style.left = "750px";
   const denote_score = document.getElementById("denote_score")!;
   const orig_score = GAME_STATE.my_score;
   GAME_STATE.my_score +=
@@ -1923,6 +1927,8 @@ export function endSeason(
 ) {
   const score_display = document.getElementById("score_display")!;
   score_display.classList.add("nocover");
+  // the score display has ended; move the yaku_all back to `left: 750px`
+  document.getElementById("yaku_all")!.style.left = "750px";
   const denote_season = document.getElementById("denote_season")!;
   const denote_score = document.getElementById("denote_score")!;
   const orig_score = GAME_STATE.my_score;

@@ -134,6 +134,8 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
 
   const score_display = document.getElementById("score_display")!;
   score_display.classList.remove("nocover");
+  // while the score is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
+  document.getElementById("yaku_all")!.style.left = "790px";
   const base_score = hands
     .map(h => hand_to_score[h])
     .reduce((a, b) => a + b, 0);
