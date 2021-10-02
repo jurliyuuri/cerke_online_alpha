@@ -758,100 +758,32 @@ export async function animateOpponentTamSteppingDuringLatter(p: {
 function drawArrow(from: Coord, to: Coord) {
   if (from[1] === to[1] && from[0] > to[0]) {
     // up arrow
-
-    // new, smarter implementation with SVG
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
         `m31.6 ${51.3 + BOX_SIZE * (from[0] - to[0])}h5.8v${-(34.5 + BOX_SIZE * (to[0] - from[0]))}l-21.3 31 4.5 3.2 10.3-14.8z`
         , from));
-
-    // OLD; REMOVE LATER
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowPiece("arrow/arrow_up_head", to));
-    for (let i = to[0]; i <= from[0] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(createArrowPiece("arrow/arrow_up_mid", [i, from[1]]));
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_up_tail", [from[0] - 1, from[1]]),
-      );
   } else if (from[1] === to[1] && from[0] < to[0]) {
     // down arrow
-    
-    // new, smarter implementation with SVG
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
         `m31.6 18.7h5.8v${34.5 + BOX_SIZE * (to[0] - from[0])}l-21.3-31 4.5-3.2 10.3 14.8z`
         , from));
-
-    // OLD; REMOVE LATER
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowPiece("arrow/arrow_down_tail", from));
-    for (let i = from[0]; i <= to[0] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(createArrowPiece("arrow/arrow_down_mid", [i, from[1]]));
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_down_head", [to[0] - 1, to[1]]),
-      );
   } else if (from[0] === to[0] && from[1] > to[1]) {
     // left arrow
-
-    // new, smarter implementation with SVG
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
         `m${51.3 + BOX_SIZE * (from[1] - to[1])} 31.6v5.8h${-(34.5 + BOX_SIZE * (from[1] - to[1]))}l31-21.3 3.2 4.5-14.8 10.3z`
         , from));
-
-    // OLD; REMOVE LATER
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowPiece("arrow/arrow_left_head", to));
-    for (let i = to[1]; i <= from[1] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(createArrowPiece("arrow/arrow_left_mid", [from[0], i]));
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_left_tail", [from[0], from[1] - 1]),
-      );
   } else if (from[0] === to[0] && from[1] < to[1]) {
     // right arrow
-
-    // new, smarter implementation with SVG
     document
       .getElementById("arrows")!
       .appendChild(createArrowSvg(
         `m18.7 31.6v5.8h${34.5 + BOX_SIZE *(to[1] - from[1])}l-31-21.3-3.2 4.5 14.8 10.3z`
         , from));
-
-    // OLD; REMOVE LATER
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowPiece("arrow/arrow_right_tail", from));
-    for (let i = from[1]; i <= to[1] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(createArrowPiece("arrow/arrow_right_mid", [from[0], i]));
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_right_head", [to[0], to[1] - 1]),
-      );
   } else if (
     from[0] > to[0] &&
     from[1] < to[1] &&
