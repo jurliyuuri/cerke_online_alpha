@@ -104,7 +104,7 @@ async function animateOpponentSteppingOverCiurl(
   await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
   drawCiurl(stepping_ciurl, Side.Downward);
   await new Promise(resolve => setTimeout(resolve, 600 * 0.8093));
-  eraseArrow();
+  // eraseArrow(); // FIXME
 }
 
 export async function animateOpponentInfAfterStep(p: {
