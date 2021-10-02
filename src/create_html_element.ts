@@ -23,6 +23,11 @@ export function createArrowSvg(
   const top = row_index * BOX_SIZE + 160.5;
   const left = column_index * BOX_SIZE + 19.25;
   const i = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const box_width = 800;
+  const box_height = 800;
+  i.setAttributeNS(null, "viewBox", `0 0 ${box_width} ${box_height}`);
+  i.setAttributeNS(null, "width", `${box_width}`);
+  i.setAttributeNS(null, "height", `${box_height}`);
   i.classList.add("selection");
   i.style.top = `${top}px`;
   i.style.left = `${left}px`;
