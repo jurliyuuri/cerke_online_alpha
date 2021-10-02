@@ -15,6 +15,25 @@ import {
   indToHop1Zuo1Horizontal,
 } from "./html_top_left";
 
+export function createArrowSvg(
+  d: string,
+  coord: readonly [number, number],
+) {
+  const [row_index, column_index] = coord;
+  const top = row_index * BOX_SIZE + 160.5;
+  const left = column_index * BOX_SIZE + 19.25;
+  const i = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  i.classList.add("selection");
+  i.style.top = `${top}px`;
+  i.style.left = `${left}px`;
+  const path = document.createElementNS('http://www.w3.org/2000/svg', "path");
+  path.setAttributeNS(null, 'd', d);
+  path.setAttributeNS(null, 'fill', "#aeff01");
+  path.setAttributeNS(null, 'stroke', "#000");
+  path.setAttributeNS(null, 'stroke-width', "2");
+  return i;
+}
+
 export function createArrowPiece(
   path: string,
   coord: readonly [number, number],

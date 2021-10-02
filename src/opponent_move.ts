@@ -16,11 +16,12 @@ import {
 } from "cerke_online_utility/lib";
 import { fromAbsoluteCoord, GAME_STATE } from "./game_state";
 import {
+  BOX_SIZE,
   coordToPieceXY,
   coordToPieceXY_Shifted,
   indToHo1Zuo1OfDownward,
 } from "./html_top_left";
-import { createArrowPiece } from "./create_html_element";
+import { createArrowPiece, createArrowSvg } from "./create_html_element";
 import {
   animatePunishStepTamAndCheckPerzej,
   calculateHandsAndScore,
@@ -32,7 +33,7 @@ import {
   animateNode,
   animateStepTamLogo,
   animateWaterEntryLogo,
-  drawCiurl, 
+  drawCiurl,
   drawField,
   eraseArrow
 } from "./draw_erase_animate";
@@ -771,7 +772,16 @@ function drawArrow(from: Coord, to: Coord) {
         createArrowPiece("arrow/arrow_up_tail", [from[0] - 1, from[1]]),
       );
   } else if (from[1] === to[1] && from[0] < to[0]) {
-    // up arrow
+    // down arrow
+    
+    // new, smarter implementation with SVG
+    document
+      .getElementById("arrows")!
+      .appendChild(createArrowSvg(
+        `m31.6 18.7h5.8v${34.5 + BOX_SIZE * (to[0] - from[0])}l-21.3-31 4.5-3.2 10.3 14.8z`
+        , from));
+
+    // OLD; FIXME
     document
       .getElementById("arrows")!
       .appendChild(createArrowPiece("arrow/arrow_down_tail", from));
