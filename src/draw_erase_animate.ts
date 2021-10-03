@@ -332,80 +332,43 @@ export function drawField(o: { focus?: Coord | null }) {
   }
 }
 
+/**
+ * Draws an arrow denoting the intended destination for an infinite movement after stepping. 
+ * The stepping-over cast is made after this function was called.
+ * 踏越え後、無限移動で向かおうとしている位置を表す矢印を描画する。
+ * この関数が呼び出された後に踏越え判定が行われる。
+ * @param from where the arrow points from / 矢印の根元
+ * @param to where the arrow points to / 矢印の指す先
+ */
 export function drawArrow(from: Coord, to: Coord) {
-  if (from[1] === to[1] && from[0] > to[0]) { // up arrow
-    const delta = from[0] - to[0];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m31.6 ${51.3 + BOX_SIZE * delta}h5.8v${-(34.5 + BOX_SIZE * delta)}l-21.3 31 4.5 3.2 11-16z`
-        , from));
-  } else if (from[1] === to[1] && from[0] < to[0]) { // down arrow
-    const delta = to[0] - from[0];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m31.6 18.7h5.8v${34.5 + BOX_SIZE * delta}l-21.3-31 4.5-3.2 11 16z`
-        , from));
-  } else if (from[0] === to[0] && from[1] > to[1]) { // left arrow
-    const delta = from[1] - to[1];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m${51.3 + BOX_SIZE * delta} 31.6v5.8h${-(34.5 + BOX_SIZE * delta)}l31-21.3 3.2 4.5-16 11z`
-        , from));
-  } else if (from[0] === to[0] && from[1] < to[1]) { // right arrow
-    const delta = to[1] - from[1];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m18.7 31.6v5.8h${34.5 + BOX_SIZE * delta}l-31-21.3-3.2 4.5 16 11z`
-        , from));
-  } else if (
-    from[0] > to[0] &&
-    from[1] < to[1] &&
-    from[0] - to[0] === to[1] - from[1]
-  ) { // up right arrow
-    const delta = from[0] - to[0];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m${32.9 + BOX_SIZE * delta} 34.8-19.8 5.6-1.8-5.9 41-10.7 ${-(32.4 + BOX_SIZE * delta)} ${32.4 + BOX_SIZE * delta}-4.2-4.2z`
-        , from));
-  } else if (
-    from[0] < to[0] &&
-    from[1] > to[1] &&
-    from[0] - to[0] === to[1] - from[1]
-  ) { // down left arrow
-    const delta = from[1] - to[1];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m34.8 ${32.9 + BOX_SIZE * delta} 5.6-19.8-5.9-1.8-10.7 41 ${32.4 + BOX_SIZE * delta} ${-(32.4 + BOX_SIZE * delta)}-4.2-4.2z`
-        , from));
-  } else if (
-    from[0] > to[0] &&
-    from[1] > to[1] &&
-    from[0] - to[0] === from[1] - to[1]
-  ) { // up left arrow
-    const delta = from[1] - to[1];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m34.8 37.1 5.6 19.8-5.9 1.8-10.7-41 ${32.4 + BOX_SIZE * delta} ${32.4 + BOX_SIZE * delta}-4.2 4.2z`
-        , from));
-  } else if (
-    from[0] < to[0] &&
-    from[1] < to[1] &&
-    from[0] - to[0] === from[1] - to[1]
-  ) { // down right arrow
-    const delta = to[0] - from[0];
-    document
-      .getElementById("arrows")!
-      .appendChild(createArrowSvg(
-        `m${32.9 + BOX_SIZE * delta} ${35.2 + BOX_SIZE * delta}-19.8-5.6-1.8 5.9 41 10.7 ${-(32.4 + BOX_SIZE * delta)} ${-(32.4 + BOX_SIZE * delta)}-4.2 4.2z`
-        , from));
-  } else {
-    throw new Error("unsupported direction for the arrow");
-  }
+  const d: string = (() => {
+    if (from[1] === to[1] && from[0] > to[0]) { // up arrow
+      const delta = from[0] - to[0];
+      return `m31.6 ${51.3 + BOX_SIZE * delta}h5.8v${-(34.5 + BOX_SIZE * delta)}l-21.3 31 4.5 3.2 11-16z`
+    } else if (from[1] === to[1] && from[0] < to[0]) { // down arrow
+      const delta = to[0] - from[0];
+      return `m31.6 18.7h5.8v${34.5 + BOX_SIZE * delta}l-21.3-31 4.5-3.2 11 16z`
+    } else if (from[0] === to[0] && from[1] > to[1]) { // left arrow
+      const delta = from[1] - to[1];
+      return `m${51.3 + BOX_SIZE * delta} 31.6v5.8h${-(34.5 + BOX_SIZE * delta)}l31-21.3 3.2 4.5-16 11z`
+    } else if (from[0] === to[0] && from[1] < to[1]) { // right arrow
+      const delta = to[1] - from[1];
+      return `m18.7 31.6v5.8h${34.5 + BOX_SIZE * delta}l-31-21.3-3.2 4.5 16 11z`
+    } else if (from[0] > to[0] && from[1] < to[1] && from[0] - to[0] === to[1] - from[1]) { // up right arrow
+      const delta = from[0] - to[0];
+      return `m${32.9 + BOX_SIZE * delta} 34.8-19.8 5.6-1.8-5.9 41-10.7 ${-(32.4 + BOX_SIZE * delta)} ${32.4 + BOX_SIZE * delta}-4.2-4.2z`
+    } else if (from[0] < to[0] && from[1] > to[1] && from[0] - to[0] === to[1] - from[1]) { // down left arrow
+      const delta = from[1] - to[1];
+      return `m34.8 ${32.9 + BOX_SIZE * delta} 5.6-19.8-5.9-1.8-10.7 41 ${32.4 + BOX_SIZE * delta} ${-(32.4 + BOX_SIZE * delta)}-4.2-4.2z`
+    } else if (from[0] > to[0] && from[1] > to[1] && from[0] - to[0] === from[1] - to[1]) { // up left arrow
+      const delta = from[1] - to[1];
+      return `m34.8 37.1 5.6 19.8-5.9 1.8-10.7-41 ${32.4 + BOX_SIZE * delta} ${32.4 + BOX_SIZE * delta}-4.2 4.2z`
+    } else if (from[0] < to[0] && from[1] < to[1] && from[0] - to[0] === from[1] - to[1]) { // down right arrow
+      const delta = to[0] - from[0];
+      return `m${32.9 + BOX_SIZE * delta} ${35.2 + BOX_SIZE * delta}-19.8-5.6-1.8 5.9 41 10.7 ${-(32.4 + BOX_SIZE * delta)} ${-(32.4 + BOX_SIZE * delta)}-4.2 4.2z`
+    } else {
+      throw new Error("unsupported direction for the arrow");
+    }
+  })();
+  document.getElementById("arrows")!.appendChild(createArrowSvg(d, from));
 }
