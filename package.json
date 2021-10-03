@@ -21,7 +21,7 @@
   "devDependencies": {
     "css-loader": "5.2.7",
     "kind-of": "6.0.3",
-    "mini-css-extract-plugin": "1.6.2",
+    "mini-css-extract-plugin": "2.3.0",
     "minimist": "1.2.5",
     "node-sass": "6.0.1",
     "sass-loader": "12.1.0",
