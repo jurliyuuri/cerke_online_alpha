@@ -799,49 +799,24 @@ function drawArrow(from: Coord, to: Coord) {
     from[0] < to[0] &&
     from[1] > to[1] &&
     from[0] - to[0] === to[1] - from[1]
-  ) {
-    // down left arrow
+  ) { // down left arrow
+    const delta = from[1] - to[1];
     document
       .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_downleft_tail", [from[0], from[1] - 1]),
-      );
-    for (let i = from[0]; i <= to[0] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(
-          createArrowPiece("arrow/arrow_downleft_mid", [
-            i,
-            from[1] + from[0] - 1 - i,
-          ]),
-        );
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_downleft_head", [to[0] - 1, to[1]]),
-      );
+      .appendChild(createArrowSvg(
+        `m34.8 ${32.9 + BOX_SIZE * delta} 5.6-19.8-5.9-1.8-10.7 41 ${32.4 + BOX_SIZE * delta} ${-(32.4 + BOX_SIZE * delta)}-4.2-4.2z`
+        , from));
   } else if (
     from[0] > to[0] &&
     from[1] > to[1] &&
     from[0] - to[0] === from[1] - to[1]
-  ) {
-    // up left arrow
+  ) { // up left arrow
+    const delta = from[1] - to[1];
     document
       .getElementById("arrows")!
-      .appendChild(createArrowPiece("arrow/arrow_upleft_head", to));
-    for (let i = to[0]; i <= from[0] - 1; i++) {
-      document
-        .getElementById("arrows")!
-        .appendChild(
-          createArrowPiece("arrow/arrow_upleft_mid", [i, to[1] - to[0] + i]),
-        );
-    }
-    document
-      .getElementById("arrows")!
-      .appendChild(
-        createArrowPiece("arrow/arrow_upleft_tail", [from[0] - 1, from[1] - 1]),
-      );
+      .appendChild(createArrowSvg(
+        `m34.8 37.1 5.6 19.8-5.9 1.8-10.7-41 ${32.4 + BOX_SIZE * delta} ${32.4 + BOX_SIZE * delta}-4.2 4.2z`
+        , from));
   } else if (
     from[0] < to[0] &&
     from[1] < to[1] &&
