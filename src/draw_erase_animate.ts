@@ -370,5 +370,7 @@ export function drawArrow(from: Coord, to: Coord) {
       throw new Error("unsupported direction for the arrow");
     }
   })();
-  document.getElementById("arrows")!.appendChild(createArrowSvg(d, from));
+  // must stretch from top-left
+  const top_left: [number, number] = [Math.min(from[0], to[0]), Math.min(from[1], to[1])];
+  document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));
 }
