@@ -135,6 +135,21 @@
     <div style="margin: 0 auto; max-width: 970px; display: flex;">
         <nav id="posts" style="width: 970px;">
             <article class="post">
+                <p class="date">2021年10月11日</p>
+                <hr>
+                <article lang="ja">
+                    <h2>バグ修正告知</h2>
+                    <hr>
+                    <ul>
+                        <li>バグ修正<ul>
+                            <li>踏越え後の無限移動を相手が試みたときに出る黄緑色の矢印が左方向・上方向に伸びているとき、矢印画像が誤った位置に配置されていたバグを修正しました。具体的には、<pre>document.getElementById("arrows")!.appendChild(createArrowSvg(d, from));</pre>だったのを<pre>// must stretch from top-left
+const top_left: [number, number] = [Math.min(from[0], to[0]), Math.min(from[1], to[1])];
+document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pre>へと修正しました。</li>
+                        </ul></li>
+                    </ul>
+                </article>
+            </article>
+            <article class="post">
                 <p class="date">2021年10月3日</p>
                 <hr>
                 <article lang="ja">
