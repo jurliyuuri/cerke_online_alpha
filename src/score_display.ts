@@ -16,15 +16,13 @@ export function drawFinalScoreDisplay(
 ) {
   const starting_position_left = 530;
   const spacing = 60;
-  const createDigitsMid = (o: { score: number, column_index: number }) => toDigitsLinzklar(o.score).map(
-    (digit, row_index, array) => createDigitImg(
-      {
-        left: starting_position_left - spacing * o.column_index,
-        top: ((50 * (1 + letter_spacing)) / 2) * (2 - array.length) + 239,
-        width: 50
-      }, digit, row_index
-    )
-  );
+  const createDigitsMid = (o: { score: number, column_index: number }) => createDigits(
+    toDigitsLinzklar(o.score),
+    {
+      left: starting_position_left - spacing * o.column_index,
+      top: ((50 * (1 + letter_spacing)) / 2) * (2 - toDigitsLinzklar(o.score).length) + 239,
+      width: 50
+    });
 
   const scores = ([] as number[]).concat(...scores_of_each_season);
   const total_score = 20 + scores.reduce((a, b) => a + b, 0);
@@ -49,24 +47,6 @@ function createSeasonImg(o: { left: number, season: number }): HTMLImageElement 
   i.style.left = `${o.left}px`;
   i.style.top = "15px";
   i.width = 50;
-  return i;
-}
-
-function createDigitImg(
-  o: {
-    left: number,
-    top: number,
-    width: number
-  },
-  digit: DigitLinzklar,
-  index: number
-): HTMLImageElement {
-  const i = document.createElement("img");
-  i.src = `image/digit/${digit}.png`;
-  i.style.position = "absolute";
-  i.style.left = `${o.left}px`;
-  i.style.top = `${(1 + letter_spacing) * o.width * index + o.top}px`
-  i.width = o.width;
   return i;
 }
 
@@ -130,7 +110,7 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     /* display hands and scores */
     const left = starting_position_left - spacing * index;
     const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
-    const hand_and_score: HTMLImageElement[] = digits.map((digit, index) => createDigitImg({ left, top: 280 + top_padding, width: 50 }, digit, index));
+    const hand_and_score: HTMLImageElement[] = createDigits(digits, { left, top: 280 + top_padding, width: 50 });
     if (hand.slice(0, 2) === "同色") {
       hand_and_score.push(createHandImage(hand.slice(2), { left, top_padding }));
       hand_and_score.push(createBapPokImage({ left, top_padding }));
@@ -142,11 +122,23 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
   score_display.append(...createTotalScoreDigits(base_score));
 }
 
+function createDigits(digits: DigitLinzklar[], o: { left: number, top: number, width: number }): HTMLImageElement[] {
+  return digits.map((digit, row_index) => {
+    const i = document.createElement("img");
+    i.src = `image/digit/${digit}.png`;
+    i.style.position = "absolute";
+    i.style.left = `${o.left}px`;
+    i.style.top = `${(1 + letter_spacing) * o.width * row_index + o.top}px`
+    i.width = o.width;
+    return i;
+  })
+}
+
 function createTotalScoreDigits(total_score: number): HTMLImageElement[] {
   const total_score_digits: DigitLinzklar[] = toDigitsLinzklar(total_score);
-  return total_score_digits.map((digit, index) => createDigitImg({
+  return createDigits(total_score_digits, {
     left: 20,
     top: 234 - (70 * total_score_digits.length) / 2,
     width: 70
-  }, digit, index))
+  });
 }
