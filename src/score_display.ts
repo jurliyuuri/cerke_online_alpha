@@ -1,6 +1,6 @@
-import { Hand, HandAndNegativeHand, hand_to_score } from "cerke_hands_and_score";
+import { HandAndNegativeHand, hand_to_score } from "cerke_hands_and_score";
+import { createBapPokImage, createHandImage } from "./create_html_element";
 import { removeChildren } from "./draw_erase_animate";
-import { Season } from "./game_state";
 import { DigitLinzklar, toDigitsLinzklar } from "./to_digits";
 
 export type ArrayUpTo4<T> = [T] | [T, T] | [T, T, T] | [T, T, T, T];
@@ -132,7 +132,7 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
     const hand_and_score: HTMLImageElement[] = digits.map((digit, index) => createDigitImg({ left, top: 280 + top_padding, width: 50 }, digit, index));
     if (hand.slice(0, 2) === "同色") {
-      hand_and_score.push(createHandImage(hand.slice(2) as HandAndNegativeHand, { left, top_padding }));
+      hand_and_score.push(createHandImage(hand.slice(2), { left, top_padding }));
       hand_and_score.push(createBapPokImage({ left, top_padding }));
     } else {
       hand_and_score.push(createHandImage(hand, { left, top_padding }));
@@ -140,26 +140,6 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     return hand_and_score;
   }));
   score_display.append(...createTotalScoreDigits(base_score));
-}
-
-function createBapPokImage(o: { left: number, top_padding: number }): HTMLImageElement {
-  const i = document.createElement("img");
-  i.src = `image/dat2/同色.png`;
-  i.style.position = "absolute";
-  i.style.left = `${o.left}px`;
-  i.style.top = `${185 + o.top_padding}px`;
-  i.width = 50;
-  return i;
-}
-
-function createHandImage(hand: HandAndNegativeHand, o: { left: number, top_padding: number }): HTMLImageElement {
-  const i = document.createElement("img");
-  i.src = `image/dat2/${hand}.png`;
-  i.style.position = "absolute";
-  i.style.left = `${o.left}px`;
-  i.style.top = `${o.top_padding}px`;
-  i.width = 50;
-  return i;
 }
 
 function createTotalScoreDigits(total_score: number): HTMLImageElement[] {

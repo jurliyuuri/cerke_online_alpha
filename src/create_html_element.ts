@@ -15,6 +15,26 @@ import {
   indToHop1Zuo1Horizontal,
 } from "./html_top_left";
 
+export function createBapPokImage(o: { left: number, top_padding: number }): HTMLImageElement {
+  const i = document.createElement("img");
+  i.src = `image/dat2/同色.png`;
+  i.style.position = "absolute";
+  i.style.left = `${o.left}px`;
+  i.style.top = `${185 + o.top_padding}px`;
+  i.width = 50;
+  return i;
+}
+
+export function createHandImage(hand: string, o: { left: number, top_padding: number }): HTMLImageElement {
+  const i = document.createElement("img");
+  i.src = `image/dat2/${hand}.png`;
+  i.style.position = "absolute";
+  i.style.left = `${o.left}px`;
+  i.style.top = `${o.top_padding}px`;
+  i.width = 50;
+  return i;
+}
+
 export function createArrowSvg(
   d: string,
   coord: readonly [number, number],
