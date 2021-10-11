@@ -146,7 +146,7 @@ export async function sendMainPoll() {
 
   if (res.content !== "not yet") {
     console.log("ding!");
-    document.getElementById("opponent_message")!.innerHTML = res.message ?? "";
+    document.getElementById("opponent_message")!.textContent = res.message ?? "";
     if (KRUT_CRUOP) {
       const thud_sound = new Audio("sound/thud.ogg");
       thud_sound.play();
@@ -1867,7 +1867,7 @@ function perzej(
   // show both sides' icon
   document.getElementById("larta_me")!.style.display = "block";
   document.getElementById("larta_opponent")!.style.display = "block";
-  document.getElementById("opponent_message")!.innerHTML =
+  document.getElementById("opponent_message")!.textContent =
     msg === "you win!" ? "あなたの勝ちです" :
       msg === "draw" ? "引き分けです" : "あなたの負けです"
   KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }]

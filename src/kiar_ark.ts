@@ -35,7 +35,7 @@ export const KIAR_ARK = new Proxy(_kiar_ark, {
     set: function (target, p: "header" | "body", value: Elem[]) {
         target[p] = value;
         console.log("_kiar_ark:", _kiar_ark);
-        document.getElementById("kiar_ark")!.innerHTML = _kiar_ark.header.map(a => a.dat).join("\n") + "\n" + groupTwoAndRender(_kiar_ark.body)
+        document.getElementById("kiar_ark")!.textContent = _kiar_ark.header.map(a => a.dat).join("\n") + "\n" + groupTwoAndRender(_kiar_ark.body)
         return true;
     }
 })
