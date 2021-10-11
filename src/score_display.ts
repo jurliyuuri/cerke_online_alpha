@@ -54,7 +54,7 @@ function createDigit(
   index: number
 ): HTMLImageElement {
   const i = document.createElement("img");
-  i.src = `image/dat2/${digit}.png`;
+  i.src = `image/digit/${digit}.png`;
   i.style.position = "absolute";
   i.style.left = `${o.left}px`;
   i.style.top = `${(1 + letter_spacing) * o.width * index + o.top}px`
