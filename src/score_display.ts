@@ -14,15 +14,15 @@ export function drawFinalScoreDisplay(
 ) {
   const starting_position_left = 530;
   const spacing = 60;
-  const createDigitsMidHTML = (score: number, ind: number) =>
-    createDigitsHTML(
+  const createDigitsMid = (o: { score: number, column_index: number }) => toDigitsLinzklar(o.score).map(
+    (digit, row_index, array) => createDigit(
       {
-        left: starting_position_left - spacing * ind,
-        top: ((50 * (1 + letter_spacing)) / 2) * (2 - toDigitsLinzklar(score).length) + 239,
+        left: starting_position_left - spacing * o.column_index,
+        top: ((50 * (1 + letter_spacing)) / 2) * (2 - array.length) + 239,
         width: 50
-      },
-      toDigitsLinzklar(score),
-    );
+      }, digit, row_index
+    )
+  );
 
   const scores = ([] as number[]).concat(...scores_of_each_season);
   const total_score = 20 + scores.reduce((a, b) => a + b, 0);
@@ -38,9 +38,9 @@ export function drawFinalScoreDisplay(
           spacing *
           a}px; top: 15px;" src="image/season_${ind}.png" width="50">`;
       })
-      .join("") +
-    scores.map((a, ind) => createDigitsMidHTML(a, ind)).join("") +
-    createDigitsMidHTML(20, -1);
+      .join("");
+  final_score_display.append(...scores.flatMap((score, column_index) => createDigitsMid({ score, column_index })));
+  final_score_display.append(...createDigitsMid({ score: 20, column_index: -1 }));
   final_score_display.append(...createTotalScoreDigits(total_score));
 }
 
@@ -60,30 +60,6 @@ function createDigit(
   i.style.top = `${(1 + letter_spacing) * o.width * index + o.top}px`
   i.width = o.width;
   return i;
-}
-
-/**
- * @deprecated Use createDigit, which does the same thing but returns HTMLImageElement
- */
-function createDigitsHTML(
-  o: {
-    left: number,
-    top: number,
-    width: number
-  },
-  digits: DigitLinzklar[],
-) {
-  return digits
-    .map(
-      (digit, index) => `<img
-        src="image/dat2/${digit}.png"
-        style="position:absolute; left: ${o.left}px; top: ${(1 + letter_spacing) *
-        o.width *
-        index +
-        o.top}px;" width="${o.width}"
-    >`,
-    )
-    .join("");
 }
 
 export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
