@@ -14,7 +14,6 @@ export function drawFinalScoreDisplay(
 ) {
   const starting_position_left = 530;
   const spacing = 60;
-
   const createDigitsMidHTML = (score: number, ind: number) =>
     createDigitsHTML(
       {
@@ -137,38 +136,30 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     hands.length
   ];
 
-  function createHandAndScoreHTML(
-    hand: HandAndNegativeHand,
-    left: number,
-  ): string {
-    const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
-    let ans = "";
-    if (hand.slice(0, 2) === "同色") {
-      ans += `
-        <img src="image/dat2/${hand.slice(
-        2,
-      )}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
-        <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 +
-        top_padding}px;" width="50">`;
-    } else {
-      ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
-    }
-    ans += createDigitsHTML({ left, top: 280 + top_padding, width: 50 }, digits);
-    return ans;
-  }
-
   const score_display = document.getElementById("score_display")!;
   score_display.classList.remove("nocover");
   // while the score is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
-  const base_score = hands
-    .map(h => hand_to_score[h])
-    .reduce((a, b) => a + b, 0);
+  const base_score = hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0);
   score_display.innerHTML =
-    hands
-      .map((hand, index) =>
-        createHandAndScoreHTML(hand, starting_position_left - spacing * index),
-      )
+    hands.map((hand, index) => {
+      /* hand and score */
+      const left = starting_position_left - spacing * index;
+      const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
+      let ans = "";
+      if (hand.slice(0, 2) === "同色") {
+        ans += `
+        <img src="image/dat2/${hand.slice(
+          2,
+        )}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
+        <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 +
+          top_padding}px;" width="50">`;
+      } else {
+        ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
+      }
+      ans += createDigitsHTML({ left, top: 280 + top_padding, width: 50 }, digits);
+      return ans;
+    })
       .join("");
   score_display.append(...createTotalScoreDigits(base_score));
 }
