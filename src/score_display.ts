@@ -1,4 +1,4 @@
-import { HandAndNegativeHand, hand_to_score } from "cerke_hands_and_score";
+import { Hand, HandAndNegativeHand, hand_to_score } from "cerke_hands_and_score";
 import { DigitLinzklar, toDigitsLinzklar } from "./to_digits";
 
 export type ArrayUpTo4<T> = [T] | [T, T] | [T, T, T] | [T, T, T, T];
@@ -141,27 +141,40 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
   // while the score is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
   const base_score = hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0);
-  score_display.innerHTML =
-    hands.map((hand, index) => {
-      /* hand and score */
-      const left = starting_position_left - spacing * index;
-      const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
-      let ans = "";
-      if (hand.slice(0, 2) === "同色") {
-        ans += `
-        <img src="image/dat2/${hand.slice(
-          2,
-        )}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">
-        <img src="image/dat2/同色.png" style="position:absolute; left: ${left}px; top: ${185 +
-          top_padding}px;" width="50">`;
-      } else {
-        ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
-      }
-      ans += createDigitsHTML({ left, top: 280 + top_padding, width: 50 }, digits);
-      return ans;
-    })
-      .join("");
+  score_display.append(...hands.flatMap((hand, index) => {
+    /* display hands and scores */
+    const left = starting_position_left - spacing * index;
+    const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
+    const hand_and_score: HTMLImageElement[] = digits.map((digit, index) => createDigit({ left, top: 280 + top_padding, width: 50 }, digit, index));
+    if (hand.slice(0, 2) === "同色") {
+      hand_and_score.push(createHandImage(hand.slice(2) as HandAndNegativeHand, { left, top_padding }));
+      hand_and_score.push(createBapPokImage({ left, top_padding }));
+    } else {
+      hand_and_score.push(createHandImage(hand, { left, top_padding }));
+    }
+    return hand_and_score;
+  }));
   score_display.append(...createTotalScoreDigits(base_score));
+}
+
+function createBapPokImage(o: { left: number, top_padding: number }): HTMLImageElement {
+  const i = document.createElement("img");
+  i.src = `image/dat2/同色.png`;
+  i.style.position = "absolute";
+  i.style.left = `${o.left}px`;
+  i.style.top = `${185 + o.top_padding}px`;
+  i.width = 50;
+  return i;
+}
+
+function createHandImage(hand: HandAndNegativeHand, o: { left: number, top_padding: number }): HTMLImageElement {
+  const i = document.createElement("img");
+  i.src = `image/dat2/${hand}.png`;
+  i.style.position = "absolute";
+  i.style.left = `${o.left}px`;
+  i.style.top = `${o.top_padding}px`;
+  i.width = 50;
+  return i;
 }
 
 function createTotalScoreDigits(total_score: number): HTMLImageElement[] {
