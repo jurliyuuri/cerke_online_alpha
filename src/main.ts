@@ -1042,7 +1042,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     const base_score: number = new_state.score;
     const score_display = document.getElementById("score_display")!;
 
-    const ty_mok1_button = createImageButton("dat2/再行", 0);
+    const ty_mok1_button = createImageButton("再行", 0);
     ty_mok1_button.addEventListener("click", async () => {
       increaseRateAndAnimate(true);
       const res: { legal: boolean } = await sendStuffTo<
@@ -1059,7 +1059,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     });
     score_display.appendChild(ty_mok1_button);
 
-    const ta_xot1_button = createImageButton("dat2/終季", 250);
+    const ta_xot1_button = createImageButton("終季", 250);
     ta_xot1_button.addEventListener("click", async () => {
       const res: {
         legal: boolean;
