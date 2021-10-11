@@ -82,33 +82,29 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
   if (hands.length > 11) {
     throw new Error("too many hands");
   }
-  const starting_position_left = [
-    550,
-    550,
-    550,
-    550,
-    550,
-    550,
-    550,
-    550,
-    550,
-    575,
-    585,
-    595,
+  const [starting_position_left, column_spacing] = [
+    [550, 60], 
+    [550, 60], 
+    [550, 60], 
+    [550, 60], 
+    [550, 60], 
+    [550, 60], 
+    [550, 60], 
+    [550, 60], 
+    [550, 60], 
+    [575, 57], /*  9 */
+    [585, 53], /* 10 */
+    [595, 49]  /* 11 */
   ][hands.length];
-  const spacing = [60, 60, 60, 60, 60, 60, 60, 60, 60, 57, 53, 49][
-    hands.length
-  ];
-
   const score_display = document.getElementById("score_display")!;
   score_display.classList.remove("nocover");
   removeChildren(score_display);
   // while the score is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
-  const base_score = hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0);
+  const base_score_total = hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0);
   score_display.append(...hands.flatMap((hand, index) => {
     /* display hands and scores */
-    const left = starting_position_left - spacing * index;
+    const left = starting_position_left - column_spacing * index;
     const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
     const hand_and_score: HTMLImageElement[] = createDigits(digits, { left, top: 280 + top_padding, width: 50 });
     if (hand.slice(0, 2) === "同色") {
@@ -119,7 +115,7 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     }
     return hand_and_score;
   }));
-  score_display.append(...createTotalScoreDigits(base_score));
+  score_display.append(...createTotalScoreDigits(base_score_total));
 }
 
 function createDigits(digits: DigitLinzklar[], o: { left: number, top: number, width: number }): HTMLImageElement[] {
