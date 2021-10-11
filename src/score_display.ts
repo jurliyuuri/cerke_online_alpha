@@ -1,4 +1,5 @@
 import { Hand, HandAndNegativeHand, hand_to_score } from "cerke_hands_and_score";
+import { removeChildren } from "./draw_erase_animate";
 import { Season } from "./game_state";
 import { DigitLinzklar, toDigitsLinzklar } from "./to_digits";
 
@@ -29,6 +30,7 @@ export function drawFinalScoreDisplay(
   const total_score = 20 + scores.reduce((a, b) => a + b, 0);
   const final_score_display = document.getElementById("final_score_display")!;
   final_score_display.classList.remove("nocover");
+  removeChildren(final_score_display);
   final_score_display.append(...Array.from({ length: scores_of_each_season.length }, (_, season) => {
     const a = ([] as number[]).concat(
       ...scores_of_each_season.slice(0, season),
@@ -120,6 +122,7 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
 
   const score_display = document.getElementById("score_display")!;
   score_display.classList.remove("nocover");
+  removeChildren(score_display);
   // while the score is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
   const base_score = hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0);

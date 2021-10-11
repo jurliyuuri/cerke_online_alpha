@@ -13,7 +13,7 @@ import { BOX_SIZE } from "./html_top_left";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath, toPath_ } from "./piece_to_path";
 
-function removeChildren(parent: HTMLElement) {
+export function removeChildren(parent: HTMLElement) {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
   }
