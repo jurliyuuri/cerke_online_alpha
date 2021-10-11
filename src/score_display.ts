@@ -17,9 +17,11 @@ export function drawFinalScoreDisplay(
 
   const createDigitsMidHTML = (score: number, ind: number) =>
     createDigitsHTML(
-      starting_position_left - spacing * ind,
-      ((50 * (1 + letter_spacing)) / 2) * (2 - toDigitsLinzklar(score).length) + 239,
-      50,
+      {
+        left: starting_position_left - spacing * ind,
+        top: ((50 * (1 + letter_spacing)) / 2) * (2 - toDigitsLinzklar(score).length) + 239,
+        width: 50
+      },
       toDigitsLinzklar(score),
     );
 
@@ -44,19 +46,21 @@ export function drawFinalScoreDisplay(
 }
 
 function createDigitsHTML(
-  left: number,
-  top: number,
-  width: number,
+  o: {
+    left: number,
+    top: number,
+    width: number
+  },
   digits: DigitLinzklar[],
 ) {
   return digits
     .map(
       (digit, index) => `<img
         src="image/dat2/${digit}.png"
-        style="position:absolute; left: ${left}px; top: ${(1 + letter_spacing) *
-        width *
+        style="position:absolute; left: ${o.left}px; top: ${(1 + letter_spacing) *
+        o.width *
         index +
-        top}px;" width="${width}"
+        o.top}px;" width="${o.width}"
     >`,
     )
     .join("");
@@ -128,7 +132,7 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     } else {
       ans += `<img src="image/dat2/${hand}.png" style="position:absolute; left: ${left}px; top: ${top_padding}px;" width="50">`;
     }
-    ans += createDigitsHTML(left, 280 + top_padding, 50, digits);
+    ans += createDigitsHTML({ left, top: 280 + top_padding, width: 50 }, digits);
     return ans;
   }
 
@@ -150,9 +154,11 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
 function createTotalScoreHTML(total_score: number): string {
   const base_score_digits: DigitLinzklar[] = toDigitsLinzklar(total_score);
   return createDigitsHTML(
-    20,
-    234 - (70 * base_score_digits.length) / 2,
-    70,
+    {
+      left: 20,
+      top: 234 - (70 * base_score_digits.length) / 2,
+      width: 70
+    },
     base_score_digits,
   );
 }
