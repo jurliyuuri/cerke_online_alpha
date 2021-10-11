@@ -1,4 +1,5 @@
 import { Hand, HandAndNegativeHand, hand_to_score } from "cerke_hands_and_score";
+import { Season } from "./game_state";
 import { DigitLinzklar, toDigitsLinzklar } from "./to_digits";
 
 export type ArrayUpTo4<T> = [T] | [T, T] | [T, T, T] | [T, T, T, T];
@@ -15,7 +16,7 @@ export function drawFinalScoreDisplay(
   const starting_position_left = 530;
   const spacing = 60;
   const createDigitsMid = (o: { score: number, column_index: number }) => toDigitsLinzklar(o.score).map(
-    (digit, row_index, array) => createDigit(
+    (digit, row_index, array) => createDigitImg(
       {
         left: starting_position_left - spacing * o.column_index,
         top: ((50 * (1 + letter_spacing)) / 2) * (2 - array.length) + 239,
@@ -28,23 +29,28 @@ export function drawFinalScoreDisplay(
   const total_score = 20 + scores.reduce((a, b) => a + b, 0);
   const final_score_display = document.getElementById("final_score_display")!;
   final_score_display.classList.remove("nocover");
-  final_score_display.innerHTML =
-    Array.from({ length: scores_of_each_season.length })
-      .map((_, ind) => {
-        const a = ([] as number[]).concat(
-          ...scores_of_each_season.slice(0, ind),
-        ).length;
-        return `<img style="position:absolute; left: ${starting_position_left -
-          spacing *
-          a}px; top: 15px;" src="image/season/${["春", "夏", "秋", "冬"][ind]}.png" width="50">`;
-      })
-      .join("");
+  final_score_display.append(...Array.from({ length: scores_of_each_season.length }, (_, season) => {
+    const a = ([] as number[]).concat(
+      ...scores_of_each_season.slice(0, season),
+    ).length;
+    return createSeasonImg({ left: starting_position_left - spacing * a, season });
+  }));
   final_score_display.append(...scores.flatMap((score, column_index) => createDigitsMid({ score, column_index })));
   final_score_display.append(...createDigitsMid({ score: 20, column_index: -1 }));
   final_score_display.append(...createTotalScoreDigits(total_score));
 }
 
-function createDigit(
+function createSeasonImg(o: { left: number, season: number }): HTMLImageElement {
+  const i = document.createElement("img");
+  i.src = `image/season/${["春", "夏", "秋", "冬"][o.season]}.png`;
+  i.style.position = "absolute";
+  i.style.left = `${o.left}px`;
+  i.style.top = "15px";
+  i.width = 50;
+  return i;
+}
+
+function createDigitImg(
   o: {
     left: number,
     top: number,
@@ -121,7 +127,7 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     /* display hands and scores */
     const left = starting_position_left - spacing * index;
     const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
-    const hand_and_score: HTMLImageElement[] = digits.map((digit, index) => createDigit({ left, top: 280 + top_padding, width: 50 }, digit, index));
+    const hand_and_score: HTMLImageElement[] = digits.map((digit, index) => createDigitImg({ left, top: 280 + top_padding, width: 50 }, digit, index));
     if (hand.slice(0, 2) === "同色") {
       hand_and_score.push(createHandImage(hand.slice(2) as HandAndNegativeHand, { left, top_padding }));
       hand_and_score.push(createBapPokImage({ left, top_padding }));
@@ -155,7 +161,7 @@ function createHandImage(hand: HandAndNegativeHand, o: { left: number, top_paddi
 
 function createTotalScoreDigits(total_score: number): HTMLImageElement[] {
   const total_score_digits: DigitLinzklar[] = toDigitsLinzklar(total_score);
-  return total_score_digits.map((digit, index) => createDigit({
+  return total_score_digits.map((digit, index) => createDigitImg({
     left: 20,
     top: 234 - (70 * total_score_digits.length) / 2,
     width: 70
