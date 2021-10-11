@@ -36,7 +36,7 @@ export function drawFinalScoreDisplay(
         ).length;
         return `<img style="position:absolute; left: ${starting_position_left -
           spacing *
-          a}px; top: 15px;" src="image/season_${ind}.png" width="50">`;
+          a}px; top: 15px;" src="image/season/${["春", "夏", "秋", "冬"][ind]}.png" width="50">`;
       })
       .join("");
   final_score_display.append(...scores.flatMap((score, column_index) => createDigitsMid({ score, column_index })));
