@@ -41,10 +41,31 @@ export function drawFinalScoreDisplay(
       })
       .join("") +
     scores.map((a, ind) => createDigitsMidHTML(a, ind)).join("") +
-    createDigitsMidHTML(20, -1) +
-    createTotalScoreHTML(total_score);
+    createDigitsMidHTML(20, -1);
+  final_score_display.append(...createTotalScoreDigits(total_score));
 }
 
+function createDigit(
+  o: {
+    left: number,
+    top: number,
+    width: number
+  },
+  digit: DigitLinzklar,
+  index: number
+): HTMLImageElement {
+  const i = document.createElement("img");
+  i.src = `image/dat2/${digit}.png`;
+  i.style.position = "absolute";
+  i.style.left = `${o.left}px`;
+  i.style.top = `${(1 + letter_spacing) * o.width * index + o.top}px`
+  i.width = o.width;
+  return i;
+}
+
+/**
+ * @deprecated Use createDigit, which does the same thing but returns HTMLImageElement
+ */
 function createDigitsHTML(
   o: {
     left: number,
@@ -148,17 +169,15 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
       .map((hand, index) =>
         createHandAndScoreHTML(hand, starting_position_left - spacing * index),
       )
-      .join("") + createTotalScoreHTML(base_score);
+      .join("");
+  score_display.append(...createTotalScoreDigits(base_score));
 }
 
-function createTotalScoreHTML(total_score: number): string {
-  const base_score_digits: DigitLinzklar[] = toDigitsLinzklar(total_score);
-  return createDigitsHTML(
-    {
-      left: 20,
-      top: 234 - (70 * base_score_digits.length) / 2,
-      width: 70
-    },
-    base_score_digits,
-  );
+function createTotalScoreDigits(total_score: number): HTMLImageElement[] {
+  const total_score_digits: DigitLinzklar[] = toDigitsLinzklar(total_score);
+  return total_score_digits.map((digit, index) => createDigit({
+    left: 20,
+    top: 234 - (70 * total_score_digits.length) / 2,
+    width: 70
+  }, digit, index))
 }
