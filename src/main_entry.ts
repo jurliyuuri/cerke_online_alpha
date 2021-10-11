@@ -53,9 +53,9 @@ document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
 });
 
 if (sessionStorage.vs === "cpu") {
-  document.getElementById("larta_opponent_img")!.innerHTML = `<img src="image/nystiper2.png">`;
+  document.getElementById("opponent_icon")!.innerHTML = `<img src="image/nystiper2.png">`;
 } else if (sessionStorage.vs === "someone") {
-  document.getElementById("larta_opponent_img")!.innerHTML = `<img src="image/larta2.png">`;
+  document.getElementById("opponent_icon")!.innerHTML = `<img src="image/larta2.png">`;
 } else {
   // Maybe you entered this page without registering. Go back to entrance.html.
   location.href = "entrance.html";

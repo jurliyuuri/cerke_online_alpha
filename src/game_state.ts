@@ -149,7 +149,7 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
     set is_my_turn(i: boolean) {
       _is_my_turn = !!i;
       if (_is_my_turn) {
-        document.getElementById("larta_me")!.style.display = "block";
+        document.getElementById("my_icon")!.style.display = "block";
         document.getElementById("larta_opponent")!.style.display = "none";
         document.getElementById("opponent_message")!.textContent = "";
         document
@@ -158,7 +158,7 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
           )!
           .classList.add("nocover");
       } else {
-        document.getElementById("larta_me")!.style.display = "none";
+        document.getElementById("my_icon")!.style.display = "none";
         document.getElementById("larta_opponent")!.style.display = "block";
         document
           .getElementById(
