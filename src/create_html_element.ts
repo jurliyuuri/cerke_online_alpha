@@ -1,5 +1,5 @@
 /**
- * Every function must return an HTMLElement.
+ * Every function must return an HTMLElement or an SVGSVGElement.
  * No write to the global variable is permitted.
  * Every call to document.createElement should live here.
  */
@@ -18,7 +18,7 @@ import {
 export function createArrowSvg(
   d: string,
   coord: readonly [number, number],
-) {
+): SVGSVGElement {
   const [row_index, column_index] = coord;
   const top = row_index * BOX_SIZE + 160.5;
   const left = column_index * BOX_SIZE + 19.25;
