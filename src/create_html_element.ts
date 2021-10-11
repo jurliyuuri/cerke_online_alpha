@@ -40,23 +40,6 @@ export function createArrowSvg(
   return i;
 }
 
-export function createArrowPiece(
-  path: string,
-  coord: readonly [number, number],
-) {
-  const [row_index, column_index] = coord;
-  const top = row_index * BOX_SIZE + 160.5;
-  const left = column_index * BOX_SIZE + 19.25;
-  const i = document.createElement("img");
-  i.classList.add("selection");
-  i.style.top = `${top}px`;
-  i.style.left = `${left}px`;
-  i.src = `image/${path}.png`;
-  i.width = 140;
-  i.height = 140;
-  return i;
-}
-
 export function createPieceSizeImageOnBoardByPathAndXY(
   top: number,
   left: number,
