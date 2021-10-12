@@ -37,7 +37,18 @@ export function drawFinalScoreDisplay(
   }));
   final_score_display.append(...scores.flatMap((score, column_index) => createDigitsMid({ score, column_index })));
   final_score_display.append(...createDigitsMid({ score: 20, column_index: -1 }));
+  final_score_display.append(createHut2Img({left: starting_position_left - spacing * -1}));
   final_score_display.append(...createTotalScoreDigits(total_score));
+}
+
+function createHut2Img(o: { left: number }): HTMLImageElement {
+  const i = document.createElement("img");
+  i.src = `image/始.png`;
+  i.style.position = "absolute";
+  i.style.left = `${o.left}px`;
+  i.style.top = "15px";
+  i.width = 50;
+  return i;
 }
 
 function createSeasonImg(o: { left: number, season: number }): HTMLImageElement {
