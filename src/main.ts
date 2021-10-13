@@ -2011,7 +2011,13 @@ export function endSeason(
       hop1zuo1OfUpward: [],
     };
 
+    // Reset the rate to 1x
+    // レートを1倍へと戻す
     GAME_STATE.log2_rate = 0;
+    // Re-render the Mak2Io1 to clear the rate-denoting dummy piece in the previous season
+    // 直前の季節で生成されている可能性のある、レート表示用の駒を消すために値直を再描画する
+    drawMak2Io1(); 
+
     allowPolling(); // reset another global state
     GAME_STATE.last_move_focus = null; /* the board is initialized; no focus */
 
