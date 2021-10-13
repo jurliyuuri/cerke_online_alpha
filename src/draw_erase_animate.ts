@@ -28,7 +28,7 @@ export function getDenoteScoreNodeTopLeft(score: number) {
 }
 
 export function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
-  return { top: 873 - 96.66666666666667 * (log2_rate - 1), left: 4 };
+  return { top: 873 - (96.66666666666667 / 2) * (log2_rate - 1), left: 4 };
 }
 
 /**
