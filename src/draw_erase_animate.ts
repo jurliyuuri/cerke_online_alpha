@@ -38,15 +38,17 @@ export function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
 export async function animateNode(
   node: HTMLElement,
   total_duration: number,
-  to: { top: number; left: number },
-  from: { top: number; left: number },
+  o: {
+    to: { top: number; left: number },
+    from: { top: number; left: number }
+  },
   zIndex: string = "100",
   rotate?: number,
 ) {
   node.style.transition = `transform ${total_duration / 1000}s ease`;
   node.style.zIndex = zIndex; // so that it doesn't go under another piece
-  node.style.transform = `translateY(${to.top - from.top}px)`;
-  node.style.transform += `translateX(${to.left - from.left}px)`;
+  node.style.transform = `translateY(${o.to.top - o.from.top}px)`;
+  node.style.transform += `translateX(${o.to.left - o.from.left}px)`;
   if (rotate != null) {
     node.style.transform += `rotate(${rotate}deg)`;
   }

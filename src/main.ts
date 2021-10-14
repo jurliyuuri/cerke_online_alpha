@@ -1698,7 +1698,7 @@ export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece, list_
     )!;
     const centralNode = createPieceSizeImageOnBoardByPathAndXY(
       1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-      hop1_zuo1_left_position({ind, list_length}),
+      hop1_zuo1_left_position({ ind, list_length }),
       "selection2",
       "selection",
     );
@@ -1783,8 +1783,10 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
     await animateNode(
       denote_rate,
       1000 * 0.8093,
-      getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
-      getDenoteRateNodeTopLeft(orig_log2_rate),
+      {
+        to: getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
+        from: getDenoteRateNodeTopLeft(orig_log2_rate)
+      },
     );
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
     drawMak2Io1();
@@ -1887,8 +1889,10 @@ export async function animatePunishStepTamAndCheckPerzej(side: Side) {
   await animateNode(
     denote_score,
     1000 * 0.8093,
-    getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
-    getDenoteScoreNodeTopLeft(orig_score),
+    {
+      to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+      from: getDenoteScoreNodeTopLeft(orig_score)
+    },
   );
 
   if (GAME_STATE.my_score >= 40) {
@@ -1946,8 +1950,10 @@ export function endSeason(
       await animateNode(
         denote_score,
         1000 * 0.8093,
-        getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
-        getDenoteScoreNodeTopLeft(orig_score),
+        {
+          to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+          from: getDenoteScoreNodeTopLeft(orig_score)
+        },
       );
 
       alert(DICTIONARY.ja.gameEnd);
@@ -1971,8 +1977,10 @@ export function endSeason(
     await animateNode(
       denote_score,
       1000 * 0.8093,
-      getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
-      getDenoteScoreNodeTopLeft(orig_score),
+      {
+        to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+        from: getDenoteScoreNodeTopLeft(orig_score)
+      },
     );
 
     if (GAME_STATE.my_score >= 40) {
@@ -1985,8 +1993,10 @@ export function endSeason(
     await animateNode(
       denote_season,
       700 * 0.8093,
-      getDenoteSeasonNodeTopLeft(GAME_STATE.season),
-      getDenoteSeasonNodeTopLeft(orig_season),
+      {
+        to: getDenoteSeasonNodeTopLeft(GAME_STATE.season),
+        from: getDenoteSeasonNodeTopLeft(orig_season)
+      },
     );
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
     drawMak2Io1();
@@ -2015,7 +2025,7 @@ export function endSeason(
     GAME_STATE.log2_rate = 0;
     // Re-render the Mak2Io1 to clear the rate-denoting dummy piece in the previous season
     // 直前の季節で生成されている可能性のある、レート表示用の駒を消すために値直を再描画する
-    drawMak2Io1(); 
+    drawMak2Io1();
 
     allowPolling(); // reset another global state
     GAME_STATE.last_move_focus = null; /* the board is initialized; no focus */

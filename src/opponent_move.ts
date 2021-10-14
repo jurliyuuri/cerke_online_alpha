@@ -19,6 +19,7 @@ import {
   BOX_SIZE,
   coordToPieceXY,
   coordToPieceXY_Shifted,
+  hop1_zuo1_left_position,
   indToHo1Zuo1OfDownward,
   MAX_PIECE_SIZE,
   PIECE_SIZE,
@@ -173,8 +174,10 @@ export async function animateOpponentInfAfterStep(p: {
   await animateNode(
     srcNode,
     750 * 0.8093,
-    coordToPieceXY_Shifted(p.step),
-    coordToPieceXY(p.src),
+    {
+      to: coordToPieceXY_Shifted(p.step),
+      from: coordToPieceXY(p.src)
+    },
   );
 
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
@@ -201,8 +204,10 @@ export async function animateOpponentInfAfterStep(p: {
     await animateNode(
       srcNode,
       750 * 0.8093,
-      coordToPieceXY(dest),
-      coordToPieceXY(p.src) /* must be src, since the node is not renewed */,
+      {
+        to: coordToPieceXY(dest),
+        from: coordToPieceXY(p.src) /* must be src, since the node is not renewed */,
+      }
     );
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
@@ -210,8 +215,10 @@ export async function animateOpponentInfAfterStep(p: {
     await animateNode(
       destNode,
       750 * 0.8093,
-      position_for_temporarily_appending_hop1zuo1_of_downward(),
-      coordToPieceXY([dest_i, dest_j]),
+      {
+        to: position_for_temporarily_appending_hop1zuo1_of_downward(),
+        from: coordToPieceXY([dest_i, dest_j])
+      },
       "50",
       180,
     );
@@ -248,8 +255,10 @@ export async function animateOpponentInfAfterStep(p: {
     await animateNode(
       srcNode,
       750 * 0.8093,
-      coordToPieceXY(dest),
-      coordToPieceXY(p.src) /* must be src, since the node is not renewed */,
+      {
+        to: coordToPieceXY(dest),
+        from: coordToPieceXY(p.src) /* must be src, since the node is not renewed */,
+      }
     );
 
     if (result.water_entry_ciurl) {
@@ -444,8 +453,10 @@ async function animateOpponentSrcStepDstFinite_(
     await animateNode(
       srcNode,
       750 * 0.8093,
-      coordToPieceXY_Shifted(step),
-      coordToPieceXY(src),
+      {
+        to: coordToPieceXY_Shifted(step),
+        from: coordToPieceXY(src)
+      },
     );
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
@@ -453,8 +464,10 @@ async function animateOpponentSrcStepDstFinite_(
     await animateNode(
       srcNode,
       750 * 0.8093,
-      coordToPieceXY(dest),
-      coordToPieceXY(src) /* must be src, since the node is not renewed */,
+      {
+        to: coordToPieceXY(dest),
+        from: coordToPieceXY(src) /* must be src, since the node is not renewed */
+      },
     );
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
@@ -462,8 +475,10 @@ async function animateOpponentSrcStepDstFinite_(
     await animateNode(
       destNode,
       750 * 0.8093,
-      position_for_temporarily_appending_hop1zuo1_of_downward(),
-      coordToPieceXY([dest_i, dest_j]),
+      {
+        to: position_for_temporarily_appending_hop1zuo1_of_downward(),
+        from: coordToPieceXY([dest_i, dest_j])
+      },
       "50",
       180,
     );
@@ -500,8 +515,10 @@ async function animateOpponentSrcStepDstFinite_(
     await animateNode(
       imgNode,
       750 * 0.8093,
-      coordToPieceXY_Shifted(step),
-      coordToPieceXY(src),
+      {
+        to: coordToPieceXY_Shifted(step),
+        from: coordToPieceXY(src)
+      },
     );
 
     await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
@@ -509,8 +526,10 @@ async function animateOpponentSrcStepDstFinite_(
     await animateNode(
       imgNode,
       750 * 0.8093,
-      coordToPieceXY(dest),
-      coordToPieceXY(src) /* must be src, since the node is not renewed */,
+      {
+        to: coordToPieceXY(dest),
+        from: coordToPieceXY(src) /* must be src, since the node is not renewed */
+      },
     );
 
     if (water_entry_ciurl) {
@@ -591,15 +610,19 @@ async function animateOpponentSrcDst_(
     await animateNode(
       srcNode,
       total_duration,
-      coordToPieceXY([dest_i, dest_j]),
-      coordToPieceXY([src_i, src_j]),
+      {
+        to: coordToPieceXY([dest_i, dest_j]),
+        from: coordToPieceXY([src_i, src_j])
+      },
     );
 
     await animateNode(
       destNode,
       total_duration,
-      position_for_temporarily_appending_hop1zuo1_of_downward(),
-      coordToPieceXY([dest_i, dest_j]),
+      {
+        to: position_for_temporarily_appending_hop1zuo1_of_downward(),
+        from: coordToPieceXY([dest_i, dest_j])
+      },
       "50",
       180,
     );
@@ -633,8 +656,10 @@ async function animateOpponentSrcDst_(
     await animateNode(
       imgNode,
       1500 * 0.8093,
-      coordToPieceXY([dest_i, dest_j]),
-      coordToPieceXY([src_i, src_j]),
+      {
+        to: coordToPieceXY([dest_i, dest_j]),
+        from: coordToPieceXY([src_i, src_j])
+      },
     );
 
     if (o.water_entry_ciurl) {
@@ -694,11 +719,13 @@ export async function animateOpponentFromHand(
   await animateNode(
     imgNode,
     1500 * 0.8093,
-    coordToPieceXY([
-      dest_i,
-      dest_j,
-    ]) /* hop1zuo1 and board does not agree on the absolute coordinates, but agrees on the displacement */,
-    indToHo1Zuo1OfDownward(ind),
+    {
+      to: coordToPieceXY([dest_i, dest_j]),
+
+      // Here, `drawField` has already been called, and the pieces have been placed in a packed configuration, so `from` becomes:
+      // この段階では既に drawField が呼ばれており、詰められた配置で手駒が配置されているため、from はこうなる。
+      from: { top: -135, left: hop1_zuo1_left_position({ ind, list_length: GAME_STATE.f.hop1zuo1OfDownward.length }) }
+    },
   );
 
   GAME_STATE.f.currentBoard[dest_i][dest_j] = removed_from_hop1zuo1;
@@ -724,8 +751,10 @@ export async function animateOpponentTamNoStep(
   await animateNode(
     imgNode,
     1500 * 0.8093,
-    coordToPieceXY(fstdst),
-    coordToPieceXY(src),
+    {
+      to: coordToPieceXY(fstdst),
+      from: coordToPieceXY(src)
+    },
   );
   GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
@@ -743,8 +772,10 @@ export async function animateOpponentTamNoStep(
   await animateNode(
     imgNode2,
     1500 * 0.8093,
-    coordToPieceXY(snddst),
-    coordToPieceXY(fstdst),
+    {
+      to: coordToPieceXY(snddst),
+      from: coordToPieceXY(fstdst)
+    },
   );
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
   GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
