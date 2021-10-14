@@ -1,14 +1,10 @@
 import {
   createPieceSizeImageOnBoardByPath,
   createGuideImageAt,
-  createPieceImgToBePlacedOnBoard,
-  createCancelButton,
   createPieceSizeImageOnBoardByPath_Shifted,
   createPieceSizeSelectionButtonOnBoard_Shifted,
   createImageButton,
-  createCiurl,
   createPieceSizeImageOnBoardByPathAndXY,
-  createPieceImgToBePlacedOnHop1zuo1,
 } from "./create_html_element";
 import {
   GAME_STATE,
@@ -34,7 +30,6 @@ import {
   Piece,
   coordEq,
   NonTam2PieceUpward,
-  Board,
   Side,
   NonTam2PieceDownward,
   NonTam2Piece,
@@ -63,7 +58,6 @@ import {
   canGetOccupiedBy,
 } from "cerke_online_utility/lib";
 import {
-  BOX_SIZE,
   MAX_PIECE_SIZE,
   indToHop1Zuo1Horizontal,
   PIECE_SIZE,
@@ -79,7 +73,6 @@ import { toDigitsLinzklar } from "./to_digits";
 import {
   ObtainablePieces,
   calculate_hands_and_score_from_pieces,
-  Hand,
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark"
 import { KRUT_CRUOP } from "./main_entry";
