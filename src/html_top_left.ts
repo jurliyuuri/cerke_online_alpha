@@ -25,10 +25,11 @@ export function coordToPieceXY_Shifted(coord: Coord) {
   };
 }
 
-export function indToHop1Zuo1Horizontal(ind: number) {
-  return 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
+export function hop1_zuo1_left_position(o: { ind: number, list_length: number }) {
+  const adjusted_ind = adjust_ind_for_hop1zuo1(o);
+  return 1 + adjusted_ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
 }
 
 export function indToHo1Zuo1OfDownward(ind: number) {
-  return { top: -135, left: indToHop1Zuo1Horizontal(ind) };
+  return { top: -135, left: 1 + ind * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 };
 }

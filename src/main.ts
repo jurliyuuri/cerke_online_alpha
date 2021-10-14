@@ -59,7 +59,7 @@ import {
 } from "cerke_online_utility/lib";
 import {
   MAX_PIECE_SIZE,
-  indToHop1Zuo1Horizontal,
+  hop1_zuo1_left_position,
   PIECE_SIZE,
   adjust_ind_for_hop1zuo1,
 } from "./html_top_left";
@@ -1698,7 +1698,7 @@ export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece, list_
     )!;
     const centralNode = createPieceSizeImageOnBoardByPathAndXY(
       1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-      indToHop1Zuo1Horizontal(adjust_ind_for_hop1zuo1({ind, list_length})),
+      hop1_zuo1_left_position({ind, list_length}),
       "selection2",
       "selection",
     );

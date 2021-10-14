@@ -306,7 +306,7 @@ export function drawField(o: { focus?: Coord | null }) {
 
       imgNode.style.cursor = "pointer";
       imgNode.addEventListener("click", function () {
-        selectOwnPieceOnHop1zuo1(i, piece);
+        selectOwnPieceOnHop1zuo1(i, piece, list.length);
       });
 
       contains_pieces_on_upward.appendChild(imgNode);
