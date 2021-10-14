@@ -13,6 +13,7 @@ import {
   coordToPieceXY,
   coordToPieceXY_Shifted,
   indToHop1Zuo1Horizontal,
+  adjust_ind_for_hop1zuo1,
 } from "./html_top_left";
 
 export function createBapPokImage(o: { left: number, top_padding: number }): HTMLImageElement {
@@ -156,23 +157,20 @@ export function createCiurl(
 }
 
 /**
- * generates an HTMLImageElement to be displayed in hop1 zuo1 / 手駒用の HTMLImageElement を生成する。
+ * Generates an HTMLImageElement to be displayed in hop1 zuo1 / 手駒用の HTMLImageElement を生成する。
  * @param ind how many-th hop1 zuo1? / 左から何番目(0始まり)の手駒であるかを指定
  * @param path path to the image / 画像のパス
  * @param list_length how many hop1 zuo1 there are in total on one side / 片側の手駒の個数
- * @returns 
+ * @returns an HTMLImageElement to be displayed in hop1 zuo1
  */
 export function createPieceImgToBePlacedOnHop1zuo1(
   ind: number,
   path: string,
   list_length: number
 ): HTMLImageElement {
-  const adjusted_ind = list_length <= 9 ?
-    ind :
-    ind * 8 / (list_length - 1) /* 0 から 8 の間に均等に配置 */;
   return createPieceSizeImageOnBoardByPathAndXY(
     1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-    indToHop1Zuo1Horizontal(adjusted_ind),
+    indToHop1Zuo1Horizontal(adjust_ind_for_hop1zuo1({ind, list_length})),
     path,
     "piece_image_on_hop1zuo1",
   );

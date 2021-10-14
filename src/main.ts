@@ -61,6 +61,7 @@ import {
   MAX_PIECE_SIZE,
   indToHop1Zuo1Horizontal,
   PIECE_SIZE,
+  adjust_ind_for_hop1zuo1,
 } from "./html_top_left";
 import { DICTIONARY } from "./dictionary";
 import { API_ORIGIN } from "./env";
@@ -1676,7 +1677,12 @@ export function selectOwnPieceOnBoard(
   }
 }
 
-export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
+/**
+ * @param ind how many-th hop1 zuo1? / 左から何番目(0始まり)の手駒であるかを指定
+ * @param piece the piece / 駒
+ * @param list_length how many hop1 zuo1 there are in total on one side / 片側の手駒の個数
+ */
+export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece, list_length: number) {
   // erase the existing guide in all circumstances
   eraseGuide();
 
@@ -1692,7 +1698,7 @@ export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece) {
     )!;
     const centralNode = createPieceSizeImageOnBoardByPathAndXY(
       1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-      indToHop1Zuo1Horizontal(ind),
+      indToHop1Zuo1Horizontal(adjust_ind_for_hop1zuo1({ind, list_length})),
       "selection2",
       "selection",
     );
