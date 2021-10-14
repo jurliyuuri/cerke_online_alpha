@@ -16,9 +16,12 @@ import {
 } from "cerke_online_utility/lib";
 import { fromAbsoluteCoord, GAME_STATE } from "./game_state";
 import {
+  BOX_SIZE,
   coordToPieceXY,
   coordToPieceXY_Shifted,
   indToHo1Zuo1OfDownward,
+  MAX_PIECE_SIZE,
+  PIECE_SIZE,
 } from "./html_top_left";
 import {
   animatePunishStepTamAndCheckPerzej,
@@ -106,6 +109,30 @@ async function animateOpponentSteppingOverCiurl(
   eraseArrow();
 }
 
+export function position_for_temporarily_appending_hop1zuo1_of_downward() {
+  if (GAME_STATE.f.hop1zuo1OfDownward.length <= 8) {
+    // There are only 8 or fewer pieces in hop1zuo1.
+    // Therefore, the piecess so far fill the positions from `0` to `hop1zuo1OfDownward.length - 1` without scooching over.
+    // This means that, if we place the image at the position `hop1zuo1OfDownward.length`, then
+    // that will be the correct position.
+    // 手駒が8枚以下しかない。
+    // したがって、今までの手駒は 0 から hop1zuo1OfDownward.length - 1 までの位置を埋めていて、手駒間の距離を詰めていない。
+    // ということは、hop1zuo1OfDownward.length の位置へと画像を配置すれば、
+    // 新手駒の目標座標として正しい位置になる。
+    return { top: -135, left: 1 + GAME_STATE.f.hop1zuo1OfDownward.length * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 };
+  } else {
+    // There are already more than 9 pieces in the hop1zuo1 with some scooching
+    // Since these pieces are packed to fill positions 0 to 8, there is no problem if we place the newly acquired piece in position 9.
+    // Note that, when `drawField` is called, the pieces in hop1zuo1 will abruptly move horizontally at once, 
+    // but I consider this to be acceptable.
+    // 手駒が既に9枚以上あり、詰めて配置されている。
+    // 詰めて配置されたこれらの駒は位置 0 から 8 を埋めているので、新しく手に入れた駒は 9 においてやればとりあえず問題はない。
+    // なお、drawField が呼ばれた際に一気に手駒の部分がガクッと横に動くことになるが、
+    // まあ許容範囲としていいだろう。
+    return { top: -135, left: 1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 };
+  }
+}
+
 export async function animateOpponentInfAfterStep(p: {
   src: Coord;
   step: Coord;
@@ -183,7 +210,7 @@ export async function animateOpponentInfAfterStep(p: {
     await animateNode(
       destNode,
       750 * 0.8093,
-      indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length),
+      position_for_temporarily_appending_hop1zuo1_of_downward(),
       coordToPieceXY([dest_i, dest_j]),
       "50",
       180,
@@ -435,7 +462,7 @@ async function animateOpponentSrcStepDstFinite_(
     await animateNode(
       destNode,
       750 * 0.8093,
-      indToHo1Zuo1OfDownward(GAME_STATE.f.hop1zuo1OfDownward.length),
+      position_for_temporarily_appending_hop1zuo1_of_downward(),
       coordToPieceXY([dest_i, dest_j]),
       "50",
       180,
@@ -571,9 +598,7 @@ async function animateOpponentSrcDst_(
     await animateNode(
       destNode,
       total_duration,
-      indToHo1Zuo1OfDownward(
-        GAME_STATE.f.hop1zuo1OfDownward.length,
-      ) /* not yet pushed into GAME_STATE.f.hop1zuo1OfDownward */,
+      position_for_temporarily_appending_hop1zuo1_of_downward(),
       coordToPieceXY([dest_i, dest_j]),
       "50",
       180,
