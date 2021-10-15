@@ -1866,8 +1866,8 @@ function perzej(
   );
 
   // show both sides' icon
-  document.getElementById("my_icon")!.style.display = "block";
-  document.getElementById("larta_opponent")!.style.display = "block";
+  document.getElementById("my_icon")!.style.opacity = "1";
+  document.getElementById("larta_opponent")!.style.opacity = "1";
   document.getElementById("opponent_message")!.textContent =
     msg === "you win!" ? "あなたの勝ちです" :
       msg === "draw" ? "引き分けです" : "あなたの負けです"
