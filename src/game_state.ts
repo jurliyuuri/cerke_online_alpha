@@ -152,6 +152,8 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
         document.getElementById("my_icon")!.style.opacity = "1";
         document.getElementById("larta_opponent")!.style.opacity = "0.3";
         document.getElementById("opponent_message")!.textContent = "";
+        document.getElementById("opponent_message_linzklar")!.textContent = "";
+
         document
           .getElementById(
             "protective_cover_over_field_while_waiting_for_opponent",

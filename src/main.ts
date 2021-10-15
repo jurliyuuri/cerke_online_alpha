@@ -63,7 +63,7 @@ import {
   PIECE_SIZE,
   adjust_ind_for_hop1zuo1,
 } from "./html_top_left";
-import { DICTIONARY } from "./dictionary";
+import { DICTIONARY, TACTICS_LINZKLAR } from "./dictionary";
 import { API_ORIGIN } from "./env";
 import {
   drawFinalScoreDisplay,
@@ -140,7 +140,8 @@ export async function sendMainPoll() {
 
   if (res.content !== "not yet") {
     console.log("ding!");
-    document.getElementById("opponent_message")!.textContent = res.message ?? "";
+    document.getElementById("opponent_message")!.textContent = res.message != null ? DICTIONARY.ja.tactics[res.message] : "";
+    document.getElementById("opponent_message_linzklar")!.textContent = res.message != null ? TACTICS_LINZKLAR[res.message] : "";
     if (KRUT_CRUOP) {
       const thud_sound = new Audio("sound/thud.ogg");
       thud_sound.play();
@@ -1871,6 +1872,10 @@ function perzej(
   document.getElementById("opponent_message")!.textContent =
     msg === "you win!" ? "あなたの勝ちです" :
       msg === "draw" ? "引き分けです" : "あなたの負けです"
+  document.getElementById("opponent_message_linzklar")!.textContent =
+    msg === "you win!" ? "汝上行終" :
+      msg === "draw" ? "汝値同於我" : "汝下行終";
+  
   KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }]
 }
 
