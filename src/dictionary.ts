@@ -3,7 +3,12 @@ export interface DictElem {
   failedWaterEntry: string;
   gameEnd: string;
   newSeason: string[];
-  tactics: Tactics
+  tactics: Tactics;
+  gameResult: {
+    victory: string;
+    draw: string;
+    loss: string;
+  }
 }
 
 export type Tactics = {
@@ -24,6 +29,12 @@ export const TACTICS_LINZKLAR: Tactics = {
   neutral: "無心来為何善。行周時無下行之道。"
 }
 
+export const GAME_END_LINZKLAR =  {
+  victory: "汝上行終",
+  draw: "汝値同於我",
+  loss: "汝下行終",
+};
+
 export type TacticsKey = keyof Tactics;
 
 export interface Dictionary {
@@ -41,6 +52,11 @@ export const DICTIONARY: Dictionary = {
       "季節が改まり冬になりました。",
     ],
     gameEnd: "試合終了です。",
+    gameResult: {
+      victory: "あなたの勝ちです",
+      draw: "引き分けです",
+      loss: "あなたの負けです",
+    },
     tactics: {
       victory_almost_certain: "勝ち確",
       strengthened_shaman: "激巫作成",

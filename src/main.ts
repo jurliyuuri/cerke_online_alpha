@@ -63,7 +63,7 @@ import {
   PIECE_SIZE,
   adjust_ind_for_hop1zuo1,
 } from "./html_top_left";
-import { DICTIONARY, TACTICS_LINZKLAR } from "./dictionary";
+import { DICTIONARY, GAME_END_LINZKLAR, TACTICS_LINZKLAR } from "./dictionary";
 import { API_ORIGIN } from "./env";
 import {
   drawFinalScoreDisplay,
@@ -1870,11 +1870,11 @@ function perzej(
   document.getElementById("my_icon")!.style.opacity = "1";
   document.getElementById("larta_opponent")!.style.opacity = "1";
   document.getElementById("opponent_message")!.textContent =
-    msg === "you win!" ? "あなたの勝ちです" :
-      msg === "draw" ? "引き分けです" : "あなたの負けです"
+    msg === "you win!" ? DICTIONARY.ja.gameResult.victory :
+      msg === "draw" ? DICTIONARY.ja.gameResult.draw : DICTIONARY.ja.gameResult.loss
   document.getElementById("opponent_message_linzklar")!.textContent =
-    msg === "you win!" ? "汝上行終" :
-      msg === "draw" ? "汝値同於我" : "汝下行終";
+    msg === "you win!" ? GAME_END_LINZKLAR.victory :
+      msg === "draw" ? GAME_END_LINZKLAR.draw : GAME_END_LINZKLAR.loss;
   
   KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }]
 }
