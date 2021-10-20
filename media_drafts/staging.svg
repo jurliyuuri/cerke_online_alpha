@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="166.78134mm"
+   height="52.778873mm"
+   viewBox="0 0 166.78134 52.778873"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="staging.svg">
+  <defs
+     id="defs2">
+    <rect
+       x="17.386906"
+       y="75.595238"
+       width="192.0119"
+       height="98.273811"
+       id="rect835" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="494.28286"
+     inkscape:cy="84.210264"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1030"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-29.963327,-78.68529)">
+    <text
+       xml:space="preserve"
+       id="text833"
+       style="font-style:normal;font-weight:normal;font-size:22.5778px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect835);fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;"
+       x="41.630402"
+       y="0"><tspan
+         x="29.78416"
+         y="97.820726"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:HGPSoeiKakupoptai;-inkscape-font-specification:'HGPSoeiKakupoptai Bold';text-align:center;text-anchor:middle;fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">ステ</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:HGPSoeiKakupoptai;-inkscape-font-specification:'HGPSoeiKakupoptai Bold';text-align:center;text-anchor:middle;fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">ー</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:HGPSoeiKakupoptai;-inkscape-font-specification:'HGPSoeiKakupoptai Bold';text-align:center;text-anchor:middle;fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">ジング</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:HGPSoeiKakupoptai;-inkscape-font-specification:'HGPSoeiKakupoptai Bold';text-align:center;text-anchor:middle;fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">環境</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:HGPSoeiKakupoptai;-inkscape-font-specification:'HGPSoeiKakupoptai Bold';text-align:center;text-anchor:middle;fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+</tspan></tspan><tspan
+         x="63.518569"
+         y="128.29194"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:HGPSoeiKakupoptai;-inkscape-font-specification:'HGPSoeiKakupoptai Bold';text-align:center;text-anchor:middle;fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">デバッグ</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:HGPSoeiKakupoptai;-inkscape-font-specification:'HGPSoeiKakupoptai Bold';text-align:center;text-anchor:middle;fill:#00f642;fill-opacity:1;stroke:#ff00ff;stroke-width:0.7;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">用</tspan></tspan></text>
+  </g>
+</svg>
