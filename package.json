@@ -19,7 +19,7 @@
   },
   "homepage": "https://gitlab.com/jekto.vatimeliju/cerke_online#readme",
   "devDependencies": {
-    "css-loader": "6.4.0",
+    "css-loader": "6.5.0",
     "kind-of": "6.0.3",
     "mini-css-extract-plugin": "2.4.3",
     "minimist": "1.2.5",
