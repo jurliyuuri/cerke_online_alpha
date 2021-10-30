@@ -1878,8 +1878,9 @@ function perzej(
   document.getElementById("opponent_message_linzklar")!.textContent =
     msg === "you win!" ? GAME_END_LINZKLAR.victory :
       msg === "draw" ? GAME_END_LINZKLAR.draw : GAME_END_LINZKLAR.loss;
-  
-  KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }]
+
+  KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }];
+  KIAR_ARK.header = [...KIAR_ARK.header, { type: "header", dat: `{終時:${(new Date()).toISOString()}}` }];
 }
 
 export async function animatePunishStepTamAndCheckPerzej(side: Side) {
