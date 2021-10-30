@@ -6,7 +6,7 @@
     "build": "API_ORIGIN=REMOTE webpack --mode production",
     "build:dev": "API_ORIGIN=LOCAL webpack --mode development",
     "start": "API_ORIGIN=LOCAL webpack-dev-server",
-    "format": "prettier --write 'src/**/*.ts' 'src/**/*.tsx'"
+    "format": "prettier --write '**/*.{json,js,ts,tsx,scss}'"
   },
   "repository": {
     "type": "git",
