@@ -140,7 +140,7 @@ $min-entirety-aspect-ratio: 29/41;
     position: absolute;
     width: $blog_link_container_width;
     left: calc(#{$container-width / 2} - #{$blog_link_container_width / 2});
-    top: $container-height * 0.95;
+    top: $container-height * 0.93;
     font-size: $blog_link_container_font_size;
   }
 
@@ -285,7 +285,7 @@ $min-entirety-aspect-ratio: 29/41;
     position: absolute;
     width: $blog_link_container_width;
     left: calc(#{$container-width / 2} - #{$blog_link_container_width / 2});
-    top: $container-height * 0.95;
+    top: $container-height * 0.93;
     font-size: $blog_link_container_font_size;
   }
 
