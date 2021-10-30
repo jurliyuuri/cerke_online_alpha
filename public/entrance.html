@@ -7,21 +7,24 @@
 <body>
     <div id="outer_container">
     <div id="container">
-        <img src="entrance_image/cerke_online_logo.png" id="cerke_online_logo" >
-        <a href="pending_vs_cpu.html"><img src="entrance_image/cpu.png" id="cpu_button"></a>
-        <a href="pending_random.html"><img src="entrance_image/random.png" id="random_button" style="cursor: pointer"></a>
-        <img src="entrance_image/friend.png" id="friend_button">
+        <img src="entrance_image/ja/cerke_online_logo.png" id="cerke_online_logo" >
+        <a href="pending_vs_cpu.html"><img src="entrance_image/ja/cpu.png" id="cpu_button"></a>
+        <a href="pending_random.html"><img src="entrance_image/ja/random.png" id="random_button" style="cursor: pointer"></a>
+        <img src="entrance_image/ja/friend.png" id="friend_button">
         <div id="blog_link_container"><a href="blog.html" id="blog_link">更新履歴</a></div>
     </div>
 </div>
 <script>
+    const raw_lang = new URLSearchParams(new URL(location.href).search).get("lang");
+    const lang =  ["x-faikleone", "ja"].includes(raw_lang) ? raw_lang : "ja";
+
     // Replace the images with a very lame design in the staging environment
     // ステージング環境においてはクソダサ画像にすり替えることで、本番環境との混同を防ぐ
-    if (location.href.includes("staging")) {
-        document.getElementById("cerke_online_logo").src = "entrance_image_staging/cerke_online_logo.png";
-        document.getElementById("cpu_button").src = "entrance_image_staging/cpu.png";
-        document.getElementById("random_button").src = "entrance_image_staging/random.png";
-        document.getElementById("friend_button").src = "entrance_image_staging/friend.png";
-    }
+    const folder = location.href.includes("staging") ? "x-staging" : lang;
+    
+    document.getElementById("cerke_online_logo").src = `entrance_image/${folder}/cerke_online_logo.png`;
+    document.getElementById("cpu_button").src = `entrance_image/${folder}/cpu.png`;
+    document.getElementById("random_button").src = `entrance_image/${folder}/random.png`;
+    document.getElementById("friend_button").src = `entrance_image/${folder}/friend.png`;
 </script>
 </body>
