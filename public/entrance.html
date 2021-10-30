@@ -22,10 +22,8 @@
         <a href="pending_random.html"><img src="entrance_image/ja/random.png" id="random_button" style="cursor: pointer"></a>
         <img src="entrance_image/ja/friend.png" id="friend_button">
         <div id="blog_link_container"><a href="blog.html" id="blog_link">更新履歴</a></div>
-        <div id="lang_selector_container" onchange="location.href = `entrance.html?lang=${this.value}`">
-            <select id="lang_selector" name="lang_selector">
-                <option value="x-faikleone">faikleone</option>
-                <option value="ja">日本語</option>
+        <div id="lang_selector_container">
+            <select id="lang_selector" name="lang_selector" onchange="location.href = `entrance.html?lang=${this.value}`">
             </select>
         </div>
     </div>
@@ -38,9 +36,11 @@
     if (lang === "x-faikleone") {
         link.textContent = "klant";
         link.style.fontFamily = "cirlipa";
+        document.getElementById("lang_selector").innerHTML = `<option value="x-faikleone" selected>faikleone</option><option value="ja">日本語</option>`;
     } else if (lang === "ja") {
         link.textContent = "更新履歴";
         link.style.fontFamily = "sans-serif";
+        document.getElementById("lang_selector").innerHTML = `<option value="x-faikleone">faikleone</option><option value="ja" selected>日本語</option>`;
     }
 
     // Replace the images with a very lame design in the staging environment
