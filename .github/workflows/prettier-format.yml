@@ -3,6 +3,7 @@ name: Prettier Format
 on:
   pull_request:
     paths:
+      - '.prettierrc'
       - '*.json'
       - 'src/**'
       - 'styles/**'
