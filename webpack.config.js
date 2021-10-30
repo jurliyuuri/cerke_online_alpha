@@ -5,8 +5,8 @@ const webpack = require("webpack");
 module.exports = {
   entry: {
     entrance: ["./styles/entrance.scss"],
-    vs_cpu_pending: ["./src/vs_cpu_pending.ts"],
-    random_pending: ["./src/random_pending.ts"],
+    vs_cpu_pending: ["./src/vs_cpu_pending.ts", "./styles/pending.scss"],
+    random_pending: ["./src/random_pending.ts", "./styles/pending.scss"],
     main: ["./src/main_entry.ts", "./styles/main.scss"]
   },
   output: {
