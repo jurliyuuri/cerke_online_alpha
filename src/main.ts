@@ -1210,6 +1210,9 @@ function updateField(message: NormalMove): CaptureInfo {
 
       /* it's possible that you are returning to the original position, in which case you don't do anything */
       if (coordEq([src_i, src_j], [dest_i, dest_j])) {
+        // BUT! you have to update the last_move_focus
+        GAME_STATE.last_move_focus = [dest_i, dest_j];
+        console.log("lone assignment to last_move_focus, #", 4.5);
         return null; // no capture
       }
 

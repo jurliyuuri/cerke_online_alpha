@@ -8,7 +8,7 @@ import {
   createPieceImgToBePlacedOnHop1zuo1,
   createPieceSizeImageOnBoardByPath_Shifted
 } from "./create_html_element";
-import { Season, Log2_Rate, GAME_STATE } from "./game_state";
+import { Season, Log2_Rate, GAME_STATE, toAbsoluteCoord } from "./game_state";
 import { BOX_SIZE } from "./html_top_left";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath, toPath_ } from "./piece_to_path";
@@ -235,7 +235,7 @@ export function drawMak2Io1() {
 }
 
 export function drawField(o: { focus?: Coord | null }) {
-  console.log(`focusing:`, o.focus);
+  console.log(`focusing:`, o.focus ? toAbsoluteCoord(o.focus) : null);
 
   // First, draw the board.
   {
