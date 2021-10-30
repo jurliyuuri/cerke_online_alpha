@@ -3,6 +3,7 @@ name: Prettier Format
 on:
   pull_request:
     paths:
+      - '.prettierrc'
       - '*.json'
       - 'src/**'
       - 'styles/**'
@@ -26,5 +27,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           only_changed: True
-          prettier_options: --write **/*.{json,js,ts,scss}
+          prettier_options: --write **/*.{json,js,ts,tsx,scss}
           commit_message: "Format by prettier"

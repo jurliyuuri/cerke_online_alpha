@@ -1,2 +1,10 @@
-parser: typescript
-trailingComma: all
+{
+ "overrides": [
+   {
+     "files": "**/*.ts",
+     "options": {
+       "trailingComma": "all"
+     }
+   }
+ ]
+}
