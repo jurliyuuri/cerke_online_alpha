@@ -1563,10 +1563,13 @@ function display_guides_after_stepping(
         GAME_STATE.tam_itself_is_tam_hue,
       )
     ) {
-      // If it is protected, display the fact that it is protected
       const [i, j] = list[ind];
       const destPiece = GAME_STATE.f.currentBoard[i][j];
-      if (destPiece !== "Tam2" && destPiece !== null && destPiece.side === Side.Upward) {
+      
+      // If it is protected, display the fact that it is protected
+      // Why should a piece belonging to an opponent (Side.Downward) give false for `canGetOccupiedBy`?
+      // it is because of tam2 hue a uai1
+      if (destPiece !== "Tam2" && destPiece !== null && destPiece.side === Side.Downward) {
         // show that it is protected
         const protected_by_tam2_hue_a_uai1 = createGuideImageAt(list[ind], "守");
         protected_by_tam2_hue_a_uai1.style.zIndex = "200";
