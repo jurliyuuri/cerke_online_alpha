@@ -133,7 +133,11 @@ export function createGuideImageAt(
   img.src = `image/${path}.png`;
   img.width = MAX_PIECE_SIZE;
   img.height = MAX_PIECE_SIZE;
-  img.style.cursor = "pointer";
+  if (path === "守") {
+    img.style.cursor = "not-allowed";
+  } else {
+    img.style.cursor = "pointer";
+  }
   img.style.opacity = "0.3";
   return img;
 }
