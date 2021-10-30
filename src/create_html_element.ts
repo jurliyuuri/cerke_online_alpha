@@ -118,7 +118,7 @@ export function createPieceSizeSelectionButtonOnBoard_Shifted(coord: Coord) {
 
 export function createGuideImageAt(
   coord: Coord,
-  path: "yellow_circle" | "green_circle" | "yellow_diamond_for_tam",
+  path: "yellow_circle" | "green_circle" | "yellow_diamond_for_tam" | "守",
 ): HTMLImageElement {
   const [row_index, column_index] = coord;
   const img = document.createElement("img");
@@ -133,7 +133,11 @@ export function createGuideImageAt(
   img.src = `image/${path}.png`;
   img.width = MAX_PIECE_SIZE;
   img.height = MAX_PIECE_SIZE;
-  img.style.cursor = "pointer";
+  if (path === "守") {
+    img.style.cursor = "not-allowed";
+  } else {
+    img.style.cursor = "pointer";
+  }
   img.style.opacity = "0.3";
   return img;
 }
