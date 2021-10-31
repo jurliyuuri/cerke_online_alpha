@@ -1568,8 +1568,11 @@ function display_guides_after_stepping(
       
       // If it is protected, display the fact that it is protected
       // Why should a piece belonging to an opponent (Side.Downward) give false for `canGetOccupiedBy`?
-      // it is because of tam2 hue a uai1
-      if (destPiece !== "Tam2" && destPiece !== null && destPiece.side === Side.Downward) {
+      // Why can't I take an opponent's piece? 
+      // it is either:
+      // 1. because of tam2 hue a uai1
+      // 2. because I am moving a Tam2, a piece that cannot capture a piece
+      if (q.piece !== "Tam2" && destPiece !== "Tam2" && destPiece !== null && destPiece.side === Side.Downward) {
         // show that it is protected
         const protected_by_tam2_hue_a_uai1 = createGuideImageAt(list[ind], "守");
         protected_by_tam2_hue_a_uai1.style.zIndex = "200";
