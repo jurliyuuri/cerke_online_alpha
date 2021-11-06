@@ -8,7 +8,7 @@ import {
   Coord,
   rotateBoard,
 } from "cerke_online_utility/lib";
-import { AbsoluteCoord, Profession, Color } from "cerke_online_api";
+import { AbsoluteCoord, Profession, Color, Season, Log2_Rate } from "cerke_online_api";
 import { sendMainPoll } from "./main";
 
 export type Hop1Zuo1 = NonTam2Piece[];
@@ -18,14 +18,6 @@ export interface Field {
   hop1zuo1OfUpward: NonTam2PieceUpward[];
   hop1zuo1OfDownward: NonTam2PieceDownward[];
 }
-
-export type Season = 0 | 1 | 2 | 3;
-export type Log2_Rate = 0 | 1 | 2 | 3 | 4 | 5 | 6;
-/*
- * Theoretically speaking, it is necessary to distinguish x32 and x64
- * because it is possible to score 1 point (3+3-5).
- * Not that it will ever be of use in any real situation.
- */
 
 export interface GAME_STATE {
   f: Field;

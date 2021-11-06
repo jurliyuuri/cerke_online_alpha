@@ -10,8 +10,6 @@ import {
   GAME_STATE,
   fromAbsoluteCoord,
   toAbsoluteCoord,
-  Season,
-  Log2_Rate,
   initial_board_with_IA_down,
 } from "./game_state";
 import {
@@ -51,6 +49,8 @@ import {
   Ret_NormalMove,
   Ret_InfAfterStep,
   InfAfterStep,
+  Season,
+  Log2_Rate,
 } from "cerke_online_api";
 import {
   calculateMovablePositions,

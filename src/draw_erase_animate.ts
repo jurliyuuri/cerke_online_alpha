@@ -1,4 +1,4 @@
-import { Ciurl } from "cerke_online_api";
+import { Season, Log2_Rate, Ciurl } from "cerke_online_api";
 import { Coord, Piece, BoardIndex, Side, NonTam2PieceUpward, NonTam2PieceDownward } from "cerke_online_utility/lib";
 import {
   createArrowSvg,
@@ -8,7 +8,7 @@ import {
   createPieceImgToBePlacedOnHop1zuo1,
   createPieceSizeImageOnBoardByPath_Shifted
 } from "./create_html_element";
-import { Season, Log2_Rate, GAME_STATE, toAbsoluteCoord } from "./game_state";
+import { GAME_STATE, toAbsoluteCoord } from "./game_state";
 import { BOX_SIZE } from "./html_top_left";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath, toPath_ } from "./piece_to_path";
