@@ -13,7 +13,6 @@ import {
   coordToPieceXY,
   coordToPieceXY_Shifted,
   hop1_zuo1_left_position,
-  adjust_ind_for_hop1zuo1,
 } from "./html_top_left";
 
 export function createBapPokImage(o: { left: number, top_padding: number }): HTMLImageElement {

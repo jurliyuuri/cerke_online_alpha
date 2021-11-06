@@ -1,0 +1,2610 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="graph-div"
+   width="1257.0499"
+   height="637"
+   viewBox="-115.36667 0 1257.0499 637"
+   version="1.1"
+   sodipodi:docname="2021-11-06-cerke_online-dependency_.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata588">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs586" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     id="namedview584"
+     showgrid="false"
+     inkscape:zoom="2.6336324"
+     inkscape:cx="744.49231"
+     inkscape:cy="331.87416"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="graph-div"
+     inkscape:document-rotation="0"
+     fit-margin-left="5"
+     fit-margin-bottom="5"
+     fit-margin-top="5"
+     fit-margin-right="5" />
+  <style
+     id="style2">
+        #graph-div {
+            font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif;
+            font-size: 16px;
+            fill: #333;
+        }
+
+        #graph-div .error-icon {
+            fill: #552222;
+        }
+
+        #graph-div .error-text {
+            fill: #552222;
+            stroke: #552222;
+        }
+
+        #graph-div .edge-thickness-normal {
+            stroke-width: 2px;
+        }
+
+        #graph-div .edge-thickness-thick {
+            stroke-width: 3.5px;
+        }
+
+        #graph-div .edge-pattern-solid {
+            stroke-dasharray: 0;
+        }
+
+        #graph-div .edge-pattern-dashed {
+            stroke-dasharray: 3;
+        }
+
+        #graph-div .edge-pattern-dotted {
+            stroke-dasharray: 2;
+        }
+
+        #graph-div .marker {
+            fill: #333333;
+            stroke: #333333;
+        }
+
+        #graph-div .marker.cross {
+            stroke: #333333;
+        }
+
+        #graph-div svg {
+            font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif;
+            font-size: 16px;
+        }
+
+        #graph-div .label {
+            font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif;
+            color: #333;
+        }
+
+        #graph-div .cluster-label text {
+            fill: #333;
+        }
+
+        #graph-div .cluster-label span {
+            color: #333;
+        }
+
+        #graph-div .label text,
+        #graph-div span {
+            fill: #333;
+            color: #333;
+        }
+
+        #graph-div .node rect,
+        #graph-div .node circle,
+        #graph-div .node ellipse,
+        #graph-div .node polygon,
+        #graph-div .node path {
+            fill: #ECECFF;
+            stroke: #9370DB;
+            stroke-width: 1px;
+        }
+
+        #graph-div .node .label {
+            text-align: center;
+        }
+
+        #graph-div .node.clickable {
+            cursor: pointer;
+        }
+
+        #graph-div .arrowheadPath {
+            fill: #333333;
+        }
+
+        #graph-div .edgePath .path {
+            stroke: #333333;
+            stroke-width: 2.0px;
+        }
+
+        #graph-div .flowchart-link {
+            stroke: #333333;
+            fill: none;
+        }
+
+        #graph-div .edgeLabel {
+            background-color: #e8e8e8;
+            text-align: center;
+        }
+
+        #graph-div .edgeLabel rect {
+            opacity: 0.5;
+            background-color: #e8e8e8;
+            fill: #e8e8e8;
+        }
+
+        #graph-div .cluster rect {
+            fill: #ffffde;
+            stroke: #aaaa33;
+            stroke-width: 1px;
+        }
+
+        #graph-div .cluster text {
+            fill: #333;
+        }
+
+        #graph-div .cluster span {
+            color: #333;
+        }
+
+        #graph-div div.mermaidTooltip {
+            position: absolute;
+            text-align: center;
+            max-width: 200px;
+            padding: 2px;
+            font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif;
+            font-size: 12px;
+            background: hsl(80, 100%, 96.2745098039%);
+            border: 1px solid #aaaa33;
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #graph-div :root {
+            --mermaid-font-family: &quot;trebuchet ms&quot;, verdana, arial, sans-serif;
+        }
+    </style>
+  <g
+     class="output"
+     id="g579"
+     style="fill:none;stroke:#000000;stroke-opacity:1"
+     transform="translate(-62.499997,109.5)">
+    <g
+       class="clusters"
+       id="g4"
+       style="fill:none;stroke:#000000;stroke-opacity:1" />
+    <g
+       class="edgePaths"
+       id="g278"
+       style="fill:none;stroke:#000000;stroke-opacity:1">
+      <g
+         class="edgePath LS-main.ts LE-create_html_element.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-create_html_element.ts">
+        <path
+           class="path"
+           d="m 205.62083,52 c -63.2629,167.64881 -73.45164,235.04869 -73.46527,331.39031"
+           marker-end="url(#arrowhead88266)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path6"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs11">
+          <marker
+             id="arrowhead88266"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path8" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-game_state.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-game_state.ts">
+        <path
+           class="path"
+           d="m 261.8236,51.81842 c 79.1649,61.08776 192.36786,273.934 249.24374,307.87017 C 541.88191,378.07474 611.39583,384 611.39583,384"
+           marker-end="url(#arrowhead88267)"
+           style="fill:none;stroke:#ff0000;stroke-opacity:1"
+           id="path14"
+           sodipodi:nodetypes="csc" />
+        <defs
+           id="defs19">
+          <marker
+             id="arrowhead88267"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path16" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-opponent_move.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-opponent_move.ts">
+        <path
+           class="path"
+           d="m 279.33749,52 c 84.20474,45.933363 137.74279,59.70995 232.71666,66.5147"
+           marker-end="url(#arrowhead88268)"
+           style="fill:none;stroke:#00ff00;stroke-opacity:1"
+           id="path22"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs27">
+          <marker
+             id="arrowhead88268"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path24" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-piece_to_path.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-piece_to_path.ts">
+        <path
+           class="path"
+           d="m 205.62083,35.976769 -42.16459,6.837205 C 121.29166,49.651179 36.962494,63.32559 -5.2020893,77.996128 -47.366673,92.666667 -47.366673,108.33333 -47.366673,124 c 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 12.247932,43.41667 C -22.870809,461.5 1.6250548,470 13.872987,474.25 l 12.247931,4.25"
+           marker-end="url(#arrowhead88269)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path30" />
+        <defs
+           id="defs35">
+          <marker
+             id="arrowhead88269"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path32" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-html_top_left.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-html_top_left.ts">
+        <path
+           class="path"
+           d="m 205.62083,36.419745 -38.83125,6.763376 C 127.95833,49.946497 50.295827,63.473248 11.464577,78.069958 -27.366673,92.666667 -27.366673,108.33333 -27.366673,124 c 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 53.945457,45.59798 53.945457,14.26464 161.836366,27.12726 215.781826,33.55857 l 53.94546,6.4313"
+           marker-end="url(#arrowhead88270)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path38" />
+        <defs
+           id="defs43">
+          <marker
+             id="arrowhead88270"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path40" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-dictionary.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-dictionary.ts">
+        <path
+           class="path"
+           d="M 234.08088,7.936606 258.29582,-60"
+           marker-end="url(#arrowhead88271)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path46"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs51">
+          <marker
+             id="arrowhead88271"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path48" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-env.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-env.ts">
+        <path
+           class="path"
+           d="M 205.62083,8 100.51666,-54"
+           marker-end="url(#arrowhead88272)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path54"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs59">
+          <marker
+             id="arrowhead88272"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path56" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-score_display.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-score_display.ts">
+        <path
+           class="path"
+           d="M 245.18247,52.277305 C 296.46478,162.25934 385.57088,116.55786 469.75536,163.53257 l 44.13714,33.30539"
+           marker-end="url(#arrowhead88273)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path62"
+           sodipodi:nodetypes="ccc" />
+        <defs
+           id="defs67">
+          <marker
+             id="arrowhead88273"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path64" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-to_digits.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-to_digits.ts">
+        <path
+           class="path"
+           d="m 226.71324,52.87051 4.55516,107.12215 C 241.65075,404.1512 440.616,311.29571 627.42082,312"
+           marker-end="url(#arrowhead88274)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path70"
+           sodipodi:nodetypes="csc" />
+        <defs
+           id="defs75">
+          <marker
+             id="arrowhead88274"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path72" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-kiar_ark.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-kiar_ark.ts">
+        <path
+           class="path"
+           d="m 279.33749,32.966359 91.18958,7.33894 C 461.71666,47.64424 644.09583,62.32212 735.28541,77.494393 826.47499,92.666667 826.47499,108.33333 826.47499,124 c 0,15.66667 0,31.33333 0.0833,43.41667 0.0833,12.08333 0.25,20.58333 0.33333,24.83333 l 0.0833,4.25"
+           marker-end="url(#arrowhead88275)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path78" />
+        <defs
+           id="defs83">
+          <marker
+             id="arrowhead88275"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path80" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-main_entry.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-main_entry.ts">
+        <path
+           class="path"
+           d="M 279.71719,19.770815 391.55303,-9.7506846 C 513.7648,-42.011136 856.77393,-55.306736 964.69362,-3.9337255 1045.6765,28.714373 1034.9983,37.022027 1034.5206,101.05523"
+           marker-end="url(#arrowhead88276)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path86"
+           sodipodi:nodetypes="cscc" />
+        <defs
+           id="defs91">
+          <marker
+             id="arrowhead88276"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path88" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main.ts LE-draw_erase_animate.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main.ts-draw_erase_animate.ts">
+        <path
+           class="path"
+           d="m 279.33749,31.932976 143.2243,7.511171 C 565.7861,46.955318 852.23471,61.977659 995.45902,77.322163 1138.6833,92.666667 1138.6833,108.33333 1138.6833,124 c 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 -24.5472,43.94859 -24.5472,12.61526 -73.6417,22.17912 -98.1889,26.96104 l -24.54722,4.78193"
+           marker-end="url(#arrowhead88277)"
+           style="fill:none;stroke:#0000ff;stroke-opacity:1"
+           id="path94" />
+        <defs
+           id="defs99">
+          <marker
+             id="arrowhead88277"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path96" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-create_html_element.ts LE-piece_to_path.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-create_html_element.ts-piece_to_path.ts">
+        <path
+           class="path"
+           d="m 139.66826,428 -4.96971,4.16667 c -4.96971,4.16666 -14.90913,12.5 -21.56856,20.91666 C 106.47057,461.5 103.09113,470 101.40142,474.25 l -1.689719,4.25"
+           marker-end="url(#arrowhead88278)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path102" />
+        <defs
+           id="defs107">
+          <marker
+             id="arrowhead88278"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path104" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-create_html_element.ts LE-html_top_left.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-create_html_element.ts-html_top_left.ts">
+        <path
+           class="path"
+           d="m 215.5078,428 9.39384,4.16667 c 9.39384,4.16666 28.18151,12.5 46.48441,20.91666 C 289.68894,461.5 307.50706,470 316.41611,474.25 l 8.90906,4.25"
+           marker-end="url(#arrowhead88279)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path110" />
+        <defs
+           id="defs115">
+          <marker
+             id="arrowhead88279"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path112" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-draw_erase_animate.ts LE-create_html_element.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-draw_erase_animate.ts-create_html_element.ts">
+        <path
+           class="path"
+           d="m 803.43332,328.79204 -28.17847,5.03466 c -28.17847,5.03466 -84.53541,15.10398 -174.60347,26.34802 -90.06805,11.24404 -213.84722,23.6628 -275.7368,29.87218 l -61.88958,6.20939"
+           marker-end="url(#arrowhead88280)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path118" />
+        <defs
+           id="defs123">
+          <marker
+             id="arrowhead88280"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path120" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-draw_erase_animate.ts LE-game_state.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-draw_erase_animate.ts-game_state.ts">
+        <path
+           class="path"
+           d="m 803.43332,331.62444 -21.85069,4.5626 c -21.8507,4.56259 -65.55208,13.68777 -87.40278,22.41703 -21.85069,8.72926 -21.85069,17.0626 -21.85069,21.22926 V 384"
+           marker-end="url(#arrowhead88281)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path126" />
+        <defs
+           id="defs131">
+          <marker
+             id="arrowhead88281"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path128" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-draw_erase_animate.ts LE-html_top_left.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-draw_erase_animate.ts-html_top_left.ts">
+        <path
+           class="path"
+           d="m 939.42924,334 7.95693,4.16667 c 7.95693,4.16666 23.8708,12.5 31.82773,24.5 7.95693,12 7.95693,27.66666 7.95693,43.33333 0,15.66667 0,31.33333 -89.68576,46.10209 -89.68576,14.76876 -269.05728,28.63961 -358.74304,35.57504 l -89.68576,6.93542"
+           marker-end="url(#arrowhead88282)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path134" />
+        <defs
+           id="defs139">
+          <marker
+             id="arrowhead88282"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path136" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-draw_erase_animate.ts LE-main.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-draw_erase_animate.ts-main.ts">
+        <path
+           class="path"
+           d="m 991.39998,297.33785 34.54722,-5.38964 c 34.5472,-5.38964 103.6417,-16.16893 138.1889,-29.3919 34.5472,-13.22298 34.5472,-28.88964 34.5472,-44.55631 0,-15.66667 0,-31.33333 0,-47 0,-15.66667 0,-31.33333 0,-47 0,-15.66667 0,-31.333333 -153.2243,-46.698052 C 892.23471,61.937229 585.7861,46.874457 432.56179,39.343071 l -153.2243,-7.531385"
+           marker-end="url(#arrowhead88283)"
+           style="fill:none;stroke:#0000ff;stroke-opacity:1"
+           id="path142" />
+        <defs
+           id="defs147">
+          <marker
+             id="arrowhead88283"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path144" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-draw_erase_animate.ts LE-piece_to_path.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-draw_erase_animate.ts-piece_to_path.ts">
+        <path
+           class="path"
+           d="M 948.79095,334 C 847.51894,491.45014 558.44342,456.99704 499.70665,452.40185 376.02247,442.72559 283.84436,455.7644 170.15553,496.41107"
+           marker-end="url(#arrowhead88284)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path150"
+           sodipodi:nodetypes="csc" />
+        <defs
+           id="defs155">
+          <marker
+             id="arrowhead88284"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path152" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-game_state.ts LE-main.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-game_state.ts-main.ts">
+        <path
+           class="path"
+           d="M 611.39583,384 C 352.89352,267.50759 493.3207,233.8545 261.8236,51.81842"
+           marker-end="url(#arrowhead88285)"
+           style="fill:none;stroke:#db0000;stroke-opacity:1"
+           id="path158"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs163">
+          <marker
+             id="arrowhead88285"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path160" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main_entry.ts LE-draw_erase_animate.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main_entry.ts-draw_erase_animate.ts">
+        <path
+           class="path"
+           d="M 986.22321,146 915.11395,285.83333 912.29591,290"
+           marker-end="url(#arrowhead88286)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path166"
+           sodipodi:nodetypes="ccc" />
+        <defs
+           id="defs171">
+          <marker
+             id="arrowhead88286"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path168" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main_entry.ts LE-game_state.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main_entry.ts-game_state.ts">
+        <path
+           class="path"
+           d="m 1052.9058,146 3.1261,4.16667 c 3.1262,4.16666 9.3784,12.5 12.5045,24.5 3.1261,12 3.1261,27.66666 3.1261,43.33333 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 -56.4,45.80473 -56.40001,14.4714 -169.20001,27.74752 -225.60001,34.38559 l -56.4,6.63806"
+           marker-end="url(#arrowhead88287)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path174" />
+        <defs
+           id="defs179">
+          <marker
+             id="arrowhead88287"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path176" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-main_entry.ts LE-kiar_ark.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-main_entry.ts-kiar_ark.ts">
+        <path
+           class="path"
+           d="m 977.76692,122.95439 c -68.69165,15.77811 -35.32003,74.90977 -96.12008,85.85595"
+           marker-end="url(#arrowhead88288)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path182"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs187">
+          <marker
+             id="arrowhead88288"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path184" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-game_state.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-game_state.ts">
+        <path
+           class="path"
+           d="m 512.05415,133.56174 -49.95972,6.23971 c -49.95972,6.23971 -149.87916,18.71913 -199.83888,32.79217 -49.95972,14.07305 -49.95972,29.73971 -49.95972,45.40638 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 66.51666,45.96244 66.51667,14.62911 199.55,28.22066 266.06667,35.01644 l 66.51666,6.79577"
+           marker-end="url(#arrowhead88289)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path190" />
+        <defs
+           id="defs195">
+          <marker
+             id="arrowhead88289"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path192" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-html_top_left.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-html_top_left.ts">
+        <path
+           class="path"
+           d="m 512.05415,144.51449 -16.47361,4.41425 C 479.10693,153.343 446.15972,162.1715 429.68611,174.41908 413.2125,186.66667 413.2125,202.33333 413.2125,218 c 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 0,47 0,15.66667 0,31.33333 -3.62124,43.41667 C 405.97003,461.5 398.72757,470 395.10633,474.25 l -3.62123,4.25"
+           marker-end="url(#arrowhead88290)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path198" />
+        <defs
+           id="defs203">
+          <marker
+             id="arrowhead88290"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path200" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-main.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-main.ts">
+        <path
+           class="path"
+           d="M 512.05415,118.5147 C 457.6252,90.201711 342.76578,59.404732 279.33749,52"
+           marker-end="url(#arrowhead88291)"
+           style="fill:none;stroke:#00ff00;stroke-opacity:1"
+           id="path206"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs211">
+          <marker
+             id="arrowhead88291"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path208" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-draw_erase_animate.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-draw_erase_animate.ts">
+        <path
+           class="path"
+           d="m 659.9904,146 c 46.82549,71.34025 120.22975,113.48329 196.98114,143.45897"
+           marker-end="url(#arrowhead88292)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path214"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs219">
+          <marker
+             id="arrowhead88292"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path216" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-dictionary.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-dictionary.ts">
+        <path
+           class="path"
+           d="M 592.62035,101.96746 C 547.773,16.839955 467.30094,-34.574122 373.1193,-70.739643"
+           marker-end="url(#arrowhead88293)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path222"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs227">
+          <marker
+             id="arrowhead88293"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path224" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-score_display.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-score_display.ts">
+        <path
+           class="path"
+           d="m 584.23944,146 -39.31737,50"
+           marker-end="url(#arrowhead88294)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path230"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs235">
+          <marker
+             id="arrowhead88294"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path232" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-kiar_ark.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-kiar_ark.ts">
+        <path
+           class="path"
+           d="m 664.63383,125.59468 c 37.94553,-1.63393 93.26735,41.54314 110.87211,76.81009"
+           marker-end="url(#arrowhead88295)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path238"
+           sodipodi:nodetypes="cc" />
+        <defs
+           id="defs243">
+          <marker
+             id="arrowhead88295"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path240" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-opponent_move.ts LE-to_digits.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-opponent_move.ts-to_digits.ts">
+        <path
+           class="path"
+           d="m 638.96284,146 c 32.08851,29.68514 57.15618,114.25139 54.40456,140.25 l -0.56236,4.25"
+           marker-end="url(#arrowhead88296)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path246"
+           sodipodi:nodetypes="ccc" />
+        <defs
+           id="defs251">
+          <marker
+             id="arrowhead88296"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path248" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-score_display.ts LE-create_html_element.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-score_display.ts-create_html_element.ts">
+        <path
+           class="path"
+           d="m 495.62526,240 -3.61185,4.16667 c -3.61185,4.16666 -10.83555,12.5 -14.4474,24.5 -3.61185,12 -3.61185,27.66666 -3.61185,43.33333 0,15.66667 0,31.33333 -35.15486,44.53041 -35.15486,13.19707 -105.46458,23.92456 -140.61944,29.2883 l -35.15486,5.36374"
+           marker-end="url(#arrowhead88297)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path254" />
+        <defs
+           id="defs259">
+          <marker
+             id="arrowhead88297"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path256" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-score_display.ts LE-draw_erase_animate.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-score_display.ts-draw_erase_animate.ts">
+        <path
+           class="path"
+           d="m 581.17916,224.43215 c 90.17508,-1.03344 171.00262,17.33551 192.92202,46.94636 l 29.40898,39.72852"
+           marker-end="url(#arrowhead88298)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path262"
+           sodipodi:nodetypes="csc" />
+        <defs
+           id="defs267">
+          <marker
+             id="arrowhead88298"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path264" />
+          </marker>
+        </defs>
+      </g>
+      <g
+         class="edgePath LS-score_display.ts LE-to_digits.ts"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="L-score_display.ts-to_digits.ts">
+        <path
+           class="path"
+           d="m 538.44725,240 4.49837,4.16667 c 4.49837,4.16666 13.49512,12.5 30.04579,21.30652 16.55067,8.80653 40.65525,18.08625 52.70755,22.72611 l 12.05229,4.63986"
+           marker-end="url(#arrowhead88299)"
+           style="fill:none;stroke:#000000;stroke-opacity:1"
+           id="path270" />
+        <defs
+           id="defs275">
+          <marker
+             id="arrowhead88299"
+             viewBox="0 0 10 10"
+             refX="9"
+             refY="5"
+             markerUnits="strokeWidth"
+             markerWidth="8"
+             markerHeight="6"
+             orient="auto">
+            <path
+               d="M 0,0 10,5 0,10 Z"
+               class="arrowheadPath"
+               style="stroke-width:1px;stroke-dasharray:1px, 0px"
+               id="path272" />
+          </marker>
+        </defs>
+      </g>
+    </g>
+    <g
+       class="edgeLabels"
+       id="g484"
+       style="fill:none;stroke:#000000;stroke-opacity:1">
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g284">
+        <g
+           class="label"
+           id="g282"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect280"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-create_html_element.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-create_html_element.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g290">
+        <g
+           class="label"
+           id="g288"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect286"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-game_state.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-game_state.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g296">
+        <g
+           class="label"
+           id="g294"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect292"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-opponent_move.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-opponent_move.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g302">
+        <g
+           class="label"
+           id="g300"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect298"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-piece_to_path.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-piece_to_path.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g308">
+        <g
+           class="label"
+           id="g306"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect304"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-html_top_left.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-html_top_left.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g314">
+        <g
+           class="label"
+           id="g312"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect310"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-dictionary.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-dictionary.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g320">
+        <g
+           class="label"
+           id="g318"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect316"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-env.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-env.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g326">
+        <g
+           class="label"
+           id="g324"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect322"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-score_display.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-score_display.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g332">
+        <g
+           class="label"
+           id="g330"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect328"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-to_digits.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-to_digits.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g338">
+        <g
+           class="label"
+           id="g336"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect334"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-kiar_ark.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-kiar_ark.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g344">
+        <g
+           class="label"
+           id="g342"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect340"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-main_entry.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-main_entry.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g350">
+        <g
+           class="label"
+           id="g348"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect346"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main.ts-draw_erase_animate.ts"
+                 class="edgeLabel L-LS-main.ts' L-LE-draw_erase_animate.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g356">
+        <g
+           class="label"
+           id="g354"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect352"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-create_html_element.ts-piece_to_path.ts"
+                 class="edgeLabel L-LS-create_html_element.ts' L-LE-piece_to_path.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g362">
+        <g
+           class="label"
+           id="g360"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect358"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-create_html_element.ts-html_top_left.ts"
+                 class="edgeLabel L-LS-create_html_element.ts' L-LE-html_top_left.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g368">
+        <g
+           class="label"
+           id="g366"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect364"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-draw_erase_animate.ts-create_html_element.ts"
+                 class="edgeLabel L-LS-draw_erase_animate.ts' L-LE-create_html_element.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g374">
+        <g
+           class="label"
+           id="g372"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect370"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-draw_erase_animate.ts-game_state.ts"
+                 class="edgeLabel L-LS-draw_erase_animate.ts' L-LE-game_state.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g380">
+        <g
+           class="label"
+           id="g378"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect376"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-draw_erase_animate.ts-html_top_left.ts"
+                 class="edgeLabel L-LS-draw_erase_animate.ts' L-LE-html_top_left.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g386">
+        <g
+           class="label"
+           id="g384"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect382"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-draw_erase_animate.ts-main.ts"
+                 class="edgeLabel L-LS-draw_erase_animate.ts' L-LE-main.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g392">
+        <g
+           class="label"
+           id="g390"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect388"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-draw_erase_animate.ts-piece_to_path.ts"
+                 class="edgeLabel L-LS-draw_erase_animate.ts' L-LE-piece_to_path.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g398">
+        <g
+           class="label"
+           id="g396"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect394"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-game_state.ts-main.ts"
+                 class="edgeLabel L-LS-game_state.ts' L-LE-main.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g404">
+        <g
+           class="label"
+           id="g402"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect400"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main_entry.ts-draw_erase_animate.ts"
+                 class="edgeLabel L-LS-main_entry.ts' L-LE-draw_erase_animate.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g410">
+        <g
+           class="label"
+           id="g408"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect406"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main_entry.ts-game_state.ts"
+                 class="edgeLabel L-LS-main_entry.ts' L-LE-game_state.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g416">
+        <g
+           class="label"
+           id="g414"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect412"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-main_entry.ts-kiar_ark.ts"
+                 class="edgeLabel L-LS-main_entry.ts' L-LE-kiar_ark.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g422">
+        <g
+           class="label"
+           id="g420"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect418"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-game_state.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-game_state.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g428">
+        <g
+           class="label"
+           id="g426"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect424"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-html_top_left.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-html_top_left.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g434">
+        <g
+           class="label"
+           id="g432"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect430"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-main.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-main.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g440">
+        <g
+           class="label"
+           id="g438"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect436"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-draw_erase_animate.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-draw_erase_animate.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g446">
+        <g
+           class="label"
+           id="g444"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect442"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-dictionary.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-dictionary.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g452">
+        <g
+           class="label"
+           id="g450"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect448"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-score_display.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-score_display.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g458">
+        <g
+           class="label"
+           id="g456"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect454"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-kiar_ark.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-kiar_ark.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g464">
+        <g
+           class="label"
+           id="g462"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect460"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-opponent_move.ts-to_digits.ts"
+                 class="edgeLabel L-LS-opponent_move.ts' L-LE-to_digits.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g470">
+        <g
+           class="label"
+           id="g468"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect466"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-score_display.ts-create_html_element.ts"
+                 class="edgeLabel L-LS-score_display.ts' L-LE-create_html_element.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g476">
+        <g
+           class="label"
+           id="g474"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect472"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-score_display.ts-draw_erase_animate.ts"
+                 class="edgeLabel L-LS-score_display.ts' L-LE-draw_erase_animate.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+      <g
+         class="edgeLabel"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="g482">
+        <g
+           class="label"
+           id="g480"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <rect
+             rx="0"
+             ry="0"
+             width="0"
+             height="0"
+             id="rect478"
+             style="fill:none;stroke:#000000;stroke-opacity:1"
+             x="0"
+             y="0" />
+          <foreignObject
+             width="0"
+             height="0">
+            <xhtml:div
+               style="display: inline-block; white-space: nowrap;">
+              <xhtml:span
+                 id="L-L-score_display.ts-to_digits.ts"
+                 class="edgeLabel L-LS-score_display.ts' L-LE-to_digits.ts" />
+            </xhtml:div>
+          </foreignObject>
+        </g>
+      </g>
+    </g>
+    <g
+       class="nodes"
+       id="g577"
+       style="fill:none;stroke:#000000;stroke-opacity:1">
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-piece_to_path.ts-134867"
+         transform="translate(89.849998,500)">
+        <polygon
+           points="163.7,-22 152.7,-44 11,-44 0,-22 11,0 152.7,0 "
+           transform="translate(-81.849998,22)"
+           class="label-container"
+           id="polygon486"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g490"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-60.849998,-12)"
+             id="g488"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="121.69999694824219"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">piece_to_path.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-env.ts-134868"
+         transform="translate(69.574993,124)">
+        <polygon
+           points="72.883331,-44 11,-44 0,-22 11,0 72.883331,0 83.883331,-22 "
+           transform="translate(-41.941666,-178)"
+           class="label-container"
+           id="polygon493"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g497"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-20.941666,-212)"
+             id="g495"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="41.883331298828125"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">env.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-to_digits.ts-134869"
+         transform="translate(688.89582,312)">
+        <polygon
+           points="122.95,-22 111.95,-44 11,-44 0,-22 11,0 111.95,0 "
+           transform="translate(-61.474998,22)"
+           class="label-container"
+           id="polygon500"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g504"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-40.474998,-12)"
+             id="g502"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="80.94999694824219"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">to_digits.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-kiar_ark.ts-134870"
+         transform="translate(826.47499,218)">
+        <polygon
+           points="119.03334,-22 108.03334,-44 11,-44 0,-22 11,0 108.03334,0 "
+           transform="translate(-59.51667,22)"
+           class="label-container"
+           id="polygon507"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g511"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-38.51667,-12)"
+             id="g509"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="77.03334045410156"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">kiar_ark.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-dictionary.ts-134871"
+         transform="translate(312.75416,218)">
+        <polygon
+           points="119.91667,-44 11,-44 0,-22 11,0 119.91667,0 130.91667,-22 "
+           transform="translate(-65.458336,-278)"
+           class="label-container"
+           id="polygon514"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g518"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-44.458336,-312)"
+             id="g516"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="88.91667175292969"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">dictionary.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-html_top_left.ts-134872"
+         transform="translate(371.42499,500)">
+        <polygon
+           points="160.14999,-22 149.14999,-44 11,-44 0,-22 11,0 149.14999,0 "
+           transform="translate(-80.074997,22)"
+           class="label-container"
+           id="polygon521"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g525"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-59.074997,-12)"
+             id="g523"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="118.14999389648438"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">html_top_left.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-main.ts-134873"
+         transform="translate(242.47916,30)">
+        <rect
+           rx="0"
+           ry="0"
+           x="-36.85833"
+           y="-22"
+           width="73.71666"
+           height="44"
+           class="label-container"
+           id="rect528"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g532"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-26.85833,-12)"
+             id="g530"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="53.71665954589844"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">main.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-create_html_element.ts-134874"
+         transform="translate(165.90833,406)">
+        <rect
+           rx="0"
+           ry="0"
+           x="-97.116669"
+           y="-22"
+           width="194.23334"
+           height="44"
+           class="label-container"
+           id="rect535"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g539"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-87.116669,-12)"
+             id="g537"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="174.23333740234375"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">create_html_element.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-game_state.ts-134876"
+         transform="translate(672.32916,406)">
+        <rect
+           rx="0"
+           ry="0"
+           x="-60.933334"
+           y="-22"
+           width="121.86667"
+           height="44"
+           class="label-container"
+           id="rect542"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g546"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-50.933334,-12)"
+             id="g544"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="101.86666870117188"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">game_state.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-opponent_move.ts-134878"
+         transform="translate(588.61248,124)">
+        <rect
+           rx="0"
+           ry="0"
+           x="-76.558334"
+           y="-22"
+           width="153.11667"
+           height="44"
+           class="label-container"
+           id="rect549"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g553"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-66.558334,-12)"
+             id="g551"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="133.11666870117188"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">opponent_move.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-score_display.ts-134888"
+         transform="translate(514.69583,218)">
+        <rect
+           rx="0"
+           ry="0"
+           x="-66.48333"
+           y="-22"
+           width="132.96666"
+           height="44"
+           class="label-container"
+           id="rect556"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g560"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-56.48333,-12)"
+             id="g558"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="112.96665954589844"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">score_display.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-main_entry.ts-134894"
+         transform="translate(1036.4,124)">
+        <rect
+           rx="0"
+           ry="0"
+           x="-59.041664"
+           y="-22"
+           width="118.08333"
+           height="44"
+           class="label-container"
+           id="rect563"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g567"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-49.041664,-12)"
+             id="g565"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="98.08332824707031"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">main_entry.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+      <g
+         class="node default"
+         style="opacity:1;fill:none;stroke:#000000;stroke-opacity:1"
+         id="flowchart-draw_erase_animate.ts-134896"
+         transform="translate(897.41665,312)">
+        <rect
+           rx="0"
+           ry="0"
+           x="-93.98333"
+           y="-22"
+           width="187.96666"
+           height="44"
+           class="label-container"
+           id="rect570"
+           style="fill:none;stroke:#000000;stroke-opacity:1" />
+        <g
+           class="label"
+           id="g574"
+           style="fill:none;stroke:#000000;stroke-opacity:1">
+          <g
+             transform="translate(-83.98333,-12)"
+             id="g572"
+             style="fill:none;stroke:#000000;stroke-opacity:1">
+            <foreignObject
+               width="167.96665954589844"
+               height="24">
+              <xhtml:div
+                 style="display: inline-block; white-space: nowrap;">draw_erase_animate.ts</xhtml:div>
+            </foreignObject>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

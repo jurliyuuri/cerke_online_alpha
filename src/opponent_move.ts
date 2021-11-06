@@ -20,7 +20,6 @@ import {
   coordToPieceXY,
   coordToPieceXY_Shifted,
   hop1_zuo1_left_position,
-  indToHo1Zuo1OfDownward,
   MAX_PIECE_SIZE,
   PIECE_SIZE,
 } from "./html_top_left";

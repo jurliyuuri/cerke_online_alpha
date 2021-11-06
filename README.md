@@ -47,4 +47,4 @@
 
 
 ## 2021年10月現在のソースコード構成
-TODO
+[2021-11-06-current-situation.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/2021-11-06-current-situation.md) を参照のこと。

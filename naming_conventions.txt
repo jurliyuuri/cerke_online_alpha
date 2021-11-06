@@ -1,2 +1,4 @@
+As of 2021-11-06:
+
 * async functions must begin with either `send` or `animate`
-* `function createSomethingSomething` must return an HTMLImageElement, and should be defined in create_html_element.ts
+* `function createSomethingSomething` must return an HTMLImageElement or an SVGSVGElement, and should be defined in either `create_html_element.ts` or `score_display.ts` 

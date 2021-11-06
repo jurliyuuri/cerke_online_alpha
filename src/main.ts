@@ -36,7 +36,7 @@ import {
   BoardIndex,
   rotateBoard,
 } from "cerke_online_utility/lib";
-import { toPath_, toPath } from "./piece_to_path";
+import { toPath_ } from "./piece_to_path";
 import {
   AbsoluteCoord,
   Profession,
@@ -61,7 +61,6 @@ import {
   MAX_PIECE_SIZE,
   hop1_zuo1_left_position,
   PIECE_SIZE,
-  adjust_ind_for_hop1zuo1,
 } from "./html_top_left";
 import { DICTIONARY, GAME_END_LINZKLAR, TACTICS_LINZKLAR } from "./dictionary";
 import { API_ORIGIN } from "./env";
