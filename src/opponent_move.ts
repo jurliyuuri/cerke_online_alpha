@@ -48,13 +48,13 @@ import { toDigitsLinzklar } from "./to_digits";
 import { Hand } from "cerke_hands_and_score";
 import { KRUT_CRUOP } from "./main_entry";
 import { normalMessageToKiarArk, serializeAbsoluteCoord, serializeCiurl, serializeColor, serializeProf } from "./serialize";
-import { CaptureInfo, toColorProf } from "./capture_info";
+import { CaptureInfo, toColorProf, toPieceCaptureComment } from "./capture_info";
 
+/*
 interface OpponentMoveWithPotentialWaterEntry {
   type: "NonTamMove";
   data: SrcDst | SrcStepDstFinite;
 }
-
 type OpponentMove =
   | OpponentMoveWithPotentialWaterEntry
   | {
@@ -92,12 +92,8 @@ type OpponentMove =
       water_entry_ciurl?: Ciurl;
     }>;
   };
+*/
 
-export function toPieceCaptureComment(c: CaptureInfo): string {
-  if (c === null) { return ""; }
-  const [color, prof] = c;
-  return `手${serializeColor(color)}${serializeProf(prof)}`
-}
 
 export const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
   let POLLING_ALLOWED = true;

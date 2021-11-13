@@ -13,7 +13,6 @@ import {
   initial_board_with_IA_down,
 } from "./game_state";
 import {
-  toPieceCaptureComment,
   allowPolling,
   resumePolling,
   stopPolling,
@@ -78,7 +77,7 @@ import {
   eraseGuide, erasePhantomAndOptionallyCancelButton,
 } from "./draw_erase_animate";
 import { normalMessageToKiarArk, serializeAbsoluteCoord, serializeCiurl } from "./serialize";
-import { CaptureInfo, toColorProf } from "./capture_info";
+import { CaptureInfo, toColorProf, toPieceCaptureComment } from "./capture_info";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
@@ -1248,7 +1247,7 @@ function display_guides_after_stepping(
     ) {
       const [i, j] = list[ind];
       const destPiece = GAME_STATE.f.currentBoard[i][j];
-      
+
       // If it is protected, display the fact that it is protected
       // Why should a piece belonging to an opponent (Side.Downward) give false for `canGetOccupiedBy`?
       // Why can't I take an opponent's piece? 
