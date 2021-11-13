@@ -84,13 +84,13 @@ node_modules/.bin/depcruise.cmd --exclude "^node_modules" --output-type dot src/
 
 としたものを https://dreampuf.github.io/GraphvizOnline/ に貼って neato エンジンにすると……
 
-![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/2021-11-13-dependencies.png)
+![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/ephemera/2021-11-13-dependencies.png)
 
 **うわぁ。**
 
 …………グラフの強連結成分取ってみようか。
 
-![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/2021-11-13-strongly-connected-component.png)
+![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/ephemera/2021-11-13-strongly-connected-component.png)
 
 えっ、強連結成分が7ノード…………破滅
 
