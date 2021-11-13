@@ -95,37 +95,37 @@ type OpponentMove =
 */
 
 
-const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
-  let POLLING_ALLOWED = true;
+const { forbidMainPolling, resumeMainPolling, isMainPollingAllowed, allowMainPolling } = (() => {
+  let MAIN_POLLING_ALLOWED = true;
 
   // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
-  const stopPolling = () => {
-    POLLING_ALLOWED = false;
+  const forbidMainPolling = () => {
+    MAIN_POLLING_ALLOWED = false;
   };
 
-  const resumePolling = () => {
-    POLLING_ALLOWED = true;
-    window.setTimeout(sendMainPoll, 500 * 0.8093);
+  const resumeMainPolling = () => {
+    MAIN_POLLING_ALLOWED = true;
+    window.setTimeout(sendMainPollAndDoEverythingThatFollows, 500 * 0.8093);
   };
 
-  const allowPolling = () => {
-    POLLING_ALLOWED = true;
+  const allowMainPolling = () => {
+    MAIN_POLLING_ALLOWED = true;
   };
 
-  const isPollingAllowed = () => {
-    return POLLING_ALLOWED;
+  const isMainPollingAllowed = () => {
+    return MAIN_POLLING_ALLOWED;
   };
-  return { stopPolling, resumePolling, isPollingAllowed, allowPolling };
+  return { forbidMainPolling, resumeMainPolling, isMainPollingAllowed, allowMainPolling };
 })();
 // I repentfully use a global 
 
 /////////////////////////////////////////////////////////
 /// ONLY THESE FOUR ARE TO BE EXPORTED FROM THIS FILE ///
 /////////////////////////////////////////////////////////
-export { stopPolling, resumePolling, allowPolling };
-export async function sendMainPoll() {
+export { forbidMainPolling, resumeMainPolling, allowMainPolling };
+export async function sendMainPollAndDoEverythingThatFollows() {
   console.log("poll");
-  if (!isPollingAllowed()) {
+  if (!isMainPollingAllowed()) {
     return;
   }
 
@@ -338,7 +338,7 @@ export async function sendMainPoll() {
     }
   } else {
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-    await sendMainPoll();
+    await sendMainPollAndDoEverythingThatFollows();
   }
 }
 

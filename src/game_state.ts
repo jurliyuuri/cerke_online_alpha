@@ -9,7 +9,7 @@ import {
   rotateBoard,
 } from "cerke_online_utility/lib";
 import { AbsoluteCoord, Profession, Color, Season, Log2_Rate } from "cerke_online_api";
-import { sendMainPoll } from "./opponent_move";
+import { sendMainPollAndDoEverythingThatFollows } from "./opponent_move";
 
 export type Hop1Zuo1 = NonTam2Piece[];
 
@@ -159,7 +159,7 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
             "protective_cover_over_field_while_waiting_for_opponent",
           )!
           .classList.remove("nocover");
-        window.setTimeout(sendMainPoll, 500 * 0.8093);
+        window.setTimeout(sendMainPollAndDoEverythingThatFollows, 500 * 0.8093);
       }
     },
 

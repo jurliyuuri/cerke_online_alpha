@@ -13,9 +13,9 @@ import {
   initial_board_with_IA_down,
 } from "./game_state";
 import {
-  allowPolling,
-  resumePolling,
-  stopPolling,
+  allowMainPolling,
+  resumeMainPolling,
+  forbidMainPolling,
 } from "./opponent_move";
 import {
   Coord,
@@ -759,7 +759,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     });
     score_display.appendChild(ta_xot1_button);
   }, 1000 * 0.8093);
-  stopPolling();
+  forbidMainPolling();
 }
 
 export function calculateHandsAndScore(pieces: NonTam2Piece[]) {
@@ -1492,7 +1492,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
     await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
     drawMak2Io1();
     if (done_by_me) {
-      resumePolling();
+      resumeMainPolling();
     } else {
       GAME_STATE.is_my_turn = true;
     }
@@ -1733,7 +1733,7 @@ export function endSeason(
     // 直前の季節で生成されている可能性のある、レート表示用の駒を消すために値直を再描画する
     drawMak2Io1();
 
-    allowPolling(); // reset another global state
+    allowMainPolling(); // reset another global state
     GAME_STATE.last_move_focus = null; /* the board is initialized; no focus */
 
     console.log("drawField #", 11);
