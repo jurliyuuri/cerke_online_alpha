@@ -208,25 +208,15 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       GAME_STATE.is_my_turn = true;
       KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
     } else if (opponent_move.stepStyle === "StepsDuringFormer") {
-      await animateOpponentTamSteppingDuringFormer({
-        src: fromAbsoluteCoord(opponent_move.src),
-        firstDest: fromAbsoluteCoord(opponent_move.firstDest),
-        secondDest: fromAbsoluteCoord(opponent_move.secondDest),
-        step: fromAbsoluteCoord(opponent_move.step),
-      });
+      await animateOpponentTamSteppingDuringFormer(opponent_move);
       GAME_STATE.is_my_turn = true;
       KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
     } else if (opponent_move.stepStyle === "StepsDuringLatter") {
-      await animateOpponentTamSteppingDuringLatter({
-        src: fromAbsoluteCoord(opponent_move.src),
-        firstDest: fromAbsoluteCoord(opponent_move.firstDest),
-        secondDest: fromAbsoluteCoord(opponent_move.secondDest),
-        step: fromAbsoluteCoord(opponent_move.step),
-      });
+      await animateOpponentTamSteppingDuringLatter(opponent_move);
       GAME_STATE.is_my_turn = true;
       KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
     } else {
-      const a: never = opponent_move.stepStyle;
+      const _a: never = opponent_move.stepStyle;
       throw new Error("does not happen");
     }
   } else if (opponent_move.type === "InfAfterStep") {
@@ -237,7 +227,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
           dest: AbsoluteCoord;
           water_entry_ciurl?: Ciurl;
           thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-        }>(async (resolve, reject) => {
+        }>(async (resolve, _reject) => {
           while (true) {
             const res: Ret_InfPoll = await sendStuffTo<{}, Ret_InfPoll>(
               "infpoll",
@@ -1044,26 +1034,42 @@ async function animateOpponentTamNoStep(
   drawField({ focus: [snddst[0], snddst[1]] });
 }
 
-async function animateOpponentTamSteppingDuringFormer(p: {
-  src: Coord;
-  firstDest: Coord;
-  secondDest: Coord;
-  step: Coord;
+async function animateOpponentTamSteppingDuringFormer(opponent_move: {
+  src: AbsoluteCoord;
+  firstDest: AbsoluteCoord;
+  secondDest: AbsoluteCoord;
+  step: AbsoluteCoord;
 }) {
+  const p = {
+    src: fromAbsoluteCoord(opponent_move.src),
+    firstDest: fromAbsoluteCoord(opponent_move.firstDest),
+    secondDest: fromAbsoluteCoord(opponent_move.secondDest),
+    step: fromAbsoluteCoord(opponent_move.step),
+  }
   await animateOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
   await animateOpponentSrcDst_(p.firstDest, p.secondDest, {});
 }
 
-async function animateOpponentTamSteppingDuringLatter(p: {
-  src: Coord;
-  firstDest: Coord;
-  secondDest: Coord;
-  step: Coord;
+async function animateOpponentTamSteppingDuringLatter(opponent_move: {
+  src: AbsoluteCoord;
+  firstDest: AbsoluteCoord;
+  secondDest: AbsoluteCoord;
+  step: AbsoluteCoord;
 }) {
+  const p = {
+    src: fromAbsoluteCoord(opponent_move.src),
+    firstDest: fromAbsoluteCoord(opponent_move.firstDest),
+    secondDest: fromAbsoluteCoord(opponent_move.secondDest),
+    step: fromAbsoluteCoord(opponent_move.step),
+  };
+
   /* This is the former half; hence no need to show the focus */
   await animateOpponentSrcDst_(p.src, p.firstDest, { disable_focus: true });
+
   await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+
+  /* And this part is the latter half, in which stepping occurs */
   await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }
 
