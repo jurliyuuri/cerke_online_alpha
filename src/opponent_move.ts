@@ -48,6 +48,7 @@ import { toDigitsLinzklar } from "./to_digits";
 import { Hand } from "cerke_hands_and_score";
 import { KRUT_CRUOP } from "./main_entry";
 import { normalMessageToKiarArk, serializeAbsoluteCoord, serializeCiurl, serializeColor, serializeProf } from "./serialize";
+import { CaptureInfo, toColorProf } from "./capture_info";
 
 interface OpponentMoveWithPotentialWaterEntry {
   type: "NonTamMove";
@@ -362,7 +363,7 @@ async function animateOpponentSteppingOverCiurl(
   eraseArrow();
 }
 
-export function position_for_temporarily_appending_hop1zuo1_of_downward() {
+function position_for_temporarily_appending_hop1zuo1_of_downward() {
   if (GAME_STATE.f.hop1zuo1OfDownward.length <= 8) {
     // There are only 8 or fewer pieces in hop1zuo1.
     // Therefore, the piecess so far fill the positions from `0` to `hop1zuo1OfDownward.length - 1` without scooching over.
@@ -812,7 +813,6 @@ async function animateOpponentSrcStepDstFinite_(
   }
 }
 
-export type CaptureInfo = [Color, Profession] | null;
 
 async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
   const src: Coord = fromAbsoluteCoord(p.src);
@@ -824,11 +824,6 @@ async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
   }
 }
 
-export function toColorProf(p: Piece | null): CaptureInfo {
-  if (p === "Tam2") { throw new Error("Tam2 was passed to the function `toColorProf`") }
-  if (p === null) { return null; }
-  return [p.color, p.prof]
-}
 
 /**
  * Animates opponent's move that simply consists of a src and a destination.

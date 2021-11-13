@@ -13,8 +13,6 @@ import {
   initial_board_with_IA_down,
 } from "./game_state";
 import {
-  toColorProf,
-  CaptureInfo,
   toPieceCaptureComment,
   allowPolling,
   resumePolling,
@@ -80,6 +78,7 @@ import {
   eraseGuide, erasePhantomAndOptionallyCancelButton,
 } from "./draw_erase_animate";
 import { normalMessageToKiarArk, serializeAbsoluteCoord, serializeCiurl } from "./serialize";
+import { CaptureInfo, toColorProf } from "./capture_info";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
