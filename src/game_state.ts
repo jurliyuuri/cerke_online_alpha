@@ -9,7 +9,7 @@ import {
   rotateBoard,
 } from "cerke_online_utility/lib";
 import { AbsoluteCoord, Profession, Color, Season, Log2_Rate } from "cerke_online_api";
-import { sendMainPoll } from "./main";
+import { sendMainPoll } from "./opponent_move";
 
 export type Hop1Zuo1 = NonTam2Piece[];
 

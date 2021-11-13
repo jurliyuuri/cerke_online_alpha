@@ -13,15 +13,12 @@ import {
   initial_board_with_IA_down,
 } from "./game_state";
 import {
-  animateOpponentTamNoStep,
-  animateOpponentSrcDst,
-  animateOpponentTamSteppingDuringFormer,
-  animateOpponentFromHand,
-  animateOpponentTamSteppingDuringLatter,
-  animateOpponentSrcStepDstFinite,
-  animateOpponentInfAfterStep,
   toColorProf,
   CaptureInfo,
+  toPieceCaptureComment,
+  allowPolling,
+  resumePolling,
+  stopPolling,
 } from "./opponent_move";
 import {
   Coord,
@@ -29,7 +26,6 @@ import {
   coordEq,
   NonTam2PieceUpward,
   Side,
-  NonTam2PieceDownward,
   NonTam2Piece,
   BoardIndex,
   rotateBoard,
@@ -40,8 +36,6 @@ import {
   Profession,
   Color,
   Ciurl,
-  Ret_MainPoll,
-  Ret_InfPoll,
   Ret_AfterHalfAcceptance,
   NormalNonTamMove,
   NormalMove,
@@ -63,7 +57,7 @@ import {
   PIECE_SIZE,
   getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
 } from "./html_top_left";
-import { DICTIONARY, GAME_END_LINZKLAR, TACTICS_LINZKLAR } from "./dictionary";
+import { DICTIONARY, GAME_END_LINZKLAR } from "./dictionary";
 import { API_ORIGIN } from "./env";
 import {
   drawFinalScoreDisplay,
@@ -85,250 +79,7 @@ import {
   drawPhantomAt, drawMak2Io1,
   eraseGuide, erasePhantomAndOptionallyCancelButton,
 } from "./draw_erase_animate";
-
-const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
-  return a[0] === b[0] && a[1] === b[1]
-}
-
-const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
-  let POLLING_ALLOWED = true;
-
-  // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
-  const stopPolling = () => {
-    POLLING_ALLOWED = false;
-  };
-
-  const resumePolling = () => {
-    POLLING_ALLOWED = true;
-    window.setTimeout(sendMainPoll, 500 * 0.8093);
-  };
-
-  const allowPolling = () => {
-    POLLING_ALLOWED = true;
-  };
-
-  const isPollingAllowed = () => {
-    return POLLING_ALLOWED;
-  };
-  return { stopPolling, resumePolling, isPollingAllowed, allowPolling };
-})();
-// I repentfully use a global state
-
-export async function sendMainPoll() {
-  console.log("poll");
-  if (!isPollingAllowed()) {
-    return;
-  }
-
-  const res: Ret_MainPoll = await sendStuffTo<{}, Ret_MainPoll>(
-    "mainpoll",
-    "`polling for the opponent's move`",
-    {},
-    response => {
-      console.log("Success; the server returned:", JSON.stringify(response));
-      return response;
-    },
-  );
-
-  if (!res.legal) {
-    alert(`sending MainPoll somehow resulted in an error: ${res.whyIllegal}`);
-    throw new Error(
-      `sending MainPoll somehow resulted in an error: ${res.whyIllegal}`,
-    );
-  }
-
-  if (res.content !== "not yet") {
-    console.log("ding!");
-    document.getElementById("opponent_message")!.textContent = res.message != null ? DICTIONARY.ja.tactics[res.message] : "";
-    document.getElementById("opponent_message_linzklar")!.textContent = res.message != null ? TACTICS_LINZKLAR[res.message] : "";
-    if (KRUT_CRUOP) {
-      const thud_sound = new Audio("sound/thud.ogg");
-      thud_sound.play();
-    }
-
-    const opponent_move = res.content;
-    console.log(opponent_move);
-    if (opponent_move.type === "NonTamMove") {
-      GAME_STATE.opponent_has_just_moved_tam = false;
-      if (opponent_move.data.type === "SrcDst") {
-        const maybe_capture = await animateOpponentSrcDst(opponent_move.data);
-        GAME_STATE.is_my_turn = true;
-        if (opponent_move.data.water_entry_ciurl) {
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
-          }]
-        } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: normalMessageToKiarArk(opponent_move),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
-          }]
-        }
-      } else if (opponent_move.data.type === "FromHand") {
-        const piece: NonTam2PieceDownward = {
-          prof: opponent_move.data.prof,
-          color: opponent_move.data.color,
-          side: Side.Downward,
-        };
-        await animateOpponentFromHand(
-          piece,
-          fromAbsoluteCoord(opponent_move.data.dest),
-        );
-        GAME_STATE.is_my_turn = true;
-        // piece_capture_comment is impossible
-        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
-      } else if (opponent_move.data.type === "SrcStepDstFinite") {
-        const maybe_capture = await animateOpponentSrcStepDstFinite(opponent_move.data);
-        GAME_STATE.is_my_turn = true;
-        if (opponent_move.data.water_entry_ciurl) {
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
-          }]
-        } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: normalMessageToKiarArk(opponent_move),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
-          }]
-        }
-      } else {
-        const a: never = opponent_move.data;
-        throw new Error("does not happen");
-      }
-    } else if (opponent_move.type === "TamMove") {
-      GAME_STATE.opponent_has_just_moved_tam = true;
-      if (opponent_move.stepStyle === "NoStep") {
-        await animateOpponentTamNoStep(
-          fromAbsoluteCoord(opponent_move.src),
-          fromAbsoluteCoord(opponent_move.firstDest),
-          fromAbsoluteCoord(opponent_move.secondDest),
-        );
-        GAME_STATE.is_my_turn = true;
-        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
-      } else if (opponent_move.stepStyle === "StepsDuringFormer") {
-        await animateOpponentTamSteppingDuringFormer({
-          src: fromAbsoluteCoord(opponent_move.src),
-          firstDest: fromAbsoluteCoord(opponent_move.firstDest),
-          secondDest: fromAbsoluteCoord(opponent_move.secondDest),
-          step: fromAbsoluteCoord(opponent_move.step),
-        });
-        GAME_STATE.is_my_turn = true;
-        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
-      } else if (opponent_move.stepStyle === "StepsDuringLatter") {
-        await animateOpponentTamSteppingDuringLatter({
-          src: fromAbsoluteCoord(opponent_move.src),
-          firstDest: fromAbsoluteCoord(opponent_move.firstDest),
-          secondDest: fromAbsoluteCoord(opponent_move.secondDest),
-          step: fromAbsoluteCoord(opponent_move.step),
-        });
-        GAME_STATE.is_my_turn = true;
-        KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
-      } else {
-        const a: never = opponent_move.stepStyle;
-        throw new Error("does not happen");
-      }
-    } else if (opponent_move.type === "InfAfterStep") {
-      GAME_STATE.opponent_has_just_moved_tam = false;
-      const finalResult = (() => {
-        if (opponent_move.finalResult == null) {
-          return new Promise<{
-            dest: AbsoluteCoord;
-            water_entry_ciurl?: Ciurl;
-            thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-          }>(async (resolve, reject) => {
-            while (true) {
-              const res: Ret_InfPoll = await sendStuffTo<{}, Ret_InfPoll>(
-                "infpoll",
-                "`polling for the opponent's afterhalfacceptance`",
-                {},
-                response => {
-                  console.log(
-                    "Success; the server returned:",
-                    JSON.stringify(response),
-                  );
-                  return response;
-                },
-              );
-              if (res.legal === false) {
-                throw new Error("not good!!!");
-              } else if (res.content !== "not yet") {
-                if (res.content.type !== "InfAfterStep") {
-                  throw new Error("nooooooo");
-                }
-                resolve(res.content.finalResult!);
-                return;
-              }
-              await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-            }
-          });
-        } else {
-          return Promise.resolve(opponent_move.finalResult);
-        }
-      })();
-      const [finalResult_resolved, maybe_capture]: ([{
-        dest: AbsoluteCoord;
-        water_entry_ciurl?: Ciurl;
-        thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-      }, CaptureInfo]) = await animateOpponentInfAfterStep({
-        src: fromAbsoluteCoord(opponent_move.src),
-        step: fromAbsoluteCoord(opponent_move.step),
-        plannedDirection: fromAbsoluteCoord(opponent_move.plannedDirection),
-        stepping_ciurl: opponent_move.stepping_ciurl,
-        finalResult,
-      });
-      GAME_STATE.is_my_turn = true;
-
-      if (finalResult_resolved.water_entry_ciurl) {
-        if (finalResult_resolved.water_entry_ciurl.filter(a => a).length < 3) {
-          // water entry has failed; no piece was captured
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無`,
-          }];
-        } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
-          }];
-        }
-      } else if (finalResult_resolved.thwarted_by_failing_water_entry_ciurl) {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.thwarted_by_failing_water_entry_ciurl)}此無`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }];
-      } else {
-
-        if (absoluteCoordEq(opponent_move.plannedDirection, finalResult_resolved.dest) /* it went as planned, so no need to add 此無 */
-          || !absoluteCoordEq(finalResult_resolved.dest, opponent_move.src) /* the end is different from the source, so it cannot be 此無 */
-        ) {
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
-          }];
-        } else {
-          KIAR_ARK.body = [...KIAR_ARK.body, {
-            type: "movement",
-            dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture)
-          }];
-        }
-      }
-    } else {
-      const a: never = opponent_move;
-      throw new Error("does not happen");
-    }
-  } else {
-    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-    await sendMainPoll();
-  }
-}
+import { normalMessageToKiarArk, serializeAbsoluteCoord, serializeCiurl } from "./serialize";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
@@ -813,73 +564,7 @@ async function sendStuff<T, U>(
   return await sendStuffTo<T, U>("slow", log, message, validateInput);
 }
 
-function serializeColor(color: Color) {
-  return color === Color.Huok2 ? "黒" : "赤";
-}
 
-function serializeProf(prof: Profession) {
-  return ["船", "兵", "弓", "車", "虎", "馬", "筆", "巫", "将", "王"][prof];
-}
-
-function toPieceCaptureComment(c: CaptureInfo): string {
-  if (c === null) { return ""; }
-  const [color, prof] = c;
-  return `手${serializeColor(color)}${serializeProf(prof)}`
-}
-
-function serializeAbsoluteCoord(coord: AbsoluteCoord) {
-  return `${coord[1]}${coord[0]}`;
-}
-
-function serializeCiurlCount(ciurl_count: number) {
-  return ["無", "一", "二", "三", "四", "五"][ciurl_count]
-}
-
-function serializeCiurl(ciurl: Ciurl) {
-  return serializeCiurlCount(ciurl.filter(a => a).length);
-}
-
-function normalMessageToKiarArk(message: NormalMove, water_ciurl_count?: number): string {
-  if (message.type === "NonTamMove") {
-    if (message.data.type === "FromHand") {
-      return `${serializeColor(message.data.color)}${serializeProf(message.data.prof)}${serializeAbsoluteCoord(message.data.dest)}`
-    } else if (message.data.type === "SrcDst") {
-      if (water_ciurl_count === undefined) {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}無撃裁`
-      } else if (water_ciurl_count < 3) {
-        // failed entry
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}此無`
-      } else {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}`
-      }
-    } else if (message.data.type === "SrcStepDstFinite") {
-      if (water_ciurl_count === undefined) {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}無撃裁`
-      } else if (water_ciurl_count < 3) {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}此無`
-      } else {
-        return `${serializeAbsoluteCoord(message.data.src)}片${serializeAbsoluteCoord(message.data.step)}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(water_ciurl_count)}`
-      }
-    } else {
-      const _should_not_reach_here: never = message.data;
-      throw new Error("should not reach here")
-    }
-  } else if (message.type === "TamMove") {
-    if (message.stepStyle === "NoStep") {
-      return `${serializeAbsoluteCoord(message.src)}皇[${serializeAbsoluteCoord(message.firstDest)}]${serializeAbsoluteCoord(message.secondDest)}`
-    } else if (message.stepStyle === "StepsDuringFormer") {
-      return `${serializeAbsoluteCoord(message.src)}皇${serializeAbsoluteCoord(message.step)}[${serializeAbsoluteCoord(message.firstDest)}]${serializeAbsoluteCoord(message.secondDest)}`
-    } else if (message.stepStyle === "StepsDuringLatter") {
-      return `${serializeAbsoluteCoord(message.src)}皇[${serializeAbsoluteCoord(message.firstDest)}]${serializeAbsoluteCoord(message.step)}${serializeAbsoluteCoord(message.secondDest)}`
-    } else {
-      const _should_not_reach_here: never = message.stepStyle;
-      throw new Error("should not reach here")
-    }
-  } else {
-    const _should_not_reach_here: never = message;
-    throw new Error("should not reach here")
-  }
-}
 
 async function sendNormalMessage(message: NormalMove) {
   const res: Ret_NormalMove = await sendStuff<NormalMove, Ret_NormalMove>(
