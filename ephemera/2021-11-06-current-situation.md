@@ -31,7 +31,7 @@
 
 ### 依存関係
 
-![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/2021-11-06-cerke_online-dependency_cleaned.svg)
+![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/ephemera/2021-11-06-cerke_online-dependency_cleaned.svg)
 
 **うわぁ。**
 
