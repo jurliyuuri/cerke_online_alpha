@@ -6,6 +6,7 @@
 import {
   GAME_STATE,
   initial_board_with_IA_down,
+  toAbsoluteCoord,
 } from "./game_state";
 import {
   allowMainPolling,
@@ -15,6 +16,11 @@ import {
   Side,
   NonTam2Piece,
   rotateBoard,
+  BoardIndex,
+  Coord,
+  NonTam2PieceDownward,
+  NonTam2PieceUpward,
+  Piece,
 } from "cerke_online_utility/lib";
 import {
   Profession,
@@ -40,9 +46,120 @@ import {
 import { KIAR_ARK } from "./kiar_ark";
 import {
   animateNode,
-  drawField,
   drawMak2Io1,
+  removeChildren,
 } from "./draw_erase_animate";
+import { createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1 } from "./create_html_element";
+import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
+import { toPath } from "./piece_to_path";
+
+export function drawField(o: { focus?: Coord | null }) {
+  console.log(`focusing:`, o.focus ? toAbsoluteCoord(o.focus) : null);
+
+  // First, draw the board.
+  {
+    const board = GAME_STATE.f.currentBoard;
+    const contains_pieces_on_board = document.getElementById(
+      "contains_pieces_on_board",
+    )!;
+
+    // delete everything
+    removeChildren(contains_pieces_on_board);
+
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        const piece: Piece | null = board[i][j];
+        if (piece == null) {
+          continue;
+        }
+
+        const coord: Coord = [i as BoardIndex, j as BoardIndex];
+        const imgNode: HTMLImageElement = createPieceImgToBePlacedOnBoard(
+          coord,
+          piece,
+        );
+        imgNode.id = `field_piece_${i}_${j}`;
+
+        if (o.focus && coord[0] === o.focus[0] && coord[1] === o.focus[1]) {
+          // Add a border for the focus
+          imgNode.style.border = "8px solid #ff6";
+          imgNode.style.margin = "-8px";
+        }
+
+        if (piece === "Tam2") {
+          // prevent tam2 ty sak2
+          if (!GAME_STATE.opponent_has_just_moved_tam) {
+            imgNode.style.cursor = "pointer";
+            imgNode.addEventListener("click", function () {
+              selectOwnPieceOnBoard(coord, piece);
+            });
+          }
+        } else if (piece.side === Side.Upward) {
+          const q: NonTam2PieceUpward = {
+            prof: piece.prof,
+            side: Side.Upward,
+            color: piece.color,
+          };
+          imgNode.style.cursor = "pointer";
+          imgNode.addEventListener("click", function () {
+            selectOwnPieceOnBoard(coord, q);
+          });
+        }
+
+        contains_pieces_on_board.appendChild(imgNode);
+      }
+    }
+  }
+
+  // Then, draw the Upward's hop1zuo1
+  {
+    const list: NonTam2PieceUpward[] = GAME_STATE.f.hop1zuo1OfUpward;
+    const contains_pieces_on_upward = document.getElementById(
+      "contains_pieces_on_upward",
+    )!;
+
+    // delete everything
+    removeChildren(contains_pieces_on_upward);
+
+    for (let i = 0; i < list.length; i++) {
+      const piece: NonTam2PieceUpward = list[i];
+      const imgNode = createPieceImgToBePlacedOnHop1zuo1(
+        i,
+        toPath(piece),
+        list.length,
+      );
+
+      imgNode.style.cursor = "pointer";
+      imgNode.addEventListener("click", function () {
+        selectOwnPieceOnHop1zuo1(i, piece, list.length);
+      });
+
+      contains_pieces_on_upward.appendChild(imgNode);
+    }
+  }
+
+  // Then, draw the Downward's hop1zuo1
+  {
+    const list: NonTam2PieceDownward[] = GAME_STATE.f.hop1zuo1OfDownward;
+    const contains_pieces_on_downward = document.getElementById(
+      "contains_pieces_on_downward",
+    )!;
+
+    // delete everything
+    removeChildren(contains_pieces_on_downward);
+
+    for (let i = 0; i < list.length; i++) {
+      const piece: NonTam2PieceDownward = list[i];
+      const imgNode = createPieceImgToBePlacedOnHop1zuo1(
+        i,
+        toPath(piece),
+        list.length,
+      );
+      imgNode.id = `hop1zuo1OfDownward_${i}`;
+      contains_pieces_on_downward.appendChild(imgNode);
+    }
+  }
+}
 
 /**
  * Group up all the kut2 tam2 to display neatly.

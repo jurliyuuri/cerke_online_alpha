@@ -31,6 +31,7 @@ import {
   sendStuffTo,
   endSeason,
   increaseRateAndAnimate,
+  drawField,
 } from "./both_sides";
 import {
   animateNode,
@@ -38,7 +39,6 @@ import {
   animateWaterEntryLogo,
   drawArrow,
   drawCiurl,
-  drawField,
   eraseArrow,
 } from "./draw_erase_animate";
 import { DICTIONARY, TACTICS_LINZKLAR } from "./dictionary";
