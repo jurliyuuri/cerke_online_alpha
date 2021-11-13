@@ -61,6 +61,7 @@ import {
   MAX_PIECE_SIZE,
   hop1_zuo1_left_position,
   PIECE_SIZE,
+  getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
 } from "./html_top_left";
 import { DICTIONARY, GAME_END_LINZKLAR, TACTICS_LINZKLAR } from "./dictionary";
 import { API_ORIGIN } from "./env";
@@ -83,7 +84,6 @@ import {
   drawCancelButton, drawCiurl, drawField, drawHoverAt_,
   drawPhantomAt, drawMak2Io1,
   eraseGuide, erasePhantomAndOptionallyCancelButton,
-  getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
 } from "./draw_erase_animate";
 
 const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {

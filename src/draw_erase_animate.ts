@@ -1,4 +1,4 @@
-import { Season, Log2_Rate, Ciurl } from "cerke_online_api";
+import { Ciurl } from "cerke_online_api";
 import { Coord, Piece, BoardIndex, Side, NonTam2PieceUpward, NonTam2PieceDownward } from "cerke_online_utility/lib";
 import {
   createArrowSvg,
@@ -9,7 +9,7 @@ import {
   createPieceSizeImageOnBoardByPath_Shifted
 } from "./create_html_element";
 import { GAME_STATE, toAbsoluteCoord } from "./game_state";
-import { BOX_SIZE } from "./html_top_left";
+import { BOX_SIZE, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./html_top_left";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath, toPath_ } from "./piece_to_path";
 
@@ -17,18 +17,6 @@ export function removeChildren(parent: HTMLElement) {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
   }
-}
-
-export function getDenoteSeasonNodeTopLeft(season: Season) {
-  return { top: 360 + 51 * (3 - season), left: 3 };
-}
-
-export function getDenoteScoreNodeTopLeft(score: number) {
-  return { top: 447 + 21.83333333333333 * (20 - score), left: 65 };
-}
-
-export function getDenoteRateNodeTopLeft(log2_rate: Log2_Rate) {
-  return { top: 873 - (96.66666666666667 / 2) * (log2_rate - 1), left: 4 };
 }
 
 /**
