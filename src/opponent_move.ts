@@ -95,7 +95,7 @@ type OpponentMove =
 */
 
 
-export const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
+const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = (() => {
   let POLLING_ALLOWED = true;
 
   // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
@@ -117,8 +117,12 @@ export const { stopPolling, resumePolling, isPollingAllowed, allowPolling } = ((
   };
   return { stopPolling, resumePolling, isPollingAllowed, allowPolling };
 })();
-// I repentfully use a global state
+// I repentfully use a global 
 
+/////////////////////////////////////////////////////////
+/// ONLY THESE FOUR ARE TO BE EXPORTED FROM THIS FILE ///
+/////////////////////////////////////////////////////////
+export { stopPolling, resumePolling, allowPolling };
 export async function sendMainPoll() {
   console.log("poll");
   if (!isPollingAllowed()) {
