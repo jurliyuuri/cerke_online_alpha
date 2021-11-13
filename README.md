@@ -46,5 +46,7 @@
 3. `localhost:8000/entrance.html` にデプロイされているものがある。
 
 
-## 2021年10月現在のソースコード構成
-[2021-11-06-current-situation.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/2021-11-06-current-situation.md) を参照のこと。
+## ソースコード構成について
+`ephemera/` 以下においてある。名前の通り、一時的ドキュメンテーションであり、リファクタリングによってガンガン古びていくことを想定したドキュメンテーションである。
+* [2021-11-06-current-situation.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-06-current-situation.md)
+* [2021-11-13-current-situation-state-machine.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-13-current-situation-state-machine.md)
