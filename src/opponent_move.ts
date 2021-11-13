@@ -31,7 +31,7 @@ import {
   sendStuffTo,
   endSeason,
   increaseRateAndAnimate,
-} from "./main";
+} from "./both_sides";
 import {
   animateNode,
   animateStepTamLogo,
@@ -51,8 +51,6 @@ import {
   normalMessageToKiarArk,
   serializeAbsoluteCoord,
   serializeCiurl,
-  serializeColor,
-  serializeProf,
 } from "./serialize";
 import {
   CaptureInfo,
