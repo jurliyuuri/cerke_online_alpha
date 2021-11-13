@@ -18,7 +18,7 @@ let RESULT: Ret_VsCpuEntry | undefined;
 
 function apply_for_vs_cpu_game() {
   (async () => {
-    let res: Ret_VsCpuEntry = await sendVsCpuEntrance<Ret_VsCpuEntry>(a => a);
+    let res: Ret_VsCpuEntry = await sendVsCpuEntrance<Ret_VsCpuEntry>((a) => a);
     RESULT = res;
     let_the_game_begin(
       res.access_token as AccessToken,
@@ -39,11 +39,11 @@ async function sendSomethingSomewhere<T, U>(
     headers: {
       "Content-Type": "application/json",
     },
-    keepalive: true
+    keepalive: true,
   })
-    .then(res => res.json())
+    .then((res) => res.json())
     .then(validateInput)
-    .catch(error => {
+    .catch((error) => {
       console.error("Error:", error);
       return;
     });
@@ -61,7 +61,9 @@ async function sendVsCpuEntrance<U>(
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
-    location.href.includes("staging") ? `${API_ORIGIN}/vs_cpu/entry/staging` : `${API_ORIGIN}/vs_cpu/entry`,
+    location.href.includes("staging")
+      ? `${API_ORIGIN}/vs_cpu/entry/staging`
+      : `${API_ORIGIN}/vs_cpu/entry`,
     {},
     validateInput,
   );

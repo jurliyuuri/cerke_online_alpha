@@ -8,17 +8,17 @@ export interface DictElem {
     victory: string;
     draw: string;
     loss: string;
-  }
+  };
 }
 
 export type Tactics = {
-  victory_almost_certain: string,
-  strengthened_shaman: string,
-  free_lunch: string,
-  avoid_defeat: string,
-  loss_almost_certain: string,
-  neutral: string,
-}
+  victory_almost_certain: string;
+  strengthened_shaman: string;
+  free_lunch: string;
+  avoid_defeat: string;
+  loss_almost_certain: string;
+  neutral: string;
+};
 
 export const TACTICS_LINZKLAR: Tactics = {
   victory_almost_certain: "我須上行。",
@@ -26,10 +26,10 @@ export const TACTICS_LINZKLAR: Tactics = {
   free_lunch: "我為無与之手。",
   avoid_defeat: "心為此而無行下行之道。",
   loss_almost_certain: "為何即下行。行我心之道。",
-  neutral: "無心来為何善。行周時無下行之道。"
-}
+  neutral: "無心来為何善。行周時無下行之道。",
+};
 
-export const GAME_END_LINZKLAR =  {
+export const GAME_END_LINZKLAR = {
   victory: "汝上行終",
   draw: "汝値同於我",
   loss: "汝下行終",
@@ -63,7 +63,7 @@ export const DICTIONARY: Dictionary = {
       free_lunch: "ただ取り",
       avoid_defeat: "負けを避けるためにこう指してみるか",
       loss_almost_certain: "なにやっても負けそうなので好き勝手に指す",
-      neutral: "いい手が思いつかなかったので、即負けしない範囲で好き勝手に指す"
-    }
+      neutral: "いい手が思いつかなかったので、即負けしない範囲で好き勝手に指す",
+    },
   },
 };

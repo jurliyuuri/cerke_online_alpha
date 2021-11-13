@@ -19,26 +19,28 @@ type Ret_RandomCancel =
 // a. if the page is out of focus:
 //    1. The current token is revoked
 //    2. Somehow a new token is generated
-// 
-// b. 
-document.addEventListener('visibilitychange', () => {
+//
+// b.
+document.addEventListener("visibilitychange", () => {
   if (!UNLOAD_TRIGGERED_BY_USER) {
     // should only capture what has been triggered by the user
     return;
   }
 
-  if (document.visibilityState === 'hidden') {
+  if (document.visibilityState === "hidden") {
     // cancel if out of focus
     if (typeof RESULT !== "undefined") {
       const token = RESULT.access_token;
       RESULT = undefined;
       (async () => {
         console.log(`trying to cancel ${token}:`);
-        const newRes: Ret_RandomCancel = await sendCancel<Ret_RandomCancel>(token as AccessToken, a => a);  
-        console.log(`got result ${JSON.stringify(newRes)}`);   
+        const newRes: Ret_RandomCancel = await sendCancel<Ret_RandomCancel>(
+          token as AccessToken,
+          (a) => a,
+        );
+        console.log(`got result ${JSON.stringify(newRes)}`);
       })();
     }
-    
   } else {
     // re-register if focused
     if (typeof RESULT === "undefined") {
@@ -64,22 +66,22 @@ let RESULT: Ret_RandomEntry | undefined;
 
 function apply_for_random_game() {
   (async () => {
-    let res: Ret_RandomEntry = await sendEntrance<Ret_RandomEntry>(a => a);
+    let res: Ret_RandomEntry = await sendEntrance<Ret_RandomEntry>((a) => a);
     RESULT = res;
     while (res.state != "let_the_game_begin") {
-      await new Promise(resolve =>
+      await new Promise((resolve) =>
         setTimeout(resolve, (2 + Math.random()) * 200 * 0.8093),
       );
       const newRes: Ret_RandomPoll = await sendPoll<Ret_RandomPoll>(
         res.access_token as AccessToken,
-        a => a,
+        (a) => a,
       );
       if (newRes.legal) {
         res = newRes.ret;
         RESULT = res;
       } else {
         // re-entry
-        res = await sendEntrance<Ret_RandomEntry>(a => a);
+        res = await sendEntrance<Ret_RandomEntry>((a) => a);
         RESULT = res;
       }
     }
@@ -96,7 +98,9 @@ async function sendPoll<U>(
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
-    location.href.includes("staging") ? `${API_ORIGIN}/random/poll/staging` : `${API_ORIGIN}/random/poll`,
+    location.href.includes("staging")
+      ? `${API_ORIGIN}/random/poll/staging`
+      : `${API_ORIGIN}/random/poll`,
     {
       access_token,
     },
@@ -109,14 +113,15 @@ async function sendCancel<U>(
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
-    location.href.includes("staging") ? `${API_ORIGIN}/random/cancel/staging`: `${API_ORIGIN}/random/cancel`,
+    location.href.includes("staging")
+      ? `${API_ORIGIN}/random/cancel/staging`
+      : `${API_ORIGIN}/random/cancel`,
     {
       access_token,
     },
     validateInput,
   );
 }
-
 
 async function sendSomethingSomewhere<T, U>(
   url: string,
@@ -129,11 +134,11 @@ async function sendSomethingSomewhere<T, U>(
     headers: {
       "Content-Type": "application/json",
     },
-    keepalive: true
+    keepalive: true,
   })
-    .then(res => res.json())
+    .then((res) => res.json())
     .then(validateInput)
-    .catch(error => {
+    .catch((error) => {
       console.error("Error:", error);
       return;
     });
@@ -151,7 +156,9 @@ async function sendEntrance<U>(
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
-    location.href.includes("staging") ? `${API_ORIGIN}/random/entry/staging`: `${API_ORIGIN}/random/entry`,
+    location.href.includes("staging")
+      ? `${API_ORIGIN}/random/entry/staging`
+      : `${API_ORIGIN}/random/entry`,
     {},
     validateInput,
   );

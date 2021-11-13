@@ -16,12 +16,14 @@ export function drawFinalScoreDisplay(
 ) {
   const starting_position_left = 530;
   const spacing = 60;
-  const createDigitsMid = (o: { score: number, column_index: number }) => createDigits(
-    toDigitsLinzklar(o.score),
-    {
+  const createDigitsMid = (o: { score: number; column_index: number }) =>
+    createDigits(toDigitsLinzklar(o.score), {
       left: starting_position_left - spacing * o.column_index,
-      top: ((50 * (1 + letter_spacing)) / 2) * (2 - toDigitsLinzklar(o.score).length) + 239,
-      width: 50
+      top:
+        ((50 * (1 + letter_spacing)) / 2) *
+          (2 - toDigitsLinzklar(o.score).length) +
+        239,
+      width: 50,
     });
 
   const scores = ([] as number[]).concat(...scores_of_each_season);
@@ -29,15 +31,28 @@ export function drawFinalScoreDisplay(
   const final_score_display = document.getElementById("final_score_display")!;
   final_score_display.classList.remove("nocover");
   removeChildren(final_score_display);
-  final_score_display.append(...Array.from({ length: scores_of_each_season.length }, (_, season) => {
-    const a = ([] as number[]).concat(
-      ...scores_of_each_season.slice(0, season),
-    ).length;
-    return createSeasonImg({ left: starting_position_left - spacing * a, season });
-  }));
-  final_score_display.append(...scores.flatMap((score, column_index) => createDigitsMid({ score, column_index })));
-  final_score_display.append(...createDigitsMid({ score: 20, column_index: -1 }));
-  final_score_display.append(createHut2Img({left: starting_position_left - spacing * -1}));
+  final_score_display.append(
+    ...Array.from({ length: scores_of_each_season.length }, (_, season) => {
+      const a = ([] as number[]).concat(
+        ...scores_of_each_season.slice(0, season),
+      ).length;
+      return createSeasonImg({
+        left: starting_position_left - spacing * a,
+        season,
+      });
+    }),
+  );
+  final_score_display.append(
+    ...scores.flatMap((score, column_index) =>
+      createDigitsMid({ score, column_index }),
+    ),
+  );
+  final_score_display.append(
+    ...createDigitsMid({ score: 20, column_index: -1 }),
+  );
+  final_score_display.append(
+    createHut2Img({ left: starting_position_left - spacing * -1 }),
+  );
   final_score_display.append(...createTotalScoreDigits(total_score));
 }
 
@@ -51,7 +66,10 @@ function createHut2Img(o: { left: number }): HTMLImageElement {
   return i;
 }
 
-function createSeasonImg(o: { left: number, season: number }): HTMLImageElement {
+function createSeasonImg(o: {
+  left: number;
+  season: number;
+}): HTMLImageElement {
   const i = document.createElement("img");
   i.src = `image/season/${["春", "夏", "秋", "冬"][o.season]}.png`;
   i.style.position = "absolute";
@@ -94,51 +112,64 @@ export function drawScoreDisplay(hands_: HandAndNegativeHand[]) {
     throw new Error("too many hands");
   }
   const [starting_position_left, column_spacing] = [
-    [550, 60], 
-    [550, 60], 
-    [550, 60], 
-    [550, 60], 
-    [550, 60], 
-    [550, 60], 
-    [550, 60], 
-    [550, 60], 
-    [550, 60], 
-    [575, 57], /*  9 */
-    [585, 53], /* 10 */
-    [595, 49]  /* 11 */
+    [550, 60],
+    [550, 60],
+    [550, 60],
+    [550, 60],
+    [550, 60],
+    [550, 60],
+    [550, 60],
+    [550, 60],
+    [550, 60],
+    [575, 57] /*  9 */,
+    [585, 53] /* 10 */,
+    [595, 49] /* 11 */,
   ][hands.length];
   const score_display = document.getElementById("score_display")!;
   score_display.classList.remove("nocover");
   removeChildren(score_display);
   // while the score is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
-  const base_score_total = hands.map(h => hand_to_score[h]).reduce((a, b) => a + b, 0);
-  score_display.append(...hands.flatMap((hand, index) => {
-    /* display hands and scores */
-    const left = starting_position_left - column_spacing * index;
-    const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
-    const hand_and_score: HTMLImageElement[] = createDigits(digits, { left, top: 280 + top_padding, width: 50 });
-    if (hand.slice(0, 2) === "同色") {
-      hand_and_score.push(createHandImage(hand.slice(2), { left, top_padding }));
-      hand_and_score.push(createBapPokImage({ left, top_padding }));
-    } else {
-      hand_and_score.push(createHandImage(hand, { left, top_padding }));
-    }
-    return hand_and_score;
-  }));
+  const base_score_total = hands
+    .map((h) => hand_to_score[h])
+    .reduce((a, b) => a + b, 0);
+  score_display.append(
+    ...hands.flatMap((hand, index) => {
+      /* display hands and scores */
+      const left = starting_position_left - column_spacing * index;
+      const digits: DigitLinzklar[] = toDigitsLinzklar(hand_to_score[hand]);
+      const hand_and_score: HTMLImageElement[] = createDigits(digits, {
+        left,
+        top: 280 + top_padding,
+        width: 50,
+      });
+      if (hand.slice(0, 2) === "同色") {
+        hand_and_score.push(
+          createHandImage(hand.slice(2), { left, top_padding }),
+        );
+        hand_and_score.push(createBapPokImage({ left, top_padding }));
+      } else {
+        hand_and_score.push(createHandImage(hand, { left, top_padding }));
+      }
+      return hand_and_score;
+    }),
+  );
   score_display.append(...createTotalScoreDigits(base_score_total));
 }
 
-function createDigits(digits: DigitLinzklar[], o: { left: number, top: number, width: number }): HTMLImageElement[] {
+function createDigits(
+  digits: DigitLinzklar[],
+  o: { left: number; top: number; width: number },
+): HTMLImageElement[] {
   return digits.map((digit, row_index) => {
     const i = document.createElement("img");
     i.src = `image/digit/${digit}.png`;
     i.style.position = "absolute";
     i.style.left = `${o.left}px`;
-    i.style.top = `${(1 + letter_spacing) * o.width * row_index + o.top}px`
+    i.style.top = `${(1 + letter_spacing) * o.width * row_index + o.top}px`;
     i.width = o.width;
     return i;
-  })
+  });
 }
 
 function createTotalScoreDigits(total_score: number): HTMLImageElement[] {
@@ -146,6 +177,6 @@ function createTotalScoreDigits(total_score: number): HTMLImageElement[] {
   return createDigits(total_score_digits, {
     left: 20,
     top: 234 - (70 * total_score_digits.length) / 2,
-    width: 70
+    width: 70,
   });
 }

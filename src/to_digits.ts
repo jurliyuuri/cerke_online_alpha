@@ -43,7 +43,7 @@ export function toDigitsLinzklar(num: number): DigitLinzklar[] {
       num08: "八",
       num09: "九",
       num10: "十",
-      num100: "百"
+      num100: "百",
     };
     return obj[a];
   }

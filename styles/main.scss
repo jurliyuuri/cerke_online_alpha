@@ -201,7 +201,8 @@ $krut_cruop_hover_width: 44px * 1.1;
   z-index: 3000;
   position: absolute;
   left: 695px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
-  top: 403px - ($krut_cruop_hover_width - $krut_cruop_width) * $krut_cruop_ratio / 2;
+  top: 403px - ($krut_cruop_hover_width - $krut_cruop_width) * $krut_cruop_ratio /
+    2;
 }
 
 #krut_cruop_button:hover {
@@ -232,7 +233,8 @@ $lork_liar_hover_width: 44px * 1.1;
   z-index: 3000;
   position: absolute;
   left: 695px - ($lork_liar_hover_width - $lork_liar_width) / 2;
-  top: 560px - ($lork_liar_hover_width - $lork_liar_width) * $lork_liar_ratio / 2;
+  top: 560px - ($lork_liar_hover_width - $lork_liar_width) * $lork_liar_ratio /
+    2;
 }
 
 #lork_liar_button:hover {
@@ -328,6 +330,8 @@ img.piece_image_on_hop1zuo1 {
 
 @font-face {
   font-family: "geometric_linzklar";
-  src: url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.ttf") format("truetype"),
-    url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.woff") format("woff");
+  src: url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.ttf")
+      format("truetype"),
+    url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.woff")
+      format("woff");
 }

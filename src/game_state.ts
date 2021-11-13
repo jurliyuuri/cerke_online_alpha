@@ -8,7 +8,13 @@ import {
   Coord,
   rotateBoard,
 } from "cerke_online_utility/lib";
-import { AbsoluteCoord, Profession, Color, Season, Log2_Rate } from "cerke_online_api";
+import {
+  AbsoluteCoord,
+  Profession,
+  Color,
+  Season,
+  Log2_Rate,
+} from "cerke_online_api";
 import { sendMainPollAndDoEverythingThatFollows } from "./opponent_move";
 
 export type Hop1Zuo1 = NonTam2Piece[];
@@ -198,10 +204,10 @@ export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
 })({
   IA_is_down: (() => {
     try {
-      return JSON.parse(sessionStorage.is_IA_down_for_me)
+      return JSON.parse(sessionStorage.is_IA_down_for_me);
     } catch {
       // Maybe you entered this page without registering. Go back to entrance.html.
       location.href = "entrance.html";
     }
-  })()
+  })(),
 });
