@@ -1,0 +1,26 @@
+strict digraph "dependency-cruiser output"{
+    splines="true" overlap="false" nodesep="0.16" ranksep="0.18" fontname="Helvetica-bold" fontsize="9" style="rounded,bold,filled" fillcolor="#ffffff" compound="true"
+    node [shape="box" style="rounded, filled" height="0.2" color="black" fillcolor="#ffffcc" fontcolor="black" fontname="Helvetica" fontsize="9"]
+    edge [arrowhead="normal" arrowsize="0.6" penwidth="2.0" color="#666666" fontname="Helvetica" fontsize="9"]
+    label="" "src/both_sides.ts" [label="both_sides.ts" fillcolor="#ddfeff"] 
+    "src/both_sides.ts" -> "src/draw_erase_animate.ts" 
+    "src/both_sides.ts" -> "src/game_state.ts" 
+    label="" "src/draw_erase_animate.ts" [label="draw_erase_animate.ts" fillcolor="#ddfeff"] 
+    "src/draw_erase_animate.ts" -> "src/game_state.ts" 
+    label="" "src/game_state.ts" [label="game_state.ts" fillcolor="#ddfeff"] 
+    "src/game_state.ts" -> "src/opponent_move.ts" [color="blue" dir="both"]
+
+    label="" "src/main.ts" [label="main.ts" fillcolor="#ddfeff"] 
+    "src/main.ts" -> "src/both_sides.ts" [color="red" dir="both"]
+    "src/main.ts" -> "src/draw_erase_animate.ts" 
+    "src/main.ts" -> "src/game_state.ts" 
+    "src/main.ts" -> "src/main_entry.ts" 
+    "src/main.ts" -> "src/opponent_move.ts" 
+    label="" "src/main_entry.ts" [label="main_entry.ts" fillcolor="#ddfeff"] 
+    "src/main_entry.ts" -> "src/draw_erase_animate.ts" 
+    "src/main_entry.ts" -> "src/game_state.ts"
+    label="" "src/opponent_move.ts" [label="opponent_move.ts" fillcolor="#ddfeff"] 
+    "src/opponent_move.ts" -> "src/both_sides.ts" [color="green" dir="both"]
+    "src/opponent_move.ts" -> "src/draw_erase_animate.ts" 
+    "src/opponent_move.ts" -> "src/main_entry.ts" 
+}

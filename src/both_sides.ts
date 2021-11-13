@@ -44,14 +44,39 @@ import {
   calculate_hands_and_score_from_pieces,
 } from "cerke_hands_and_score";
 import { KIAR_ARK } from "./kiar_ark";
-import {
-  animateNode,
-  drawMak2Io1,
-  removeChildren,
-} from "./draw_erase_animate";
+import { animateNode } from "./draw_erase_animate";
 import { createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1 } from "./create_html_element";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath } from "./piece_to_path";
+import { removeAllChildren } from "extra-dom";
+
+export function drawMak2Io1() {
+  const denote_season = document.getElementById("denote_season")!;
+  denote_season.style.top = `${
+    getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
+  }px`;
+  denote_season.style.transition = ``; // needs to clear the animation
+  denote_season.style.transform = ``;
+
+  const denote_score = document.getElementById("denote_score")!;
+  denote_score.style.top = `${
+    getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
+  }px`;
+  denote_score.style.transition = ``;
+  denote_score.style.transform = ``;
+
+  const denote_rate = document.getElementById("denote_rate")!;
+  if (GAME_STATE.log2_rate === 0) {
+    denote_rate.style.display = "none";
+  } else {
+    denote_rate.style.display = "block";
+  }
+  denote_rate.style.top = `${
+    getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
+  }px`;
+  denote_rate.style.transition = ``;
+  denote_rate.style.transform = ``;
+}
 
 export function drawField(o: { focus?: Coord | null }) {
   console.log(`focusing:`, o.focus ? toAbsoluteCoord(o.focus) : null);
@@ -64,7 +89,7 @@ export function drawField(o: { focus?: Coord | null }) {
     )!;
 
     // delete everything
-    removeChildren(contains_pieces_on_board);
+    removeAllChildren(contains_pieces_on_board);
 
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
@@ -119,7 +144,7 @@ export function drawField(o: { focus?: Coord | null }) {
     )!;
 
     // delete everything
-    removeChildren(contains_pieces_on_upward);
+    removeAllChildren(contains_pieces_on_upward);
 
     for (let i = 0; i < list.length; i++) {
       const piece: NonTam2PieceUpward = list[i];
@@ -146,7 +171,7 @@ export function drawField(o: { focus?: Coord | null }) {
     )!;
 
     // delete everything
-    removeChildren(contains_pieces_on_downward);
+    removeAllChildren(contains_pieces_on_downward);
 
     for (let i = 0; i < list.length; i++) {
       const piece: NonTam2PieceDownward = list[i];

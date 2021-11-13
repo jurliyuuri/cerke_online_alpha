@@ -1,0 +1,66 @@
+strict digraph "dependency-cruiser output"{
+    ordering="out" rankdir="LR" splines="true" overlap="false" nodesep="0.16" ranksep="0.18" fontname="Helvetica-bold" fontsize="9" style="rounded,bold,filled" fillcolor="#ffffff" compound="true"
+    node [shape="box" style="rounded, filled" height="0.2" color="black" fillcolor="#ffffcc" fontcolor="black" fontname="Helvetica" fontsize="9"]
+    edge [arrowhead="normal" arrowsize="0.6" penwidth="2.0" color="#00000033" fontname="Helvetica" fontsize="9"]
+    subgraph "cluster_SCC" {label="SCC" "src/both_sides.ts" [label="both_sides.ts" URL="src/both_sides.ts" fillcolor="#dddeff"] }
+    "src/both_sides.ts" -> "src/create_html_element.ts"
+    "src/both_sides.ts" -> "src/dictionary.ts"
+    "src/both_sides.ts" -> "src/draw_erase_animate.ts"
+    "src/both_sides.ts" -> "src/env.ts"
+    "src/both_sides.ts" -> "src/game_state.ts" [color="#000000aa"]
+    "src/both_sides.ts" -> "src/html_top_left.ts"
+    "src/both_sides.ts" -> "src/kiar_ark.ts"
+    "src/both_sides.ts" -> "src/piece_to_path.ts"
+    "src/both_sides.ts" -> "src/score_display.ts"
+    "src/capture_info.ts" [label="capture_info.ts" URL="src/capture_info.ts" fillcolor="#ddfeff"] 
+    "src/capture_info.ts" -> "src/serialize.ts"
+    "src/create_html_element.ts" [label="create_html_element.ts" URL="src/create_html_element.ts" fillcolor="#ddfeff"] 
+    "src/create_html_element.ts" -> "src/html_top_left.ts"
+    "src/create_html_element.ts" -> "src/piece_to_path.ts"
+    "src/dictionary.ts" [label="dictionary.ts" URL="src/dictionary.ts" fillcolor="#e6ffe6"] 
+    "src/draw_erase_animate.ts" [label="draw_erase_animate.ts" URL="src/draw_erase_animate.ts" fillcolor="#ddfeff"] 
+    "src/draw_erase_animate.ts" -> "src/create_html_element.ts"
+    "src/draw_erase_animate.ts" -> "src/html_top_left.ts"
+    "src/draw_erase_animate.ts" -> "src/piece_to_path.ts"
+    "src/env.ts" [label="env.ts" URL="src/env.ts" fillcolor="#e6ffe6"] 
+    subgraph "cluster_SCC" {label="SCC" "src/game_state.ts" [label="game_state.ts" URL="src/game_state.ts" fillcolor="#dddeff"] }
+    "src/html_top_left.ts" [label="html_top_left.ts" URL="src/html_top_left.ts" fillcolor="#e6ffe6"] 
+    "src/kiar_ark.ts" [label="kiar_ark.ts" URL="src/kiar_ark.ts" fillcolor="#e6ffe6"] 
+    subgraph "cluster_SCC" {label="SCC" "src/main.ts" [label="main.ts" URL="src/main.ts" fillcolor="#dddeff"] }
+    "src/main.ts" -> "src/both_sides.ts" [color="red" dir="both"]
+    "src/main.ts" -> "src/capture_info.ts"
+    "src/main.ts" -> "src/create_html_element.ts"
+    "src/main.ts" -> "src/dictionary.ts"
+    "src/main.ts" -> "src/draw_erase_animate.ts"
+    "src/main.ts" -> "src/game_state.ts" [color="#000000aa"]
+    "src/main.ts" -> "src/html_top_left.ts"
+    "src/main.ts" -> "src/kiar_ark.ts"
+    "src/main.ts" -> "src/main_entry.ts" [color="#000000aa"]
+    "src/main.ts" -> "src/opponent_move.ts" [color="#000000aa"]
+    "src/main.ts" -> "src/piece_to_path.ts"
+    "src/main.ts" -> "src/score_display.ts"
+    "src/main.ts" -> "src/serialize.ts"
+    "src/main.ts" -> "src/to_digits.ts"
+    subgraph "cluster_SCC" {label="SCC" "src/main_entry.ts" [label="main_entry.ts" URL="src/main_entry.ts" fillcolor="#dddeff"] }
+    "src/main_entry.ts" -> "src/draw_erase_animate.ts"
+    "src/main_entry.ts" -> "src/game_state.ts" [color="#000000aa"]
+    "src/main_entry.ts" -> "src/kiar_ark.ts"
+    subgraph "cluster_SCC" {label="SCC" "src/opponent_move.ts" [label="opponent_move.ts" URL="src/opponent_move.ts" fillcolor="#dddeff"] }
+    "src/opponent_move.ts" -> "src/both_sides.ts" [color="green" dir="both"]
+    "src/opponent_move.ts" -> "src/capture_info.ts"
+    "src/opponent_move.ts" -> "src/dictionary.ts"
+    "src/opponent_move.ts" -> "src/draw_erase_animate.ts"
+    "src/game_state.ts" -> "src/opponent_move.ts" [color="blue" dir="both"]
+    "src/opponent_move.ts" -> "src/html_top_left.ts"
+    "src/opponent_move.ts" -> "src/kiar_ark.ts"
+    "src/opponent_move.ts" -> "src/main_entry.ts" [color="#000000aa"]
+    "src/opponent_move.ts" -> "src/score_display.ts"
+    "src/opponent_move.ts" -> "src/serialize.ts"
+    "src/opponent_move.ts" -> "src/to_digits.ts"
+    "src/piece_to_path.ts" [label="piece_to_path.ts" fillcolor="#e6ffe6"] 
+    "src/score_display.ts" [label="score_display.ts" URL="src/score_display.ts" fillcolor="#ddfeff"] 
+    "src/score_display.ts" -> "src/create_html_element.ts"
+    "src/score_display.ts" -> "src/to_digits.ts"
+    "src/serialize.ts" [label="serialize.ts" URL="src/serialize.ts" fillcolor="#e6ffe6"] 
+    "src/to_digits.ts" [label="to_digits.ts" URL="src/to_digits.ts" fillcolor="#e6ffe6"] 
+}

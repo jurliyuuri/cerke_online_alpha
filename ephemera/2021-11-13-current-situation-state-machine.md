@@ -76,6 +76,8 @@ HandNotResolved に対して、新たな駒が取得されているかどうか�
 
 **ソースコードを読むまでもなく、明らかな地獄**。しょうがないから読むけど。
 
+### 依存関係
+
 ……依存関係そもそもどうなってる？リファクタリングしたからちょっとはマシになったよね？えーっと
 
 ```
@@ -95,3 +97,26 @@ node_modules/.bin/depcruise.cmd --exclude "^node_modules" --output-type dot src/
 えっ、強連結成分が7ノード…………破滅
 
 よし、今日は4時間も格闘してたし、そろそろ切り上げるか。
+
+
+### 依存関係改善
+
+そもそもなんで `score_display.ts` から `draw_erase_animate.ts` に辺が生えてるんだ？
+
+……あ、なるほど、`removeChildren` をインポートしてるのか。いやこれは `draw_erase_animate.ts` の責務じゃないでしょ。
+
+どうせ npm にあるでしょと思って調べたら、https://www.npmjs.com/package/extra-dom に `removeAllChildren` という名前で入ってた。じゃあそれにすり替え。ソースコード https://github.com/BlackGlory/extra-dom/blob/main/src/remove-all-children.ts は現状の実装と完全に同じ。オーケー。
+
+この辺を潰せば `score_display.ts` が強連結成分から外れるので、えーと circo エンジンで graphviz するのがいいかな。
+
+![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/ephemera/2021-11-13-2-strongly-connected-component.png)
+
+こうすると、今度は `draw_erase_animate.ts` から `game_state.ts` に辺が生えてるのがよろしくないと分かる。あー、`drawMak2Io1` でだけ `GAME_STATE` を使ってるのか。この関数は `both_sides.ts` でしか使ってない！よし。じゃあ `both_sides.ts` に移管だ。すると `draw_erase_animate.ts` から `game_state.ts` への辺が消えて、`draw_erase_animate.ts` が強連結成分から消える。よし！平面グラフだ
+
+![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/ephemera/2021-11-13-3-strongly-connected-component.png)
+
+なるほど。ちなみに全体像は？
+
+![](https://raw.githubusercontent.com/jurliyuuri/cerke_online_alpha/master/ephemera/2021-11-13-3-full-dep.png)
+
+はえ～。

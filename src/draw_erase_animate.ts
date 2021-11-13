@@ -12,20 +12,9 @@ import {
   createPieceImgToBePlacedOnBoard,
   createPieceSizeImageOnBoardByPath_Shifted,
 } from "./create_html_element";
-import { GAME_STATE } from "./game_state";
-import {
-  BOX_SIZE,
-  getDenoteRateNodeTopLeft,
-  getDenoteScoreNodeTopLeft,
-  getDenoteSeasonNodeTopLeft,
-} from "./html_top_left";
+import { BOX_SIZE } from "./html_top_left";
 import { toPath_ } from "./piece_to_path";
-
-export function removeChildren(parent: HTMLElement) {
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-}
+import { removeAllChildren } from "extra-dom";
 
 /**
  * @param total_duration total duration in millisecond
@@ -132,12 +121,12 @@ export function drawCiurl(ciurl: Ciurl, side?: Side) {
 }
 
 function eraseCiurl() {
-  removeChildren(document.getElementById("contains_ciurl")!);
+  removeAllChildren(document.getElementById("contains_ciurl")!);
 }
 
 export function eraseGuide(): void {
-  removeChildren(document.getElementById("contains_guides")!);
-  removeChildren(document.getElementById("contains_guides_on_upward")!);
+  removeAllChildren(document.getElementById("contains_guides")!);
+  removeAllChildren(document.getElementById("contains_guides_on_upward")!);
 }
 
 export function erasePhantomAndOptionallyCancelButton() {
@@ -148,7 +137,7 @@ export function erasePhantomAndOptionallyCancelButton() {
 }
 
 export function eraseArrow() {
-  removeChildren(document.getElementById("arrows")!);
+  removeAllChildren(document.getElementById("arrows")!);
 }
 
 export function drawPhantomAt(coord: Coord, piece: Piece) {
@@ -203,34 +192,6 @@ export function drawCancelButton(fn: () => void) {
 
   cancelButton.addEventListener("click", fn);
   contains_phantom.appendChild(cancelButton);
-}
-
-export function drawMak2Io1() {
-  const denote_season = document.getElementById("denote_season")!;
-  denote_season.style.top = `${
-    getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
-  }px`;
-  denote_season.style.transition = ``; // needs to clear the animation
-  denote_season.style.transform = ``;
-
-  const denote_score = document.getElementById("denote_score")!;
-  denote_score.style.top = `${
-    getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
-  }px`;
-  denote_score.style.transition = ``;
-  denote_score.style.transform = ``;
-
-  const denote_rate = document.getElementById("denote_rate")!;
-  if (GAME_STATE.log2_rate === 0) {
-    denote_rate.style.display = "none";
-  } else {
-    denote_rate.style.display = "block";
-  }
-  denote_rate.style.top = `${
-    getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
-  }px`;
-  denote_rate.style.transition = ``;
-  denote_rate.style.transform = ``;
 }
 
 /**
