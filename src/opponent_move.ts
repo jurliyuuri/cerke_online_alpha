@@ -104,7 +104,6 @@ type OpponentMove =
 
 const {
   forbidMainPolling,
-  resumeMainPolling,
   isMainPollingAllowed,
   allowMainPolling,
 } = (() => {
@@ -113,11 +112,6 @@ const {
   // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
   const forbidMainPolling = () => {
     MAIN_POLLING_ALLOWED = false;
-  };
-
-  const resumeMainPolling = () => {
-    MAIN_POLLING_ALLOWED = true;
-    window.setTimeout(sendMainPollAndDoEverythingThatFollows, 500 * 0.8093);
   };
 
   const allowMainPolling = () => {
@@ -129,17 +123,16 @@ const {
   };
   return {
     forbidMainPolling,
-    resumeMainPolling,
     isMainPollingAllowed,
     allowMainPolling,
   };
 })();
 // I repentfully use a global
 
-/////////////////////////////////////////////////////////
-/// ONLY THESE FOUR ARE TO BE EXPORTED FROM THIS FILE ///
-/////////////////////////////////////////////////////////
-export { forbidMainPolling, resumeMainPolling, allowMainPolling };
+//////////////////////////////////////////////////////////
+/// ONLY THESE THREE ARE TO BE EXPORTED FROM THIS FILE ///
+//////////////////////////////////////////////////////////
+export { forbidMainPolling, allowMainPolling };
 export async function sendMainPollAndDoEverythingThatFollows() {
   console.log("poll");
   if (!isMainPollingAllowed()) {

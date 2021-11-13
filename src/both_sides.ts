@@ -9,7 +9,7 @@ import {
 } from "./game_state";
 import {
   allowMainPolling,
-  resumeMainPolling,
+  sendMainPollAndDoEverythingThatFollows,
 } from "./opponent_move";
 import {
   Side,
@@ -391,7 +391,8 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
     await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
     drawMak2Io1();
     if (done_by_me) {
-      resumeMainPolling();
+      allowMainPolling();
+      setTimeout(sendMainPollAndDoEverythingThatFollows, 500 * 0.8093);
     } else {
       GAME_STATE.is_my_turn = true;
     }
