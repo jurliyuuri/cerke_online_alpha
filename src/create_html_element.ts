@@ -15,7 +15,10 @@ import {
   hop1_zuo1_left_position,
 } from "./html_top_left";
 
-export function createBapPokImage(o: { left: number, top_padding: number }): HTMLImageElement {
+export function createBapPokImage(o: {
+  left: number;
+  top_padding: number;
+}): HTMLImageElement {
   const i = document.createElement("img");
   i.src = `image/dat2/同色.png`;
   i.style.position = "absolute";
@@ -25,7 +28,10 @@ export function createBapPokImage(o: { left: number, top_padding: number }): HTM
   return i;
 }
 
-export function createHandImage(hand: string, o: { left: number, top_padding: number }): HTMLImageElement {
+export function createHandImage(
+  hand: string,
+  o: { left: number; top_padding: number },
+): HTMLImageElement {
   const i = document.createElement("img");
   i.src = `image/dat2/${hand}.png`;
   i.style.position = "absolute";
@@ -42,7 +48,7 @@ export function createArrowSvg(
   const [row_index, column_index] = coord;
   const top = row_index * BOX_SIZE + 160.5;
   const left = column_index * BOX_SIZE + 19.25;
-  const i = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  const i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   const box_width = 800;
   const box_height = 800;
   i.setAttributeNS(null, "viewBox", `0 0 ${box_width} ${box_height}`);
@@ -51,11 +57,11 @@ export function createArrowSvg(
   i.classList.add("selection");
   i.style.top = `${top}px`;
   i.style.left = `${left}px`;
-  const path = document.createElementNS('http://www.w3.org/2000/svg', "path");
-  path.setAttributeNS(null, 'd', d);
-  path.setAttributeNS(null, 'fill', "#aeff01");
-  path.setAttributeNS(null, 'stroke', "#000");
-  path.setAttributeNS(null, 'stroke-width', "2");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttributeNS(null, "d", d);
+  path.setAttributeNS(null, "fill", "#aeff01");
+  path.setAttributeNS(null, "stroke", "#000");
+  path.setAttributeNS(null, "stroke-width", "2");
   i.appendChild(path);
   return i;
 }
@@ -123,12 +129,12 @@ export function createGuideImageAt(
   const img = document.createElement("img");
   img.setAttribute("draggable", "false");
   img.classList.add("guide");
-  img.style.top = `${1 +
-    row_index * BOX_SIZE +
-    (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
-  img.style.left = `${1 +
-    column_index * BOX_SIZE +
-    (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
+  img.style.top = `${
+    1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
+  }px`;
+  img.style.left = `${
+    1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
+  }px`;
   img.src = `image/${path}.png`;
   img.width = MAX_PIECE_SIZE;
   img.height = MAX_PIECE_SIZE;
@@ -169,7 +175,7 @@ export function createCiurl(
 export function createPieceImgToBePlacedOnHop1zuo1(
   ind: number,
   path: string,
-  list_length: number
+  list_length: number,
 ): HTMLImageElement {
   return createPieceSizeImageOnBoardByPathAndXY(
     1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,

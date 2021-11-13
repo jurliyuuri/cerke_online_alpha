@@ -2,7 +2,7 @@ import { Color, Profession } from "cerke_online_api";
 import { Side, NonTam2Piece, Piece } from "cerke_online_utility/lib";
 
 export function toPath(p: NonTam2Piece): string {
-  const sideToPath = function(side: Side): string {
+  const sideToPath = function (side: Side): string {
     if (side === Side.Downward) {
       return "piece_rev";
     }
@@ -14,7 +14,7 @@ export function toPath(p: NonTam2Piece): string {
     return _should_not_reach_here;
   };
 
-  const colorToPath = function(color: Color): string {
+  const colorToPath = function (color: Color): string {
     if (color === Color.Huok2) {
       return "b";
     }
@@ -26,7 +26,7 @@ export function toPath(p: NonTam2Piece): string {
     return _should_not_reach_here;
   };
 
-  const profToPath = function(prof: Profession): string {
+  const profToPath = function (prof: Profession): string {
     if (prof === Profession.Dau2) {
       return "dau";
     }

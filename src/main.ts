@@ -52,7 +52,9 @@ import {
   MAX_PIECE_SIZE,
   hop1_zuo1_left_position,
   PIECE_SIZE,
-  getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft
+  getDenoteRateNodeTopLeft,
+  getDenoteScoreNodeTopLeft,
+  getDenoteSeasonNodeTopLeft,
 } from "./html_top_left";
 import { DICTIONARY, GAME_END_LINZKLAR } from "./dictionary";
 import { API_ORIGIN } from "./env";
@@ -66,18 +68,31 @@ import {
   ObtainablePieces,
   calculate_hands_and_score_from_pieces,
 } from "cerke_hands_and_score";
-import { KIAR_ARK } from "./kiar_ark"
+import { KIAR_ARK } from "./kiar_ark";
 import { KRUT_CRUOP } from "./main_entry";
 import {
   animateNode,
   animateStepTamLogo,
   animateWaterEntryLogo,
-  drawCancelButton, drawCiurl, drawField, drawHoverAt_,
-  drawPhantomAt, drawMak2Io1,
-  eraseGuide, erasePhantomAndOptionallyCancelButton,
+  drawCancelButton,
+  drawCiurl,
+  drawField,
+  drawHoverAt_,
+  drawPhantomAt,
+  drawMak2Io1,
+  eraseGuide,
+  erasePhantomAndOptionallyCancelButton,
 } from "./draw_erase_animate";
-import { normalMessageToKiarArk, serializeAbsoluteCoord, serializeCiurl } from "./serialize";
-import { CaptureInfo, toColorProf, toPieceCaptureComment } from "./capture_info";
+import {
+  normalMessageToKiarArk,
+  serializeAbsoluteCoord,
+  serializeCiurl,
+} from "./serialize";
+import {
+  CaptureInfo,
+  toColorProf,
+  toPieceCaptureComment,
+} from "./capture_info";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
@@ -155,15 +170,13 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
     const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
     contains_guides.appendChild(centralNode);
 
-    const {
-      finite: guideListYellow,
-      infinite: guideListGreen,
-    } = calculateMovablePositions(
-      coord,
-      piece,
-      GAME_STATE.f.currentBoard,
-      GAME_STATE.tam_itself_is_tam_hue,
-    );
+    const { finite: guideListYellow, infinite: guideListGreen } =
+      calculateMovablePositions(
+        coord,
+        piece,
+        GAME_STATE.f.currentBoard,
+        GAME_STATE.tam_itself_is_tam_hue,
+      );
 
     if (guideListGreen.length > 0) {
       throw new Error("should not happen");
@@ -261,15 +274,13 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
       centralNode.style.zIndex = "200";
       contains_guides.appendChild(centralNode);
 
-      const {
-        finite: guideListYellow,
-        infinite: guideListGreen,
-      } = calculateMovablePositions(
-        coord,
-        "Tam2",
-        GAME_STATE.f.currentBoard,
-        GAME_STATE.tam_itself_is_tam_hue,
-      );
+      const { finite: guideListYellow, infinite: guideListGreen } =
+        calculateMovablePositions(
+          coord,
+          "Tam2",
+          GAME_STATE.f.currentBoard,
+          GAME_STATE.tam_itself_is_tam_hue,
+        );
 
       if (guideListGreen.length > 0) {
         throw new Error("should not happen");
@@ -284,7 +295,10 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
           continue;
         }
 
-        const img = createGuideImageAt(guideListYellow[ind], "yellow_diamond_for_tam");
+        const img = createGuideImageAt(
+          guideListYellow[ind],
+          "yellow_diamond_for_tam",
+        );
 
         if (destPiece === null) {
           img.addEventListener("click", () => {
@@ -294,20 +308,20 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
             console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
             const message: NormalMove = step
               ? {
-                type: "TamMove",
-                stepStyle: "StepsDuringFormer",
-                src: toAbsoluteCoord(theVerySrc),
-                step: toAbsoluteCoord(step),
-                firstDest: toAbsoluteCoord(firstDest),
-                secondDest: toAbsoluteCoord(to),
-              }
+                  type: "TamMove",
+                  stepStyle: "StepsDuringFormer",
+                  src: toAbsoluteCoord(theVerySrc),
+                  step: toAbsoluteCoord(step),
+                  firstDest: toAbsoluteCoord(firstDest),
+                  secondDest: toAbsoluteCoord(to),
+                }
               : {
-                type: "TamMove",
-                stepStyle: "NoStep",
-                src: toAbsoluteCoord(theVerySrc),
-                firstDest: toAbsoluteCoord(firstDest),
-                secondDest: toAbsoluteCoord(to),
-              };
+                  type: "TamMove",
+                  stepStyle: "NoStep",
+                  src: toAbsoluteCoord(theVerySrc),
+                  firstDest: toAbsoluteCoord(firstDest),
+                  secondDest: toAbsoluteCoord(to),
+                };
 
             // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
             erasePhantomAndOptionallyCancelButton();
@@ -379,61 +393,60 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
   drawCancelButton(cancelStepping);
-  drawHoverAt_(to, piece, function (
-    coord: Coord,
-    piece: "Tam2" | NonTam2PieceUpward,
-  ) {
-    const contains_guides = document.getElementById("contains_guides")!;
+  drawHoverAt_(
+    to,
+    piece,
+    function (coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
+      const contains_guides = document.getElementById("contains_guides")!;
 
-    const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
-    contains_guides.appendChild(centralNode);
+      const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
+      contains_guides.appendChild(centralNode);
 
-    const {
-      finite: guideListYellow,
-      infinite: guideListGreen,
-    } = calculateMovablePositions(
-      coord,
-      piece,
-      GAME_STATE.f.currentBoard,
-      GAME_STATE.tam_itself_is_tam_hue,
-    );
-    /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guides_after_stepping handles that. */
+      const { finite: guideListYellow, infinite: guideListGreen } =
+        calculateMovablePositions(
+          coord,
+          piece,
+          GAME_STATE.f.currentBoard,
+          GAME_STATE.tam_itself_is_tam_hue,
+        );
+      /* calculateMovablePositions does not filter out what is banned by tam2 hue a uai1; display_guides_after_stepping handles that. */
 
-    display_guides_after_stepping(
-      coord,
-      { piece, path: "yellow_circle" },
-      contains_guides,
-      guideListYellow,
-    );
+      display_guides_after_stepping(
+        coord,
+        { piece, path: "yellow_circle" },
+        contains_guides,
+        guideListYellow,
+      );
 
-    if (piece === "Tam2") {
-      if (guideListGreen.length > 0) {
-        throw new Error("should not happen");
+      if (piece === "Tam2") {
+        if (guideListGreen.length > 0) {
+          throw new Error("should not happen");
+        }
+        return;
       }
-      return;
-    }
-    display_guides_after_stepping(
-      coord,
-      { piece, path: "green_circle" },
-      contains_guides,
-      guideListGreen,
-    );
-  });
+      display_guides_after_stepping(
+        coord,
+        { piece, path: "green_circle" },
+        contains_guides,
+        guideListGreen,
+      );
+    },
+  );
 }
 
 async function sendAfterHalfAcceptance(
   message: AfterHalfAcceptance,
   o: {
-    src: Coord,
-    step: Coord,
-    stepping_ciurl: Ciurl,
-    planned_destination: AbsoluteCoord
-  }
+    src: Coord;
+    step: Coord;
+    stepping_ciurl: Ciurl;
+    planned_destination: AbsoluteCoord;
+  },
 ) {
   const res: Ret_AfterHalfAcceptance = await sendStuff<
     AfterHalfAcceptance,
     Ret_AfterHalfAcceptance
-  >("`after half acceptance`", message, response => {
+  >("`after half acceptance`", message, (response) => {
     console.log("Success; the server returned:", JSON.stringify(response));
     return response;
   });
@@ -446,32 +459,54 @@ async function sendAfterHalfAcceptance(
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    const maybe_capture = updateFieldAfterHalfAcceptance(message, o.src, o.step);
+    const maybe_capture = updateFieldAfterHalfAcceptance(
+      message,
+      o.src,
+      o.step,
+    );
 
     console.log("drawField #", 7);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      KIAR_ARK.body = [...KIAR_ARK.body, {
-        type: "movement",
-        dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}`,
-        piece_capture_comment: toPieceCaptureComment(maybe_capture)
-      }];
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        {
+          type: "movement",
+          dat: `${serializeAbsoluteCoord(
+            toAbsoluteCoord(o.src),
+          )}片${serializeAbsoluteCoord(
+            toAbsoluteCoord(o.step),
+          )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
+            o.stepping_ciurl,
+          )}`,
+          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+        },
+      ];
     } else {
-      KIAR_ARK.body = [...KIAR_ARK.body, {
-        type: "movement",
-        dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(o.stepping_ciurl)}此無`,
-        piece_capture_comment: toPieceCaptureComment(maybe_capture)
-      }];
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        {
+          type: "movement",
+          dat: `${serializeAbsoluteCoord(
+            toAbsoluteCoord(o.src),
+          )}片${serializeAbsoluteCoord(
+            toAbsoluteCoord(o.step),
+          )}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(
+            o.stepping_ciurl,
+          )}此無`,
+          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+        },
+      ];
     }
     return;
   }
 
   await animateWaterEntryLogo();
   drawCiurlWithAudio(res.dat.ciurl);
-  await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
 
-  if (res.dat.ciurl.filter(a => a).length < 3) {
+  if (res.dat.ciurl.filter((a) => a).length < 3) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -480,28 +515,61 @@ async function sendAfterHalfAcceptance(
     cancelSteppingButUpdateTheFocus(o.src);
     GAME_STATE.is_my_turn = false;
 
-    const dest: AbsoluteCoord = message.dest ?? (() => { throw new Error("This should not happen; it should have been rejected before the water entry"); })();
+    const dest: AbsoluteCoord =
+      message.dest ??
+      (() => {
+        throw new Error(
+          "This should not happen; it should have been rejected before the water entry",
+        );
+      })();
 
     // Always 此無, because in the outer `if` it is already checked
     // No capture occurs
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}此無` }]
+    KIAR_ARK.body = [
+      ...KIAR_ARK.body,
+      {
+        type: "movement",
+        dat: `${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.src),
+        )}片${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.step),
+        )}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(
+          o.stepping_ciurl,
+        )}水${serializeCiurl(res.dat.ciurl)}此無`,
+      },
+    ];
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    const maybe_capture = updateFieldAfterHalfAcceptance(message, o.src, o.step);
+    const maybe_capture = updateFieldAfterHalfAcceptance(
+      message,
+      o.src,
+      o.step,
+    );
 
     console.log("drawField #", 8);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      KIAR_ARK.body = [...KIAR_ARK.body, {
-        type: "movement",
-        dat: `${serializeAbsoluteCoord(toAbsoluteCoord(o.src))}片${serializeAbsoluteCoord(toAbsoluteCoord(o.step))}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(o.stepping_ciurl)}水${serializeCiurl(res.dat.ciurl)}`,
-        piece_capture_comment: toPieceCaptureComment(maybe_capture)
-      }];
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        {
+          type: "movement",
+          dat: `${serializeAbsoluteCoord(
+            toAbsoluteCoord(o.src),
+          )}片${serializeAbsoluteCoord(
+            toAbsoluteCoord(o.step),
+          )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
+            o.stepping_ciurl,
+          )}水${serializeCiurl(res.dat.ciurl)}`,
+          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+        },
+      ];
     } else {
-      throw new Error("This should not happen; it should have been rejected before the water entry");
+      throw new Error(
+        "This should not happen; it should have been rejected before the water entry",
+      );
     }
   }
 }
@@ -532,12 +600,12 @@ export async function sendStuffTo<T, U>(
       Authorization: `Bearer ${sessionStorage.access_token}`,
     },
   })
-    .then(res => {
+    .then((res) => {
       cover_while_asyncawait.classList.add("nocover");
       return res.json();
     })
     .then(validateInput)
-    .catch(error => {
+    .catch((error) => {
       cover_while_asyncawait.classList.add("nocover");
       console.error("Error:", error);
       return;
@@ -562,13 +630,11 @@ async function sendStuff<T, U>(
   return await sendStuffTo<T, U>("slow", log, message, validateInput);
 }
 
-
-
 async function sendNormalMessage(message: NormalMove) {
   const res: Ret_NormalMove = await sendStuff<NormalMove, Ret_NormalMove>(
     "normal move",
     message,
-    response => {
+    (response) => {
       console.log("Success; the server returned:", JSON.stringify(response));
       return response;
     },
@@ -587,18 +653,21 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body = [...KIAR_ARK.body, {
-      type: "movement",
-      dat: normalMessageToKiarArk(message),
-      piece_capture_comment: toPieceCaptureComment(maybe_capture)
-    }];
+    KIAR_ARK.body = [
+      ...KIAR_ARK.body,
+      {
+        type: "movement",
+        dat: normalMessageToKiarArk(message),
+        piece_capture_comment: toPieceCaptureComment(maybe_capture),
+      },
+    ];
     return;
   }
 
   await animateWaterEntryLogo();
   drawCiurlWithAudio(res.dat.ciurl);
-  await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-  const water_ciurl_count = res.dat.ciurl.filter(a => a).length;
+  await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+  const water_ciurl_count = res.dat.ciurl.filter((a) => a).length;
   if (water_ciurl_count < 3) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
@@ -609,7 +678,10 @@ async function sendNormalMessage(message: NormalMove) {
       message.data.type === "SrcStepDstFinite"
     ) {
       cancelSteppingButUpdateTheFocus(fromAbsoluteCoord(message.data.src));
-    } else if (message.type === "NonTamMove" && message.data.type !== "FromHand") {
+    } else if (
+      message.type === "NonTamMove" &&
+      message.data.type !== "FromHand"
+    ) {
       // The focus must be updated
       console.log("drawField #", 10.1);
       drawField({ focus: fromAbsoluteCoord(message.data.src) });
@@ -617,7 +689,16 @@ async function sendNormalMessage(message: NormalMove) {
 
     GAME_STATE.is_my_turn = false;
     // no capture possible
-    KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length) }];
+    KIAR_ARK.body = [
+      ...KIAR_ARK.body,
+      {
+        type: "movement",
+        dat: normalMessageToKiarArk(
+          message,
+          res.dat.ciurl.filter((a) => a).length,
+        ),
+      },
+    ];
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -626,11 +707,17 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body = [...KIAR_ARK.body, {
-      type: "movement",
-      dat: normalMessageToKiarArk(message, res.dat.ciurl.filter(a => a).length),
-      piece_capture_comment: toPieceCaptureComment(maybe_capture)
-    }];
+    KIAR_ARK.body = [
+      ...KIAR_ARK.body,
+      {
+        type: "movement",
+        dat: normalMessageToKiarArk(
+          message,
+          res.dat.ciurl.filter((a) => a).length,
+        ),
+        piece_capture_comment: toPieceCaptureComment(maybe_capture),
+      },
+    ];
   }
 }
 
@@ -679,7 +766,7 @@ function updateFieldAfterHalfAcceptance(
   GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
   console.log("lone assignment to last_move_focus, #", 2);
   GAME_STATE.last_move_focus = [dest_i, dest_j];
-  return toColorProf(destPiece)
+  return toColorProf(destPiece);
 }
 
 /**
@@ -725,14 +812,17 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       const res: { legal: boolean } = await sendStuffTo<
         boolean,
         { legal: boolean }
-      >("whethertymok", "`send whether ty mok1`", true, response => {
+      >("whethertymok", "`send whether ty mok1`", true, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
       if (res.legal !== true) {
         throw new Error("bad!!!!");
       }
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}\n再行` }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}\n再行` },
+      ];
     });
     score_display.appendChild(ty_mok1_button);
 
@@ -744,7 +834,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       } = await sendStuffTo<
         boolean,
         { legal: boolean; is_first_move_my_move: boolean | null }
-      >("whethertymok", "`send whether ty mok1`", false, response => {
+      >("whethertymok", "`send whether ty mok1`", false, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
@@ -753,9 +843,19 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       }
       const is_first_move_my_move_in_the_next_season: boolean | null =
         res.is_first_move_my_move;
-      const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
+      const season_that_has_just_ended = ["春", "夏", "秋", "冬"][
+        GAME_STATE.season
+      ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(base_score, is_first_move_my_move_in_the_next_season);
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        {
+          type: "tymoktaxot",
+          dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(
+            base_score * Math.pow(2, GAME_STATE.log2_rate),
+          ).join("")}\n終季\t${season_that_has_just_ended}終`,
+        },
+      ];
     });
     score_display.appendChild(ta_xot1_button);
   }, 1000 * 0.8093);
@@ -763,7 +863,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 }
 
 export function calculateHandsAndScore(pieces: NonTam2Piece[]) {
-  const hop1zuo1: ObtainablePieces[] = pieces.map(p =>
+  const hop1zuo1: ObtainablePieces[] = pieces.map((p) =>
     toObtainablePiece(p.color, p.prof),
   );
   const res = calculate_hands_and_score_from_pieces(hop1zuo1);
@@ -817,12 +917,15 @@ function updateField(message: NormalMove): CaptureInfo {
 
       // remove the corresponding one from hand
       const ind = GAME_STATE.f.hop1zuo1OfUpward.findIndex(
-        piece => piece.color === k.color && piece.prof === k.prof,
+        (piece) => piece.color === k.color && piece.prof === k.prof,
       );
       if (ind === -1) {
         throw new Error("What should exist in the hand does not exist");
       }
-      const [removed_from_hop1zuo1] = GAME_STATE.f.hop1zuo1OfUpward.splice(ind, 1);
+      const [removed_from_hop1zuo1] = GAME_STATE.f.hop1zuo1OfUpward.splice(
+        ind,
+        1,
+      );
 
       // add the removed piece to the destination
       const [i, j] = fromAbsoluteCoord(k.dest);
@@ -909,7 +1012,7 @@ function updateField(message: NormalMove): CaptureInfo {
       return toColorProf(destPiece);
     } else {
       const _should_not_reach_here: never = message.data;
-      throw new Error("should not reach here")
+      throw new Error("should not reach here");
     }
   } else if (message.type === "TamMove") {
     const k = message;
@@ -948,7 +1051,7 @@ function updateField(message: NormalMove): CaptureInfo {
     return null; // no capture possible in TamMove
   } else {
     const _should_not_reach_here: never = message;
-    throw new Error("should not reach here")
+    throw new Error("should not reach here");
   }
 }
 
@@ -1072,7 +1175,7 @@ function filterInOneDirectionTillCiurlLimit(
       return [x - step_x, y - step_y];
     };
 
-    const limit: number = ciurl.filter(x => x).length;
+    const limit: number = ciurl.filter((x) => x).length;
 
     const [deltaC_x, deltaC_y] = subtractStep(c);
     const [deltaPlan_x, deltaPlan_y] = subtractStep(plannedDirection);
@@ -1088,11 +1191,14 @@ function filterInOneDirectionTillCiurlLimit(
   });
 }
 
-async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: Profession }) {
+async function sendInfAfterStep(
+  message: InfAfterStep,
+  o: { color: Color; prof: Profession },
+) {
   const res = await sendStuff<InfAfterStep, Ret_InfAfterStep>(
     "inf after step",
     message,
-    response => {
+    (response) => {
       console.log("Success; the server returned:", JSON.stringify(response));
       return response;
     },
@@ -1165,8 +1271,8 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
         src,
         step,
         stepping_ciurl: res.ciurl,
-        planned_destination: message.plannedDirection
-      }
+        planned_destination: message.plannedDirection,
+      },
     );
   });
   passer.style.zIndex = "200";
@@ -1202,8 +1308,8 @@ async function sendInfAfterStep(message: InfAfterStep, o: { color: Color, prof: 
           src,
           step,
           stepping_ciurl: res.ciurl,
-          planned_destination: message.plannedDirection
-        }
+          planned_destination: message.plannedDirection,
+        },
       );
     });
 
@@ -1222,7 +1328,9 @@ export function drawCiurlWithAudio(ciurl: Ciurl, side?: Side) {
 
 function display_guides_after_stepping(
   coord: Coord,
-  q: { piece: Piece; path: "yellow_circle" } | { piece: NonTam2Piece; path: "green_circle" },
+  q:
+    | { piece: Piece; path: "yellow_circle" }
+    | { piece: NonTam2Piece; path: "green_circle" },
   parent: HTMLElement,
   list: Coord[],
 ): void {
@@ -1250,15 +1358,23 @@ function display_guides_after_stepping(
 
       // If it is protected, display the fact that it is protected
       // Why should a piece belonging to an opponent (Side.Downward) give false for `canGetOccupiedBy`?
-      // Why can't I take an opponent's piece? 
+      // Why can't I take an opponent's piece?
       // it is either:
       // 1. because of tam2 hue a uai1
       // 2. because I am moving a Tam2, a piece that cannot capture a piece
-      if (q.piece !== "Tam2" && destPiece !== "Tam2" && destPiece !== null && destPiece.side === Side.Downward) {
+      if (
+        q.piece !== "Tam2" &&
+        destPiece !== "Tam2" &&
+        destPiece !== null &&
+        destPiece.side === Side.Downward
+      ) {
         // show that it is protected
-        const protected_by_tam2_hue_a_uai1 = createGuideImageAt(list[ind], "守");
+        const protected_by_tam2_hue_a_uai1 = createGuideImageAt(
+          list[ind],
+          "守",
+        );
         protected_by_tam2_hue_a_uai1.style.zIndex = "200";
-        parent.append(protected_by_tam2_hue_a_uai1)
+        parent.append(protected_by_tam2_hue_a_uai1);
       }
       continue;
     }
@@ -1269,21 +1385,24 @@ function display_guides_after_stepping(
       "click",
       q.path === "yellow_circle"
         ? function () {
-          eraseGuide();
-          getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
-        }
+            eraseGuide();
+            getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
+          }
         : function () {
-          eraseGuide();
-          sendInfAfterStep({
-            type: "InfAfterStep",
-            step: toAbsoluteCoord(coord),
-            plannedDirection: toAbsoluteCoord(list[ind]),
-            src: toAbsoluteCoord(src),
-          }, {
-            color: q.piece.color,
-            prof: q.piece.prof,
-          });
-        },
+            eraseGuide();
+            sendInfAfterStep(
+              {
+                type: "InfAfterStep",
+                step: toAbsoluteCoord(coord),
+                plannedDirection: toAbsoluteCoord(list[ind]),
+                src: toAbsoluteCoord(src),
+              },
+              {
+                color: q.piece.color,
+                prof: q.piece.prof,
+              },
+            );
+          },
     );
 
     img.style.zIndex = "200";
@@ -1358,15 +1477,13 @@ export function selectOwnPieceOnBoard(
 
     contains_guides.appendChild(centralNode);
 
-    const {
-      finite: guideListFinite,
-      infinite: guideListInfinite,
-    } = calculateMovablePositions(
-      coord,
-      piece,
-      GAME_STATE.f.currentBoard,
-      GAME_STATE.tam_itself_is_tam_hue,
-    );
+    const { finite: guideListFinite, infinite: guideListInfinite } =
+      calculateMovablePositions(
+        coord,
+        piece,
+        GAME_STATE.f.currentBoard,
+        GAME_STATE.tam_itself_is_tam_hue,
+      );
 
     display_guides_before_stepping(coord, piece, contains_guides, [
       ...guideListFinite,
@@ -1383,7 +1500,11 @@ export function selectOwnPieceOnBoard(
  * @param piece the piece / 駒
  * @param list_length how many hop1 zuo1 there are in total on one side / 片側の手駒の個数
  */
-export function selectOwnPieceOnHop1zuo1(ind: number, piece: NonTam2Piece, list_length: number) {
+export function selectOwnPieceOnHop1zuo1(
+  ind: number,
+  piece: NonTam2Piece,
+  list_length: number,
+) {
   // erase the existing guide in all circumstances
   eraseGuide();
 
@@ -1480,16 +1601,12 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
   const denote_rate = document.getElementById("denote_rate")!;
   setTimeout(async () => {
     denote_rate.style.display = "block";
-    await new Promise(resolve => setTimeout(resolve, 200 * 0.8093));
-    await animateNode(
-      denote_rate,
-      1000 * 0.8093,
-      {
-        to: getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
-        from: getDenoteRateNodeTopLeft(orig_log2_rate)
-      },
-    );
-    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
+    await animateNode(denote_rate, 1000 * 0.8093, {
+      to: getDenoteRateNodeTopLeft(GAME_STATE.log2_rate),
+      from: getDenoteRateNodeTopLeft(orig_log2_rate),
+    });
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
     drawMak2Io1();
     if (done_by_me) {
       resumeMainPolling();
@@ -1570,14 +1687,23 @@ function perzej(
   document.getElementById("my_icon")!.style.opacity = "1";
   document.getElementById("larta_opponent")!.style.opacity = "1";
   document.getElementById("opponent_message")!.textContent =
-    msg === "you win!" ? DICTIONARY.ja.gameResult.victory :
-      msg === "draw" ? DICTIONARY.ja.gameResult.draw : DICTIONARY.ja.gameResult.loss
+    msg === "you win!"
+      ? DICTIONARY.ja.gameResult.victory
+      : msg === "draw"
+      ? DICTIONARY.ja.gameResult.draw
+      : DICTIONARY.ja.gameResult.loss;
   document.getElementById("opponent_message_linzklar")!.textContent =
-    msg === "you win!" ? GAME_END_LINZKLAR.victory :
-      msg === "draw" ? GAME_END_LINZKLAR.draw : GAME_END_LINZKLAR.loss;
+    msg === "you win!"
+      ? GAME_END_LINZKLAR.victory
+      : msg === "draw"
+      ? GAME_END_LINZKLAR.draw
+      : GAME_END_LINZKLAR.loss;
 
   KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }];
-  KIAR_ARK.header = [...KIAR_ARK.header, { type: "header", dat: `{終時:${(new Date()).toISOString()}}` }];
+  KIAR_ARK.header = [
+    ...KIAR_ARK.header,
+    { type: "header", dat: `{終時:${new Date().toISOString()}}` },
+  ];
 }
 
 export async function animatePunishStepTamAndCheckPerzej(side: Side) {
@@ -1590,16 +1716,12 @@ export async function animatePunishStepTamAndCheckPerzej(side: Side) {
   GAME_STATE.my_score +=
     (side === Side.Upward ? -5 : 5) * Math.pow(2, GAME_STATE.log2_rate);
 
-  await new Promise(resolve => setTimeout(resolve, 200 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
 
-  await animateNode(
-    denote_score,
-    1000 * 0.8093,
-    {
-      to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
-      from: getDenoteScoreNodeTopLeft(orig_score)
-    },
-  );
+  await animateNode(denote_score, 1000 * 0.8093, {
+    to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+    from: getDenoteScoreNodeTopLeft(orig_score),
+  });
 
   if (GAME_STATE.my_score >= 40) {
     perzej("you win!", true);
@@ -1614,10 +1736,10 @@ export async function animatePunishStepTamAndCheckPerzej(side: Side) {
       ?.classList.remove("nocover");
     return;
   }
-  await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
   drawMak2Io1();
 
-  await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
   document
     .getElementById("protective_cover_over_field")
     ?.classList.add("nocover");
@@ -1653,14 +1775,10 @@ export function endSeason(
   const new_season = seasonProgressMap[orig_season];
   if (new_season == null) {
     setTimeout(async () => {
-      await animateNode(
-        denote_score,
-        1000 * 0.8093,
-        {
-          to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
-          from: getDenoteScoreNodeTopLeft(orig_score)
-        },
-      );
+      await animateNode(denote_score, 1000 * 0.8093, {
+        to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+        from: getDenoteScoreNodeTopLeft(orig_score),
+      });
 
       alert(DICTIONARY.ja.gameEnd);
 
@@ -1680,14 +1798,10 @@ export function endSeason(
 
   GAME_STATE.season = new_season;
   setTimeout(async () => {
-    await animateNode(
-      denote_score,
-      1000 * 0.8093,
-      {
-        to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
-        from: getDenoteScoreNodeTopLeft(orig_score)
-      },
-    );
+    await animateNode(denote_score, 1000 * 0.8093, {
+      to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
+      from: getDenoteScoreNodeTopLeft(orig_score),
+    });
 
     if (GAME_STATE.my_score >= 40) {
       perzej("you win!", false);
@@ -1696,19 +1810,15 @@ export function endSeason(
       perzej("you lose...", false);
       return;
     }
-    await animateNode(
-      denote_season,
-      700 * 0.8093,
-      {
-        to: getDenoteSeasonNodeTopLeft(GAME_STATE.season),
-        from: getDenoteSeasonNodeTopLeft(orig_season)
-      },
-    );
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await animateNode(denote_season, 700 * 0.8093, {
+      to: getDenoteSeasonNodeTopLeft(GAME_STATE.season),
+      from: getDenoteSeasonNodeTopLeft(orig_season),
+    });
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     drawMak2Io1();
     alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
 
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     document
       .getElementById("protective_cover_over_field")
       ?.classList.remove("nocover");
@@ -1716,7 +1826,7 @@ export function endSeason(
       .getElementById("protective_tam_cover_over_field")
       ?.classList.remove("nocover");
 
-    await new Promise(resolve => setTimeout(resolve, 4000 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
 
     GAME_STATE.f = {
       currentBoard: GAME_STATE.IA_is_down
@@ -1739,7 +1849,7 @@ export function endSeason(
     console.log("drawField #", 11);
     drawField({ focus: null }); /* the board is initialized; no focus */
 
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     document
       .getElementById("protective_cover_over_field")
       ?.classList.add("nocover");

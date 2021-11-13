@@ -1,15 +1,27 @@
 import { Ciurl } from "cerke_online_api";
-import { Coord, Piece, BoardIndex, Side, NonTam2PieceUpward, NonTam2PieceDownward } from "cerke_online_utility/lib";
+import {
+  Coord,
+  Piece,
+  BoardIndex,
+  Side,
+  NonTam2PieceUpward,
+  NonTam2PieceDownward,
+} from "cerke_online_utility/lib";
 import {
   createArrowSvg,
   createCancelButton,
   createCiurl,
   createPieceImgToBePlacedOnBoard,
   createPieceImgToBePlacedOnHop1zuo1,
-  createPieceSizeImageOnBoardByPath_Shifted
+  createPieceSizeImageOnBoardByPath_Shifted,
 } from "./create_html_element";
 import { GAME_STATE, toAbsoluteCoord } from "./game_state";
-import { BOX_SIZE, getDenoteRateNodeTopLeft, getDenoteScoreNodeTopLeft, getDenoteSeasonNodeTopLeft } from "./html_top_left";
+import {
+  BOX_SIZE,
+  getDenoteRateNodeTopLeft,
+  getDenoteScoreNodeTopLeft,
+  getDenoteSeasonNodeTopLeft,
+} from "./html_top_left";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath, toPath_ } from "./piece_to_path";
 
@@ -27,8 +39,8 @@ export async function animateNode(
   node: HTMLElement,
   total_duration: number,
   o: {
-    to: { top: number; left: number },
-    from: { top: number; left: number }
+    to: { top: number; left: number };
+    from: { top: number; left: number };
   },
   zIndex: string = "100",
   rotate?: number,
@@ -40,7 +52,7 @@ export async function animateNode(
   if (rotate != null) {
     node.style.transform += `rotate(${rotate}deg)`;
   }
-  await new Promise(resolve => setTimeout(resolve, total_duration));
+  await new Promise((resolve) => setTimeout(resolve, total_duration));
 }
 
 export async function animateStepTamLogo() {
@@ -56,7 +68,7 @@ export async function animateStepTamLogo() {
     step_tam_logo.style.display = "none";
     cover_while_asyncawait.classList.add("nocover");
   }, 1200 * 0.8093);
-  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }
 
 export async function animateWaterEntryLogo() {
@@ -72,7 +84,7 @@ export async function animateWaterEntryLogo() {
     water_entry_logo.style.display = "none";
     cover_while_asyncawait.classList.add("nocover");
   }, 1200 * 0.8093);
-  await new Promise(resolve => setTimeout(resolve, 1000 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }
 
 export function drawCiurl(ciurl: Ciurl, side?: Side) {
@@ -199,14 +211,16 @@ export function drawCancelButton(fn: () => void) {
 
 export function drawMak2Io1() {
   const denote_season = document.getElementById("denote_season")!;
-  denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
-    }px`;
+  denote_season.style.top = `${
+    getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
+  }px`;
   denote_season.style.transition = ``; // needs to clear the animation
   denote_season.style.transform = ``;
 
   const denote_score = document.getElementById("denote_score")!;
-  denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
-    }px`;
+  denote_score.style.top = `${
+    getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
+  }px`;
   denote_score.style.transition = ``;
   denote_score.style.transform = ``;
 
@@ -216,8 +230,9 @@ export function drawMak2Io1() {
   } else {
     denote_rate.style.display = "block";
   }
-  denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
-    }px`;
+  denote_rate.style.top = `${
+    getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
+  }px`;
   denote_rate.style.transition = ``;
   denote_rate.style.transform = ``;
 }
@@ -292,7 +307,11 @@ export function drawField(o: { focus?: Coord | null }) {
 
     for (let i = 0; i < list.length; i++) {
       const piece: NonTam2PieceUpward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece), list.length);
+      const imgNode = createPieceImgToBePlacedOnHop1zuo1(
+        i,
+        toPath(piece),
+        list.length,
+      );
 
       imgNode.style.cursor = "pointer";
       imgNode.addEventListener("click", function () {
@@ -315,7 +334,11 @@ export function drawField(o: { focus?: Coord | null }) {
 
     for (let i = 0; i < list.length; i++) {
       const piece: NonTam2PieceDownward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(i, toPath(piece), list.length);
+      const imgNode = createPieceImgToBePlacedOnHop1zuo1(
+        i,
+        toPath(piece),
+        list.length,
+      );
       imgNode.id = `hop1zuo1OfDownward_${i}`;
       contains_pieces_on_downward.appendChild(imgNode);
     }
@@ -323,7 +346,7 @@ export function drawField(o: { focus?: Coord | null }) {
 }
 
 /**
- * Draws an arrow denoting the intended destination for an infinite movement after stepping. 
+ * Draws an arrow denoting the intended destination for an infinite movement after stepping.
  * The stepping-over cast is made after this function was called.
  * 踏越え後、無限移動で向かおうとしている位置を表す矢印を描画する。
  * この関数が呼び出された後に踏越え判定が行われる。
@@ -332,35 +355,84 @@ export function drawField(o: { focus?: Coord | null }) {
  */
 export function drawArrow(from: Coord, to: Coord) {
   const d: string = (() => {
-    if (from[1] === to[1] && from[0] > to[0]) { // up arrow
+    if (from[1] === to[1] && from[0] > to[0]) {
+      // up arrow
       const delta = from[0] - to[0];
-      return `m31.6 ${51.3 + BOX_SIZE * delta}h5.8v${-(34.5 + BOX_SIZE * delta)}l-21.3 31 4.5 3.2 11-16z`
-    } else if (from[1] === to[1] && from[0] < to[0]) { // down arrow
+      return `m31.6 ${51.3 + BOX_SIZE * delta}h5.8v${-(
+        34.5 +
+        BOX_SIZE * delta
+      )}l-21.3 31 4.5 3.2 11-16z`;
+    } else if (from[1] === to[1] && from[0] < to[0]) {
+      // down arrow
       const delta = to[0] - from[0];
-      return `m31.6 18.7h5.8v${34.5 + BOX_SIZE * delta}l-21.3-31 4.5-3.2 11 16z`
-    } else if (from[0] === to[0] && from[1] > to[1]) { // left arrow
+      return `m31.6 18.7h5.8v${
+        34.5 + BOX_SIZE * delta
+      }l-21.3-31 4.5-3.2 11 16z`;
+    } else if (from[0] === to[0] && from[1] > to[1]) {
+      // left arrow
       const delta = from[1] - to[1];
-      return `m${51.3 + BOX_SIZE * delta} 31.6v5.8h${-(34.5 + BOX_SIZE * delta)}l31-21.3 3.2 4.5-16 11z`
-    } else if (from[0] === to[0] && from[1] < to[1]) { // right arrow
+      return `m${51.3 + BOX_SIZE * delta} 31.6v5.8h${-(
+        34.5 +
+        BOX_SIZE * delta
+      )}l31-21.3 3.2 4.5-16 11z`;
+    } else if (from[0] === to[0] && from[1] < to[1]) {
+      // right arrow
       const delta = to[1] - from[1];
-      return `m18.7 31.6v5.8h${34.5 + BOX_SIZE * delta}l-31-21.3-3.2 4.5 16 11z`
-    } else if (from[0] > to[0] && from[1] < to[1] && from[0] - to[0] === to[1] - from[1]) { // up right arrow
+      return `m18.7 31.6v5.8h${
+        34.5 + BOX_SIZE * delta
+      }l-31-21.3-3.2 4.5 16 11z`;
+    } else if (
+      from[0] > to[0] &&
+      from[1] < to[1] &&
+      from[0] - to[0] === to[1] - from[1]
+    ) {
+      // up right arrow
       const delta = from[0] - to[0];
-      return `m${32.9 + BOX_SIZE * delta} 34.8-19.8 5.6-1.8-5.9 41-10.7 ${-(32.4 + BOX_SIZE * delta)} ${32.4 + BOX_SIZE * delta}-4.2-4.2z`
-    } else if (from[0] < to[0] && from[1] > to[1] && from[0] - to[0] === to[1] - from[1]) { // down left arrow
+      return `m${32.9 + BOX_SIZE * delta} 34.8-19.8 5.6-1.8-5.9 41-10.7 ${-(
+        32.4 +
+        BOX_SIZE * delta
+      )} ${32.4 + BOX_SIZE * delta}-4.2-4.2z`;
+    } else if (
+      from[0] < to[0] &&
+      from[1] > to[1] &&
+      from[0] - to[0] === to[1] - from[1]
+    ) {
+      // down left arrow
       const delta = from[1] - to[1];
-      return `m34.8 ${32.9 + BOX_SIZE * delta} 5.6-19.8-5.9-1.8-10.7 41 ${32.4 + BOX_SIZE * delta} ${-(32.4 + BOX_SIZE * delta)}-4.2-4.2z`
-    } else if (from[0] > to[0] && from[1] > to[1] && from[0] - to[0] === from[1] - to[1]) { // up left arrow
+      return `m34.8 ${32.9 + BOX_SIZE * delta} 5.6-19.8-5.9-1.8-10.7 41 ${
+        32.4 + BOX_SIZE * delta
+      } ${-(32.4 + BOX_SIZE * delta)}-4.2-4.2z`;
+    } else if (
+      from[0] > to[0] &&
+      from[1] > to[1] &&
+      from[0] - to[0] === from[1] - to[1]
+    ) {
+      // up left arrow
       const delta = from[1] - to[1];
-      return `m34.8 37.1 5.6 19.8-5.9 1.8-10.7-41 ${32.4 + BOX_SIZE * delta} ${32.4 + BOX_SIZE * delta}-4.2 4.2z`
-    } else if (from[0] < to[0] && from[1] < to[1] && from[0] - to[0] === from[1] - to[1]) { // down right arrow
+      return `m34.8 37.1 5.6 19.8-5.9 1.8-10.7-41 ${32.4 + BOX_SIZE * delta} ${
+        32.4 + BOX_SIZE * delta
+      }-4.2 4.2z`;
+    } else if (
+      from[0] < to[0] &&
+      from[1] < to[1] &&
+      from[0] - to[0] === from[1] - to[1]
+    ) {
+      // down right arrow
       const delta = to[0] - from[0];
-      return `m${32.9 + BOX_SIZE * delta} ${35.2 + BOX_SIZE * delta}-19.8-5.6-1.8 5.9 41 10.7 ${-(32.4 + BOX_SIZE * delta)} ${-(32.4 + BOX_SIZE * delta)}-4.2 4.2z`
+      return `m${32.9 + BOX_SIZE * delta} ${
+        35.2 + BOX_SIZE * delta
+      }-19.8-5.6-1.8 5.9 41 10.7 ${-(32.4 + BOX_SIZE * delta)} ${-(
+        32.4 +
+        BOX_SIZE * delta
+      )}-4.2 4.2z`;
     } else {
       throw new Error("unsupported direction for the arrow");
     }
   })();
   // must stretch from top-left
-  const top_left: [number, number] = [Math.min(from[0], to[0]), Math.min(from[1], to[1])];
+  const top_left: [number, number] = [
+    Math.min(from[0], to[0]),
+    Math.min(from[1], to[1]),
+  ];
   document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));
 }

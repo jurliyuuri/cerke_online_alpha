@@ -39,7 +39,7 @@ import {
   drawArrow,
   drawCiurl,
   drawField,
-  eraseArrow
+  eraseArrow,
 } from "./draw_erase_animate";
 import { DICTIONARY, TACTICS_LINZKLAR } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
@@ -47,8 +47,18 @@ import { KIAR_ARK } from "./kiar_ark";
 import { toDigitsLinzklar } from "./to_digits";
 import { Hand } from "cerke_hands_and_score";
 import { KRUT_CRUOP } from "./main_entry";
-import { normalMessageToKiarArk, serializeAbsoluteCoord, serializeCiurl, serializeColor, serializeProf } from "./serialize";
-import { CaptureInfo, toColorProf, toPieceCaptureComment } from "./capture_info";
+import {
+  normalMessageToKiarArk,
+  serializeAbsoluteCoord,
+  serializeCiurl,
+  serializeColor,
+  serializeProf,
+} from "./serialize";
+import {
+  CaptureInfo,
+  toColorProf,
+  toPieceCaptureComment,
+} from "./capture_info";
 
 /*
 interface OpponentMoveWithPotentialWaterEntry {
@@ -94,8 +104,12 @@ type OpponentMove =
   };
 */
 
-
-const { forbidMainPolling, resumeMainPolling, isMainPollingAllowed, allowMainPolling } = (() => {
+const {
+  forbidMainPolling,
+  resumeMainPolling,
+  isMainPollingAllowed,
+  allowMainPolling,
+} = (() => {
   let MAIN_POLLING_ALLOWED = true;
 
   // to be called when a new hand is completed and is waiting for the ty mok1 / ta xot1 decision.
@@ -115,9 +129,14 @@ const { forbidMainPolling, resumeMainPolling, isMainPollingAllowed, allowMainPol
   const isMainPollingAllowed = () => {
     return MAIN_POLLING_ALLOWED;
   };
-  return { forbidMainPolling, resumeMainPolling, isMainPollingAllowed, allowMainPolling };
+  return {
+    forbidMainPolling,
+    resumeMainPolling,
+    isMainPollingAllowed,
+    allowMainPolling,
+  };
 })();
-// I repentfully use a global 
+// I repentfully use a global
 
 /////////////////////////////////////////////////////////
 /// ONLY THESE FOUR ARE TO BE EXPORTED FROM THIS FILE ///
@@ -131,14 +150,16 @@ export async function sendMainPollAndDoEverythingThatFollows() {
 
   const res: Ret_MainPoll_Legal = await sendMainPoll();
   if (res.content === "not yet") {
-    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
     await sendMainPollAndDoEverythingThatFollows();
     return;
   }
 
   console.log("ding!");
-  document.getElementById("opponent_message")!.textContent = res.message != null ? DICTIONARY.ja.tactics[res.message] : "";
-  document.getElementById("opponent_message_linzklar")!.textContent = res.message != null ? TACTICS_LINZKLAR[res.message] : "";
+  document.getElementById("opponent_message")!.textContent =
+    res.message != null ? DICTIONARY.ja.tactics[res.message] : "";
+  document.getElementById("opponent_message_linzklar")!.textContent =
+    res.message != null ? TACTICS_LINZKLAR[res.message] : "";
   if (KRUT_CRUOP) {
     const thud_sound = new Audio("sound/thud.ogg");
     thud_sound.play();
@@ -152,17 +173,26 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       const maybe_capture = await animateOpponentSrcDst(opponent_move.data);
       GAME_STATE.is_my_turn = true;
       if (opponent_move.data.water_entry_ciurl) {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }]
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: normalMessageToKiarArk(
+              opponent_move,
+              opponent_move.data.water_entry_ciurl.filter((a) => a).length,
+            ),
+            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          },
+        ];
       } else {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: normalMessageToKiarArk(opponent_move),
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }]
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: normalMessageToKiarArk(opponent_move),
+            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          },
+        ];
       }
     } else if (opponent_move.data.type === "FromHand") {
       const piece: NonTam2PieceDownward = {
@@ -176,22 +206,36 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       );
       GAME_STATE.is_my_turn = true;
       // piece_capture_comment is impossible
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+      ];
     } else if (opponent_move.data.type === "SrcStepDstFinite") {
-      const maybe_capture = await animateOpponentSrcStepDstFinite(opponent_move.data);
+      const maybe_capture = await animateOpponentSrcStepDstFinite(
+        opponent_move.data,
+      );
       GAME_STATE.is_my_turn = true;
       if (opponent_move.data.water_entry_ciurl) {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: normalMessageToKiarArk(opponent_move, opponent_move.data.water_entry_ciurl.filter(a => a).length),
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }]
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: normalMessageToKiarArk(
+              opponent_move,
+              opponent_move.data.water_entry_ciurl.filter((a) => a).length,
+            ),
+            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          },
+        ];
       } else {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: normalMessageToKiarArk(opponent_move),
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }]
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: normalMessageToKiarArk(opponent_move),
+            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          },
+        ];
       }
     } else {
       const a: never = opponent_move.data;
@@ -206,15 +250,24 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         fromAbsoluteCoord(opponent_move.secondDest),
       );
       GAME_STATE.is_my_turn = true;
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+      ];
     } else if (opponent_move.stepStyle === "StepsDuringFormer") {
       await animateOpponentTamSteppingDuringFormer(opponent_move);
       GAME_STATE.is_my_turn = true;
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+      ];
     } else if (opponent_move.stepStyle === "StepsDuringLatter") {
       await animateOpponentTamSteppingDuringLatter(opponent_move);
       GAME_STATE.is_my_turn = true;
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "movement", dat: normalMessageToKiarArk(opponent_move) }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+      ];
     } else {
       const _a: never = opponent_move.stepStyle;
       throw new Error("does not happen");
@@ -233,7 +286,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
               "infpoll",
               "`polling for the opponent's afterhalfacceptance`",
               {},
-              response => {
+              (response) => {
                 console.log(
                   "Success; the server returned:",
                   JSON.stringify(response),
@@ -250,18 +303,21 @@ export async function sendMainPollAndDoEverythingThatFollows() {
               resolve(res.content.finalResult!);
               return;
             }
-            await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
           }
         });
       } else {
         return Promise.resolve(opponent_move.finalResult);
       }
     })();
-    const [finalResult_resolved, maybe_capture]: ([{
-      dest: AbsoluteCoord;
-      water_entry_ciurl?: Ciurl;
-      thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-    }, CaptureInfo]) = await animateOpponentInfAfterStep({
+    const [finalResult_resolved, maybe_capture]: [
+      {
+        dest: AbsoluteCoord;
+        water_entry_ciurl?: Ciurl;
+        thwarted_by_failing_water_entry_ciurl: Ciurl | null;
+      },
+      CaptureInfo,
+    ] = await animateOpponentInfAfterStep({
       src: fromAbsoluteCoord(opponent_move.src),
       step: fromAbsoluteCoord(opponent_move.step),
       plannedDirection: fromAbsoluteCoord(opponent_move.plannedDirection),
@@ -271,44 +327,102 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     GAME_STATE.is_my_turn = true;
 
     if (finalResult_resolved.water_entry_ciurl) {
-      if (finalResult_resolved.water_entry_ciurl.filter(a => a).length < 3) {
+      if (finalResult_resolved.water_entry_ciurl.filter((a) => a).length < 3) {
         // water entry has failed; no piece was captured
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無`,
-        }];
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(
+              opponent_move.src,
+            )}片${serializeAbsoluteCoord(
+              opponent_move.step,
+            )}${serializeAbsoluteCoord(
+              finalResult_resolved.dest,
+            )}橋${serializeCiurl(
+              opponent_move.stepping_ciurl,
+            )}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無`,
+          },
+        ];
       } else {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }];
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(
+              opponent_move.src,
+            )}片${serializeAbsoluteCoord(
+              opponent_move.step,
+            )}${serializeAbsoluteCoord(
+              finalResult_resolved.dest,
+            )}橋${serializeCiurl(
+              opponent_move.stepping_ciurl,
+            )}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}`,
+            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          },
+        ];
       }
     } else if (finalResult_resolved.thwarted_by_failing_water_entry_ciurl) {
-      KIAR_ARK.body = [...KIAR_ARK.body, {
-        type: "movement",
-        dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(finalResult_resolved.thwarted_by_failing_water_entry_ciurl)}此無`,
-        piece_capture_comment: toPieceCaptureComment(maybe_capture)
-      }];
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        {
+          type: "movement",
+          dat: `${serializeAbsoluteCoord(
+            opponent_move.src,
+          )}片${serializeAbsoluteCoord(
+            opponent_move.step,
+          )}${serializeAbsoluteCoord(
+            finalResult_resolved.dest,
+          )}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(
+            finalResult_resolved.thwarted_by_failing_water_entry_ciurl,
+          )}此無`,
+          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+        },
+      ];
     } else {
       const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
-        return a[0] === b[0] && a[1] === b[1]
-      }
+        return a[0] === b[0] && a[1] === b[1];
+      };
 
-      if (absoluteCoordEq(opponent_move.plannedDirection, finalResult_resolved.dest) /* it went as planned, so no need to add 此無 */
-        || !absoluteCoordEq(finalResult_resolved.dest, opponent_move.src) /* the end is different from the source, so it cannot be 此無 */
+      if (
+        absoluteCoordEq(
+          opponent_move.plannedDirection,
+          finalResult_resolved.dest,
+        ) /* it went as planned, so no need to add 此無 */ ||
+        !absoluteCoordEq(
+          finalResult_resolved.dest,
+          opponent_move.src,
+        ) /* the end is different from the source, so it cannot be 此無 */
       ) {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(finalResult_resolved.dest)}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }];
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(
+              opponent_move.src,
+            )}片${serializeAbsoluteCoord(
+              opponent_move.step,
+            )}${serializeAbsoluteCoord(
+              finalResult_resolved.dest,
+            )}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
+            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          },
+        ];
       } else {
-        KIAR_ARK.body = [...KIAR_ARK.body, {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(opponent_move.src)}片${serializeAbsoluteCoord(opponent_move.step)}${serializeAbsoluteCoord(opponent_move.plannedDirection)}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture)
-        }];
+        KIAR_ARK.body = [
+          ...KIAR_ARK.body,
+          {
+            type: "movement",
+            dat: `${serializeAbsoluteCoord(
+              opponent_move.src,
+            )}片${serializeAbsoluteCoord(
+              opponent_move.step,
+            )}${serializeAbsoluteCoord(
+              opponent_move.plannedDirection,
+            )}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無`,
+            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          },
+        ];
       }
     }
   } else {
@@ -316,7 +430,6 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     throw new Error("does not happen");
   }
 }
-
 
 type Ret_MainPoll_Legal = {
   legal: true;
@@ -329,7 +442,7 @@ async function sendMainPoll(): Promise<Ret_MainPoll_Legal> {
     "mainpoll",
     "`polling for the opponent's move`",
     {},
-    response => {
+    (response) => {
       console.log("Success; the server returned:", JSON.stringify(response));
       return response;
     },
@@ -344,7 +457,9 @@ async function sendMainPoll(): Promise<Ret_MainPoll_Legal> {
   return res;
 }
 
-async function animateOpponentSrcStepDstFinite(p: SrcStepDstFinite): Promise<CaptureInfo> {
+async function animateOpponentSrcStepDstFinite(
+  p: SrcStepDstFinite,
+): Promise<CaptureInfo> {
   return await animateOpponentSrcStepDstFinite_(
     fromAbsoluteCoord(p.src),
     fromAbsoluteCoord(p.step),
@@ -359,9 +474,9 @@ async function animateOpponentSteppingOverCiurl(
   stepping_ciurl: Ciurl,
 ) {
   drawArrow(step, plannedDirection);
-  await new Promise(resolve => setTimeout(resolve, 2000 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
   drawCiurl(stepping_ciurl, Side.Downward);
-  await new Promise(resolve => setTimeout(resolve, 600 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 600 * 0.8093));
   eraseArrow();
 }
 
@@ -375,17 +490,26 @@ function position_for_temporarily_appending_hop1zuo1_of_downward() {
     // したがって、今までの手駒は 0 から hop1zuo1OfDownward.length - 1 までの位置を埋めていて、手駒間の距離を詰めていない。
     // ということは、hop1zuo1OfDownward.length の位置へと画像を配置すれば、
     // 新手駒の目標座標として正しい位置になる。
-    return { top: -135, left: 1 + GAME_STATE.f.hop1zuo1OfDownward.length * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 };
+    return {
+      top: -135,
+      left:
+        1 +
+        GAME_STATE.f.hop1zuo1OfDownward.length * BOX_SIZE +
+        (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
+    };
   } else {
     // There are already more than 9 pieces in the hop1zuo1 with some scooching
     // Since these pieces are packed to fill positions 0 to 8, there is no problem if we place the newly acquired piece in position 9.
-    // Note that, when `drawField` is called, the pieces in hop1zuo1 will abruptly move horizontally at once, 
+    // Note that, when `drawField` is called, the pieces in hop1zuo1 will abruptly move horizontally at once,
     // but I consider this to be acceptable.
     // 手駒が既に9枚以上あり、詰めて配置されている。
     // 詰めて配置されたこれらの駒は位置 0 から 8 を埋めているので、新しく手に入れた駒は 9 においてやればとりあえず問題はない。
     // なお、drawField が呼ばれた際に一気に手駒の部分がガクッと横に動くことになるが、
     // まあ許容範囲としていいだろう。
-    return { top: -135, left: 1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2 };
+    return {
+      top: -135,
+      left: 1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
+    };
   }
 }
 
@@ -399,11 +523,16 @@ async function animateOpponentInfAfterStep(p: {
     water_entry_ciurl?: Ciurl;
     thwarted_by_failing_water_entry_ciurl: Ciurl | null;
   }>;
-}): Promise<[{
-  dest: AbsoluteCoord;
-  water_entry_ciurl?: Ciurl;
-  thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-}, CaptureInfo]> {
+}): Promise<
+  [
+    {
+      dest: AbsoluteCoord;
+      water_entry_ciurl?: Ciurl;
+      thwarted_by_failing_water_entry_ciurl: Ciurl | null;
+    },
+    CaptureInfo,
+  ]
+> {
   const [src_i, src_j] = p.src;
   const [step_i, step_j] = p.step;
 
@@ -426,16 +555,12 @@ async function animateOpponentInfAfterStep(p: {
   const srcNode: HTMLElement = document.getElementById(
     `field_piece_${src_i}_${src_j}`,
   )!;
-  await animateNode(
-    srcNode,
-    750 * 0.8093,
-    {
-      to: coordToPieceXY_Shifted(p.step),
-      from: coordToPieceXY(p.src)
-    },
-  );
+  await animateNode(srcNode, 750 * 0.8093, {
+    to: coordToPieceXY_Shifted(p.step),
+    from: coordToPieceXY(p.src),
+  });
 
-  await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
   await animateOpponentSteppingOverCiurl(
     p.step,
@@ -456,23 +581,21 @@ async function animateOpponentInfAfterStep(p: {
     const destNode: HTMLElement = document.getElementById(
       `field_piece_${dest_i}_${dest_j}`,
     )!;
-    await animateNode(
-      srcNode,
-      750 * 0.8093,
-      {
-        to: coordToPieceXY(dest),
-        from: coordToPieceXY(p.src) /* must be src, since the node is not renewed */,
-      }
-    );
+    await animateNode(srcNode, 750 * 0.8093, {
+      to: coordToPieceXY(dest),
+      from: coordToPieceXY(
+        p.src,
+      ) /* must be src, since the node is not renewed */,
+    });
 
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
     await animateNode(
       destNode,
       750 * 0.8093,
       {
         to: position_for_temporarily_appending_hop1zuo1_of_downward(),
-        from: coordToPieceXY([dest_i, dest_j])
+        from: coordToPieceXY([dest_i, dest_j]),
       },
       "50",
       180,
@@ -481,8 +604,8 @@ async function animateOpponentInfAfterStep(p: {
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
       drawCiurl(result.water_entry_ciurl, Side.Downward);
-      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (result.water_entry_ciurl.filter(a => a).length < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+      if (result.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
 
         console.log("drawField opponent #", 12);
@@ -507,20 +630,18 @@ async function animateOpponentInfAfterStep(p: {
     return [result, toColorProf(destPiece)];
   } else {
     // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
-    await animateNode(
-      srcNode,
-      750 * 0.8093,
-      {
-        to: coordToPieceXY(dest),
-        from: coordToPieceXY(p.src) /* must be src, since the node is not renewed */,
-      }
-    );
+    await animateNode(srcNode, 750 * 0.8093, {
+      to: coordToPieceXY(dest),
+      from: coordToPieceXY(
+        p.src,
+      ) /* must be src, since the node is not renewed */,
+    });
 
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
       drawCiurl(result.water_entry_ciurl, Side.Downward);
-      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (result.water_entry_ciurl.filter(a => a).length < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+      if (result.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
@@ -530,7 +651,7 @@ async function animateOpponentInfAfterStep(p: {
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
       drawCiurl(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
-      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+      await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       alert(DICTIONARY.ja.failedWaterEntry);
       console.log("drawField opponent #", 14);
       GAME_STATE.last_move_focus = [src_i, src_j];
@@ -599,25 +720,25 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
   }, 1000 * 0.8093);
 }
 
-async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[], score: number }) {
+async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
   const base_score: number = o.score;
   console.log("poll whether ty mok1 or ta xot1");
 
   const res: Ret_WhetherTyMokPoll = await sendStuffTo<
     {},
     | {
-      legal: true;
-      content:
-      | "ty mok1"
-      | { is_first_move_my_move: boolean | null }
-      | "not yet";
-    }
+        legal: true;
+        content:
+          | "ty mok1"
+          | { is_first_move_my_move: boolean | null }
+          | "not yet";
+      }
     | { legal: false; whyIllegal: string }
   >(
     "whethertymokpoll",
     "`polling for whether the declaration is ty mok1 or ta xot1`",
     {},
-    response => {
+    (response) => {
       console.log("Success; the server returned:", JSON.stringify(response));
       return response;
     },
@@ -637,33 +758,46 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[], score: number }) {
 
     const score_display = document.getElementById("score_display")!;
 
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
     // so that the ty mok1 / ta xot1 image is written after the score is written
     // this is necessary because the scorewriting deletes scoredisplay.innerHTML
     while (!score_display.hasChildNodes()) {
-      await new Promise(resolve => setTimeout(resolve, 100 * 0.8093));
+      await new Promise((resolve) => setTimeout(resolve, 100 * 0.8093));
     }
 
     if (res.content === "ty mok1") {
       score_display.innerHTML += `<img src="image/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
-      await new Promise(resolve => setTimeout(resolve, 5000 * 0.8093));
+      await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ty mok1");
       increaseRateAndAnimate(false);
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` },
+      ];
     } else {
       score_display.innerHTML += `<img src="image/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
-      await new Promise(resolve => setTimeout(resolve, 5000 * 0.8093));
+      await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ta xot1");
-      const season_that_has_just_ended = ["春", "夏", "秋", "冬"][GAME_STATE.season]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
+      const season_that_has_just_ended = ["春", "夏", "秋", "冬"][
+        GAME_STATE.season
+      ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(-base_score, res.content.is_first_move_my_move); // since opponent, negative score
-      KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(base_score * Math.pow(2, GAME_STATE.log2_rate)).join("")}\n終季\t${season_that_has_just_ended}終` }]
+      KIAR_ARK.body = [
+        ...KIAR_ARK.body,
+        {
+          type: "tymoktaxot",
+          dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(
+            base_score * Math.pow(2, GAME_STATE.log2_rate),
+          ).join("")}\n終季\t${season_that_has_just_ended}終`,
+        },
+      ];
     }
   } else {
     document
       .getElementById("protective_cover_over_field_while_waiting_for_opponent")!
       .classList.remove("nocover");
-    await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
     await sendTyMok1OrTaXot1Poll(o);
   }
 }
@@ -705,34 +839,28 @@ async function animateOpponentSrcStepDstFinite_(
       `field_piece_${dest_i}_${dest_j}`,
     )!;
 
-    await animateNode(
-      srcNode,
-      750 * 0.8093,
-      {
-        to: coordToPieceXY_Shifted(step),
-        from: coordToPieceXY(src)
-      },
-    );
+    await animateNode(srcNode, 750 * 0.8093, {
+      to: coordToPieceXY_Shifted(step),
+      from: coordToPieceXY(src),
+    });
 
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
-    await animateNode(
-      srcNode,
-      750 * 0.8093,
-      {
-        to: coordToPieceXY(dest),
-        from: coordToPieceXY(src) /* must be src, since the node is not renewed */
-      },
-    );
+    await animateNode(srcNode, 750 * 0.8093, {
+      to: coordToPieceXY(dest),
+      from: coordToPieceXY(
+        src,
+      ) /* must be src, since the node is not renewed */,
+    });
 
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
     await animateNode(
       destNode,
       750 * 0.8093,
       {
         to: position_for_temporarily_appending_hop1zuo1_of_downward(),
-        from: coordToPieceXY([dest_i, dest_j])
+        from: coordToPieceXY([dest_i, dest_j]),
       },
       "50",
       180,
@@ -741,8 +869,8 @@ async function animateOpponentSrcStepDstFinite_(
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
       drawCiurl(water_entry_ciurl, Side.Downward);
-      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (water_entry_ciurl.filter(a => a).length < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+      if (water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
         console.log("drawField opponent #", 16);
         GAME_STATE.last_move_focus = [src_i, src_j];
@@ -767,31 +895,25 @@ async function animateOpponentSrcStepDstFinite_(
     const imgNode: HTMLElement = document.getElementById(
       `field_piece_${src_i}_${src_j}`,
     )!;
-    await animateNode(
-      imgNode,
-      750 * 0.8093,
-      {
-        to: coordToPieceXY_Shifted(step),
-        from: coordToPieceXY(src)
-      },
-    );
+    await animateNode(imgNode, 750 * 0.8093, {
+      to: coordToPieceXY_Shifted(step),
+      from: coordToPieceXY(src),
+    });
 
-    await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
-    await animateNode(
-      imgNode,
-      750 * 0.8093,
-      {
-        to: coordToPieceXY(dest),
-        from: coordToPieceXY(src) /* must be src, since the node is not renewed */
-      },
-    );
+    await animateNode(imgNode, 750 * 0.8093, {
+      to: coordToPieceXY(dest),
+      from: coordToPieceXY(
+        src,
+      ) /* must be src, since the node is not renewed */,
+    });
 
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
       drawCiurl(water_entry_ciurl, Side.Downward);
-      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (water_entry_ciurl.filter(a => a).length < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+      if (water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
 
         console.log("drawField opponent #", 18);
@@ -815,17 +937,17 @@ async function animateOpponentSrcStepDstFinite_(
   }
 }
 
-
 async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
   const src: Coord = fromAbsoluteCoord(p.src);
   const dst: Coord = fromAbsoluteCoord(p.dest);
   if (p.water_entry_ciurl) {
-    return await animateOpponentSrcDst_(src, dst, { water_entry_ciurl: p.water_entry_ciurl });
+    return await animateOpponentSrcDst_(src, dst, {
+      water_entry_ciurl: p.water_entry_ciurl,
+    });
   } else {
     return await animateOpponentSrcDst_(src, dst, {});
   }
 }
-
 
 /**
  * Animates opponent's move that simply consists of a src and a destination.
@@ -834,7 +956,7 @@ async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
 async function animateOpponentSrcDst_(
   src: Coord,
   dst: Coord,
-  o: { water_entry_ciurl?: Ciurl, disable_focus?: boolean }
+  o: { water_entry_ciurl?: Ciurl; disable_focus?: boolean },
 ): Promise<CaptureInfo> {
   const [src_i, src_j] = src;
   const [dest_i, dest_j] = dst;
@@ -856,21 +978,17 @@ async function animateOpponentSrcDst_(
     )!;
 
     const total_duration = 750 * 0.8093;
-    await animateNode(
-      srcNode,
-      total_duration,
-      {
-        to: coordToPieceXY([dest_i, dest_j]),
-        from: coordToPieceXY([src_i, src_j])
-      },
-    );
+    await animateNode(srcNode, total_duration, {
+      to: coordToPieceXY([dest_i, dest_j]),
+      from: coordToPieceXY([src_i, src_j]),
+    });
 
     await animateNode(
       destNode,
       total_duration,
       {
         to: position_for_temporarily_appending_hop1zuo1_of_downward(),
-        from: coordToPieceXY([dest_i, dest_j])
+        from: coordToPieceXY([dest_i, dest_j]),
       },
       "50",
       180,
@@ -879,8 +997,8 @@ async function animateOpponentSrcDst_(
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
       drawCiurl(o.water_entry_ciurl, Side.Downward);
-      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (o.water_entry_ciurl.filter(a => a).length < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+      if (o.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
 
         console.log("drawField opponent #", 20);
@@ -902,20 +1020,16 @@ async function animateOpponentSrcDst_(
     const imgNode: HTMLElement = document.getElementById(
       `field_piece_${src_i}_${src_j}`,
     )!;
-    await animateNode(
-      imgNode,
-      1500 * 0.8093,
-      {
-        to: coordToPieceXY([dest_i, dest_j]),
-        from: coordToPieceXY([src_i, src_j])
-      },
-    );
+    await animateNode(imgNode, 1500 * 0.8093, {
+      to: coordToPieceXY([dest_i, dest_j]),
+      from: coordToPieceXY([src_i, src_j]),
+    });
 
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
       drawCiurl(o.water_entry_ciurl, Side.Downward);
-      await new Promise(resolve => setTimeout(resolve, 500 * 0.8093));
-      if (o.water_entry_ciurl.filter(a => a).length < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+      if (o.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
 
         console.log("drawField opponent #", 22);
@@ -938,7 +1052,6 @@ async function animateOpponentSrcDst_(
          while depicting the former half of the animation of Tam2's movement */
       drawField({ focus: null });
     }
-
   }
   return toColorProf(destPiece);
 }
@@ -949,12 +1062,15 @@ async function animateOpponentFromHand(
 ) {
   // remove the corresponding one from hand
   const ind = GAME_STATE.f.hop1zuo1OfDownward.findIndex(
-    p => p.color === piece.color && p.prof === piece.prof,
+    (p) => p.color === piece.color && p.prof === piece.prof,
   );
   if (ind === -1) {
     throw new Error("What should exist in the hand does not exist");
   }
-  const [removed_from_hop1zuo1] = GAME_STATE.f.hop1zuo1OfDownward.splice(ind, 1);
+  const [removed_from_hop1zuo1] = GAME_STATE.f.hop1zuo1OfDownward.splice(
+    ind,
+    1,
+  );
 
   // add the removed piece to the destination
   const [dest_i, dest_j] = dest;
@@ -965,17 +1081,19 @@ async function animateOpponentFromHand(
   const imgNode: HTMLElement = document.getElementById(
     `hop1zuo1OfDownward_${ind}`,
   )!;
-  await animateNode(
-    imgNode,
-    1500 * 0.8093,
-    {
-      to: coordToPieceXY([dest_i, dest_j]),
+  await animateNode(imgNode, 1500 * 0.8093, {
+    to: coordToPieceXY([dest_i, dest_j]),
 
-      // Here, `drawField` has already been called, and the pieces have been placed in a packed configuration, so `from` becomes:
-      // この段階では既に drawField が呼ばれており、詰められた配置で手駒が配置されているため、from はこうなる。
-      from: { top: -135, left: hop1_zuo1_left_position({ ind, list_length: GAME_STATE.f.hop1zuo1OfDownward.length }) }
+    // Here, `drawField` has already been called, and the pieces have been placed in a packed configuration, so `from` becomes:
+    // この段階では既に drawField が呼ばれており、詰められた配置で手駒が配置されているため、from はこうなる。
+    from: {
+      top: -135,
+      left: hop1_zuo1_left_position({
+        ind,
+        list_length: GAME_STATE.f.hop1zuo1OfDownward.length,
+      }),
     },
-  );
+  });
 
   GAME_STATE.f.currentBoard[dest_i][dest_j] = removed_from_hop1zuo1;
 
@@ -997,14 +1115,10 @@ async function animateOpponentTamNoStep(
   const imgNode: HTMLElement = document.getElementById(
     `field_piece_${src[0]}_${src[1]}`,
   )!;
-  await animateNode(
-    imgNode,
-    1500 * 0.8093,
-    {
-      to: coordToPieceXY(fstdst),
-      from: coordToPieceXY(src)
-    },
-  );
+  await animateNode(imgNode, 1500 * 0.8093, {
+    to: coordToPieceXY(fstdst),
+    from: coordToPieceXY(src),
+  });
   GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
 
@@ -1016,16 +1130,12 @@ async function animateOpponentTamNoStep(
   )!;
 
   /* somehow does not work without this line */
-  await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
-  await animateNode(
-    imgNode2,
-    1500 * 0.8093,
-    {
-      to: coordToPieceXY(snddst),
-      from: coordToPieceXY(fstdst)
-    },
-  );
+  await animateNode(imgNode2, 1500 * 0.8093, {
+    to: coordToPieceXY(snddst),
+    from: coordToPieceXY(fstdst),
+  });
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
   GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
 
@@ -1045,9 +1155,9 @@ async function animateOpponentTamSteppingDuringFormer(opponent_move: {
     firstDest: fromAbsoluteCoord(opponent_move.firstDest),
     secondDest: fromAbsoluteCoord(opponent_move.secondDest),
     step: fromAbsoluteCoord(opponent_move.step),
-  }
+  };
   await animateOpponentSrcStepDstFinite_(p.src, p.step, p.firstDest);
-  await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
   await animateOpponentSrcDst_(p.firstDest, p.secondDest, {});
 }
 
@@ -1067,9 +1177,8 @@ async function animateOpponentTamSteppingDuringLatter(opponent_move: {
   /* This is the former half; hence no need to show the focus */
   await animateOpponentSrcDst_(p.src, p.firstDest, { disable_focus: true });
 
-  await new Promise(resolve => setTimeout(resolve, 300 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
 
   /* And this part is the latter half, in which stepping occurs */
   await animateOpponentSrcStepDstFinite_(p.firstDest, p.step, p.secondDest);
 }
-
