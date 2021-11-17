@@ -1,4 +1,4 @@
-import { drawField } from "./draw_erase_animate";
+import { drawField } from "./both_sides";
 import { GAME_STATE } from "./game_state";
 import { KIAR_ARK } from "./kiar_ark";
 
