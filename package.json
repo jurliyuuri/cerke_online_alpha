@@ -22,7 +22,7 @@
     "css-loader": "6.5.1",
     "dependency-cruiser": "^10.7.0",
     "kind-of": "6.0.3",
-    "mini-css-extract-plugin": "2.4.4",
+    "mini-css-extract-plugin": "2.4.5",
     "minimist": "1.2.5",
     "node-sass": "6.0.1",
     "prettier": "2.4.1",
