@@ -20,7 +20,7 @@ import {
   Side,
   NonTam2Piece,
   BoardIndex,
-} from "cerke_online_utility/lib";
+} from "cerke_online_utility";
 import { toPath_ } from "./piece_to_path";
 import {
   AbsoluteCoord,
@@ -39,7 +39,7 @@ import {
   calculateMovablePositions,
   canGetOccupiedByNonTam,
   canGetOccupiedBy,
-} from "cerke_online_utility/lib";
+} from "cerke_online_utility";
 import {
   MAX_PIECE_SIZE,
   hop1_zuo1_left_position,

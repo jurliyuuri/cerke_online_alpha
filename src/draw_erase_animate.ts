@@ -4,7 +4,7 @@ import {
   Piece,
   Side,
   NonTam2PieceUpward,
-} from "cerke_online_utility/lib";
+} from "cerke_online_utility";
 import {
   createArrowSvg,
   createCancelButton,

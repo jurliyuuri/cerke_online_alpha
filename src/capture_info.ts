@@ -1,5 +1,5 @@
 import { Profession, Color } from "cerke_online_api";
-import { Piece } from "cerke_online_utility/lib";
+import { Piece } from "cerke_online_utility";
 import { serializeColor, serializeProf } from "./serialize";
 
 export type CaptureInfo = [Color, Profession] | null;

@@ -15,7 +15,7 @@ import {
   NonTam2PieceDownward,
   Side,
   coordEq,
-} from "cerke_online_utility/lib";
+} from "cerke_online_utility";
 import { fromAbsoluteCoord, GAME_STATE } from "./game_state";
 import {
   BOX_SIZE,

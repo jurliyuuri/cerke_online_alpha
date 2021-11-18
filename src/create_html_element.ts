@@ -4,7 +4,7 @@
  * Every call to document.createElement should live here.
  */
 
-import { Coord, Piece } from "cerke_online_utility/lib";
+import { Coord, Piece } from "cerke_online_utility";
 import { toPath_ } from "./piece_to_path";
 import {
   BOX_SIZE,

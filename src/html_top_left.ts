@@ -1,5 +1,5 @@
 import { Season, Log2_Rate } from "cerke_online_api";
-import { Coord } from "cerke_online_utility/lib";
+import { Coord } from "cerke_online_utility";
 export const BOX_SIZE = 70;
 export const MAX_PIECE_SIZE = BOX_SIZE - 1;
 export const PIECE_SIZE = 60;

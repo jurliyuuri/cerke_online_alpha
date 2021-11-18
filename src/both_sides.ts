@@ -21,7 +21,7 @@ import {
   NonTam2PieceDownward,
   NonTam2PieceUpward,
   Piece,
-} from "cerke_online_utility/lib";
+} from "cerke_online_utility";
 import {
   Profession,
   Color,

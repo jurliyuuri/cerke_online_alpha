@@ -7,7 +7,7 @@ import {
   Board,
   Coord,
   rotateBoard,
-} from "cerke_online_utility/lib";
+} from "cerke_online_utility";
 import {
   AbsoluteCoord,
   Profession,
@@ -39,7 +39,7 @@ export interface GAME_STATE {
   last_move_focus: Coord | null;
 }
 
-import { toAbsoluteCoord_, fromAbsoluteCoord_ } from "cerke_online_utility/lib";
+import { toAbsoluteCoord_, fromAbsoluteCoord_ } from "cerke_online_utility";
 
 export function toAbsoluteCoord(coord: Coord): AbsoluteCoord {
   return toAbsoluteCoord_(coord, GAME_STATE.IA_is_down);
