@@ -20,7 +20,7 @@
   "homepage": "https://gitlab.com/jekto.vatimeliju/cerke_online#readme",
   "devDependencies": {
     "css-loader": "6.5.1",
-    "dependency-cruiser": "^10.7.0",
+    "dependency-cruiser": "10.7.0",
     "kind-of": "6.0.3",
     "mini-css-extract-plugin": "2.4.5",
     "minimist": "1.2.5",
@@ -38,6 +38,6 @@
     "cerke_hands_and_score": "1.0.3",
     "cerke_online_api": "1.6.0",
     "cerke_online_utility": "0.0.7",
-    "extra-dom": "^0.4.3"
+    "extra-dom": "0.4.3"
   }
 }
