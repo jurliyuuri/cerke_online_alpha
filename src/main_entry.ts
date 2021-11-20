@@ -1,6 +1,6 @@
 import { drawField } from "./both_sides";
 import { GAME_STATE } from "./game_state";
-import { push_to_kiar_ark_header_and_display } from "./kiar_ark";
+import { push_to_kiar_ark_header_and_display, push_to_kiar_ark_initial_colors_and_display } from "./kiar_ark";
 
 console.log("drawField #", 0);
 drawField({ focus: null });
@@ -63,14 +63,7 @@ document
 document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
   document.getElementById("kait_kaik")!.classList.add("nocover");
   GAME_STATE.is_my_turn = JSON.parse(sessionStorage.is_first_move_my_move);
-  push_to_kiar_ark_header_and_display(
-    {
-      type: "header",
-      dat: `{一位色:${
-        GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤"
-      }}`,
-    },
-  );
+  push_to_kiar_ark_initial_colors_and_display(GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤");
   if (!LORK_LIAR_ENABLED) {
     toggleBackgroundMusic();
   }

@@ -43,7 +43,7 @@ import {
   ObtainablePieces,
   calculate_hands_and_score_from_pieces,
 } from "cerke_hands_and_score";
-import { push_to_kiar_ark_body_and_display, push_to_kiar_ark_header_and_display } from "./kiar_ark";
+import { push_to_kiar_ark_body_and_display, push_to_kiar_ark_header_and_display, push_to_kiar_ark_initial_colors_and_display } from "./kiar_ark";
 import { animateNode } from "./draw_erase_animate";
 import { createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1 } from "./create_html_element";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
@@ -494,6 +494,7 @@ export function endSeason(
       ?.classList.add("nocover");
 
     GAME_STATE.is_my_turn = is_first_move_my_move_in_the_next_season!;
+    push_to_kiar_ark_initial_colors_and_display(GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤");
     document
       .getElementById("protective_cover_over_field_while_asyncawait")
       ?.classList.add("nocover");
