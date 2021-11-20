@@ -43,7 +43,7 @@ import {
 } from "./draw_erase_animate";
 import { DICTIONARY, TACTICS_LINZKLAR } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
-import { KIAR_ARK } from "./kiar_ark";
+import { push_to_kiar_ark_body_and_display } from "./kiar_ark";
 import { toDigitsLinzklar } from "./to_digits";
 import { Hand } from "cerke_hands_and_score";
 import { KRUT_CRUOP } from "./main_entry";
@@ -164,8 +164,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       const maybe_capture = await animateOpponentSrcDst(opponent_move.data);
       GAME_STATE.is_my_turn = true;
       if (opponent_move.data.water_entry_ciurl) {
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: normalMessageToKiarArk(
@@ -174,16 +173,15 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             ),
             piece_capture_comment: toPieceCaptureComment(maybe_capture),
           },
-        ];
+        );
       } else {
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: normalMessageToKiarArk(opponent_move),
             piece_capture_comment: toPieceCaptureComment(maybe_capture),
           },
-        ];
+        );
       }
     } else if (opponent_move.data.type === "FromHand") {
       const piece: NonTam2PieceDownward = {
@@ -197,18 +195,16 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       );
       GAME_STATE.is_my_turn = true;
       // piece_capture_comment is impossible
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
-      ];
+      );
     } else if (opponent_move.data.type === "SrcStepDstFinite") {
       const maybe_capture = await animateOpponentSrcStepDstFinite(
         opponent_move.data,
       );
       GAME_STATE.is_my_turn = true;
       if (opponent_move.data.water_entry_ciurl) {
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: normalMessageToKiarArk(
@@ -217,16 +213,15 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             ),
             piece_capture_comment: toPieceCaptureComment(maybe_capture),
           },
-        ];
+        );
       } else {
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: normalMessageToKiarArk(opponent_move),
             piece_capture_comment: toPieceCaptureComment(maybe_capture),
           },
-        ];
+        );
       }
     } else {
       const a: never = opponent_move.data;
@@ -241,24 +236,21 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         fromAbsoluteCoord(opponent_move.secondDest),
       );
       GAME_STATE.is_my_turn = true;
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
-      ];
+      );
     } else if (opponent_move.stepStyle === "StepsDuringFormer") {
       await animateOpponentTamSteppingDuringFormer(opponent_move);
       GAME_STATE.is_my_turn = true;
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
-      ];
+      );
     } else if (opponent_move.stepStyle === "StepsDuringLatter") {
       await animateOpponentTamSteppingDuringLatter(opponent_move);
       GAME_STATE.is_my_turn = true;
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
-      ];
+      );
     } else {
       const _a: never = opponent_move.stepStyle;
       throw new Error("does not happen");
@@ -320,8 +312,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     if (finalResult_resolved.water_entry_ciurl) {
       if (finalResult_resolved.water_entry_ciurl.filter((a) => a).length < 3) {
         // water entry has failed; no piece was captured
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
@@ -334,10 +325,9 @@ export async function sendMainPollAndDoEverythingThatFollows() {
               opponent_move.stepping_ciurl,
             )}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}此無`,
           },
-        ];
+        );
       } else {
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
@@ -351,11 +341,10 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             )}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}`,
             piece_capture_comment: toPieceCaptureComment(maybe_capture),
           },
-        ];
+        );
       }
     } else if (finalResult_resolved.thwarted_by_failing_water_entry_ciurl) {
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
@@ -369,7 +358,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
           )}此無`,
           piece_capture_comment: toPieceCaptureComment(maybe_capture),
         },
-      ];
+      );
     } else {
       const absoluteCoordEq = (a: AbsoluteCoord, b: AbsoluteCoord) => {
         return a[0] === b[0] && a[1] === b[1];
@@ -385,8 +374,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
           opponent_move.src,
         ) /* the end is different from the source, so it cannot be 此無 */
       ) {
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
@@ -398,10 +386,9 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             )}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
             piece_capture_comment: toPieceCaptureComment(maybe_capture),
           },
-        ];
+        );
       } else {
-        KIAR_ARK.body = [
-          ...KIAR_ARK.body,
+        push_to_kiar_ark_body_and_display(
           {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
@@ -413,7 +400,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             )}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無`,
             piece_capture_comment: toPieceCaptureComment(maybe_capture),
           },
-        ];
+        );
       }
     }
   } else {
@@ -762,10 +749,9 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
       await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ty mok1");
       increaseRateAndAnimate(false);
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         { type: "tymoktaxot", dat: `或為${o.hands.join("加")}\n再行` },
-      ];
+      );
     } else {
       score_display.innerHTML += `<img src="image/終季.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
       await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
@@ -774,15 +760,14 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(-base_score, res.content.is_first_move_my_move); // since opponent, negative score
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         {
           type: "tymoktaxot",
           dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(
             base_score * Math.pow(2, GAME_STATE.log2_rate),
           ).join("")}\n終季\t${season_that_has_just_ended}終`,
         },
-      ];
+      );
     }
   } else {
     document

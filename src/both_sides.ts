@@ -43,7 +43,7 @@ import {
   ObtainablePieces,
   calculate_hands_and_score_from_pieces,
 } from "cerke_hands_and_score";
-import { KIAR_ARK } from "./kiar_ark";
+import { push_to_kiar_ark_body_and_display, push_to_kiar_ark_header_and_display, push_to_kiar_ark_initial_colors_and_display } from "./kiar_ark";
 import { animateNode } from "./draw_erase_animate";
 import { createPieceImgToBePlacedOnBoard, createPieceImgToBePlacedOnHop1zuo1 } from "./create_html_element";
 import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
@@ -52,16 +52,14 @@ import { removeAllChildren } from "extra-dom";
 
 export function drawMak2Io1() {
   const denote_season = document.getElementById("denote_season")!;
-  denote_season.style.top = `${
-    getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
-  }px`;
+  denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
+    }px`;
   denote_season.style.transition = ``; // needs to clear the animation
   denote_season.style.transform = ``;
 
   const denote_score = document.getElementById("denote_score")!;
-  denote_score.style.top = `${
-    getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
-  }px`;
+  denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
+    }px`;
   denote_score.style.transition = ``;
   denote_score.style.transform = ``;
 
@@ -71,9 +69,8 @@ export function drawMak2Io1() {
   } else {
     denote_rate.style.display = "block";
   }
-  denote_rate.style.top = `${
-    getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
-  }px`;
+  denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
+    }px`;
   denote_rate.style.transition = ``;
   denote_rate.style.transform = ``;
 }
@@ -265,11 +262,10 @@ function perzej(
         ? GAME_END_LINZKLAR.draw
         : GAME_END_LINZKLAR.loss;
 
-  KIAR_ARK.body = [...KIAR_ARK.body, { type: "tymoktaxot", dat: "星一周" }];
-  KIAR_ARK.header = [
-    ...KIAR_ARK.header,
+  push_to_kiar_ark_body_and_display({ type: "tymoktaxot", dat: "星一周" });
+  push_to_kiar_ark_header_and_display(
     { type: "header", dat: `{終時:${new Date().toISOString()}}` },
-  ];
+  );
 }
 
 export async function animatePunishStepTamAndCheckPerzej(side: Side) {
@@ -498,6 +494,7 @@ export function endSeason(
       ?.classList.add("nocover");
 
     GAME_STATE.is_my_turn = is_first_move_my_move_in_the_next_season!;
+    push_to_kiar_ark_initial_colors_and_display(GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤");
     document
       .getElementById("protective_cover_over_field_while_asyncawait")
       ?.classList.add("nocover");

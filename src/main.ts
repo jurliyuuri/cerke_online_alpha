@@ -48,7 +48,7 @@ import {
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
 import { toDigitsLinzklar } from "./to_digits";
-import { KIAR_ARK } from "./kiar_ark";
+import { push_to_kiar_ark_body_and_display } from "./kiar_ark";
 import { KRUT_CRUOP } from "./main_entry";
 import {
   animateStepTamLogo,
@@ -454,8 +454,7 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
@@ -467,10 +466,9 @@ async function sendAfterHalfAcceptance(
           )}`,
           piece_capture_comment: toPieceCaptureComment(maybe_capture),
         },
-      ];
+      );
     } else {
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
@@ -482,7 +480,7 @@ async function sendAfterHalfAcceptance(
           )}此無`,
           piece_capture_comment: toPieceCaptureComment(maybe_capture),
         },
-      ];
+      );
     }
     return;
   }
@@ -510,8 +508,7 @@ async function sendAfterHalfAcceptance(
 
     // Always 此無, because in the outer `if` it is already checked
     // No capture occurs
-    KIAR_ARK.body = [
-      ...KIAR_ARK.body,
+    push_to_kiar_ark_body_and_display(
       {
         type: "movement",
         dat: `${serializeAbsoluteCoord(
@@ -522,7 +519,7 @@ async function sendAfterHalfAcceptance(
           o.stepping_ciurl,
         )}水${serializeCiurl(res.dat.ciurl)}此無`,
       },
-    ];
+    );
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -537,8 +534,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
@@ -550,7 +546,7 @@ async function sendAfterHalfAcceptance(
           )}水${serializeCiurl(res.dat.ciurl)}`,
           piece_capture_comment: toPieceCaptureComment(maybe_capture),
         },
-      ];
+      );
     } else {
       throw new Error(
         "This should not happen; it should have been rejected before the water entry",
@@ -592,14 +588,13 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body = [
-      ...KIAR_ARK.body,
+    push_to_kiar_ark_body_and_display(
       {
         type: "movement",
         dat: normalMessageToKiarArk(message),
         piece_capture_comment: toPieceCaptureComment(maybe_capture),
       },
-    ];
+    );
     return;
   }
 
@@ -628,8 +623,7 @@ async function sendNormalMessage(message: NormalMove) {
 
     GAME_STATE.is_my_turn = false;
     // no capture possible
-    KIAR_ARK.body = [
-      ...KIAR_ARK.body,
+    push_to_kiar_ark_body_and_display(
       {
         type: "movement",
         dat: normalMessageToKiarArk(
@@ -637,7 +631,7 @@ async function sendNormalMessage(message: NormalMove) {
           res.dat.ciurl.filter((a) => a).length,
         ),
       },
-    ];
+    );
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -646,8 +640,7 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KIAR_ARK.body = [
-      ...KIAR_ARK.body,
+    push_to_kiar_ark_body_and_display(
       {
         type: "movement",
         dat: normalMessageToKiarArk(
@@ -656,7 +649,7 @@ async function sendNormalMessage(message: NormalMove) {
         ),
         piece_capture_comment: toPieceCaptureComment(maybe_capture),
       },
-    ];
+    );
   }
 }
 
@@ -758,10 +751,9 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       if (res.legal !== true) {
         throw new Error("bad!!!!");
       }
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}\n再行` },
-      ];
+      );
     });
     score_display.appendChild(ty_mok1_button);
 
@@ -786,15 +778,14 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(base_score, is_first_move_my_move_in_the_next_season);
-      KIAR_ARK.body = [
-        ...KIAR_ARK.body,
+      push_to_kiar_ark_body_and_display(
         {
           type: "tymoktaxot",
           dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(
             base_score * Math.pow(2, GAME_STATE.log2_rate),
           ).join("")}\n終季\t${season_that_has_just_ended}終`,
         },
-      ];
+      );
     });
     score_display.appendChild(ta_xot1_button);
   }, 1000 * 0.8093);
