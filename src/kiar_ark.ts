@@ -3,14 +3,14 @@ export type Elem =
   | { type: "movement"; dat: string; piece_capture_comment?: string }
   | { type: "tymoktaxot"; dat: string };
 
-const _kiar_ark: {
+const KIAR_ARK: {
   header: Elem[];
   body: Elem[];
 } = { header: [], body: [] };
 
 function groupTwoAndRender(input: Elem[]) {
   let ans: string = "";
-  for (let i = 0; i < input.length; ) {
+  for (let i = 0; i < input.length;) {
     const current: Elem | undefined = input[i];
     const next: Elem | undefined = input[i + 1];
     if (current?.type === "movement" && next?.type === "movement") {
@@ -45,14 +45,20 @@ function groupTwoAndRender(input: Elem[]) {
   return ans;
 }
 
-export const KIAR_ARK = new Proxy(_kiar_ark, {
-  set: function (target, p: "header" | "body", value: Elem[]) {
-    target[p] = value;
-    console.log("_kiar_ark:", _kiar_ark);
-    document.getElementById("kiar_ark")!.textContent =
-      _kiar_ark.header.map((a) => a.dat).join("\n") +
-      "\n" +
-      groupTwoAndRender(_kiar_ark.body);
-    return true;
-  },
-});
+export function display_kiar_ark() {
+  console.log("_kiar_ark:", KIAR_ARK);
+  document.getElementById("kiar_ark")!.textContent =
+    KIAR_ARK.header.map((a) => a.dat).join("\n") +
+    "\n" +
+    groupTwoAndRender(KIAR_ARK.body);
+}
+
+export function push_to_kiar_ark_body_and_display(e: Elem) {
+  KIAR_ARK.body.push(e);
+  display_kiar_ark();
+}
+
+export function push_to_kiar_ark_header_and_display(e: Elem) {
+  KIAR_ARK.header.push(e);
+  display_kiar_ark();
+}
