@@ -9,6 +9,17 @@ push_to_kiar_ark_header_and_display(
   { type: "header", dat: `{始時:${new Date().toISOString()}}` },
 );
 
+let COORD_TOGGLE: boolean = false;
+document.getElementById("coord_toggle_button")!.addEventListener("click", () => {
+  COORD_TOGGLE = !COORD_TOGGLE;
+  console.log("COORD_TOGGLE now set to", COORD_TOGGLE);
+  document.getElementById("coord_annotation")!.style.visibility = COORD_TOGGLE ? "visible" : "hidden";
+  (document.getElementById("coord_toggle_button")! as HTMLInputElement).src =
+    COORD_TOGGLE
+      ? "image/toggle/coord_toggle_active.png"
+      : "image/toggle/coord_toggle_inactive.png";
+});
+
 export let KRUT_CRUOP: boolean = true;
 // toggles `sound/ciurl4.ogg` and `sound/thud.ogg`.
 
