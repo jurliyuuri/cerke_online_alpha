@@ -45,9 +45,10 @@ export function createArrowSvg(
   d: string,
   coord: readonly [number, number],
 ): SVGSVGElement {
+  const field_migration_to_the_left = 65;
   const [row_index, column_index] = coord;
   const top = row_index * BOX_SIZE + 160.5;
-  const left = column_index * BOX_SIZE + 19.25;
+  const left = column_index * BOX_SIZE + 19.25 - field_migration_to_the_left;
   const i = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   const box_width = 800;
   const box_height = 800;
