@@ -150,7 +150,7 @@ $field_migration_to_the_left: 65px;
 #kait_kaik {
   z-index: 3000;
   position: absolute;
-  left: 235px;
+  left: 235px - $field_migration_to_the_left;
   top: 415px;
 }
 
