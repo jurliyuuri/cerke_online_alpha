@@ -130,12 +130,8 @@ export function createGuideImageAt(
   const img = document.createElement("img");
   img.setAttribute("draggable", "false");
   img.classList.add("guide");
-  img.style.top = `${
-    1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
-  }px`;
-  img.style.left = `${
-    1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
-  }px`;
+  img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
+  img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
   img.src = `image/${path}.png`;
   img.width = MAX_PIECE_SIZE;
   img.height = MAX_PIECE_SIZE;
@@ -168,20 +164,25 @@ export function createCiurl(
 
 /**
  * Generates an HTMLImageElement to be displayed in hop1 zuo1 / 手駒用の HTMLImageElement を生成する。
- * @param ind how many-th hop1 zuo1? / 左から何番目(0始まり)の手駒であるかを指定
- * @param path path to the image / 画像のパス
- * @param list_length how many hop1 zuo1 there are in total on one side / 片側の手駒の個数
+ * @param o.ind how many-th hop1 zuo1? / 左から何番目(0始まり)の手駒であるかを指定
+ * @param o.path path to the image / 画像のパス
+ * @param o.list_length how many hop1 zuo1 there are in total on one side / 片側の手駒の個数
+ * @param o.is_upward whether the pieces in hop1zuo1 point upward / 上向きを向いた手駒かどうか
  * @returns an HTMLImageElement to be displayed in hop1 zuo1
  */
-export function createPieceImgToBePlacedOnHop1zuo1(
+export function createPieceImgToBePlacedOnHop1zuo1(o: {
   ind: number,
   path: string,
   list_length: number,
-): HTMLImageElement {
+  is_upward: boolean
+}): HTMLImageElement {
+  const hop1zuo1_height = 140;
+  const margin = 1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
+  const top = o.is_upward ? hop1zuo1_height - PIECE_SIZE - margin : margin;
   return createPieceSizeImageOnBoardByPathAndXY(
-    1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
-    hop1_zuo1_left_position({ ind, list_length }),
-    path,
+    top,
+    hop1_zuo1_left_position({ ind: o.ind, list_length: o.list_length }),
+    o.path,
     "piece_image_on_hop1zuo1",
   );
 }
