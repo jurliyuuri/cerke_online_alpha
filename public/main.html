@@ -34,7 +34,7 @@
             <div id="board">
                 <img src="image/field.png" width="631" height="631" />
             </div>
-            <div id="contains_coord_annotation" style="position: absolute; top: -67px; left: -87px; z-index: 0;">
+            <div id="contains_coord_annotation" style="position: absolute; top: -67px; left: -87px; z-index: -1;">
                 <img id="coord_annotation" src="image/IA_is_down=true.svg" width="783" height="767" style="visibility: hidden;" />
             </div>
             <div id="contains_pieces_on_board">
@@ -44,7 +44,24 @@
             <div id="contains_guides">
             </div>
         </div>
-        <div id="hop1zuo1_of_upward" style="z-index: -1;">
+        <div id="hop1zuo1_of_upward">
+            <!-- 
+                The element `hop1zuo1_of_upward_bg` needs to exist independently from `hop1zuo1_of_upward` due to the following reason.
+                First, we have to render the background color rgb(0, 255, 200) underneath the `contains_coord_annotation`.
+                But `contains_coord_annotation` cannot have a positive z-index, 
+                because a positive z-index will cover up the pieces on the board and will prevent the player from clicking a piece.
+                On the other hand, `hop1zuo1_of_upward` cannot have a negative z-index,
+                because a negative z-index will make hop1zuo1 unclickable.
+                Hence the only solution is to render the background color in a separate HTML element.
+
+                要素 `hop1zuo1_of_upward_bg` が `hop1zuo1_of_upward` とは独立して存在する必要がある。
+                なぜかというと、背景色 rgb(0, 255, 200) を `contains_coord_annotation` の下にレンダリングする必要があるが、
+                `contains_coord_annotation` に正の z-index を持たせてしまうと、
+                それが盤上の駒を覆ってしまってプレイヤーが駒ををクリックできなくなってしまう。
+                一方、`hop1zuo1_of_upward` に負の z-index を設定すると、手駒がクリックできなくなってしまう。
+                したがって、背景色を別のHTML要素でレンダリングするしかない。
+            -->
+            <div id="hop1zuo1_of_upward_bg"></div>
             <div id="contains_pieces_on_upward">
             </div>
             <div id="contains_guides_on_upward">

@@ -141,10 +141,34 @@ $field_migration_to_the_left: 65px;
 }
 
 #hop1zuo1_of_upward {
-  background-color: rgb(0, 255, 200);
   width: 631px;
   height: $hop1zuo1_height;
   position: relative;
+}
+
+/*
+The element `hop1zuo1_of_upward_bg` needs to exist independently from `hop1zuo1_of_upward` due to the following reason.
+First, we have to render the background color rgb(0, 255, 200) underneath the `contains_coord_annotation`.
+But `contains_coord_annotation` cannot have a positive z-index, 
+because a positive z-index will cover up the pieces on the board and will prevent the player from clicking a piece.
+On the other hand, `hop1zuo1_of_upward` cannot have a negative z-index,
+because a negative z-index will make hop1zuo1 unclickable.
+Hence the only solution is to render the background color in a separate HTML element.
+
+要素 `hop1zuo1_of_upward_bg` が `hop1zuo1_of_upward` とは独立して存在する必要がある。
+なぜかというと、背景色 rgb(0, 255, 200) を `contains_coord_annotation` の下にレンダリングする必要があるが、
+`contains_coord_annotation` に正の z-index を持たせてしまうと、
+それが盤上の駒を覆ってしまってプレイヤーが駒ををクリックできなくなってしまう。
+一方、`hop1zuo1_of_upward` に負の z-index を設定すると、手駒がクリックできなくなってしまう。
+したがって、背景色を別のHTML要素でレンダリングするしかない。
+*/
+#hop1zuo1_of_upward_bg {
+  background-color: rgb(0, 255, 200);
+  width: 631px;
+  height: $hop1zuo1_height;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 #kait_kaik {
