@@ -1406,8 +1406,12 @@ export function selectOwnPieceOnHop1zuo1(
     const contains_guides_on_upward = document.getElementById(
       "contains_guides_on_upward",
     )!;
+
+    const hop1zuo1_height = 140;
+    const margin = 1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;
+    const top = hop1zuo1_height - PIECE_SIZE - margin;
     const centralNode = createPieceSizeImageOnBoardByPathAndXY(
-      1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2,
+      top,
       hop1_zuo1_left_position({ ind, list_length }),
       "selection2",
       "selection",
