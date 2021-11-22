@@ -1,0 +1,1 @@
+The aspect ratio must be exactly 1:2

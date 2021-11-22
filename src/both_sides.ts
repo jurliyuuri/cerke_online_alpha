@@ -145,11 +145,12 @@ export function drawField(o: { focus?: Coord | null }) {
 
     for (let i = 0; i < list.length; i++) {
       const piece: NonTam2PieceUpward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(
-        i,
-        toPath(piece),
-        list.length,
-      );
+      const imgNode = createPieceImgToBePlacedOnHop1zuo1({
+        ind: i,
+        path: toPath(piece),
+        list_length: list.length,
+        is_upward: true
+      });
 
       imgNode.style.cursor = "pointer";
       imgNode.addEventListener("click", function () {
@@ -172,11 +173,12 @@ export function drawField(o: { focus?: Coord | null }) {
 
     for (let i = 0; i < list.length; i++) {
       const piece: NonTam2PieceDownward = list[i];
-      const imgNode = createPieceImgToBePlacedOnHop1zuo1(
-        i,
-        toPath(piece),
-        list.length,
-      );
+      const imgNode = createPieceImgToBePlacedOnHop1zuo1({
+        ind: i,
+        path: toPath(piece),
+        list_length: list.length,
+        is_upward: false
+      });
       imgNode.id = `hop1zuo1OfDownward_${i}`;
       contains_pieces_on_downward.appendChild(imgNode);
     }

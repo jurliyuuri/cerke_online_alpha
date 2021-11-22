@@ -47,12 +47,15 @@ img.water_entry {
   }
 }
 
+/* This value must be the same as the one given in `createArrowSvg` of `src/create_html_element.ts` */
+$field_migration_to_the_left: 65px;
+
 #field {
   width: 631px;
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
 }
 
 #protective_cover_over_field {
@@ -61,13 +64,13 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
 }
 
 #final_score_display {
   position: absolute;
   top: 250px;
-  left: 11px;
+  left: 11px - $field_migration_to_the_left;
   height: 450px;
   width: 650px;
   background-color: rgba(1, 1, 1, 0.7);
@@ -77,7 +80,7 @@ img.water_entry {
 #score_display {
   position: absolute;
   top: 250px;
-  left: 11px;
+  left: 11px - $field_migration_to_the_left;
   height: 450px;
   width: 650px;
   background-color: rgba(1, 1, 1, 0.7);
@@ -90,7 +93,7 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
   z-index: 999;
 }
 
@@ -100,7 +103,7 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
   z-index: 999;
   cursor: not-allowed;
 }
@@ -123,7 +126,7 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
 }
 
 .nocover {
@@ -138,16 +141,41 @@ img.water_entry {
 }
 
 #hop1zuo1_of_upward {
-  background-color: rgb(0, 255, 200);
   width: 631px;
   height: $hop1zuo1_height;
   position: relative;
 }
 
+/*
+The element `hop1zuo1_of_upward_bg` needs to exist independently from `hop1zuo1_of_upward` due to the following reason.
+First, we have to render the background color rgb(0, 255, 200) underneath the `contains_coord_annotation`.
+But `contains_coord_annotation` cannot have a positive z-index, 
+because a positive z-index will cover up the pieces on the board and will prevent the player from clicking a piece.
+On the other hand, `hop1zuo1_of_upward` cannot have a negative z-index,
+because a negative z-index will make hop1zuo1 unclickable.
+Hence the only solution is to render the background color in a separate HTML element.
+
+要素 `hop1zuo1_of_upward_bg` が `hop1zuo1_of_upward` とは独立して存在する必要がある。
+なぜかというと、背景色 rgb(0, 255, 200) を `contains_coord_annotation` の下にレンダリングする必要があるが、
+`contains_coord_annotation` に正の z-index を持たせてしまうと、
+それが盤上の駒を覆ってしまってプレイヤーが駒ををクリックできなくなってしまう。
+一方、`hop1zuo1_of_upward` に負の z-index を設定すると、手駒がクリックできなくなってしまう。
+したがって、背景色を別のHTML要素でレンダリングするしかない。
+*/
+#hop1zuo1_of_upward_bg {
+  background-color: rgb(0, 255, 200);
+  width: 631px;
+  height: $hop1zuo1_height;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -2;
+}
+
 #kait_kaik {
   z-index: 3000;
   position: absolute;
-  left: 235px;
+  left: 235px - $field_migration_to_the_left;
   top: 415px;
 }
 
@@ -167,7 +195,7 @@ $kaitkaik_hover_width: 220px;
 #kait_kaik:hover {
   z-index: 3000;
   position: absolute;
-  left: 235px - ($kaitkaik_hover_width - $kaitkaik_width) / 2;
+  left: 235px - $field_migration_to_the_left - ($kaitkaik_hover_width - $kaitkaik_width) / 2;
   top: 415px - ($kaitkaik_hover_width - $kaitkaik_width) * $kaitkaik_ratio / 2;
 }
 
@@ -180,67 +208,100 @@ $kaitkaik_hover_width: 220px;
   height: auto;
 }
 
+/* As written in public/image/toggle/README.txt, the aspect ratio must be exactly 1:2 */
+$toggle_buttons_ratio: 2;
+$toggle_buttons_left: 695px;
+$toggle_buttons_width: 44px;
+$toggle_buttons_hover_width: 44px * 1.1;
+
+$coord_toggle_default_top: 370px;
+$krut_cruop_default_top: 490px;
+$lork_liar_default_top: 610px;
+
+#coord_toggle {
+  z-index: 3000;
+  position: absolute;
+  left: $toggle_buttons_left;
+  top: $coord_toggle_default_top;
+}
+
+#coord_toggle_button {
+  position: absolute;
+  max-width: $toggle_buttons_width;
+  width: $toggle_buttons_width;
+  height: $toggle_buttons_width * $toggle_buttons_ratio;
+}
+
+#coord_toggle:hover {
+  z-index: 3000;
+  position: absolute;
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $coord_toggle_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio /
+    2;
+}
+
+#coord_toggle_button:hover {
+  position: absolute;
+  max-width: $toggle_buttons_hover_width;
+  width: $toggle_buttons_hover_width;
+  height: auto;
+}
+
 #krut_cruop {
   z-index: 3000;
   position: absolute;
-  left: 695px;
-  top: 403px;
+  left: $toggle_buttons_left;
+  top: $krut_cruop_default_top;
 }
 
-$krut_cruop_width: 44px;
-$krut_cruop_ratio: 660 / 330;
 #krut_cruop_button {
   position: absolute;
-  max-width: $krut_cruop_width;
-  width: $krut_cruop_width;
-  height: $krut_cruop_width * $krut_cruop_ratio;
+  max-width: $toggle_buttons_width;
+  width: $toggle_buttons_width;
+  height: $toggle_buttons_width * $toggle_buttons_ratio;
 }
 
-$krut_cruop_hover_width: 44px * 1.1;
 #krut_cruop:hover {
   z-index: 3000;
   position: absolute;
-  left: 695px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
-  top: 403px - ($krut_cruop_hover_width - $krut_cruop_width) * $krut_cruop_ratio /
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $krut_cruop_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio /
     2;
 }
 
 #krut_cruop_button:hover {
   position: absolute;
-  max-width: $krut_cruop_hover_width;
-  width: $krut_cruop_hover_width;
+  max-width: $toggle_buttons_hover_width;
+  width: $toggle_buttons_hover_width;
   height: auto;
 }
 
 #lork_liar {
   z-index: 3000;
   position: absolute;
-  left: 695px;
-  top: 560px;
+  left: $toggle_buttons_left;
+  top: $lork_liar_default_top;
 }
 
-$lork_liar_width: 44px;
-$lork_liar_ratio: 720 / 360;
 #lork_liar_button {
   position: absolute;
-  max-width: $lork_liar_width;
-  width: $lork_liar_width;
-  height: $lork_liar_width * $lork_liar_ratio;
+  max-width: $toggle_buttons_width;
+  width: $toggle_buttons_width;
+  height: $toggle_buttons_width * $toggle_buttons_ratio;
 }
 
-$lork_liar_hover_width: 44px * 1.1;
 #lork_liar:hover {
   z-index: 3000;
   position: absolute;
-  left: 695px - ($lork_liar_hover_width - $lork_liar_width) / 2;
-  top: 560px - ($lork_liar_hover_width - $lork_liar_width) * $lork_liar_ratio /
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $lork_liar_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio /
     2;
 }
 
 #lork_liar_button:hover {
   position: absolute;
-  max-width: $lork_liar_hover_width;
-  width: $lork_liar_hover_width;
+  max-width: $toggle_buttons_hover_width;
+  width: $toggle_buttons_hover_width;
   height: auto;
 }
 
@@ -261,7 +322,7 @@ $lork_liar_hover_width: 44px * 1.1;
 
 #scoreboard_containment {
   position: absolute;
-  left: -185px;
+  left: -215px - $field_migration_to_the_left;
   top: 19.5px;
 }
 
