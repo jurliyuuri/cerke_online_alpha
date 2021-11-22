@@ -2,6 +2,7 @@ import { drawField } from "./both_sides";
 import { GAME_STATE } from "./game_state";
 import { push_to_kiar_ark_header_and_display, push_to_kiar_ark_initial_colors_and_display } from "./kiar_ark";
 
+(document.getElementById("coord_annotation")! as HTMLImageElement).src = `image/IA_is_down=${GAME_STATE.IA_is_down}.svg`
 console.log("drawField #", 0);
 drawField({ focus: null });
 push_to_kiar_ark_header_and_display(
