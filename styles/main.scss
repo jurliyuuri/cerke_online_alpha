@@ -47,12 +47,14 @@ img.water_entry {
   }
 }
 
+$field_migration_to_the_left: 65px;
+
 #field {
   width: 631px;
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
 }
 
 #protective_cover_over_field {
@@ -61,13 +63,13 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
 }
 
 #final_score_display {
   position: absolute;
   top: 250px;
-  left: 11px;
+  left: 11px - $field_migration_to_the_left;
   height: 450px;
   width: 650px;
   background-color: rgba(1, 1, 1, 0.7);
@@ -77,7 +79,7 @@ img.water_entry {
 #score_display {
   position: absolute;
   top: 250px;
-  left: 11px;
+  left: 11px - $field_migration_to_the_left;
   height: 450px;
   width: 650px;
   background-color: rgba(1, 1, 1, 0.7);
@@ -90,7 +92,7 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
   z-index: 999;
 }
 
@@ -100,7 +102,7 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
   z-index: 999;
   cursor: not-allowed;
 }
@@ -123,7 +125,7 @@ img.water_entry {
   height: 631px + $hop1zuo1_height * 2;
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 20px - $field_migration_to_the_left;
 }
 
 .nocover {
@@ -261,7 +263,7 @@ $lork_liar_hover_width: 44px * 1.1;
 
 #scoreboard_containment {
   position: absolute;
-  left: -215px;
+  left: -215px - $field_migration_to_the_left;
   top: 19.5px;
 }
 
