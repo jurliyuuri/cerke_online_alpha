@@ -48,7 +48,7 @@ import {
 import { DICTIONARY } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
 import { toDigitsLinzklar } from "./to_digits";
-import { push_to_kiar_ark_body_and_display } from "./kiar_ark";
+import * as KiarArk from "./kiar_ark";
 import { KRUT_CRUOP } from "./main_entry";
 import {
   animateStepTamLogo,
@@ -454,7 +454,7 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      push_to_kiar_ark_body_and_display(
+      KiarArk.push_body_elem_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
@@ -468,7 +468,7 @@ async function sendAfterHalfAcceptance(
         },
       );
     } else {
-      push_to_kiar_ark_body_and_display(
+      KiarArk.push_body_elem_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
@@ -508,7 +508,7 @@ async function sendAfterHalfAcceptance(
 
     // Always 此無, because in the outer `if` it is already checked
     // No capture occurs
-    push_to_kiar_ark_body_and_display(
+    KiarArk.push_body_elem_and_display(
       {
         type: "movement",
         dat: `${serializeAbsoluteCoord(
@@ -534,7 +534,7 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     if (message.dest) {
-      push_to_kiar_ark_body_and_display(
+      KiarArk.push_body_elem_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
@@ -588,7 +588,7 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    push_to_kiar_ark_body_and_display(
+    KiarArk.push_body_elem_and_display(
       {
         type: "movement",
         dat: normalMessageToKiarArk(message),
@@ -623,7 +623,7 @@ async function sendNormalMessage(message: NormalMove) {
 
     GAME_STATE.is_my_turn = false;
     // no capture possible
-    push_to_kiar_ark_body_and_display(
+    KiarArk.push_body_elem_and_display(
       {
         type: "movement",
         dat: normalMessageToKiarArk(
@@ -640,7 +640,7 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    push_to_kiar_ark_body_and_display(
+    KiarArk.push_body_elem_and_display(
       {
         type: "movement",
         dat: normalMessageToKiarArk(
@@ -751,7 +751,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       if (res.legal !== true) {
         throw new Error("bad!!!!");
       }
-      push_to_kiar_ark_body_and_display(
+      KiarArk.push_body_elem_and_display(
         { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}\n再行` },
       );
     });
@@ -778,7 +778,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(base_score, is_first_move_my_move_in_the_next_season);
-      push_to_kiar_ark_body_and_display(
+      KiarArk.push_body_elem_and_display(
         {
           type: "tymoktaxot",
           dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(

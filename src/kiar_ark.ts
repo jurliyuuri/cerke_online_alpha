@@ -1,20 +1,20 @@
-export type ElemHeader =
+export type HeaderElem =
   | { type: "header"; dat: string }
-export type ElemBody =
+export type BodyElem =
   | { type: "movement"; dat: string; piece_capture_comment?: string }
   | { type: "tymoktaxot"; dat: string };
 
 const KIAR_ARK: {
-  header: ElemHeader[];
+  header: HeaderElem[];
   initial_colors: ("赤" | "黒")[];
-  body: ElemBody[];
+  body: BodyElem[];
 } = { header: [], body: [], initial_colors: [] };
 
-function groupTwoAndRender(input: ElemBody[]) {
+function groupTwoAndRender(input: BodyElem[]) {
   let ans: string = "";
   for (let i = 0; i < input.length;) {
-    const current: ElemBody | undefined = input[i];
-    const next: ElemBody | undefined = input[i + 1];
+    const current: BodyElem | undefined = input[i];
+    const next: BodyElem | undefined = input[i + 1];
     if (current?.type === "movement" && next?.type === "movement") {
       ans +=
         current.dat +
@@ -56,17 +56,17 @@ export function display_kiar_ark() {
     groupTwoAndRender(KIAR_ARK.body);
 }
 
-export function push_to_kiar_ark_initial_colors_and_display(e: "赤" | "黒") {
+export function push_initial_colors_and_display(e: "赤" | "黒") {
   KIAR_ARK.initial_colors.push(e);
   display_kiar_ark();
 }
 
-export function push_to_kiar_ark_body_and_display(e: ElemBody) {
+export function push_body_elem_and_display(e: BodyElem) {
   KIAR_ARK.body.push(e);
   display_kiar_ark();
 }
 
-export function push_to_kiar_ark_header_and_display(e: ElemHeader) {
+export function push_header_elem_and_display(e: HeaderElem) {
   KIAR_ARK.header.push(e);
   display_kiar_ark();
 }
