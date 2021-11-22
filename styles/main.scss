@@ -169,6 +169,7 @@ Hence the only solution is to render the background color in a separate HTML ele
   position: absolute;
   top: 0px;
   left: 0px;
+  z-index: -2;
 }
 
 #kait_kaik {
@@ -194,7 +195,7 @@ $kaitkaik_hover_width: 220px;
 #kait_kaik:hover {
   z-index: 3000;
   position: absolute;
-  left: 235px - ($kaitkaik_hover_width - $kaitkaik_width) / 2;
+  left: 235px - $field_migration_to_the_left - ($kaitkaik_hover_width - $kaitkaik_width) / 2;
   top: 415px - ($kaitkaik_hover_width - $kaitkaik_width) * $kaitkaik_ratio / 2;
 }
 
