@@ -183,67 +183,100 @@ $kaitkaik_hover_width: 220px;
   height: auto;
 }
 
+/* As written in public/image/toggle/README.txt, the aspect ratio must be exactly 1:2 */
+$toggle_buttons_ratio: 2;
+$toggle_buttons_left: 695px;
+$toggle_buttons_width: 44px;
+$toggle_buttons_hover_width: 44px * 1.1;
+
+$coord_toggle_default_top: 246px;
+$krut_cruop_default_top: 403px;
+$lork_liar_default_top: 560px;
+
+#coord_toggle {
+  z-index: 3000;
+  position: absolute;
+  left: $toggle_buttons_left;
+  top: $coord_toggle_default_top;
+}
+
+#coord_toggle_button {
+  position: absolute;
+  max-width: $toggle_buttons_width;
+  width: $toggle_buttons_width;
+  height: $toggle_buttons_width * $toggle_buttons_ratio;
+}
+
+#coord_toggle:hover {
+  z-index: 3000;
+  position: absolute;
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $coord_toggle_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio /
+    2;
+}
+
+#coord_toggle_button:hover {
+  position: absolute;
+  max-width: $toggle_buttons_hover_width;
+  width: $toggle_buttons_hover_width;
+  height: auto;
+}
+
 #krut_cruop {
   z-index: 3000;
   position: absolute;
-  left: 695px;
-  top: 403px;
+  left: $toggle_buttons_left;
+  top: $krut_cruop_default_top;
 }
 
-$krut_cruop_width: 44px;
-$krut_cruop_ratio: 660 / 330;
 #krut_cruop_button {
   position: absolute;
-  max-width: $krut_cruop_width;
-  width: $krut_cruop_width;
-  height: $krut_cruop_width * $krut_cruop_ratio;
+  max-width: $toggle_buttons_width;
+  width: $toggle_buttons_width;
+  height: $toggle_buttons_width * $toggle_buttons_ratio;
 }
 
-$krut_cruop_hover_width: 44px * 1.1;
 #krut_cruop:hover {
   z-index: 3000;
   position: absolute;
-  left: 695px - ($krut_cruop_hover_width - $krut_cruop_width) / 2;
-  top: 403px - ($krut_cruop_hover_width - $krut_cruop_width) * $krut_cruop_ratio /
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $krut_cruop_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio /
     2;
 }
 
 #krut_cruop_button:hover {
   position: absolute;
-  max-width: $krut_cruop_hover_width;
-  width: $krut_cruop_hover_width;
+  max-width: $toggle_buttons_hover_width;
+  width: $toggle_buttons_hover_width;
   height: auto;
 }
 
 #lork_liar {
   z-index: 3000;
   position: absolute;
-  left: 695px;
-  top: 560px;
+  left: $toggle_buttons_left;
+  top: $lork_liar_default_top;
 }
 
-$lork_liar_width: 44px;
-$lork_liar_ratio: 720 / 360;
 #lork_liar_button {
   position: absolute;
-  max-width: $lork_liar_width;
-  width: $lork_liar_width;
-  height: $lork_liar_width * $lork_liar_ratio;
+  max-width: $toggle_buttons_width;
+  width: $toggle_buttons_width;
+  height: $toggle_buttons_width * $toggle_buttons_ratio;
 }
 
-$lork_liar_hover_width: 44px * 1.1;
 #lork_liar:hover {
   z-index: 3000;
   position: absolute;
-  left: 695px - ($lork_liar_hover_width - $lork_liar_width) / 2;
-  top: 560px - ($lork_liar_hover_width - $lork_liar_width) * $lork_liar_ratio /
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $lork_liar_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio /
     2;
 }
 
 #lork_liar_button:hover {
   position: absolute;
-  max-width: $lork_liar_hover_width;
-  width: $lork_liar_hover_width;
+  max-width: $toggle_buttons_hover_width;
+  width: $toggle_buttons_hover_width;
   height: auto;
 }
 

@@ -17,8 +17,8 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
   console.log("KRUT_CRUOP now set to", KRUT_CRUOP);
   (document.getElementById("krut_cruop_button")! as HTMLInputElement).src =
     KRUT_CRUOP
-      ? "image/kut2_cuop2_active.png"
-      : "image/kut2_cuop2_inactive.png";
+      ? "image/toggle/kut2_cuop2_active.png"
+      : "image/toggle/kut2_cuop2_inactive.png";
 });
 
 const BACKGROUND_MUSIC = new Audio("sound/cetkaik_leti_duxe_.ogg");
@@ -41,8 +41,8 @@ function toggleBackgroundMusic() {
   }
   (document.getElementById("lork_liar_button")! as HTMLInputElement).src =
     LORK_LIAR_ENABLED
-      ? "image/lok1_lia1_active.png"
-      : "image/lok1_lia1_inactive.png";
+      ? "image/toggle/lok1_lia1_active.png"
+      : "image/toggle/lok1_lia1_inactive.png";
   (document.getElementById("volume_slidebar")! as HTMLInputElement).disabled =
     !LORK_LIAR_ENABLED;
   BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? LORK_LIAR / 100 : 0;
