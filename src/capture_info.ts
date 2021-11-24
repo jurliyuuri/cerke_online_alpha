@@ -2,7 +2,12 @@ import { Profession, Color } from "cerke_online_api";
 import { Piece } from "cerke_online_utility";
 import { serializeColor, serializeProf } from "./serialize";
 
-export type CaptureInfo = [Color, Profession] | null;
+export type MovementInfo = {
+  piece_moved: Readonly<Piece | "Tam2">,
+  maybe_capture: Readonly<CaptureInfo>
+}
+
+export type CaptureInfo = Readonly<[Color, Profession]> | null;
 
 export function toColorProf(p: Piece | null): CaptureInfo {
   if (p === "Tam2") {

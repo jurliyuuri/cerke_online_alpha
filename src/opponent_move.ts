@@ -51,9 +51,11 @@ import {
   normalMessageToKiarArk,
   serializeAbsoluteCoord,
   serializeCiurl,
+  serializeProf,
 } from "./serialize";
 import {
   CaptureInfo,
+  MovementInfo,
   toColorProf,
   toPieceCaptureComment,
 } from "./capture_info";
@@ -161,7 +163,8 @@ export async function sendMainPollAndDoEverythingThatFollows() {
   if (opponent_move.type === "NonTamMove") {
     GAME_STATE.opponent_has_just_moved_tam = false;
     if (opponent_move.data.type === "SrcDst") {
-      const maybe_capture = await animateOpponentSrcDst(opponent_move.data);
+      const movement_info = await animateOpponentSrcDst(opponent_move.data);
+      const piece_moved = movement_info.piece_moved; // USE ME
       GAME_STATE.is_my_turn = true;
       if (opponent_move.data.water_entry_ciurl) {
         KiarArk.push_body_elem_and_display(
@@ -169,17 +172,20 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: normalMessageToKiarArk(
               opponent_move,
-              opponent_move.data.water_entry_ciurl.filter((a) => a).length,
+              {
+                piece_moved,
+                water_ciurl_count: opponent_move.data.water_entry_ciurl.filter((a) => a).length
+              },
             ),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       } else {
         KiarArk.push_body_elem_and_display(
           {
             type: "movement",
-            dat: normalMessageToKiarArk(opponent_move),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            dat: normalMessageToKiarArk(opponent_move, { piece_moved }),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       }
@@ -196,12 +202,13 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       GAME_STATE.is_my_turn = true;
       // piece_capture_comment is impossible
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: piece }) },
       );
     } else if (opponent_move.data.type === "SrcStepDstFinite") {
-      const maybe_capture = await animateOpponentSrcStepDstFinite(
+      const movement_info = await animateOpponentSrcStepDstFinite(
         opponent_move.data,
       );
+      const piece_moved = movement_info.piece_moved; // USE ME
       GAME_STATE.is_my_turn = true;
       if (opponent_move.data.water_entry_ciurl) {
         KiarArk.push_body_elem_and_display(
@@ -209,17 +216,17 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: normalMessageToKiarArk(
               opponent_move,
-              opponent_move.data.water_entry_ciurl.filter((a) => a).length,
+              { piece_moved, water_ciurl_count: opponent_move.data.water_entry_ciurl.filter((a) => a).length },
             ),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       } else {
         KiarArk.push_body_elem_and_display(
           {
             type: "movement",
-            dat: normalMessageToKiarArk(opponent_move),
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            dat: normalMessageToKiarArk(opponent_move, { piece_moved }),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       }
@@ -237,19 +244,19 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       );
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }) },
       );
     } else if (opponent_move.stepStyle === "StepsDuringFormer") {
       await animateOpponentTamSteppingDuringFormer(opponent_move);
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }) },
       );
     } else if (opponent_move.stepStyle === "StepsDuringLatter") {
       await animateOpponentTamSteppingDuringLatter(opponent_move);
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }) },
       );
     } else {
       const _a: never = opponent_move.stepStyle;
@@ -293,13 +300,13 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         return Promise.resolve(opponent_move.finalResult);
       }
     })();
-    const [finalResult_resolved, maybe_capture]: [
+    const [finalResult_resolved, movement_info]: [
       {
         dest: AbsoluteCoord;
         water_entry_ciurl?: Ciurl;
         thwarted_by_failing_water_entry_ciurl: Ciurl | null;
       },
-      CaptureInfo,
+      MovementInfo,
     ] = await animateOpponentInfAfterStep({
       src: fromAbsoluteCoord(opponent_move.src),
       step: fromAbsoluteCoord(opponent_move.step),
@@ -307,6 +314,11 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       stepping_ciurl: opponent_move.stepping_ciurl,
       finalResult,
     });
+
+    const zuo1: string = (() => {
+      if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`") }
+      return serializeProf(movement_info.piece_moved.prof);
+    })();
     GAME_STATE.is_my_turn = true;
 
     if (finalResult_resolved.water_entry_ciurl) {
@@ -317,7 +329,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               finalResult_resolved.dest,
@@ -332,14 +344,14 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               finalResult_resolved.dest,
             )}橋${serializeCiurl(
               opponent_move.stepping_ciurl,
             )}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       }
@@ -349,14 +361,14 @@ export async function sendMainPollAndDoEverythingThatFollows() {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
             opponent_move.src,
-          )}片${serializeAbsoluteCoord(
+          )}${zuo1}${serializeAbsoluteCoord(
             opponent_move.step,
           )}${serializeAbsoluteCoord(
             finalResult_resolved.dest,
           )}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(
             finalResult_resolved.thwarted_by_failing_water_entry_ciurl,
           )}此無`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
         },
       );
     } else {
@@ -379,12 +391,12 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               finalResult_resolved.dest,
             )}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       } else {
@@ -393,12 +405,12 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               opponent_move.plannedDirection,
             )}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       }
@@ -437,7 +449,7 @@ async function sendMainPoll(): Promise<Ret_MainPoll_Legal> {
 
 async function animateOpponentSrcStepDstFinite(
   p: SrcStepDstFinite,
-): Promise<CaptureInfo> {
+): Promise<MovementInfo> {
   return await animateOpponentSrcStepDstFinite_(
     fromAbsoluteCoord(p.src),
     fromAbsoluteCoord(p.step),
@@ -508,7 +520,7 @@ async function animateOpponentInfAfterStep(p: {
       water_entry_ciurl?: Ciurl;
       thwarted_by_failing_water_entry_ciurl: Ciurl | null;
     },
-    CaptureInfo,
+    MovementInfo,
   ]
 > {
   const [src_i, src_j] = p.src;
@@ -591,7 +603,7 @@ async function animateOpponentInfAfterStep(p: {
         drawField({ focus: [src_i, src_j] });
 
         // no piece capture is possible if water entry has failed
-        return [result, null];
+        return [result, { piece_moved: piece, maybe_capture: null }];
       }
     }
 
@@ -605,7 +617,7 @@ async function animateOpponentInfAfterStep(p: {
     console.log("drawField opponent #", 13);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
-    return [result, toColorProf(destPiece)];
+    return [result, { piece_moved: piece, maybe_capture: toColorProf(destPiece) }];
   } else {
     // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     await animateNode(srcNode, 750 * 0.8093, {
@@ -624,7 +636,7 @@ async function animateOpponentInfAfterStep(p: {
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+        return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
@@ -634,7 +646,7 @@ async function animateOpponentInfAfterStep(p: {
       console.log("drawField opponent #", 14);
       GAME_STATE.last_move_focus = [src_i, src_j];
       drawField({ focus: [src_i, src_j] });
-      return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+      return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     }
 
     if (!coordEq(p.src, dest)) {
@@ -644,7 +656,7 @@ async function animateOpponentInfAfterStep(p: {
     console.log("drawField opponent #", 15);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
-    return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+    return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
   }
 }
 
@@ -705,12 +717,12 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
   const res: Ret_WhetherTyMokPoll = await sendStuffTo<
     {},
     | {
-        legal: true;
-        content:
-          | "ty mok1"
-          | { is_first_move_my_move: boolean | null }
-          | "not yet";
-      }
+      legal: true;
+      content:
+      | "ty mok1"
+      | { is_first_move_my_move: boolean | null }
+      | "not yet";
+    }
     | { legal: false; whyIllegal: string }
   >(
     "whethertymokpoll",
@@ -783,13 +795,13 @@ async function animateOpponentSrcStepDstFinite_(
   step: Coord,
   dest: Coord,
   water_entry_ciurl?: Ciurl,
-): Promise<CaptureInfo> {
+): Promise<MovementInfo> {
   const [src_i, src_j] = src;
   const [step_i, step_j] = step;
   const [dest_i, dest_j] = dest;
 
-  const piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
-  if (piece === null) {
+  const piece_moved: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
+  if (piece_moved === null) {
     throw new Error("src is unoccupied");
   }
 
@@ -853,7 +865,7 @@ async function animateOpponentSrcStepDstFinite_(
         drawField({ focus: [src_i, src_j] });
 
         // no piece capture is possible if water entry failed
-        return null;
+        return { piece_moved, maybe_capture: null };
       }
     }
 
@@ -861,12 +873,12 @@ async function animateOpponentSrcStepDstFinite_(
       /* if same, the piece should not take itself */
       takeTheUpwardPieceAndCheckHand(destPiece);
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
-      GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
     }
     console.log("drawField opponent #", 17);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
-    return coordEq(src, dest) ? null : toColorProf(destPiece);
+    return { piece_moved, maybe_capture: coordEq(src, dest) ? null : toColorProf(destPiece) };
   } else {
     const imgNode: HTMLElement = document.getElementById(
       `field_piece_${src_i}_${src_j}`,
@@ -896,24 +908,24 @@ async function animateOpponentSrcStepDstFinite_(
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         // no piece capture is possible if water entry failed
-        return null;
+        return { piece_moved, maybe_capture: null };
       }
     }
 
     if (!coordEq(src, dest)) {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
-      GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
     }
 
     console.log("drawField opponent #", 19);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
 
-    return coordEq(src, dest) ? null : toColorProf(destPiece);
+    return { piece_moved, maybe_capture: coordEq(src, dest) ? null : toColorProf(destPiece) };
   }
 }
 
-async function animateOpponentSrcDst(p: SrcDst): Promise<CaptureInfo> {
+async function animateOpponentSrcDst(p: SrcDst): Promise<MovementInfo> {
   const src: Coord = fromAbsoluteCoord(p.src);
   const dst: Coord = fromAbsoluteCoord(p.dest);
   if (p.water_entry_ciurl) {
@@ -933,12 +945,12 @@ async function animateOpponentSrcDst_(
   src: Coord,
   dst: Coord,
   o: { water_entry_ciurl?: Ciurl; disable_focus?: boolean },
-): Promise<CaptureInfo> {
+): Promise<MovementInfo> {
   const [src_i, src_j] = src;
   const [dest_i, dest_j] = dst;
 
-  const piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
-  if (piece === null) {
+  const piece_moved: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
+  if (piece_moved === null) {
     throw new Error("src is unoccupied");
   }
 
@@ -981,13 +993,13 @@ async function animateOpponentSrcDst_(
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         // it FAILED, so no piece was captured
-        return null;
+        return { piece_moved, maybe_capture: null };
       }
     }
 
     takeTheUpwardPieceAndCheckHand(destPiece);
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
-    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
 
     console.log("drawField opponent #", 21);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
@@ -1012,12 +1024,12 @@ async function animateOpponentSrcDst_(
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
         // it FAILED, so no piece was captured
-        return null;
+        return { piece_moved, maybe_capture: null };
       }
     }
 
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
-    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+    GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
 
     if (!o.disable_focus) {
       console.log("drawField opponent #", 23);
@@ -1029,7 +1041,7 @@ async function animateOpponentSrcDst_(
       drawField({ focus: null });
     }
   }
-  return toColorProf(destPiece);
+  return { piece_moved, maybe_capture: toColorProf(destPiece) };
 }
 
 async function animateOpponentFromHand(

@@ -5,6 +5,7 @@ import {
   NormalMove,
   Profession,
 } from "cerke_online_api";
+import { Piece } from "cerke_online_utility";
 
 export function serializeAbsoluteCoord(coord: AbsoluteCoord) {
   return `${coord[1]}${coord[0]}`;
@@ -28,54 +29,61 @@ export function serializeProf(prof: Profession) {
 
 export function normalMessageToKiarArk(
   message: NormalMove,
-  water_ciurl_count?: number,
+  o: {
+    piece_moved: Piece | "Tam2",
+    water_ciurl_count?: number
+  },
 ): string {
   if (message.type === "NonTamMove") {
+    const zuo1 : string = (() => {
+      if (o.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `o.piece_moved` inside `normalMessageToKiarArk` even though `message.type` is `NonTamMove`") }
+      return serializeProf(o.piece_moved.prof);
+    })();
     if (message.data.type === "FromHand") {
       return `${serializeColor(message.data.color)}${serializeProf(
         message.data.prof,
       )}${serializeAbsoluteCoord(message.data.dest)}`;
     } else if (message.data.type === "SrcDst") {
-      if (water_ciurl_count === undefined) {
+      if (o?.water_ciurl_count === undefined) {
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}片${serializeAbsoluteCoord(message.data.dest)}無撃裁`;
-      } else if (water_ciurl_count < 3) {
+        )}${zuo1}${serializeAbsoluteCoord(message.data.dest)}無撃裁`;
+      } else if (o?.water_ciurl_count < 3) {
         // failed entry
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}片${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
-          water_ciurl_count,
+        )}${zuo1}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
+          o?.water_ciurl_count,
         )}此無`;
       } else {
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}片${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
-          water_ciurl_count,
+        )}${zuo1}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
+          o?.water_ciurl_count,
         )}`;
       }
     } else if (message.data.type === "SrcStepDstFinite") {
-      if (water_ciurl_count === undefined) {
+      if (o?.water_ciurl_count === undefined) {
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}片${serializeAbsoluteCoord(
+        )}${zuo1}${serializeAbsoluteCoord(
           message.data.step,
         )}${serializeAbsoluteCoord(message.data.dest)}無撃裁`;
-      } else if (water_ciurl_count < 3) {
+      } else if (o?.water_ciurl_count < 3) {
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}片${serializeAbsoluteCoord(
+        )}${zuo1}${serializeAbsoluteCoord(
           message.data.step,
         )}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
-          water_ciurl_count,
+          o?.water_ciurl_count,
         )}此無`;
       } else {
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}片${serializeAbsoluteCoord(
+        )}${zuo1}${serializeAbsoluteCoord(
           message.data.step,
         )}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
-          water_ciurl_count,
+          o?.water_ciurl_count,
         )}`;
       }
     } else {
