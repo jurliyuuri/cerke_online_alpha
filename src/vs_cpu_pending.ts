@@ -18,7 +18,9 @@ let RESULT: Ret_VsCpuEntry | undefined;
 
 function apply_for_vs_cpu_game() {
   (async () => {
-    const res: Ret_VsCpuEntry = await sendVsCpuEntrance<Ret_VsCpuEntry>((a) => a);
+    const res: Ret_VsCpuEntry = await sendVsCpuEntrance<Ret_VsCpuEntry>(
+      (a) => a,
+    );
     RESULT = res;
     let_the_game_begin(
       res.access_token as AccessToken,
