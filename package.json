@@ -5,6 +5,7 @@
   "scripts": {
     "build": "API_ORIGIN=REMOTE webpack --mode production",
     "build:dev": "API_ORIGIN=LOCAL webpack --mode development",
+    "lint:eslint": "eslint . --format friendly",
     "start": "API_ORIGIN=LOCAL webpack-dev-server",
     "format": "prettier --write '**/*.{json,js,ts,tsx,scss}'"
   },
@@ -19,8 +20,13 @@
   },
   "homepage": "https://gitlab.com/jekto.vatimeliju/cerke_online#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "css-loader": "6.5.1",
     "dependency-cruiser": "10.7.0",
+    "eslint": "^8.3.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-formatter-friendly": "^7.0.0",
     "kind-of": "6.0.3",
     "mini-css-extract-plugin": "2.4.5",
     "minimist": "1.2.5",

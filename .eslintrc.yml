@@ -1,0 +1,15 @@
+env:
+  es2020: true
+  browser: true
+  node: true
+extends:
+  - "eslint:recommended"
+  - "plugin:@typescript-eslint/eslint-recommended"
+  - "prettier"
+parser: "@typescript-eslint/parser"
+plugins:
+  - "@typescript-eslint"
+parserOptions:
+  sourceType: module
+rules:
+  no-unused-vars: "off"
