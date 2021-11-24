@@ -1,5 +1,4 @@
-export type HeaderElem =
-  | { type: "header"; dat: string }
+export type HeaderElem = { type: "header"; dat: string };
 export type BodyElem =
   | { type: "movement"; dat: string; piece_capture_comment?: string }
   | { type: "tymoktaxot"; dat: string };
@@ -12,7 +11,7 @@ const KIAR_ARK: {
 
 function groupTwoAndRender(input: BodyElem[]) {
   let ans: string = "";
-  for (let i = 0; i < input.length;) {
+  for (let i = 0; i < input.length; ) {
     const current: BodyElem | undefined = input[i];
     const next: BodyElem | undefined = input[i + 1];
     if (current?.type === "movement" && next?.type === "movement") {

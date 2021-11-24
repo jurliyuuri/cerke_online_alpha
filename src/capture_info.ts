@@ -3,9 +3,9 @@ import { Piece } from "cerke_online_utility";
 import { serializeColor, serializeProf } from "./serialize";
 
 export type MovementInfo = {
-  piece_moved: Readonly<Piece | "Tam2">,
-  maybe_capture: Readonly<CaptureInfo>
-}
+  piece_moved: Readonly<Piece | "Tam2">;
+  maybe_capture: Readonly<CaptureInfo>;
+};
 
 export type CaptureInfo = Readonly<[Color, Profession]> | null;
 

@@ -30,13 +30,17 @@ export function serializeProf(prof: Profession) {
 export function normalMessageToKiarArk(
   message: NormalMove,
   o: {
-    piece_moved: Piece | "Tam2",
-    water_ciurl_count?: number
+    piece_moved: Piece | "Tam2";
+    water_ciurl_count?: number;
   },
 ): string {
   if (message.type === "NonTamMove") {
-    const zuo1 : string = (() => {
-      if (o.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `o.piece_moved` inside `normalMessageToKiarArk` even though `message.type` is `NonTamMove`") }
+    const zuo1: string = (() => {
+      if (o.piece_moved === "Tam2") {
+        throw new Error(
+          "Tam2 was passed to `o.piece_moved` inside `normalMessageToKiarArk` even though `message.type` is `NonTamMove`",
+        );
+      }
       return serializeProf(o.piece_moved.prof);
     })();
     if (message.data.type === "FromHand") {
@@ -52,15 +56,15 @@ export function normalMessageToKiarArk(
         // failed entry
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}${zuo1}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
-          o?.water_ciurl_count,
-        )}此無`;
+        )}${zuo1}${serializeAbsoluteCoord(
+          message.data.dest,
+        )}水${serializeCiurlCount(o?.water_ciurl_count)}此無`;
       } else {
         return `${serializeAbsoluteCoord(
           message.data.src,
-        )}${zuo1}${serializeAbsoluteCoord(message.data.dest)}水${serializeCiurlCount(
-          o?.water_ciurl_count,
-        )}`;
+        )}${zuo1}${serializeAbsoluteCoord(
+          message.data.dest,
+        )}水${serializeCiurlCount(o?.water_ciurl_count)}`;
       }
     } else if (message.data.type === "SrcStepDstFinite") {
       if (o?.water_ciurl_count === undefined) {

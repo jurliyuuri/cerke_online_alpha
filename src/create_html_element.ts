@@ -130,8 +130,12 @@ export function createGuideImageAt(
   const img = document.createElement("img");
   img.setAttribute("draggable", "false");
   img.classList.add("guide");
-  img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
-  img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2}px`;
+  img.style.top = `${
+    1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
+  }px`;
+  img.style.left = `${
+    1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
+  }px`;
   img.src = `image/${path}.png`;
   img.width = MAX_PIECE_SIZE;
   img.height = MAX_PIECE_SIZE;
@@ -171,10 +175,10 @@ export function createCiurl(
  * @returns an HTMLImageElement to be displayed in hop1 zuo1
  */
 export function createPieceImgToBePlacedOnHop1zuo1(o: {
-  ind: number,
-  path: string,
-  list_length: number,
-  is_upward: boolean
+  ind: number;
+  path: string;
+  list_length: number;
+  is_upward: boolean;
 }): HTMLImageElement {
   const hop1zuo1_height = 140;
   const margin = 1 + (MAX_PIECE_SIZE - PIECE_SIZE) / 2;

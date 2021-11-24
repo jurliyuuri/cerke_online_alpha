@@ -1,10 +1,5 @@
 import { Ciurl } from "cerke_online_api";
-import {
-  Coord,
-  Piece,
-  Side,
-  NonTam2PieceUpward,
-} from "cerke_online_utility";
+import { Coord, Piece, Side, NonTam2PieceUpward } from "cerke_online_utility";
 import {
   createArrowSvg,
   createCancelButton,
