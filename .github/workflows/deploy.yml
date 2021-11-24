@@ -14,11 +14,10 @@ jobs:
         with:
           node-version: "16"
       - name: Install deps
-        run: npm i
+        run: npm ci
       - name: Build
         run: |
           npm run build
-          cp -R public/*  dist
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
