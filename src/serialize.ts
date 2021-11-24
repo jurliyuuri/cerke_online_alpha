@@ -29,16 +29,15 @@ export function serializeProf(prof: Profession) {
 
 export function normalMessageToKiarArk(
   message: NormalMove,
-  o?: {
-    piece_moved?: Piece | "Tam2",
+  o: {
+    piece_moved: Piece | "Tam2",
     water_ciurl_count?: number
   },
 ): string {
   if (message.type === "NonTamMove") {
     const zuo1 : string = (() => {
-      if (o?.piece_moved === undefined) { return "片"; }
-      if (o?.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `o.piece_moved` inside `normalMessageToKiarArk` even though `message.type` is `NonTamMove`") }
-      return serializeProf(o?.piece_moved.prof);
+      if (o.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `o.piece_moved` inside `normalMessageToKiarArk` even though `message.type` is `NonTamMove`") }
+      return serializeProf(o.piece_moved.prof);
     })();
     if (message.data.type === "FromHand") {
       return `${serializeColor(message.data.color)}${serializeProf(

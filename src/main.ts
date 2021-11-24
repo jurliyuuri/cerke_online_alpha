@@ -85,13 +85,14 @@ type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
 let SELECTED_COORD_UI: SelectedCoord = null;
 
-function cancelSteppingButUpdateTheFocus(new_focus: Coord) {
-  cancelStepping();
+function cancelSteppingButUpdateTheFocus(new_focus: Coord): MovementInfo {
+  const movement_info = cancelStepping();
   console.log("drawField #", 1.1);
   drawField({ focus: new_focus });
+  return movement_info
 }
 
-function cancelStepping() {
+function cancelStepping(): MovementInfo {
   eraseGuide();
   erasePhantomAndOptionallyCancelButton();
   document
@@ -101,13 +102,16 @@ function cancelStepping() {
   // resurrect the original one
   const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
   const from: Coord = backup[0];
-  GAME_STATE.f.currentBoard[from[0]][from[1]] = backup[1];
+  const piece_moved = backup[1];
+  GAME_STATE.f.currentBoard[from[0]][from[1]] = piece_moved;
   GAME_STATE.backupDuringStepping = null;
 
   SELECTED_COORD_UI = null;
 
   console.log("drawField #", 1);
   drawField({ focus: GAME_STATE.last_move_focus });
+
+  return { piece_moved, maybe_capture: null }
 }
 
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
@@ -452,7 +456,7 @@ async function sendAfterHalfAcceptance(
       o.step,
     );
 
-    const zuo1 : string = (() => {
+    const zuo1: string = (() => {
       if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to piece_moved"); }
       return serializeProf(movement_info.piece_moved.prof);
     })();
@@ -501,17 +505,15 @@ async function sendAfterHalfAcceptance(
     eraseGuide();
     SELECTED_COORD_UI = null;
 
-    // before redrawing the board, store the backed-up piece so that we can refer to it later in kiar_ark
-    const zuo1 : string = (() => {
-      const piece: Piece = GAME_STATE.backupDuringStepping![1];
+    // must redraw the board with the focus on `o.src` to denote that a failed operation happened.
+    const movement_info = cancelSteppingButUpdateTheFocus(o.src);
+    GAME_STATE.is_my_turn = false;
+
+    const zuo1: string = (() => {
+      const piece: Piece = movement_info.piece_moved;
       if (piece === "Tam2") { throw new Error("Tam2 encountered in the backup even though we are in sendAfterAcceptance"); }
       return serializeProf(piece.prof);
     })();
-
-    // must redraw the board with the focus on `o.src` to denote that a failed operation happened.
-    cancelSteppingButUpdateTheFocus(o.src);
-    GAME_STATE.is_my_turn = false;
-
 
     const dest: AbsoluteCoord =
       message.dest ??
@@ -549,7 +551,7 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
 
-    const zuo1 : string = (() => {
+    const zuo1: string = (() => {
       if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`"); }
       return serializeProf(movement_info.piece_moved.prof);
     })();
@@ -627,12 +629,25 @@ async function sendNormalMessage(message: NormalMove) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
     SELECTED_COORD_UI = null;
-
     if (
       message.type === "NonTamMove" &&
       message.data.type === "SrcStepDstFinite"
     ) {
-      cancelSteppingButUpdateTheFocus(fromAbsoluteCoord(message.data.src));
+      const movement_info = cancelSteppingButUpdateTheFocus(fromAbsoluteCoord(message.data.src));
+      GAME_STATE.is_my_turn = false;
+      // no capture possible
+      KiarArk.push_body_elem_and_display(
+        {
+          type: "movement",
+          dat: normalMessageToKiarArk(
+            message,
+            {
+              water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+              piece_moved: movement_info.piece_moved,
+            },
+          ),
+        },
+      );
     } else if (
       message.type === "NonTamMove" &&
       message.data.type !== "FromHand"
@@ -640,19 +655,27 @@ async function sendNormalMessage(message: NormalMove) {
       // The focus must be updated
       console.log("drawField #", 10.1);
       drawField({ focus: fromAbsoluteCoord(message.data.src) });
-    }
+      GAME_STATE.is_my_turn = false;
 
-    GAME_STATE.is_my_turn = false;
-    // no capture possible
-    KiarArk.push_body_elem_and_display(
-      {
-        type: "movement",
-        dat: normalMessageToKiarArk(
-          message,
-          { water_ciurl_count: res.dat.ciurl.filter((a) => a).length },
-        ),
-      },
-    );
+      const [src_i, src_j] = fromAbsoluteCoord(message.data.src);
+      const piece_moved: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
+      if (piece_moved === null) {
+        throw new Error("Cannot happen");
+      }
+      // no capture possible
+      KiarArk.push_body_elem_and_display(
+        {
+          type: "movement",
+          dat: normalMessageToKiarArk(
+            message,
+            {
+              water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+              piece_moved
+            },
+          ),
+        },
+      );
+    }
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
