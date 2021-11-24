@@ -3,11 +3,11 @@ name: Prettier Format
 on:
   pull_request:
     paths:
-      - '.prettierrc'
-      - '*.json'
-      - 'src/**'
-      - 'styles/**'
-      - '.github/workflows/prettier-format.yml'
+      - ".prettierrc"
+      - "*.json"
+      - "src/**"
+      - "styles/**"
+      - ".github/workflows/prettier-format.yml"
 
 jobs:
   prettier:
