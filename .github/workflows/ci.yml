@@ -3,19 +3,19 @@ name: CI
 on:
   push:
     branches:
-      - 'master'
+      - "master"
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - '.github/workflows/ci.yml'
-      - 'src/**'
-      - 'public/**'
-      - 'styles/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'tsconfig.json'
-      - 'tslint.json'
-      - 'webpack.config.json'
+      - ".github/workflows/ci.yml"
+      - "src/**"
+      - "public/**"
+      - "styles/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - "tslint.json"
+      - "webpack.config.json"
 
 jobs:
   check:
