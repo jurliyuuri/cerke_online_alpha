@@ -33,7 +33,11 @@ jobs:
         run: npm ci
 
       - name: lint
-        run: npm run lint:eslint
+        uses: reviewdog/action-eslint@v1.14.0
+        with:
+          reporter: github-pr-review
+          fail_on_error: true
+          filter_mode: diff_context
 
       - name: type check
         run: tsc --pretty false --noEmit | reviewdog -f=tsc -reporter=github-pr-review -fail-on-error=true
