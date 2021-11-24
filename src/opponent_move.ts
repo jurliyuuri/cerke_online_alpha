@@ -265,35 +265,33 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     }
   } else if (opponent_move.type === "InfAfterStep") {
     GAME_STATE.opponent_has_just_moved_tam = false;
-    const finalResult = (() => {
+    const finalResult = (async () => {
       if (opponent_move.finalResult == null) {
-        return (async () => {
-          // eslint-disable-next-line no-constant-condition
-          while (true) {
-            const res: Ret_InfPoll = await sendStuffTo<{}, Ret_InfPoll>(
-              "infpoll",
-              "`polling for the opponent's afterhalfacceptance`",
-              {},
-              (response) => {
-                console.log(
-                  "Success; the server returned:",
-                  JSON.stringify(response),
-                );
-                return response;
-              },
-            );
-            if (res.legal === false) {
-              throw new Error("not good!!!");
-            } else if (res.content !== "not yet") {
-              if (res.content.type !== "InfAfterStep") {
-                throw new Error("nooooooo");
-              }
-              return res.content.finalResult!;
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const res: Ret_InfPoll = await sendStuffTo<{}, Ret_InfPoll>(
+            "infpoll",
+            "`polling for the opponent's afterhalfacceptance`",
+            {},
+            (response) => {
+              console.log(
+                "Success; the server returned:",
+                JSON.stringify(response),
+              );
+              return response;
+            },
+          );
+          if (res.legal === false) {
+            throw new Error("not good!!!");
+          } else if (res.content !== "not yet") {
+            if (res.content.type !== "InfAfterStep") {
+              throw new Error("nooooooo");
             }
+            return res.content.finalResult!;
           }
-        })();
+        }
       } else {
-        return Promise.resolve(opponent_move.finalResult);
+        return opponent_move.finalResult;
       }
     })();
     const [finalResult_resolved, movement_info]: [
