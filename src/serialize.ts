@@ -35,7 +35,7 @@ export function normalMessageToKiarArk(
   },
 ): string {
   if (message.type === "NonTamMove") {
-    const zuo1 = (() => {
+    const zuo1 : string = (() => {
       if (o?.piece_moved === undefined) { return "片"; }
       if (o?.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `o.piece_moved` inside `normalMessageToKiarArk` even though `message.type` is `NonTamMove`") }
       return serializeProf(o?.piece_moved.prof);

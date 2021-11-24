@@ -452,10 +452,10 @@ async function sendAfterHalfAcceptance(
       o.step,
     );
 
-    const zuo1 = (() => {
+    const zuo1 : string = (() => {
       if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to piece_moved"); }
       return serializeProf(movement_info.piece_moved.prof);
-    })
+    })();
 
     console.log("drawField #", 7);
     drawField({ focus: GAME_STATE.last_move_focus });
@@ -502,7 +502,7 @@ async function sendAfterHalfAcceptance(
     SELECTED_COORD_UI = null;
 
     // before redrawing the board, store the backed-up piece so that we can refer to it later in kiar_ark
-    const zuo1 = (() => {
+    const zuo1 : string = (() => {
       const piece: Piece = GAME_STATE.backupDuringStepping![1];
       if (piece === "Tam2") { throw new Error("Tam2 encountered in the backup even though we are in sendAfterAcceptance"); }
       return serializeProf(piece.prof);
@@ -549,7 +549,7 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
 
-    const zuo1 = (() => {
+    const zuo1 : string = (() => {
       if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`"); }
       return serializeProf(movement_info.piece_moved.prof);
     })();

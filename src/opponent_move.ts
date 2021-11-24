@@ -315,7 +315,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       finalResult,
     });
 
-    const zuo1 = (() => {
+    const zuo1 : string = (() => {
       if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`") }
       return serializeProf(movement_info.piece_moved.prof);
     })();
