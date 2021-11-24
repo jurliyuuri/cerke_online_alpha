@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "build": "API_ORIGIN=REMOTE webpack --mode production",
-    "build:dev": "API_ORIGIN=LOCAL webpack --mode development",
+    "build": "API_ORIGIN=REMOTE webpack --mode production && cp -R public/* dist",
+    "build:dev": "API_ORIGIN=LOCAL webpack --mode development && cp -R public/* dist",
     "lint:eslint": "eslint . --format friendly",
     "start": "API_ORIGIN=REMOTE webpack-dev-server",
     "format": "prettier --write '**/*.{json,js,ts,tsx,scss,yml}'"
