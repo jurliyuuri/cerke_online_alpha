@@ -708,12 +708,10 @@ function updateFieldAfterHalfAcceptance(
 ): MovementInfo {
   console.log(src, step);
   if (message.dest === null) {
-    cancelStepping();
+    const movement_info = cancelStepping();
     console.log("lone assignment to last_move_focus, #", 0);
     GAME_STATE.last_move_focus = src;
-
-    // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
-    return { piece_moved: GAME_STATE.backupDuringStepping![1], maybe_capture: null }; // cancelled; no capture was made
+    return { piece_moved: movement_info.piece_moved, maybe_capture: null }; // cancelled; no capture was made
   }
 
   const [dest_i, dest_j] = fromAbsoluteCoord(message.dest);
