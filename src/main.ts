@@ -64,6 +64,7 @@ import {
   normalMessageToKiarArk,
   serializeAbsoluteCoord,
   serializeCiurl,
+  serializeProf,
 } from "./serialize";
 import {
   CaptureInfo,
@@ -445,11 +446,16 @@ async function sendAfterHalfAcceptance(
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    const maybe_capture = updateFieldAfterHalfAcceptance(
+    const movement_info = updateFieldAfterHalfAcceptance(
       message,
       o.src,
       o.step,
     );
+
+    const zuo1 = (() => {
+      if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to piece_moved"); }
+      return serializeProf(movement_info.piece_moved.prof);
+    })
 
     console.log("drawField #", 7);
     drawField({ focus: GAME_STATE.last_move_focus });
@@ -460,12 +466,12 @@ async function sendAfterHalfAcceptance(
           type: "movement",
           dat: `${serializeAbsoluteCoord(
             toAbsoluteCoord(o.src),
-          )}片${serializeAbsoluteCoord(
+          )}${zuo1}${serializeAbsoluteCoord(
             toAbsoluteCoord(o.step),
           )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
             o.stepping_ciurl,
           )}`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
         },
       );
     } else {
@@ -474,12 +480,12 @@ async function sendAfterHalfAcceptance(
           type: "movement",
           dat: `${serializeAbsoluteCoord(
             toAbsoluteCoord(o.src),
-          )}片${serializeAbsoluteCoord(
+          )}${zuo1}${serializeAbsoluteCoord(
             toAbsoluteCoord(o.step),
           )}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(
             o.stepping_ciurl,
           )}此無`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
         },
       );
     }
@@ -495,9 +501,17 @@ async function sendAfterHalfAcceptance(
     eraseGuide();
     SELECTED_COORD_UI = null;
 
+    // before redrawing the board, store the backed-up piece so that we can refer to it later in kiar_ark
+    const zuo1 = (() => {
+      const piece: Piece = GAME_STATE.backupDuringStepping![1];
+      if (piece === "Tam2") { throw new Error("Tam2 encountered in the backup even though we are in sendAfterAcceptance"); }
+      return serializeProf(piece.prof);
+    })();
+
     // must redraw the board with the focus on `o.src` to denote that a failed operation happened.
     cancelSteppingButUpdateTheFocus(o.src);
     GAME_STATE.is_my_turn = false;
+
 
     const dest: AbsoluteCoord =
       message.dest ??
@@ -507,6 +521,7 @@ async function sendAfterHalfAcceptance(
         );
       })();
 
+
     // Always 此無, because in the outer `if` it is already checked
     // No capture occurs
     KiarArk.push_body_elem_and_display(
@@ -514,7 +529,7 @@ async function sendAfterHalfAcceptance(
         type: "movement",
         dat: `${serializeAbsoluteCoord(
           toAbsoluteCoord(o.src),
-        )}片${serializeAbsoluteCoord(
+        )}${zuo1}${serializeAbsoluteCoord(
           toAbsoluteCoord(o.step),
         )}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(
           o.stepping_ciurl,
@@ -524,7 +539,7 @@ async function sendAfterHalfAcceptance(
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    const maybe_capture = updateFieldAfterHalfAcceptance(
+    const movement_info = updateFieldAfterHalfAcceptance(
       message,
       o.src,
       o.step,
@@ -534,18 +549,23 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
 
+    const zuo1 = (() => {
+      if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`"); }
+      return serializeProf(movement_info.piece_moved.prof);
+    })();
+
     if (message.dest) {
       KiarArk.push_body_elem_and_display(
         {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
             toAbsoluteCoord(o.src),
-          )}片${serializeAbsoluteCoord(
+          )}${zuo1}${serializeAbsoluteCoord(
             toAbsoluteCoord(o.step),
           )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
             o.stepping_ciurl,
           )}水${serializeCiurl(res.dat.ciurl)}`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
         },
       );
     } else {
@@ -662,13 +682,15 @@ function updateFieldAfterHalfAcceptance(
   message: AfterHalfAcceptance,
   src: Coord,
   step: Coord,
-): CaptureInfo {
+): MovementInfo {
   console.log(src, step);
   if (message.dest === null) {
     cancelStepping();
     console.log("lone assignment to last_move_focus, #", 0);
     GAME_STATE.last_move_focus = src;
-    return null; // cancelled; no capture was made
+
+    // GAME_STATE.f.currentBoard[src_i][src_j] has already become a phantom.
+    return { piece_moved: GAME_STATE.backupDuringStepping![1], maybe_capture: null }; // cancelled; no capture was made
   }
 
   const [dest_i, dest_j] = fromAbsoluteCoord(message.dest);
@@ -691,7 +713,7 @@ function updateFieldAfterHalfAcceptance(
   if (coordEq([src_i, src_j], [dest_i, dest_j])) {
     console.log("lone assignment to last_move_focus, #", 1);
     GAME_STATE.last_move_focus = [src_i, src_j];
-    return null; // no capture was made
+    return { piece_moved: piece, maybe_capture: null }; // no capture was made
   }
 
   if (destPiece !== null) {
@@ -702,7 +724,7 @@ function updateFieldAfterHalfAcceptance(
   GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
   console.log("lone assignment to last_move_focus, #", 2);
   GAME_STATE.last_move_focus = [dest_i, dest_j];
-  return toColorProf(destPiece);
+  return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
 }
 
 /**

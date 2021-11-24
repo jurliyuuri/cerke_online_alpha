@@ -51,6 +51,7 @@ import {
   normalMessageToKiarArk,
   serializeAbsoluteCoord,
   serializeCiurl,
+  serializeProf,
 } from "./serialize";
 import {
   CaptureInfo,
@@ -299,13 +300,13 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         return Promise.resolve(opponent_move.finalResult);
       }
     })();
-    const [finalResult_resolved, maybe_capture]: [
+    const [finalResult_resolved, movement_info]: [
       {
         dest: AbsoluteCoord;
         water_entry_ciurl?: Ciurl;
         thwarted_by_failing_water_entry_ciurl: Ciurl | null;
       },
-      CaptureInfo,
+      MovementInfo,
     ] = await animateOpponentInfAfterStep({
       src: fromAbsoluteCoord(opponent_move.src),
       step: fromAbsoluteCoord(opponent_move.step),
@@ -313,6 +314,11 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       stepping_ciurl: opponent_move.stepping_ciurl,
       finalResult,
     });
+
+    const zuo1 = (() => {
+      if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`") }
+      return serializeProf(movement_info.piece_moved.prof);
+    })();
     GAME_STATE.is_my_turn = true;
 
     if (finalResult_resolved.water_entry_ciurl) {
@@ -323,7 +329,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               finalResult_resolved.dest,
@@ -338,14 +344,14 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               finalResult_resolved.dest,
             )}橋${serializeCiurl(
               opponent_move.stepping_ciurl,
             )}水${serializeCiurl(finalResult_resolved.water_entry_ciurl)}`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       }
@@ -355,14 +361,14 @@ export async function sendMainPollAndDoEverythingThatFollows() {
           type: "movement",
           dat: `${serializeAbsoluteCoord(
             opponent_move.src,
-          )}片${serializeAbsoluteCoord(
+          )}${zuo1}${serializeAbsoluteCoord(
             opponent_move.step,
           )}${serializeAbsoluteCoord(
             finalResult_resolved.dest,
           )}橋${serializeCiurl(opponent_move.stepping_ciurl)}水${serializeCiurl(
             finalResult_resolved.thwarted_by_failing_water_entry_ciurl,
           )}此無`,
-          piece_capture_comment: toPieceCaptureComment(maybe_capture),
+          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
         },
       );
     } else {
@@ -385,12 +391,12 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               finalResult_resolved.dest,
             )}橋${serializeCiurl(opponent_move.stepping_ciurl)}`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       } else {
@@ -399,12 +405,12 @@ export async function sendMainPollAndDoEverythingThatFollows() {
             type: "movement",
             dat: `${serializeAbsoluteCoord(
               opponent_move.src,
-            )}片${serializeAbsoluteCoord(
+            )}${zuo1}${serializeAbsoluteCoord(
               opponent_move.step,
             )}${serializeAbsoluteCoord(
               opponent_move.plannedDirection,
             )}橋${serializeCiurl(opponent_move.stepping_ciurl)}此無`,
-            piece_capture_comment: toPieceCaptureComment(maybe_capture),
+            piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
       }
@@ -514,7 +520,7 @@ async function animateOpponentInfAfterStep(p: {
       water_entry_ciurl?: Ciurl;
       thwarted_by_failing_water_entry_ciurl: Ciurl | null;
     },
-    CaptureInfo,
+    MovementInfo,
   ]
 > {
   const [src_i, src_j] = p.src;
@@ -597,7 +603,7 @@ async function animateOpponentInfAfterStep(p: {
         drawField({ focus: [src_i, src_j] });
 
         // no piece capture is possible if water entry has failed
-        return [result, null];
+        return [result, { piece_moved: piece, maybe_capture: null }];
       }
     }
 
@@ -611,7 +617,7 @@ async function animateOpponentInfAfterStep(p: {
     console.log("drawField opponent #", 13);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
-    return [result, toColorProf(destPiece)];
+    return [result, { piece_moved: piece, maybe_capture: toColorProf(destPiece) }];
   } else {
     // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     await animateNode(srcNode, 750 * 0.8093, {
@@ -630,7 +636,7 @@ async function animateOpponentInfAfterStep(p: {
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         drawField({ focus: [src_i, src_j] });
-        return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+        return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
@@ -640,7 +646,7 @@ async function animateOpponentInfAfterStep(p: {
       console.log("drawField opponent #", 14);
       GAME_STATE.last_move_focus = [src_i, src_j];
       drawField({ focus: [src_i, src_j] });
-      return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+      return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     }
 
     if (!coordEq(p.src, dest)) {
@@ -650,7 +656,7 @@ async function animateOpponentInfAfterStep(p: {
     console.log("drawField opponent #", 15);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
     drawField({ focus: [dest_i, dest_j] });
-    return [result, null]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+    return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
   }
 }
 
