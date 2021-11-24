@@ -266,11 +266,8 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     GAME_STATE.opponent_has_just_moved_tam = false;
     const finalResult = (() => {
       if (opponent_move.finalResult == null) {
-        return new Promise<{
-          dest: AbsoluteCoord;
-          water_entry_ciurl?: Ciurl;
-          thwarted_by_failing_water_entry_ciurl: Ciurl | null;
-        }>(async (resolve, _reject) => {
+        return (async () => {
+          // eslint-disable-next-line no-constant-condition
           while (true) {
             const res: Ret_InfPoll = await sendStuffTo<{}, Ret_InfPoll>(
               "infpoll",
@@ -290,12 +287,11 @@ export async function sendMainPollAndDoEverythingThatFollows() {
               if (res.content.type !== "InfAfterStep") {
                 throw new Error("nooooooo");
               }
-              resolve(res.content.finalResult!);
-              return;
+              return res.content.finalResult!;
             }
             await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
           }
-        });
+        })();
       } else {
         return Promise.resolve(opponent_move.finalResult);
       }

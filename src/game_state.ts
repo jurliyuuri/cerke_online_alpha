@@ -25,7 +25,7 @@ export interface Field {
   hop1zuo1OfDownward: NonTam2PieceDownward[];
 }
 
-export interface GAME_STATE {
+export interface GameState {
   f: Field;
   IA_is_down: boolean;
   tam_itself_is_tam_hue: boolean;
@@ -121,7 +121,7 @@ export const initial_board_with_IA_down: Board = [
   ],
 ];
 
-export let GAME_STATE: GAME_STATE = ((p: { IA_is_down: boolean }) => {
+export const GAME_STATE: GameState = ((p: { IA_is_down: boolean }) => {
   let _is_my_turn: boolean = true; // override this by calling the setter
   let _my_score = 20;
   const scores_of_each_season: [number[], number[], number[], number[]] = [
