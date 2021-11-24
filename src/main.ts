@@ -67,6 +67,7 @@ import {
 } from "./serialize";
 import {
   CaptureInfo,
+  MovementInfo,
   toColorProf,
   toPieceCaptureComment,
 } from "./capture_info";
@@ -583,7 +584,7 @@ async function sendNormalMessage(message: NormalMove) {
   if (!res.dat.waterEntryHappened) {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    const maybe_capture = updateField(message);
+    const movement_info = updateField(message);
 
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
@@ -591,8 +592,8 @@ async function sendNormalMessage(message: NormalMove) {
     KiarArk.push_body_elem_and_display(
       {
         type: "movement",
-        dat: normalMessageToKiarArk(message),
-        piece_capture_comment: toPieceCaptureComment(maybe_capture),
+        dat: normalMessageToKiarArk(message, { piece_moved: movement_info.piece_moved }),
+        piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
       },
     );
     return;
@@ -628,14 +629,14 @@ async function sendNormalMessage(message: NormalMove) {
         type: "movement",
         dat: normalMessageToKiarArk(
           message,
-          res.dat.ciurl.filter((a) => a).length,
+          { water_ciurl_count: res.dat.ciurl.filter((a) => a).length },
         ),
       },
     );
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
-    const maybe_capture = updateField(message);
+    const movement_info = updateField(message);
 
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
@@ -645,9 +646,12 @@ async function sendNormalMessage(message: NormalMove) {
         type: "movement",
         dat: normalMessageToKiarArk(
           message,
-          res.dat.ciurl.filter((a) => a).length,
+          {
+            piece_moved: movement_info.piece_moved,
+            water_ciurl_count: res.dat.ciurl.filter((a) => a).length
+          },
         ),
-        piece_capture_comment: toPieceCaptureComment(maybe_capture),
+        piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
       },
     );
   }
@@ -793,7 +797,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 }
 
 /// This function also sets `GAME_STATE.last_move_focus` appropriately.
-function updateField(message: NormalMove): CaptureInfo {
+function updateField(message: NormalMove): MovementInfo {
   if (message.type === "NonTamMove") {
     if (message.data.type === "FromHand") {
       const k: {
@@ -824,7 +828,7 @@ function updateField(message: NormalMove): CaptureInfo {
       GAME_STATE.f.currentBoard[i][j] = removed_from_hop1zuo1;
       console.log("lone assignment to last_move_focus, #", 3);
       GAME_STATE.last_move_focus = [i, j];
-      return null; // no capture possible
+      return { piece_moved: removed_from_hop1zuo1, maybe_capture: null }; // no capture possible
     } else if (message.data.type === "SrcDst") {
       const k: {
         type: "SrcDst";
@@ -835,8 +839,8 @@ function updateField(message: NormalMove): CaptureInfo {
       const [src_i, src_j] = fromAbsoluteCoord(k.src);
       const [dest_i, dest_j] = fromAbsoluteCoord(k.dest);
 
-      const piece: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
-      if (piece === null) {
+      const piece_moved: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
+      if (piece_moved === null) {
         throw new Error("src is unoccupied");
       }
 
@@ -849,10 +853,10 @@ function updateField(message: NormalMove): CaptureInfo {
       }
 
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
-      GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
       console.log("lone assignment to last_move_focus, #", 4);
       GAME_STATE.last_move_focus = [dest_i, dest_j];
-      return toColorProf(destPiece);
+      return { piece_moved, maybe_capture: toColorProf(destPiece) };
     } else if (message.data.type === "SrcStepDstFinite") {
       const k: {
         type: "SrcStepDstFinite";
@@ -886,7 +890,7 @@ function updateField(message: NormalMove): CaptureInfo {
         // BUT! you have to update the last_move_focus
         GAME_STATE.last_move_focus = [dest_i, dest_j];
         console.log("lone assignment to last_move_focus, #", 4.5);
-        return null; // no capture
+        return { piece_moved: piece, maybe_capture: null }; // no capture
       }
 
       if (destPiece !== null) {
@@ -897,7 +901,7 @@ function updateField(message: NormalMove): CaptureInfo {
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
       GAME_STATE.last_move_focus = [dest_i, dest_j];
       console.log("lone assignment to last_move_focus, #", 5);
-      return toColorProf(destPiece);
+      return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
     } else {
       const _should_not_reach_here: never = message.data;
       throw new Error("should not reach here");
@@ -911,7 +915,7 @@ function updateField(message: NormalMove): CaptureInfo {
       GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = "Tam2";
       GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
       console.log("lone assignment to last_move_focus, #", 6);
-      return null; // no capture possible
+      return { piece_moved: "Tam2", maybe_capture: null }; // no capture possible
     }
 
     // If not StepsDuringLatter, we decided that the piece should actually be located in firstDest after the first move
@@ -929,14 +933,14 @@ function updateField(message: NormalMove): CaptureInfo {
     if (coordEq([firstDest_i, firstDest_j], [secondDest_i, secondDest_j])) {
       GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
       console.log("lone assignment to last_move_focus, #", 7);
-      return null; // no capture possible in TamMove
+      return { piece_moved: "Tam2", maybe_capture: null }; // no capture possible in TamMove
     }
 
     GAME_STATE.f.currentBoard[firstDest_i][firstDest_j] = null;
     GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
     GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
     console.log("lone assignment to last_move_focus, #", 8);
-    return null; // no capture possible in TamMove
+    return { piece_moved: "Tam2", maybe_capture: null }; // no capture possible in TamMove
   } else {
     const _should_not_reach_here: never = message;
     throw new Error("should not reach here");
