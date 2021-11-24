@@ -7,7 +7,7 @@
     "build:dev": "API_ORIGIN=LOCAL webpack --mode development",
     "lint:eslint": "eslint . --format friendly",
     "start": "API_ORIGIN=LOCAL webpack-dev-server",
-    "format": "prettier --write '**/*.{json,js,ts,tsx,scss}'"
+    "format": "prettier --write '**/*.{json,js,ts,tsx,scss,yml}'"
   },
   "repository": {
     "type": "git",
