@@ -1,7 +1,7 @@
 import { Ret_RandomEntry, Ret_RandomPoll } from "cerke_online_api";
 import { API_ORIGIN } from "./env";
 
-let UNLOAD_TRIGGERED_BY_USER: boolean = true;
+const UNLOAD_TRIGGERED_BY_USER: boolean = true;
 
 type Ret_RandomCancel =
   | {
