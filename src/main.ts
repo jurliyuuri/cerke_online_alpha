@@ -6,11 +6,7 @@ import {
   createImageButton,
   createPieceSizeImageOnBoardByPathAndXY,
 } from "./create_html_element";
-import {
-  GAME_STATE,
-  fromAbsoluteCoord,
-  toAbsoluteCoord,
-} from "./game_state";
+import { GAME_STATE, fromAbsoluteCoord, toAbsoluteCoord } from "./game_state";
 import { forbidMainPolling } from "./opponent_move";
 import {
   Coord,
@@ -89,7 +85,7 @@ function cancelSteppingButUpdateTheFocus(new_focus: Coord): MovementInfo {
   const movement_info = cancelStepping();
   console.log("drawField #", 1.1);
   drawField({ focus: new_focus });
-  return movement_info
+  return movement_info;
 }
 
 function cancelStepping(): MovementInfo {
@@ -111,7 +107,7 @@ function cancelStepping(): MovementInfo {
   console.log("drawField #", 1);
   drawField({ focus: GAME_STATE.last_move_focus });
 
-  return { piece_moved, maybe_capture: null }
+  return { piece_moved, maybe_capture: null };
 }
 
 function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
@@ -299,20 +295,20 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
             console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
             const message: NormalMove = step
               ? {
-                type: "TamMove",
-                stepStyle: "StepsDuringFormer",
-                src: toAbsoluteCoord(theVerySrc),
-                step: toAbsoluteCoord(step),
-                firstDest: toAbsoluteCoord(firstDest),
-                secondDest: toAbsoluteCoord(to),
-              }
+                  type: "TamMove",
+                  stepStyle: "StepsDuringFormer",
+                  src: toAbsoluteCoord(theVerySrc),
+                  step: toAbsoluteCoord(step),
+                  firstDest: toAbsoluteCoord(firstDest),
+                  secondDest: toAbsoluteCoord(to),
+                }
               : {
-                type: "TamMove",
-                stepStyle: "NoStep",
-                src: toAbsoluteCoord(theVerySrc),
-                firstDest: toAbsoluteCoord(firstDest),
-                secondDest: toAbsoluteCoord(to),
-              };
+                  type: "TamMove",
+                  stepStyle: "NoStep",
+                  src: toAbsoluteCoord(theVerySrc),
+                  firstDest: toAbsoluteCoord(firstDest),
+                  secondDest: toAbsoluteCoord(to),
+                };
 
             // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
             erasePhantomAndOptionallyCancelButton();
@@ -457,7 +453,9 @@ async function sendAfterHalfAcceptance(
     );
 
     const zuo1: string = (() => {
-      if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to piece_moved"); }
+      if (movement_info.piece_moved === "Tam2") {
+        throw new Error("Tam2 was passed to piece_moved");
+      }
       return serializeProf(movement_info.piece_moved.prof);
     })();
 
@@ -465,33 +463,33 @@ async function sendAfterHalfAcceptance(
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
     if (message.dest) {
-      KiarArk.push_body_elem_and_display(
-        {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(
-            toAbsoluteCoord(o.src),
-          )}${zuo1}${serializeAbsoluteCoord(
-            toAbsoluteCoord(o.step),
-          )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
-            o.stepping_ciurl,
-          )}`,
-          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
-        },
-      );
+      KiarArk.push_body_elem_and_display({
+        type: "movement",
+        dat: `${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.src),
+        )}${zuo1}${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.step),
+        )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
+          o.stepping_ciurl,
+        )}`,
+        piece_capture_comment: toPieceCaptureComment(
+          movement_info.maybe_capture,
+        ),
+      });
     } else {
-      KiarArk.push_body_elem_and_display(
-        {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(
-            toAbsoluteCoord(o.src),
-          )}${zuo1}${serializeAbsoluteCoord(
-            toAbsoluteCoord(o.step),
-          )}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(
-            o.stepping_ciurl,
-          )}此無`,
-          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
-        },
-      );
+      KiarArk.push_body_elem_and_display({
+        type: "movement",
+        dat: `${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.src),
+        )}${zuo1}${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.step),
+        )}${serializeAbsoluteCoord(o.planned_destination)}橋${serializeCiurl(
+          o.stepping_ciurl,
+        )}此無`,
+        piece_capture_comment: toPieceCaptureComment(
+          movement_info.maybe_capture,
+        ),
+      });
     }
     return;
   }
@@ -511,7 +509,11 @@ async function sendAfterHalfAcceptance(
 
     const zuo1: string = (() => {
       const piece: Piece = movement_info.piece_moved;
-      if (piece === "Tam2") { throw new Error("Tam2 encountered in the backup even though we are in sendAfterAcceptance"); }
+      if (piece === "Tam2") {
+        throw new Error(
+          "Tam2 encountered in the backup even though we are in sendAfterAcceptance",
+        );
+      }
       return serializeProf(piece.prof);
     })();
 
@@ -523,21 +525,18 @@ async function sendAfterHalfAcceptance(
         );
       })();
 
-
     // Always 此無, because in the outer `if` it is already checked
     // No capture occurs
-    KiarArk.push_body_elem_and_display(
-      {
-        type: "movement",
-        dat: `${serializeAbsoluteCoord(
-          toAbsoluteCoord(o.src),
-        )}${zuo1}${serializeAbsoluteCoord(
-          toAbsoluteCoord(o.step),
-        )}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(
-          o.stepping_ciurl,
-        )}水${serializeCiurl(res.dat.ciurl)}此無`,
-      },
-    );
+    KiarArk.push_body_elem_and_display({
+      type: "movement",
+      dat: `${serializeAbsoluteCoord(
+        toAbsoluteCoord(o.src),
+      )}${zuo1}${serializeAbsoluteCoord(
+        toAbsoluteCoord(o.step),
+      )}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(
+        o.stepping_ciurl,
+      )}水${serializeCiurl(res.dat.ciurl)}此無`,
+    });
   } else {
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -552,24 +551,26 @@ async function sendAfterHalfAcceptance(
     GAME_STATE.is_my_turn = false;
 
     const zuo1: string = (() => {
-      if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`"); }
+      if (movement_info.piece_moved === "Tam2") {
+        throw new Error("Tam2 was passed to `piece_moved`");
+      }
       return serializeProf(movement_info.piece_moved.prof);
     })();
 
     if (message.dest) {
-      KiarArk.push_body_elem_and_display(
-        {
-          type: "movement",
-          dat: `${serializeAbsoluteCoord(
-            toAbsoluteCoord(o.src),
-          )}${zuo1}${serializeAbsoluteCoord(
-            toAbsoluteCoord(o.step),
-          )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
-            o.stepping_ciurl,
-          )}水${serializeCiurl(res.dat.ciurl)}`,
-          piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
-        },
-      );
+      KiarArk.push_body_elem_and_display({
+        type: "movement",
+        dat: `${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.src),
+        )}${zuo1}${serializeAbsoluteCoord(
+          toAbsoluteCoord(o.step),
+        )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
+          o.stepping_ciurl,
+        )}水${serializeCiurl(res.dat.ciurl)}`,
+        piece_capture_comment: toPieceCaptureComment(
+          movement_info.maybe_capture,
+        ),
+      });
     } else {
       throw new Error(
         "This should not happen; it should have been rejected before the water entry",
@@ -577,8 +578,6 @@ async function sendAfterHalfAcceptance(
     }
   }
 }
-
-
 
 async function sendStuff<T, U>(
   log: string,
@@ -611,13 +610,13 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KiarArk.push_body_elem_and_display(
-      {
-        type: "movement",
-        dat: normalMessageToKiarArk(message, { piece_moved: movement_info.piece_moved }),
-        piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
-      },
-    );
+    KiarArk.push_body_elem_and_display({
+      type: "movement",
+      dat: normalMessageToKiarArk(message, {
+        piece_moved: movement_info.piece_moved,
+      }),
+      piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
+    });
     return;
   }
 
@@ -633,21 +632,18 @@ async function sendNormalMessage(message: NormalMove) {
       message.type === "NonTamMove" &&
       message.data.type === "SrcStepDstFinite"
     ) {
-      const movement_info = cancelSteppingButUpdateTheFocus(fromAbsoluteCoord(message.data.src));
+      const movement_info = cancelSteppingButUpdateTheFocus(
+        fromAbsoluteCoord(message.data.src),
+      );
       GAME_STATE.is_my_turn = false;
       // no capture possible
-      KiarArk.push_body_elem_and_display(
-        {
-          type: "movement",
-          dat: normalMessageToKiarArk(
-            message,
-            {
-              water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
-              piece_moved: movement_info.piece_moved,
-            },
-          ),
-        },
-      );
+      KiarArk.push_body_elem_and_display({
+        type: "movement",
+        dat: normalMessageToKiarArk(message, {
+          water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+          piece_moved: movement_info.piece_moved,
+        }),
+      });
     } else if (
       message.type === "NonTamMove" &&
       message.data.type !== "FromHand"
@@ -663,18 +659,13 @@ async function sendNormalMessage(message: NormalMove) {
         throw new Error("Cannot happen");
       }
       // no capture possible
-      KiarArk.push_body_elem_and_display(
-        {
-          type: "movement",
-          dat: normalMessageToKiarArk(
-            message,
-            {
-              water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
-              piece_moved
-            },
-          ),
-        },
-      );
+      KiarArk.push_body_elem_and_display({
+        type: "movement",
+        dat: normalMessageToKiarArk(message, {
+          water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+          piece_moved,
+        }),
+      });
     }
   } else {
     eraseGuide();
@@ -684,19 +675,14 @@ async function sendNormalMessage(message: NormalMove) {
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
-    KiarArk.push_body_elem_and_display(
-      {
-        type: "movement",
-        dat: normalMessageToKiarArk(
-          message,
-          {
-            piece_moved: movement_info.piece_moved,
-            water_ciurl_count: res.dat.ciurl.filter((a) => a).length
-          },
-        ),
-        piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
-      },
-    );
+    KiarArk.push_body_elem_and_display({
+      type: "movement",
+      dat: normalMessageToKiarArk(message, {
+        piece_moved: movement_info.piece_moved,
+        water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+      }),
+      piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
+    });
   }
 }
 
@@ -798,9 +784,10 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       if (res.legal !== true) {
         throw new Error("bad!!!!");
       }
-      KiarArk.push_body_elem_and_display(
-        { type: "tymoktaxot", dat: `或為${new_state.hands.join("加")}\n再行` },
-      );
+      KiarArk.push_body_elem_and_display({
+        type: "tymoktaxot",
+        dat: `或為${new_state.hands.join("加")}\n再行`,
+      });
     });
     score_display.appendChild(ty_mok1_button);
 
@@ -825,14 +812,12 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
       endSeason(base_score, is_first_move_my_move_in_the_next_season);
-      KiarArk.push_body_elem_and_display(
-        {
-          type: "tymoktaxot",
-          dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(
-            base_score * Math.pow(2, GAME_STATE.log2_rate),
-          ).join("")}\n終季\t${season_that_has_just_ended}終`,
-        },
-      );
+      KiarArk.push_body_elem_and_display({
+        type: "tymoktaxot",
+        dat: `或為${new_state.hands.join("加")}而手${toDigitsLinzklar(
+          base_score * Math.pow(2, GAME_STATE.log2_rate),
+        ).join("")}\n終季\t${season_that_has_just_ended}終`,
+      });
     });
     score_display.appendChild(ta_xot1_button);
   }, 1000 * 0.8093);
@@ -1320,24 +1305,24 @@ function display_guides_after_stepping(
       "click",
       q.path === "yellow_circle"
         ? function () {
-          eraseGuide();
-          getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
-        }
+            eraseGuide();
+            getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
+          }
         : function () {
-          eraseGuide();
-          sendInfAfterStep(
-            {
-              type: "InfAfterStep",
-              step: toAbsoluteCoord(coord),
-              plannedDirection: toAbsoluteCoord(list[ind]),
-              src: toAbsoluteCoord(src),
-            },
-            {
-              color: q.piece.color,
-              prof: q.piece.prof,
-            },
-          );
-        },
+            eraseGuide();
+            sendInfAfterStep(
+              {
+                type: "InfAfterStep",
+                step: toAbsoluteCoord(coord),
+                plannedDirection: toAbsoluteCoord(list[ind]),
+                src: toAbsoluteCoord(src),
+              },
+              {
+                color: q.piece.color,
+                prof: q.piece.prof,
+              },
+            );
+          },
     );
 
     img.style.zIndex = "200";

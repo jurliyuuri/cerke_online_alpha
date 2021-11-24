@@ -2,23 +2,30 @@ import { drawField } from "./both_sides";
 import { GAME_STATE } from "./game_state";
 import * as KiarArk from "./kiar_ark";
 
-(document.getElementById("coord_annotation")! as HTMLImageElement).src = `image/IA_is_down=${GAME_STATE.IA_is_down}.svg`
+(
+  document.getElementById("coord_annotation")! as HTMLImageElement
+).src = `image/IA_is_down=${GAME_STATE.IA_is_down}.svg`;
 console.log("drawField #", 0);
 drawField({ focus: null });
-KiarArk.push_header_elem_and_display(
-  { type: "header", dat: `{始時:${new Date().toISOString()}}` },
-);
+KiarArk.push_header_elem_and_display({
+  type: "header",
+  dat: `{始時:${new Date().toISOString()}}`,
+});
 
 let COORD_TOGGLE: boolean = false;
-document.getElementById("coord_toggle_button")!.addEventListener("click", () => {
-  COORD_TOGGLE = !COORD_TOGGLE;
-  console.log("COORD_TOGGLE now set to", COORD_TOGGLE);
-  document.getElementById("coord_annotation")!.style.visibility = COORD_TOGGLE ? "visible" : "hidden";
-  (document.getElementById("coord_toggle_button")! as HTMLInputElement).src =
-    COORD_TOGGLE
-      ? "image/toggle/coord_toggle_active.png"
-      : "image/toggle/coord_toggle_inactive.png";
-});
+document
+  .getElementById("coord_toggle_button")!
+  .addEventListener("click", () => {
+    COORD_TOGGLE = !COORD_TOGGLE;
+    console.log("COORD_TOGGLE now set to", COORD_TOGGLE);
+    document.getElementById("coord_annotation")!.style.visibility = COORD_TOGGLE
+      ? "visible"
+      : "hidden";
+    (document.getElementById("coord_toggle_button")! as HTMLInputElement).src =
+      COORD_TOGGLE
+        ? "image/toggle/coord_toggle_active.png"
+        : "image/toggle/coord_toggle_inactive.png";
+  });
 
 export let KRUT_CRUOP: boolean = true;
 // toggles `sound/ciurl4.ogg` and `sound/thud.ogg`.
@@ -75,7 +82,9 @@ document
 document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
   document.getElementById("kait_kaik")!.classList.add("nocover");
   GAME_STATE.is_my_turn = JSON.parse(sessionStorage.is_first_move_my_move);
-  KiarArk.push_initial_colors_and_display(GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤");
+  KiarArk.push_initial_colors_and_display(
+    GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤",
+  );
   if (!LORK_LIAR_ENABLED) {
     toggleBackgroundMusic();
   }
