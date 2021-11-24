@@ -202,7 +202,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       GAME_STATE.is_my_turn = true;
       // piece_capture_comment is impossible
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: piece }) },
       );
     } else if (opponent_move.data.type === "SrcStepDstFinite") {
       const movement_info = await animateOpponentSrcStepDstFinite(
@@ -225,7 +225,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         KiarArk.push_body_elem_and_display(
           {
             type: "movement",
-            dat: normalMessageToKiarArk(opponent_move),
+            dat: normalMessageToKiarArk(opponent_move, { piece_moved }),
             piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
           },
         );
@@ -244,19 +244,19 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       );
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }) },
       );
     } else if (opponent_move.stepStyle === "StepsDuringFormer") {
       await animateOpponentTamSteppingDuringFormer(opponent_move);
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }) },
       );
     } else if (opponent_move.stepStyle === "StepsDuringLatter") {
       await animateOpponentTamSteppingDuringLatter(opponent_move);
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display(
-        { type: "movement", dat: normalMessageToKiarArk(opponent_move) },
+        { type: "movement", dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }) },
       );
     } else {
       const _a: never = opponent_move.stepStyle;
@@ -315,7 +315,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       finalResult,
     });
 
-    const zuo1 : string = (() => {
+    const zuo1: string = (() => {
       if (movement_info.piece_moved === "Tam2") { throw new Error("Tam2 was passed to `piece_moved`") }
       return serializeProf(movement_info.piece_moved.prof);
     })();
