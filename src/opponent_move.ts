@@ -290,7 +290,6 @@ export async function sendMainPollAndDoEverythingThatFollows() {
               }
               return res.content.finalResult!;
             }
-            await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
           }
         })();
       } else {
