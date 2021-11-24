@@ -33,10 +33,7 @@ jobs:
         run: npm ci
 
       - name: lint
-        uses: mooyoul/tslint-actions@v1.1.4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: '*.ts'
+        run: npm run lint:eslint
 
       - name: type check
         run: tsc --pretty false --noEmit | reviewdog -f=tsc -reporter=github-pr-review -fail-on-error=true
