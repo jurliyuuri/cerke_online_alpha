@@ -30,6 +30,8 @@ import {
   Ret_NormalMove,
   Ret_InfAfterStep,
   InfAfterStep,
+  RetTaXot,
+  RetTyMok,
 } from "cerke_online_api";
 import {
   calculateMovablePositions,
@@ -734,11 +736,6 @@ function updateFieldAfterHalfAcceptance(
   return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
 }
 
-type WhoGoesFirst = {
-  process: [Ciurl, Ciurl][]
-  result: boolean,
-}
-
 /**
  * Unsafe function.
  * @param destPiece Assumed to be downward; if not, an error is thrown
@@ -779,10 +776,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     const ty_mok1_button = createImageButton("再行", 0);
     ty_mok1_button.addEventListener("click", async () => {
       increaseRateAndAnimate(true);
-      const res: { type: "Ok" } | { type: "Err" } = await sendStuffTo<
-        boolean,
-        { type: "Ok" } | { type: "Err" }
-      >("whethertymok/tymok", "`send whether ty mok1`", true, (response) => {
+      const res: RetTyMok = await sendStuffTo<{}, RetTyMok>("whethertymok/tymok", "`send whether ty mok1`", {}, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
@@ -798,10 +792,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 
     const ta_xot1_button = createImageButton("終季", 250);
     ta_xot1_button.addEventListener("click", async () => {
-      const res: { type: "Err" } | { type: "Ok", is_first_move_my_move: WhoGoesFirst | null } = await sendStuffTo<
-        boolean,
-        { type: "Err" } | { type: "Ok", is_first_move_my_move: WhoGoesFirst | null }
-      >("whethertymok/taxot", "`send whether ty mok1`", false, (response) => {
+      const res: RetTaXot = await sendStuffTo<{}, RetTaXot>("whethertymok/taxot", "`send whether ty mok1`", {}, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
