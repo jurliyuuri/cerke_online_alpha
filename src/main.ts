@@ -734,6 +734,11 @@ function updateFieldAfterHalfAcceptance(
   return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
 }
 
+type WhoGoesFirst = {
+  process: [Ciurl, Ciurl][]
+  result: boolean,
+}
+
 /**
  * Unsafe function.
  * @param destPiece Assumed to be downward; if not, an error is thrown
@@ -793,21 +798,18 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 
     const ta_xot1_button = createImageButton("終季", 250);
     ta_xot1_button.addEventListener("click", async () => {
-      const res: {
-        legal: boolean;
-        is_first_move_my_move: boolean | null;
-      } = await sendStuffTo<
+      const res: { type: "Err" } | { type: "Ok", is_first_move_my_move: WhoGoesFirst | null } = await sendStuffTo<
         boolean,
-        { legal: boolean; is_first_move_my_move: boolean | null }
+        { type: "Err" } | { type: "Ok", is_first_move_my_move: WhoGoesFirst | null }
       >("whethertymok/taxot", "`send whether ty mok1`", false, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
-      if (res.legal !== true) {
+      if (res.type !== "Ok") {
         throw new Error("bad!!!!");
       }
       const is_first_move_my_move_in_the_next_season: boolean | null =
-        res.is_first_move_my_move;
+        res.is_first_move_my_move?.result ?? null; // FIXME: also use the .process and show them
       const season_that_has_just_ended = ["春", "夏", "秋", "冬"][
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
