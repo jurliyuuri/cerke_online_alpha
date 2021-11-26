@@ -777,7 +777,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       const res: { legal: boolean } = await sendStuffTo<
         boolean,
         { legal: boolean }
-      >("whethertymok", "`send whether ty mok1`", true, (response) => {
+      >("whethertymok/tymok", "`send whether ty mok1`", true, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
@@ -799,7 +799,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       } = await sendStuffTo<
         boolean,
         { legal: boolean; is_first_move_my_move: boolean | null }
-      >("whethertymok", "`send whether ty mok1`", false, (response) => {
+      >("whethertymok/taxot", "`send whether ty mok1`", false, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
