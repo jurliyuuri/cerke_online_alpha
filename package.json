@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "cerke_hands_and_score": "1.0.3",
-    "cerke_online_api": "1.6.2",
+    "cerke_online_api": "1.6.3",
     "cerke_online_utility": "0.0.7",
     "extra-dom": "0.4.3"
   }

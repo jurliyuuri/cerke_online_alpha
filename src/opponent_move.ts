@@ -3,9 +3,9 @@ import {
   SrcStepDstFinite,
   SrcDst,
   Ciurl,
-  Ret_WhetherTyMokPoll,
-  Ret_InfPoll,
-  Ret_MainPoll,
+  RetWhetherTyMokPoll,
+  RetInfPoll,
+  RetMainPoll,
   TacticsKey,
   MoveToBePolled,
 } from "cerke_online_api";
@@ -137,8 +137,8 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     return;
   }
 
-  const res: Ret_MainPoll_Legal = await sendMainPoll();
-  if (res.content === "not yet") {
+  const res: RetMainPoll_Legal = await sendMainPoll();
+  if (res.type === "NotYetDetermined") {
     await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
     await sendMainPollAndDoEverythingThatFollows();
     return;
@@ -269,7 +269,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       if (opponent_move.finalResult == null) {
         // eslint-disable-next-line no-constant-condition
         while (true) {
-          const res: Ret_InfPoll = await sendStuffTo<{}, Ret_InfPoll>(
+          const res: RetInfPoll = await sendStuffTo<{}, RetInfPoll>(
             "infpoll",
             "`polling for the opponent's afterhalfacceptance`",
             {},
@@ -281,9 +281,9 @@ export async function sendMainPollAndDoEverythingThatFollows() {
               return response;
             },
           );
-          if (res.legal === false) {
+          if (res.type === "Err") {
             throw new Error("not good!!!");
-          } else if (res.content !== "not yet") {
+          } else if (res.type !== "NotYetDetermined") {
             if (res.content.type !== "InfAfterStep") {
               throw new Error("nooooooo");
             }
@@ -415,14 +415,16 @@ export async function sendMainPollAndDoEverythingThatFollows() {
   }
 }
 
-type Ret_MainPoll_Legal = {
-  legal: true;
+type RetMainPoll_Legal = {
+  type: "MoveMade";
   message?: TacticsKey;
-  content: MoveToBePolled | "not yet";
+  content: MoveToBePolled;
+} | {
+  type: "NotYetDetermined";
 };
 
-async function sendMainPoll(): Promise<Ret_MainPoll_Legal> {
-  const res: Ret_MainPoll = await sendStuffTo<{}, Ret_MainPoll>(
+async function sendMainPoll(): Promise<RetMainPoll_Legal> {
+  const res: RetMainPoll = await sendStuffTo<{}, RetMainPoll>(
     "mainpoll",
     "`polling for the opponent's move`",
     {},
@@ -432,10 +434,10 @@ async function sendMainPoll(): Promise<Ret_MainPoll_Legal> {
     },
   );
 
-  if (!res.legal) {
-    alert(`sending MainPoll somehow resulted in an error: ${res.whyIllegal}`);
+  if (res.type === "Err") {
+    alert(`sending MainPoll somehow resulted in an error: ${res.why_illegal}`);
     throw new Error(
-      `sending MainPoll somehow resulted in an error: ${res.whyIllegal}`,
+      `sending MainPoll somehow resulted in an error: ${res.why_illegal}`,
     );
   }
   return res;
@@ -711,16 +713,9 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
   const base_score: number = o.score;
   console.log("poll whether ty mok1 or ta xot1");
 
-  const res: Ret_WhetherTyMokPoll = await sendStuffTo<
+  const res: RetWhetherTyMokPoll = await sendStuffTo<
     {},
-    | {
-        legal: true;
-        content:
-          | "ty mok1"
-          | { is_first_move_my_move: boolean | null }
-          | "not yet";
-      }
-    | { legal: false; whyIllegal: string }
+    RetWhetherTyMokPoll
   >(
     "whethertymokpoll",
     "`polling for whether the declaration is ty mok1 or ta xot1`",
@@ -731,16 +726,16 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
     },
   );
 
-  if (!res.legal) {
+  if (res.type === "Err") {
     alert(
-      `sending TyMok1OrTaXot1Poll somehow resulted in an error: ${res.whyIllegal}`,
+      `sending TyMok1OrTaXot1Poll somehow resulted in an error: ${res.why_illegal}`,
     );
     throw new Error(
-      `sending TyMok1OrTaXot1Poll somehow resulted in an error: ${res.whyIllegal}`,
+      `sending TyMok1OrTaXot1Poll somehow resulted in an error: ${res.why_illegal}`,
     );
   }
 
-  if (res.content !== "not yet") {
+  if (res.type !== "NotYetDetermined") {
     console.log("ding!");
 
     const score_display = document.getElementById("score_display")!;
@@ -753,7 +748,7 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
       await new Promise((resolve) => setTimeout(resolve, 100 * 0.8093));
     }
 
-    if (res.content === "ty mok1") {
+    if (res.type === "TyMok") {
       score_display.innerHTML += `<img src="image/再行.png" style="position: absolute; left: 660px; top: 125px; " height="200">`;
       await new Promise((resolve) => setTimeout(resolve, 5000 * 0.8093));
       console.log("go on with ty mok1");
@@ -769,7 +764,9 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
       const season_that_has_just_ended = ["春", "夏", "秋", "冬"][
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
-      endSeason(-base_score, res.content.is_first_move_my_move); // since opponent, negative score
+
+      // FIXME: also use .process
+      endSeason(-base_score, res.is_first_move_my_move?.result ?? null); // since opponent, negative score
       KiarArk.push_body_elem_and_display({
         type: "tymoktaxot",
         dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(

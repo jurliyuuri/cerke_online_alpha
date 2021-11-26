@@ -1,17 +1,8 @@
-import { Ret_RandomEntry, Ret_RandomPoll } from "cerke_online_api";
+import { Ret_RandomEntry, RetRandomPoll, RetRandomCancel } from "cerke_online_api";
 import { API_ORIGIN } from "./env";
 
 const UNLOAD_TRIGGERED_BY_USER: boolean = true;
 
-type Ret_RandomCancel =
-  | {
-      legal: false;
-      whyIllegal: string;
-    }
-  | {
-      legal: true;
-      cancellable: boolean;
-    };
 
 /////////////////////////////////////////////////////////
 // The following function magically does the following:
@@ -34,7 +25,7 @@ document.addEventListener("visibilitychange", () => {
       RESULT = undefined;
       (async () => {
         console.log(`trying to cancel ${token}:`);
-        const newRes: Ret_RandomCancel = await sendCancel<Ret_RandomCancel>(
+        const newRes: RetRandomCancel = await sendCancel<RetRandomCancel>(
           token as AccessToken,
           (a) => a,
         );
@@ -72,11 +63,11 @@ function apply_for_random_game() {
       await new Promise((resolve) =>
         setTimeout(resolve, (2 + Math.random()) * 200 * 0.8093),
       );
-      const newRes: Ret_RandomPoll = await sendPoll<Ret_RandomPoll>(
+      const newRes: RetRandomPoll = await sendPoll<RetRandomPoll>(
         res.access_token as AccessToken,
         (a) => a,
       );
-      if (newRes.legal) {
+      if (newRes.type !== "Err") {
         res = newRes.ret;
         RESULT = res;
       } else {

@@ -23,12 +23,12 @@ import {
   Profession,
   Color,
   Ciurl,
-  Ret_AfterHalfAcceptance,
+  RetAfterHalfAcceptance,
   NormalNonTamMove,
   NormalMove,
   AfterHalfAcceptance,
-  Ret_NormalMove,
-  Ret_InfAfterStep,
+  RetNormalMove,
+  RetInfAfterStep,
   InfAfterStep,
   RetTaXot,
   RetTyMok,
@@ -65,7 +65,6 @@ import {
   serializeProf,
 } from "./serialize";
 import {
-  CaptureInfo,
   MovementInfo,
   toColorProf,
   toPieceCaptureComment,
@@ -432,20 +431,20 @@ async function sendAfterHalfAcceptance(
     planned_destination: AbsoluteCoord;
   },
 ) {
-  const res: Ret_AfterHalfAcceptance = await sendStuff<
+  const res: RetAfterHalfAcceptance = await sendStuff<
     AfterHalfAcceptance,
-    Ret_AfterHalfAcceptance
+    RetAfterHalfAcceptance
   >("`after half acceptance`", message, (response) => {
     console.log("Success; the server returned:", JSON.stringify(response));
     return response;
   });
 
-  if (!res.legal) {
-    alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
-    throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+  if (res.type === "Err") {
+    alert(`Illegal API sent, the reason being ${res.why_illegal}`);
+    throw new Error(`Illegal API sent, the reason being ${res.why_illegal}`);
   }
 
-  if (!res.dat.waterEntryHappened) {
+  if (res.type === "WithoutWaterEntry") {
     eraseGuide();
     SELECTED_COORD_UI = null;
     const movement_info = updateFieldAfterHalfAcceptance(
@@ -497,10 +496,10 @@ async function sendAfterHalfAcceptance(
   }
 
   await animateWaterEntryLogo();
-  drawCiurlWithAudio(res.dat.ciurl);
+  drawCiurlWithAudio(res.ciurl);
   await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
 
-  if (res.dat.ciurl.filter((a) => a).length < 3) {
+  if (res.ciurl.filter((a) => a).length < 3) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
     SELECTED_COORD_UI = null;
@@ -537,7 +536,7 @@ async function sendAfterHalfAcceptance(
         toAbsoluteCoord(o.step),
       )}${serializeAbsoluteCoord(dest)}橋${serializeCiurl(
         o.stepping_ciurl,
-      )}水${serializeCiurl(res.dat.ciurl)}此無`,
+      )}水${serializeCiurl(res.ciurl)}此無`,
     });
   } else {
     eraseGuide();
@@ -568,7 +567,7 @@ async function sendAfterHalfAcceptance(
           toAbsoluteCoord(o.step),
         )}${serializeAbsoluteCoord(message.dest)}橋${serializeCiurl(
           o.stepping_ciurl,
-        )}水${serializeCiurl(res.dat.ciurl)}`,
+        )}水${serializeCiurl(res.ciurl)}`,
         piece_capture_comment: toPieceCaptureComment(
           movement_info.maybe_capture,
         ),
@@ -590,7 +589,7 @@ async function sendStuff<T, U>(
 }
 
 async function sendNormalMessage(message: NormalMove) {
-  const res: Ret_NormalMove = await sendStuff<NormalMove, Ret_NormalMove>(
+  const res: RetNormalMove = await sendStuff<NormalMove, RetNormalMove>(
     "normal move",
     message,
     (response) => {
@@ -599,12 +598,12 @@ async function sendNormalMessage(message: NormalMove) {
     },
   );
 
-  if (!res.legal) {
-    alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
-    throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+  if (res.type === "Err") {
+    alert(`Illegal API sent, the reason being ${res.why_illegal}`);
+    throw new Error(`Illegal API sent, the reason being ${res.why_illegal}`);
   }
 
-  if (!res.dat.waterEntryHappened) {
+  if (res.type === "WithoutWaterEntry") {
     eraseGuide();
     SELECTED_COORD_UI = null;
     const movement_info = updateField(message);
@@ -623,9 +622,9 @@ async function sendNormalMessage(message: NormalMove) {
   }
 
   await animateWaterEntryLogo();
-  drawCiurlWithAudio(res.dat.ciurl);
+  drawCiurlWithAudio(res.ciurl);
   await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
-  const water_ciurl_count = res.dat.ciurl.filter((a) => a).length;
+  const water_ciurl_count = res.ciurl.filter((a) => a).length;
   if (water_ciurl_count < 3) {
     alert(DICTIONARY.ja.failedWaterEntry);
     eraseGuide();
@@ -642,7 +641,7 @@ async function sendNormalMessage(message: NormalMove) {
       KiarArk.push_body_elem_and_display({
         type: "movement",
         dat: normalMessageToKiarArk(message, {
-          water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+          water_ciurl_count: res.ciurl.filter((a) => a).length,
           piece_moved: movement_info.piece_moved,
         }),
       });
@@ -664,7 +663,7 @@ async function sendNormalMessage(message: NormalMove) {
       KiarArk.push_body_elem_and_display({
         type: "movement",
         dat: normalMessageToKiarArk(message, {
-          water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+          water_ciurl_count: res.ciurl.filter((a) => a).length,
           piece_moved,
         }),
       });
@@ -681,7 +680,7 @@ async function sendNormalMessage(message: NormalMove) {
       type: "movement",
       dat: normalMessageToKiarArk(message, {
         piece_moved: movement_info.piece_moved,
-        water_ciurl_count: res.dat.ciurl.filter((a) => a).length,
+        water_ciurl_count: res.ciurl.filter((a) => a).length,
       }),
       piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
     });
@@ -1108,7 +1107,7 @@ async function sendInfAfterStep(
   message: InfAfterStep,
   o: { color: Color; prof: Profession },
 ) {
-  const res = await sendStuff<InfAfterStep, Ret_InfAfterStep>(
+  const res = await sendStuff<InfAfterStep, RetInfAfterStep>(
     "inf after step",
     message,
     (response) => {
@@ -1117,9 +1116,9 @@ async function sendInfAfterStep(
     },
   );
 
-  if (!res.legal) {
-    alert(`Illegal API sent, the reason being ${res.whyIllegal}`);
-    throw new Error(`Illegal API sent, the reason being ${res.whyIllegal}`);
+  if (res.type === "Err") {
+    alert(`Illegal API sent, the reason being ${res.why_illegal}`);
+    throw new Error(`Illegal API sent, the reason being ${res.why_illegal}`);
   }
 
   if (isTamAt(fromAbsoluteCoord(message.step))) {
