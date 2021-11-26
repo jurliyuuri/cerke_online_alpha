@@ -295,20 +295,20 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
             console.assert(GAME_STATE.f.currentBoard[to[0]][to[1]] == null);
             const message: NormalMove = step
               ? {
-                  type: "TamMove",
-                  stepStyle: "StepsDuringFormer",
-                  src: toAbsoluteCoord(theVerySrc),
-                  step: toAbsoluteCoord(step),
-                  firstDest: toAbsoluteCoord(firstDest),
-                  secondDest: toAbsoluteCoord(to),
-                }
+                type: "TamMove",
+                stepStyle: "StepsDuringFormer",
+                src: toAbsoluteCoord(theVerySrc),
+                step: toAbsoluteCoord(step),
+                firstDest: toAbsoluteCoord(firstDest),
+                secondDest: toAbsoluteCoord(to),
+              }
               : {
-                  type: "TamMove",
-                  stepStyle: "NoStep",
-                  src: toAbsoluteCoord(theVerySrc),
-                  firstDest: toAbsoluteCoord(firstDest),
-                  secondDest: toAbsoluteCoord(to),
-                };
+                type: "TamMove",
+                stepStyle: "NoStep",
+                src: toAbsoluteCoord(theVerySrc),
+                firstDest: toAbsoluteCoord(firstDest),
+                secondDest: toAbsoluteCoord(to),
+              };
 
             // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
             erasePhantomAndOptionallyCancelButton();
@@ -774,14 +774,14 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     const ty_mok1_button = createImageButton("再行", 0);
     ty_mok1_button.addEventListener("click", async () => {
       increaseRateAndAnimate(true);
-      const res: { legal: boolean } = await sendStuffTo<
+      const res: { type: "Ok" } | { type: "Err" } = await sendStuffTo<
         boolean,
-        { legal: boolean }
+        { type: "Ok" } | { type: "Err" }
       >("whethertymok/tymok", "`send whether ty mok1`", true, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
-      if (res.legal !== true) {
+      if (res.type !== "Ok") {
         throw new Error("bad!!!!");
       }
       KiarArk.push_body_elem_and_display({
@@ -1305,24 +1305,24 @@ function display_guides_after_stepping(
       "click",
       q.path === "yellow_circle"
         ? function () {
-            eraseGuide();
-            getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
-          }
+          eraseGuide();
+          getThingsGoingAfterStepping_Finite(src, coord, q.piece, list[ind]);
+        }
         : function () {
-            eraseGuide();
-            sendInfAfterStep(
-              {
-                type: "InfAfterStep",
-                step: toAbsoluteCoord(coord),
-                plannedDirection: toAbsoluteCoord(list[ind]),
-                src: toAbsoluteCoord(src),
-              },
-              {
-                color: q.piece.color,
-                prof: q.piece.prof,
-              },
-            );
-          },
+          eraseGuide();
+          sendInfAfterStep(
+            {
+              type: "InfAfterStep",
+              step: toAbsoluteCoord(coord),
+              plannedDirection: toAbsoluteCoord(list[ind]),
+              src: toAbsoluteCoord(src),
+            },
+            {
+              color: q.piece.color,
+              prof: q.piece.prof,
+            },
+          );
+        },
     );
 
     img.style.zIndex = "200";
