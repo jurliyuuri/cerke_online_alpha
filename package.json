@@ -43,7 +43,7 @@
   "dependencies": {
     "cerke_hands_and_score": "1.0.3",
     "cerke_online_api": "1.6.3",
-    "cerke_online_utility": "0.0.7",
+    "cerke_online_utility": "0.0.8",
     "extra-dom": "0.4.3"
   }
 }
