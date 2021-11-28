@@ -499,15 +499,13 @@ export function endSeason(
     console.log("drawField #", 11);
     drawField({ focus: null }); /* the board is initialized; no focus */
 
-    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+    await animateSeasonInitiation(is_first_move_my_move_in_the_next_season!);
     document
       .getElementById("protective_cover_over_field")
       ?.classList.add("nocover");
     document
       .getElementById("protective_tam_cover_over_field")
       ?.classList.add("nocover");
-
-    await animateSeasonInitiation(is_first_move_my_move_in_the_next_season!);
     document
       .getElementById("protective_cover_over_field_while_asyncawait")
       ?.classList.add("nocover");
@@ -516,6 +514,7 @@ export function endSeason(
 
 export async function animateSeasonInitiation(w: WhoGoesFirst) {
   await animateProcessDeterminingWhoGoesFirst(w);
+  await new Promise((resolve) => setTimeout(resolve, 3000 * 0.8093));
   GAME_STATE.is_my_turn = w.result;
   KiarArk.push_initial_colors_and_display(
     GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤",
