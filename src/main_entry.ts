@@ -1,4 +1,5 @@
-import { drawField } from "./both_sides";
+import { WhoGoesFirst } from "cerke_online_api";
+import { animateSeasonInitiation, drawField } from "./both_sides";
 import { GAME_STATE } from "./game_state";
 import * as KiarArk from "./kiar_ark";
 
@@ -79,15 +80,14 @@ document
   BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? LORK_LIAR / 100 : 0;
 });
 
-document.getElementById("kait_kaik_button")!.addEventListener("click", () => {
+document.getElementById("kait_kaik_button")!.addEventListener("click", async () => {
   document.getElementById("kait_kaik")!.classList.add("nocover");
-  GAME_STATE.is_my_turn = JSON.parse(sessionStorage.is_first_move_my_move);
-  KiarArk.push_initial_colors_and_display(
-    GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤",
-  );
+  const is_first_move_my_move: WhoGoesFirst = JSON.parse(sessionStorage.is_first_move_my_move);
   if (!LORK_LIAR_ENABLED) {
     toggleBackgroundMusic();
   }
+
+  await animateSeasonInitiation(is_first_move_my_move);
 });
 
 if (sessionStorage.vs === "cpu") {
