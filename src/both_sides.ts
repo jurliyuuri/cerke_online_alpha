@@ -22,7 +22,7 @@ import {
   NonTam2PieceUpward,
   Piece,
 } from "cerke_online_utility";
-import { Profession, Color, Season, Log2_Rate } from "cerke_online_api";
+import { Profession, Color, Season, Log2_Rate, WhoGoesFirst } from "cerke_online_api";
 import {
   getDenoteRateNodeTopLeft,
   getDenoteScoreNodeTopLeft,
@@ -41,22 +41,20 @@ import {
   createPieceImgToBePlacedOnBoard,
   createPieceImgToBePlacedOnHop1zuo1,
 } from "./create_html_element";
-import { selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
+import { animateProcessDeterminingWhoGoesFirst, selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
 
 export function drawMak2Io1() {
   const denote_season = document.getElementById("denote_season")!;
-  denote_season.style.top = `${
-    getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
-  }px`;
+  denote_season.style.top = `${getDenoteSeasonNodeTopLeft(GAME_STATE.season).top
+    }px`;
   denote_season.style.transition = ``; // needs to clear the animation
   denote_season.style.transform = ``;
 
   const denote_score = document.getElementById("denote_score")!;
-  denote_score.style.top = `${
-    getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
-  }px`;
+  denote_score.style.top = `${getDenoteScoreNodeTopLeft(GAME_STATE.my_score).top
+    }px`;
   denote_score.style.transition = ``;
   denote_score.style.transform = ``;
 
@@ -66,9 +64,8 @@ export function drawMak2Io1() {
   } else {
     denote_rate.style.display = "block";
   }
-  denote_rate.style.top = `${
-    getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
-  }px`;
+  denote_rate.style.top = `${getDenoteRateNodeTopLeft(GAME_STATE.log2_rate).top
+    }px`;
   denote_rate.style.transition = ``;
   denote_rate.style.transform = ``;
 }
@@ -253,14 +250,14 @@ function perzej(
     msg === "you win!"
       ? DICTIONARY.ja.gameResult.victory
       : msg === "draw"
-      ? DICTIONARY.ja.gameResult.draw
-      : DICTIONARY.ja.gameResult.loss;
+        ? DICTIONARY.ja.gameResult.draw
+        : DICTIONARY.ja.gameResult.loss;
   document.getElementById("opponent_message_linzklar")!.textContent =
     msg === "you win!"
       ? GAME_END_LINZKLAR.victory
       : msg === "draw"
-      ? GAME_END_LINZKLAR.draw
-      : GAME_END_LINZKLAR.loss;
+        ? GAME_END_LINZKLAR.draw
+        : GAME_END_LINZKLAR.loss;
 
   KiarArk.push_body_elem_and_display({ type: "tymoktaxot", dat: "星一周" });
   KiarArk.push_header_elem_and_display({
@@ -407,7 +404,7 @@ export async function sendStuffTo<T, U>(
 
 export function endSeason(
   base_score: number,
-  is_first_move_my_move_in_the_next_season: boolean | null,
+  is_first_move_my_move_in_the_next_season: WhoGoesFirst | null,
 ) {
   const score_display = document.getElementById("score_display")!;
   score_display.classList.add("nocover");
@@ -502,22 +499,26 @@ export function endSeason(
     console.log("drawField #", 11);
     drawField({ focus: null }); /* the board is initialized; no focus */
 
-    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+    await animateSeasonInitiation(is_first_move_my_move_in_the_next_season!);
     document
       .getElementById("protective_cover_over_field")
       ?.classList.add("nocover");
     document
       .getElementById("protective_tam_cover_over_field")
       ?.classList.add("nocover");
-
-    GAME_STATE.is_my_turn = is_first_move_my_move_in_the_next_season!;
-    KiarArk.push_initial_colors_and_display(
-      GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤",
-    );
     document
       .getElementById("protective_cover_over_field_while_asyncawait")
       ?.classList.add("nocover");
   }, 200 * 0.8093);
+}
+
+export async function animateSeasonInitiation(w: WhoGoesFirst) {
+  await animateProcessDeterminingWhoGoesFirst(w);
+  await new Promise((resolve) => setTimeout(resolve, 3000 * 0.8093));
+  GAME_STATE.is_my_turn = w.result;
+  KiarArk.push_initial_colors_and_display(
+    GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤",
+  );
 }
 
 export function increaseRateAndAnimate(done_by_me: boolean) {

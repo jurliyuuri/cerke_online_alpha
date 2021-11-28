@@ -1,4 +1,4 @@
-import { RetRandomEntry, RetRandomPoll, RetRandomCancel } from "cerke_online_api";
+import { RetRandomEntry, RetRandomPoll, RetRandomCancel, WhoGoesFirst } from "cerke_online_api";
 import { API_ORIGIN } from "./env";
 
 const UNLOAD_TRIGGERED_BY_USER: boolean = true;
@@ -43,7 +43,7 @@ document.addEventListener("visibilitychange", () => {
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(
   access_token: AccessToken,
-  is_first_move_my_move: boolean,
+  is_first_move_my_move: WhoGoesFirst,
   is_IA_down_for_me: boolean,
 ) {
   sessionStorage.vs = "someone";
@@ -78,7 +78,7 @@ function apply_for_random_game() {
     }
     let_the_game_begin(
       res.access_token as AccessToken,
-      res.is_first_move_my_move.result, // FIXME: also use .process,
+      res.is_first_move_my_move,
       res.is_IA_down_for_me,
     );
   })();

@@ -68,6 +68,17 @@ export async function animateWaterEntryLogo() {
 }
 
 export function drawCiurl(ciurl: Ciurl, side?: Side) {
+  eraseCiurl();
+  drawCiurlWithoutErasingCiurl(document.getElementById("contains_ciurl")!, ciurl, side);
+}
+
+export function drawTwoCiurls(ciurls: [Ciurl, Ciurl]) {
+  eraseCiurl();
+  drawCiurlWithoutErasingCiurl(document.getElementById("contains_ciurl")!, ciurls[0], Side.Upward);
+  drawCiurlWithoutErasingCiurl(document.getElementById("contains_ciurl")!, ciurls[1], Side.Downward);
+}
+
+function drawCiurlWithoutErasingCiurl(contains_ciurl: HTMLElement, ciurl: Ciurl, side?: Side) {
   // copied and pasted from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve
   // Standard Normal variate using Box-Muller transform.
   const randn_bm = function (): number {
@@ -81,11 +92,6 @@ export function drawCiurl(ciurl: Ciurl, side?: Side) {
     }
     return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
   };
-
-  const contains_ciurl = document.getElementById("contains_ciurl")!;
-
-  eraseCiurl();
-
   const averageLeft = BOX_SIZE * (335 / 70 + randn_bm() / 6);
   const hop1zuo1_height = 140;
   const board_height = 631;
@@ -209,9 +215,8 @@ export function drawArrow(from: Coord, to: Coord) {
     } else if (from[1] === to[1] && from[0] < to[0]) {
       // down arrow
       const delta = to[0] - from[0];
-      return `m31.6 18.7h5.8v${
-        34.5 + BOX_SIZE * delta
-      }l-21.3-31 4.5-3.2 11 16z`;
+      return `m31.6 18.7h5.8v${34.5 + BOX_SIZE * delta
+        }l-21.3-31 4.5-3.2 11 16z`;
     } else if (from[0] === to[0] && from[1] > to[1]) {
       // left arrow
       const delta = from[1] - to[1];
@@ -222,9 +227,8 @@ export function drawArrow(from: Coord, to: Coord) {
     } else if (from[0] === to[0] && from[1] < to[1]) {
       // right arrow
       const delta = to[1] - from[1];
-      return `m18.7 31.6v5.8h${
-        34.5 + BOX_SIZE * delta
-      }l-31-21.3-3.2 4.5 16 11z`;
+      return `m18.7 31.6v5.8h${34.5 + BOX_SIZE * delta
+        }l-31-21.3-3.2 4.5 16 11z`;
     } else if (
       from[0] > to[0] &&
       from[1] < to[1] &&
@@ -243,9 +247,8 @@ export function drawArrow(from: Coord, to: Coord) {
     ) {
       // down left arrow
       const delta = from[1] - to[1];
-      return `m34.8 ${32.9 + BOX_SIZE * delta} 5.6-19.8-5.9-1.8-10.7 41 ${
-        32.4 + BOX_SIZE * delta
-      } ${-(32.4 + BOX_SIZE * delta)}-4.2-4.2z`;
+      return `m34.8 ${32.9 + BOX_SIZE * delta} 5.6-19.8-5.9-1.8-10.7 41 ${32.4 + BOX_SIZE * delta
+        } ${-(32.4 + BOX_SIZE * delta)}-4.2-4.2z`;
     } else if (
       from[0] > to[0] &&
       from[1] > to[1] &&
@@ -253,9 +256,8 @@ export function drawArrow(from: Coord, to: Coord) {
     ) {
       // up left arrow
       const delta = from[1] - to[1];
-      return `m34.8 37.1 5.6 19.8-5.9 1.8-10.7-41 ${32.4 + BOX_SIZE * delta} ${
-        32.4 + BOX_SIZE * delta
-      }-4.2 4.2z`;
+      return `m34.8 37.1 5.6 19.8-5.9 1.8-10.7-41 ${32.4 + BOX_SIZE * delta} ${32.4 + BOX_SIZE * delta
+        }-4.2 4.2z`;
     } else if (
       from[0] < to[0] &&
       from[1] < to[1] &&
@@ -263,12 +265,11 @@ export function drawArrow(from: Coord, to: Coord) {
     ) {
       // down right arrow
       const delta = to[0] - from[0];
-      return `m${32.9 + BOX_SIZE * delta} ${
-        35.2 + BOX_SIZE * delta
-      }-19.8-5.6-1.8 5.9 41 10.7 ${-(32.4 + BOX_SIZE * delta)} ${-(
-        32.4 +
-        BOX_SIZE * delta
-      )}-4.2 4.2z`;
+      return `m${32.9 + BOX_SIZE * delta} ${35.2 + BOX_SIZE * delta
+        }-19.8-5.6-1.8 5.9 41 10.7 ${-(32.4 + BOX_SIZE * delta)} ${-(
+          32.4 +
+          BOX_SIZE * delta
+        )}-4.2 4.2z`;
     } else {
       throw new Error("unsupported direction for the arrow");
     }

@@ -32,6 +32,7 @@ import {
   InfAfterStep,
   RetTaXot,
   RetTyMok,
+  WhoGoesFirst,
 } from "cerke_online_api";
 import {
   calculateMovablePositions,
@@ -55,6 +56,7 @@ import {
   drawCiurl,
   drawHoverAt_,
   drawPhantomAt,
+  drawTwoCiurls,
   eraseGuide,
   erasePhantomAndOptionallyCancelButton,
 } from "./draw_erase_animate";
@@ -798,8 +800,8 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
       if (res.type !== "Ok") {
         throw new Error("bad!!!!");
       }
-      const is_first_move_my_move_in_the_next_season: boolean | null =
-        res.is_first_move_my_move?.result ?? null; // FIXME: also use the .process and show them
+      const is_first_move_my_move_in_the_next_season: WhoGoesFirst | null =
+        res.is_first_move_my_move
       const season_that_has_just_ended = ["春", "夏", "秋", "冬"][
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
@@ -1235,6 +1237,17 @@ export function drawCiurlWithAudio(ciurl: Ciurl, side?: Side) {
   if (KRUT_CRUOP) {
     const ciurl_sound = new Audio("sound/ciurl4.ogg");
     ciurl_sound.play();
+  }
+}
+
+export async function animateProcessDeterminingWhoGoesFirst(w: WhoGoesFirst) {
+  for (const [c1, c2] of w.process) {
+    drawTwoCiurls([c1, c2]);
+    if (KRUT_CRUOP) {
+      const ciurl_sound = new Audio("sound/ciurl4.ogg");
+      ciurl_sound.play();
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
   }
 }
 

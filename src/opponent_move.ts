@@ -764,8 +764,7 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
         GAME_STATE.season
       ]; // GAME_STATE.season gets updated on the following call of `endSeason`, so we must store the previous value
 
-      // FIXME: also use .process
-      endSeason(-base_score, res.is_first_move_my_move?.result ?? null); // since opponent, negative score
+      endSeason(-base_score, res.is_first_move_my_move); // since opponent, negative score
       KiarArk.push_body_elem_and_display({
         type: "tymoktaxot",
         dat: `或為${o.hands.join("加")}而手${toDigitsLinzklar(
