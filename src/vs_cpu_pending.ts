@@ -1,5 +1,5 @@
 import { API_ORIGIN } from "./env";
-import { Ret_VsCpuEntry } from "cerke_online_api";
+import { RetVsCpuEntry } from "cerke_online_api";
 
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(
@@ -14,17 +14,17 @@ function let_the_game_begin(
   location.href = "main.html";
 }
 
-let RESULT: Ret_VsCpuEntry | undefined;
+let RESULT: RetVsCpuEntry | undefined;
 
 function apply_for_vs_cpu_game() {
   (async () => {
-    const res: Ret_VsCpuEntry = await sendVsCpuEntrance<Ret_VsCpuEntry>(
+    const res: RetVsCpuEntry = await sendVsCpuEntrance<RetVsCpuEntry>(
       (a) => a,
     );
     RESULT = res;
     let_the_game_begin(
       res.access_token as AccessToken,
-      res.is_first_move_my_move,
+      res.is_first_move_my_move.result, // FIXME: also use .process
       res.is_IA_down_for_me,
     );
   })();

@@ -1,4 +1,4 @@
-import { Ret_RandomEntry, RetRandomPoll, RetRandomCancel } from "cerke_online_api";
+import { RetRandomEntry, RetRandomPoll, RetRandomCancel } from "cerke_online_api";
 import { API_ORIGIN } from "./env";
 
 const UNLOAD_TRIGGERED_BY_USER: boolean = true;
@@ -53,13 +53,13 @@ function let_the_game_begin(
   location.href = "main.html";
 }
 
-let RESULT: Ret_RandomEntry | undefined;
+let RESULT: RetRandomEntry | undefined;
 
 function apply_for_random_game() {
   (async () => {
-    let res: Ret_RandomEntry = await sendEntrance<Ret_RandomEntry>((a) => a);
+    let res: RetRandomEntry = await sendEntrance<RetRandomEntry>((a) => a);
     RESULT = res;
-    while (res.state != "let_the_game_begin") {
+    while (res.type !== "LetTheGameBegin") {
       await new Promise((resolve) =>
         setTimeout(resolve, (2 + Math.random()) * 200 * 0.8093),
       );
@@ -72,13 +72,13 @@ function apply_for_random_game() {
         RESULT = res;
       } else {
         // re-entry
-        res = await sendEntrance<Ret_RandomEntry>((a) => a);
+        res = await sendEntrance<RetRandomEntry>((a) => a);
         RESULT = res;
       }
     }
     let_the_game_begin(
       res.access_token as AccessToken,
-      res.is_first_move_my_move,
+      res.is_first_move_my_move.result, // FIXME: also use .process,
       res.is_IA_down_for_me,
     );
   })();
