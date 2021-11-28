@@ -135,6 +135,37 @@
     <div style="margin: 0 auto; max-width: 970px; display: flex;">
         <nav id="posts" style="width: 970px;">
             <article class="post">
+                <p class="date">2021年11月25日</p>
+                <hr>
+                <article lang="ja">
+                    <h2>[0.2021.11] 月末アップデート（2021年11月）内容告知</h2>
+                    <p>
+                        今月は月末以外にリファクタリングをしましたが、機能追加に関しては月末まわりに行いました。今回は先に機能追加がされ始め、その後に以下の告知ツイートを打ちました。
+                    </p>
+                    <div style="height: 500px;"><!-- to prevent the slow load of tweet to interfere with the design -->
+                        <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">告知していませんでしたが、机戦（パイグ将棋）オンライン対戦システム cerke_online は今月も月末アップデートを行っています。 <a href="https://t.co/SJphdbxPrL">https://t.co/SJphdbxPrL</a></p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1462663997207945223?ref_src=twsrc%5Etfw">November 22, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    </div>
+                    <hr>
+                    <p>
+                        結果としては、以下の改善を入れることができました。
+                    </p>
+                    <ul>
+                        <li>棋譜改良<ul>
+                            <li>今までは春のみの先手が棋譜に表示されていましたが、全季節について出た方がわかりやすいので、そうしました。</li>
+                            <li>今までは、手駒から駒が動いたときか、動いた駒が【皇】である場合以外においては、棋譜上で「片」と表示されていましたが、これでは実際問題棋譜が読みづらいので、駒の職業が棋譜で出るようにしました。</li></ul>
+                        </li>
+                        <li>座標表示のオンオフ切り替え<ul>
+                            <li>「棋譜を見ると PIA とか ZO とか書いてあるけど、どのマスなのかパッとは分からないよ」という声にお答えして、座標表示のオンオフを切り替えることができるようにしました。なんだかんだデザイン面で手直しすべき箇所が多く、結局これの実装だけで 4 時間ぐらいかかってしまいましたね。</li></ul>
+                        </li>
+                        <li>ドキュメンテーションの改善<ul><li><a href="https://github.com/jurliyuuri/cerke_online_alpha/tree/master/ephemera">ephemera</a> フォルダを作成し、リファクタリングによってガンガン古びていくことを想定した一時的ドキュメンテーションを書きました。</li></ul></li>
+                        <li>内部的改良<ul>
+                            <li>ファイルの役割分担を改良しました。特に、src/opponent_move.ts から export されるものが大幅に整理されました。</li>
+                            <li>ファイル間の依存関係を若干きれいにしました。</li>
+                        </ul></li>
+                    </ul>
+                </article>
+            </article>
+            <article class="post">
                 <p class="date">2021年10月31日</p>
                 <hr>
                 <article lang="ja">
