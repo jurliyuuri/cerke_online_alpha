@@ -38,7 +38,6 @@ import {
   animateStepTamLogo,
   animateWaterEntryLogo,
   drawArrow,
-  drawCiurl,
   eraseArrow,
 } from "./draw_erase_animate";
 import { DICTIONARY, TACTICS_LINZKLAR } from "./dictionary";
@@ -54,11 +53,11 @@ import {
   serializeProf,
 } from "./serialize";
 import {
-  CaptureInfo,
   MovementInfo,
   toColorProf,
   toPieceCaptureComment,
 } from "./capture_info";
+import { drawCiurlWithAudio } from "./main";
 
 /*
 interface OpponentMoveWithPotentialWaterEntry {
@@ -461,7 +460,7 @@ async function animateOpponentSteppingOverCiurl(
 ) {
   drawArrow(step, plannedDirection);
   await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
-  drawCiurl(stepping_ciurl, Side.Downward);
+  drawCiurlWithAudio(stepping_ciurl, Side.Downward);
   await new Promise((resolve) => setTimeout(resolve, 600 * 0.8093));
   eraseArrow();
 }
@@ -589,7 +588,7 @@ async function animateOpponentInfAfterStep(p: {
 
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      drawCiurl(result.water_entry_ciurl, Side.Downward);
+      drawCiurlWithAudio(result.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -628,7 +627,7 @@ async function animateOpponentInfAfterStep(p: {
 
     if (result.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      drawCiurl(result.water_entry_ciurl, Side.Downward);
+      drawCiurlWithAudio(result.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -639,7 +638,7 @@ async function animateOpponentInfAfterStep(p: {
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
       await animateWaterEntryLogo();
-      drawCiurl(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
+      drawCiurlWithAudio(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       alert(DICTIONARY.ja.failedWaterEntry);
       console.log("drawField opponent #", 14);
@@ -849,7 +848,7 @@ async function animateOpponentSrcStepDstFinite_(
 
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
-      drawCiurl(water_entry_ciurl, Side.Downward);
+      drawCiurlWithAudio(water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -895,7 +894,7 @@ async function animateOpponentSrcStepDstFinite_(
 
     if (water_entry_ciurl) {
       await animateWaterEntryLogo();
-      drawCiurl(water_entry_ciurl, Side.Downward);
+      drawCiurlWithAudio(water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -983,7 +982,7 @@ async function animateOpponentSrcDst_(
 
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      drawCiurl(o.water_entry_ciurl, Side.Downward);
+      drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
@@ -1014,7 +1013,7 @@ async function animateOpponentSrcDst_(
 
     if (o.water_entry_ciurl) {
       await animateWaterEntryLogo();
-      drawCiurl(o.water_entry_ciurl, Side.Downward);
+      drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter((a) => a).length < 3) {
         alert(DICTIONARY.ja.failedWaterEntry);
