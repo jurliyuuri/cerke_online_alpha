@@ -159,9 +159,12 @@
                             <li>試合開始前においては両方のアイコンが薄くなるようにしました。</li></ul>
                         </li>
                         <li>ドキュメンテーションの改善<ul><li><a href="https://github.com/jurliyuuri/cerke_online_alpha/tree/master/ephemera">ephemera</a> フォルダを作成し、リファクタリングによってガンガン古びていくことを想定した一時的ドキュメンテーションを書きました。</li></ul></li>
-                        <li>内部的改良<ul>
+                        <li>内部的改良・開発環境の改良<ul>
                             <li>ファイルの役割分担を改良しました。特に、src/opponent_move.ts から export されるものが大幅に整理されました。</li>
                             <li>ファイル間の依存関係を若干きれいにしました。</li>
+                            <li>tslint になっていたのを eslint にし、デッドコードなどを検出し、改善しました。</li>
+                            <li>prettier がしっかり適用されるようになりました。</li>
+                            <li>npm run start や npm run build がちゃんとローカル環境でも動くようになりました。</li>
                         </ul></li>
                     </ul>
                 </article>
