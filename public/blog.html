@@ -115,7 +115,8 @@
 <body>
     <header style="margin: 0 auto; max-width: 970px;">
         <div class="header-logo-container">
-            <img src="https://pbs.twimg.com/profile_images/1046438427149754369/Dz5rJguW_400x400.jpg" width="60" height="60" style="margin-right: 10px" />
+            <img src="https://pbs.twimg.com/profile_images/1046438427149754369/Dz5rJguW_400x400.jpg" width="60"
+                height="60" style="margin-right: 10px" />
             <div>
                 <div lang="ja" style="font-size: 135%">cerke_online更新履歴</div>
                 <div lang="x-lineparine" style="font-size: 110%">jekto.vatimeliju krante</div>
@@ -126,14 +127,29 @@
             <ul lang="ja">
                 <li><a href="http://jurliyuuri.com/cerke_online_alpha/entrance.html">cerke_onlineトップに戻る</a></li>
                 <li><a href="https://sites.google.com/view/cet2kaik">日本机戦連盟公式サイト</a></li>
-                <li><a href="https://docs.google.com/document/d/17_cfVKLX5tGPYYRp5DUjnc8LEBOCs3uwX7t9QhO0nCY/edit">はじめての人のためのパイグ将棋</a></li>
+                <li><a
+                        href="https://docs.google.com/document/d/17_cfVKLX5tGPYYRp5DUjnc8LEBOCs3uwX7t9QhO0nCY/edit">はじめての人のためのパイグ将棋</a>
+                </li>
                 <li><a href="https://cet2kaik.booth.pm/items/1685859">紙机戦販売</a></li>
+                <li><a href="https://cet2kaik.booth.pm/items/3469598">アイル共和国統一机戦規則</a></li>
             </ul>
         </div>
     </header>
     <hr>
     <div style="margin: 0 auto; max-width: 970px; display: flex;">
         <nav id="posts" style="width: 970px;">
+            <article class="post">
+                <p class="date">2021年12月1日</p>
+                <hr>
+                <article lang="ja">
+                    <h2>小冊子「アイル共和国統一 机戦規則」先行公開</h2>
+                    <img width="300"
+                        src="https://s2.booth.pm/1d943ade-8091-43e3-825f-0937ee56f7e8/i/3469598/c74f50db-ddf2-499f-af94-8f8dd61c645f_base_resized.jpg">
+                    <img width="300"
+                        src="https://s2.booth.pm/1d943ade-8091-43e3-825f-0937ee56f7e8/i/3469598/f1917c7d-9b76-42b9-8565-393e0d0e883d_base_resized.jpg">
+                    <p>ゲームマーケット大阪2022で配布予定の冊子の原稿を先行公開しました。かなり丁寧で包括的な記述を心掛けましたので、<a href="https://cet2kaik.booth.pm/items/3469598">ダウンロード・投げ銭</a>いただければ幸いです。</p>
+                </article>
+            </article>
             <article class="post">
                 <p class="date">2021年11月30日</p>
                 <hr>
@@ -142,8 +158,17 @@
                     <p>
                         今月は月末以外にリファクタリングをしましたが、機能追加に関しては月末まわりに行いました。今回は先に機能追加がされ始め、その後に以下の告知ツイートを打ちました。
                     </p>
-                    <div style="height: 500px;"><!-- to prevent the slow load of tweet to interfere with the design -->
-                        <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">告知していませんでしたが、机戦（パイグ将棋）オンライン対戦システム cerke_online は今月も月末アップデートを行っています。 <a href="https://t.co/SJphdbxPrL">https://t.co/SJphdbxPrL</a></p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1462663997207945223?ref_src=twsrc%5Etfw">November 22, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <div style="height: 500px;">
+                        <!-- to prevent the slow load of tweet to interfere with the design -->
+                        <blockquote class="twitter-tweet">
+                            <p lang="ja" dir="ltr">告知していませんでしたが、机戦（パイグ将棋）オンライン対戦システム cerke_online は今月も月末アップデートを行っています。
+                                <a href="https://t.co/SJphdbxPrL">https://t.co/SJphdbxPrL</a>
+                            </p>&mdash; 日本机戦連盟@パイグ将棋
+                            (@cet2kaik) <a
+                                href="https://twitter.com/cet2kaik/status/1462663997207945223?ref_src=twsrc%5Etfw">November
+                                22, 2021</a>
+                        </blockquote>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     </div>
                     <hr>
                     <p>
@@ -151,26 +176,38 @@
                     </p>
                     <ul>
                         <li>投げ棒周りの改良<ul>
-                            <li>相手側が指したときに投げ棒の音が一切鳴らないバグがあったので、修正しました。</li>
-                            <li>各季節の前に、投げ棒を投げて手番を決定する操作が入るようになりました。</li>
-                        </ul></li>
+                                <li>相手側が指したときに投げ棒の音が一切鳴らないバグがあったので、修正しました。</li>
+                                <li>各季節の前に、投げ棒を投げて手番を決定する操作が入るようになりました。</li>
+                            </ul>
+                        </li>
                         <li>棋譜改良<ul>
-                            <li>今までは春のみの先手が棋譜に表示されていましたが、全季節について出た方がわかりやすいので、そうしました。</li>
-                            <li>今までは、手駒から駒が動いたときか、動いた駒が【皇】である場合以外においては、棋譜上で「片」と表示されていましたが、これでは実際問題棋譜が読みづらいので、駒の職業が棋譜で出るようにしました。</li></ul>
+                                <li>今までは春のみの先手が棋譜に表示されていましたが、全季節について出た方がわかりやすいので、そうしました。</li>
+                                <li>今までは、手駒から駒が動いたときか、動いた駒が【皇】である場合以外においては、棋譜上で「片」と表示されていましたが、これでは実際問題棋譜が読みづらいので、駒の職業が棋譜で出るようにしました。
+                                </li>
+                            </ul>
                         </li>
                         <li>UI改良<ul>
-                            <li>「棋譜を見ると PIA とか ZO とか書いてあるけど、どのマスなのかパッとは分からないよ」という声にお答えして、座標表示のオンオフを切り替えることができるようにしました。なんだかんだデザイン面で手直しすべき箇所が多く、結局これの実装だけで 4 時間ぐらいかかってしまいましたね。</li>
-                            <li>試合開始前においては両方のアイコンが薄くなるようにしました。</li></ul>
+                                <li>「棋譜を見ると PIA とか ZO
+                                    とか書いてあるけど、どのマスなのかパッとは分からないよ」という声にお答えして、座標表示のオンオフを切り替えることができるようにしました。なんだかんだデザイン面で手直しすべき箇所が多く、結局これの実装だけで
+                                    4 時間ぐらいかかってしまいましたね。</li>
+                                <li>試合開始前においては両方のアイコンが薄くなるようにしました。</li>
+                            </ul>
                         </li>
-                        <li>ドキュメンテーションの改善<ul><li><a href="https://github.com/jurliyuuri/cerke_online_alpha/tree/master/ephemera">ephemera</a> フォルダを作成し、リファクタリングによってガンガン古びていくことを想定した一時的ドキュメンテーションを書きました。</li></ul></li>
+                        <li>ドキュメンテーションの改善<ul>
+                                <li><a
+                                        href="https://github.com/jurliyuuri/cerke_online_alpha/tree/master/ephemera">ephemera</a>
+                                    フォルダを作成し、リファクタリングによってガンガン古びていくことを想定した一時的ドキュメンテーションを書きました。</li>
+                            </ul>
+                        </li>
                         <li>内部的改良・開発環境の改良<ul>
-                            <li>ファイルの役割分担を改良しました。特に、src/opponent_move.ts から export されるものが大幅に整理されました。</li>
-                            <li>ファイル間の依存関係を若干きれいにしました。</li>
-                            <li>tslint になっていたのを eslint にし、デッドコードなどを検出し、改善しました。</li>
-                            <li>prettier がしっかり適用されるようになりました。</li>
-                            <li>npm run start や npm run build がちゃんとローカル環境でも動くようになりました。</li>
-                            <li>API が serde-friendly になったので、バックエンドを serde 化する準備ができました。</li>
-                        </ul></li>
+                                <li>ファイルの役割分担を改良しました。特に、src/opponent_move.ts から export されるものが大幅に整理されました。</li>
+                                <li>ファイル間の依存関係を若干きれいにしました。</li>
+                                <li>tslint になっていたのを eslint にし、デッドコードなどを検出し、改善しました。</li>
+                                <li>prettier がしっかり適用されるようになりました。</li>
+                                <li>npm run start や npm run build がちゃんとローカル環境でも動くようになりました。</li>
+                                <li>API が serde-friendly になったので、バックエンドを serde 化する準備ができました。</li>
+                            </ul>
+                        </li>
                     </ul>
                 </article>
             </article>
@@ -182,32 +219,52 @@
                     <p>
                         今月はわりと月末以外にもアプデをしたものの、月末アップデートは行うこととしているので、とりあえず以下の告知ツイートを打ち、打った後にアプデ内容を考え、太平洋夏時間10月28日正午～太平洋夏時間10月31日23:59（日本時間10月29日04:00～11月1日15:59）でメンテを行いました。
                     </p>
-                    <div style="height: 500px;"><!-- to prevent the slow load of tweet to interfere with the design -->
-                        <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online は今月も月末アップデートを行おうと思います。太平洋夏時間10月28日正午～太平洋夏時間10月31日23:59（日本時間10月29日04:00～11月1日15:59）を予定しておりますが、状況により前後する可能性がありますのでご了承ください。 <a href="https://t.co/An4HlbX8C9">https://t.co/An4HlbX8C9</a></p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1453390806044196864?ref_src=twsrc%5Etfw">October 27, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <div style="height: 500px;">
+                        <!-- to prevent the slow load of tweet to interfere with the design -->
+                        <blockquote class="twitter-tweet">
+                            <p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online
+                                は今月も月末アップデートを行おうと思います。太平洋夏時間10月28日正午～太平洋夏時間10月31日23:59（日本時間10月29日04:00～11月1日15:59）を予定しておりますが、状況により前後する可能性がありますのでご了承ください。
+                                <a href="https://t.co/An4HlbX8C9">https://t.co/An4HlbX8C9</a>
+                            </p>&mdash; 日本机戦連盟@パイグ将棋
+                            (@cet2kaik) <a
+                                href="https://twitter.com/cet2kaik/status/1453390806044196864?ref_src=twsrc%5Etfw">October
+                                27, 2021</a>
+                        </blockquote>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     </div>
                     <hr>
                     <p>
                         結果としては、以下の改善を入れることができました。
                     </p>
                     <ul>
-                        <li><a href="https://github.com/jurliyuuri/cerke_online_alpha#readme">README.md</a>の改良<ul><li>このプロジェクトに関する文脈を追いやすくなりました。</li></ul></li>
+                        <li><a href="https://github.com/jurliyuuri/cerke_online_alpha#readme">README.md</a>の改良<ul>
+                                <li>このプロジェクトに関する文脈を追いやすくなりました。</li>
+                            </ul>
+                        </li>
                         <li>バグ修正<ul>
-                            <li>駒を踏んで判定なく元の位置に戻ったとき、最後に指した位置を表す黄色の枠線が更新されないというバグを修正しました。</li>
-                        </ul></li>
+                                <li>駒を踏んで判定なく元の位置に戻ったとき、最後に指した位置を表す黄色の枠線が更新されないというバグを修正しました。</li>
+                            </ul>
+                        </li>
                         <li>試合終了時刻の表示<ul>
-                            <li>試合が終了したときの時刻も棋譜に記録するようにしました。</li></ul>
+                                <li>試合が終了したときの時刻も棋譜に記録するようにしました。</li>
+                            </ul>
                         </li>
                         <li>UI改良<ul>
-                            <li>皇処之将で守られている駒を踏越え後に取ろうとすると、<img src="image/守.png" width="50" height="50" style="vertical-align: middle;">が表示されるようにして、守られていて取ることができないということを表すようにしました。</li>
-                            <li>「待機中」画面にちょっとしたアニメーションを配置しました。</li>
-                        </ul></li>
+                                <li>皇処之将で守られている駒を踏越え後に取ろうとすると、<img src="image/守.png" width="50" height="50"
+                                        style="vertical-align: middle;">が表示されるようにして、守られていて取ることができないということを表すようにしました。</li>
+                                <li>「待機中」画面にちょっとしたアニメーションを配置しました。</li>
+                            </ul>
+                        </li>
                         <li>entrance.html の多言語対応<ul>
-                            <li>entrance.html において日本語で書かれている部分をリパライン語に差し替えることができるようになりました。それに伴い、entrance.html に言語切り替えボタンが付くようになりました。</li>
-                        </ul></li>
+                                <li>entrance.html において日本語で書かれている部分をリパライン語に差し替えることができるようになりました。それに伴い、entrance.html
+                                    に言語切り替えボタンが付くようになりました。</li>
+                            </ul>
+                        </li>
                         <li>内部的改良<ul>
-                            <li>ステージング環境のマッチングにおいてはバックエンドにおいて異なるURLで取り扱うように変更しました。</li>
-                            <li>最後に指した位置を表す黄色の枠線を、相対座標ではなく絶対座標でデバッグ出力するようにしました。</li>
-                        </ul></li>
+                                <li>ステージング環境のマッチングにおいてはバックエンドにおいて異なるURLで取り扱うように変更しました。</li>
+                                <li>最後に指した位置を表す黄色の枠線を、相対座標ではなく絶対座標でデバッグ出力するようにしました。</li>
+                            </ul>
+                        </li>
                     </ul>
                 </article>
             </article>
@@ -219,12 +276,14 @@
                     <hr>
                     <ul>
                         <li>UI改良<ul>
-                            <li>プレイしていない側のアイコンは、完全に消すのではなく、半透明の要素を上に被せることで薄くは表示されるようにしました。</li>
-                            <li>CPUが考えるのに使った戦略を通知・表示するときに、日本語でのみ表示にのみ対応していますが、今後は燐文対応も考えていきたいと思います。</li>
-                        </ul></li>
+                                <li>プレイしていない側のアイコンは、完全に消すのではなく、半透明の要素を上に被せることで薄くは表示されるようにしました。</li>
+                                <li>CPUが考えるのに使った戦略を通知・表示するときに、日本語でのみ表示にのみ対応していますが、今後は燐文対応も考えていきたいと思います。</li>
+                            </ul>
+                        </li>
                         <li>内部的改良<ul>
-                            <li>ステージング環境を立てることで、いきなり本番環境に破壊的変更を突っ込まずともデバッグができるようになりました。</li>
-                        </ul></li>
+                                <li>ステージング環境を立てることで、いきなり本番環境に破壊的変更を突っ込まずともデバッグができるようになりました。</li>
+                            </ul>
+                        </li>
                     </ul>
                 </article>
             </article>
@@ -236,19 +295,23 @@
                     <hr>
                     <ul>
                         <li>バグ修正<ul>
-                            <li>季節が改まったときにレート表示が消えるようになっていなかったというバグを修正しました。</li>
-                        </ul></li>
+                                <li>季節が改まったときにレート表示が消えるようになっていなかったというバグを修正しました。</li>
+                            </ul>
+                        </li>
                         <li>UI改良<ul>
-                            <li>最終的な点数を表示するときに、見やすさのため、初期状態で与えられている最初の列の上に<img src="image/始.png" width="50" height="50" style="vertical-align: middle;">を配置しました。</li>
-                            <li>値直（左にある木の定規）のレート表示の目盛りを詰めることで、表示を崩すことなく2倍から64倍までを表せるようになりました。</li>
-                            <li>手駒が盤の右側に溢れないようになりました。</li>
-                        </ul></li>
+                                <li>最終的な点数を表示するときに、見やすさのため、初期状態で与えられている最初の列の上に<img src="image/始.png" width="50"
+                                        height="50" style="vertical-align: middle;">を配置しました。</li>
+                                <li>値直（左にある木の定規）のレート表示の目盛りを詰めることで、表示を崩すことなく2倍から64倍までを表せるようになりました。</li>
+                                <li>手駒が盤の右側に溢れないようになりました。</li>
+                            </ul>
+                        </li>
                         <li>内部的改良<ul>
-                            <li>使っていない関数の削除</li>
-                            <li>innerHTMLを削減</li>
-                            <li>画像の移動と整理</li>
-                            <li>create_html_elements.ts にもっと関数を移動</li>
-                        </ul></li>
+                                <li>使っていない関数の削除</li>
+                                <li>innerHTMLを削減</li>
+                                <li>画像の移動と整理</li>
+                                <li>create_html_elements.ts にもっと関数を移動</li>
+                            </ul>
+                        </li>
                     </ul>
                 </article>
             </article>
@@ -260,10 +323,15 @@
                     <hr>
                     <ul>
                         <li>バグ修正<ul>
-                            <li>踏越え後の無限移動を相手が試みたときに出る黄緑色の矢印が左方向・上方向に伸びているとき、矢印画像が誤った位置に配置されていたバグを修正しました。具体的には、<pre>document.getElementById("arrows")!.appendChild(createArrowSvg(d, from));</pre>だったのを<pre>// must stretch from top-left
+                                <li>踏越え後の無限移動を相手が試みたときに出る黄緑色の矢印が左方向・上方向に伸びているとき、矢印画像が誤った位置に配置されていたバグを修正しました。具体的には、
+                                    <pre>document.getElementById("arrows")!.appendChild(createArrowSvg(d, from));</pre>
+                                    だったのを
+                                    <pre>// must stretch from top-left
 const top_left: [number, number] = [Math.min(from[0], to[0]), Math.min(from[1], to[1])];
-document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pre>へと修正しました。</li>
-                        </ul></li>
+document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pre>へと修正しました。
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </article>
             </article>
@@ -276,15 +344,20 @@ document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pr
                     <hr>
                     <ul>
                         <li>UI改良<ul>
-                            <li>役一覧の画像が「再行」「終季」のボタンと被るという問題があったので、役が表示されていて「再行」「終季」のボタンが出ている場合には画像が右にズレるようになりました。</li>
-                        </ul></li>
+                                <li>役一覧の画像が「再行」「終季」のボタンと被るという問題があったので、役が表示されていて「再行」「終季」のボタンが出ている場合には画像が右にズレるようになりました。
+                                </li>
+                            </ul>
+                        </li>
                         <li>バグ修正<ul>
-                            <li>踏越え後の無限移動を相手が試みたときに出る黄緑色の矢印は、今までずっと複数のPNG画像をタイル状に配置することで実現していましたが、今回これを単一のSVGとしてレンダリングすることにより、微妙に隙間が空いたりズレたりといった問題を解決しました。</li>
-                        </ul></li>
+                                <li>踏越え後の無限移動を相手が試みたときに出る黄緑色の矢印は、今までずっと複数のPNG画像をタイル状に配置することで実現していましたが、今回これを単一のSVGとしてレンダリングすることにより、微妙に隙間が空いたりズレたりといった問題を解決しました。
+                                </li>
+                            </ul>
+                        </li>
                         <li>内部的改良<ul>
-                            <li>main.tsがあまりにも多くの機能を抱え込んでいたので、draw_erase_animate.tsというモジュールを増やし、一部をそちらに移動しました。</li>
-                            <li>ct.png や ct2.png といった一部の画像名を変更し、ソースコードの可読性の改善に繋げました。</li>
-                        </ul></li>
+                                <li>main.tsがあまりにも多くの機能を抱え込んでいたので、draw_erase_animate.tsというモジュールを増やし、一部をそちらに移動しました。</li>
+                                <li>ct.png や ct2.png といった一部の画像名を変更し、ソースコードの可読性の改善に繋げました。</li>
+                            </ul>
+                        </li>
                     </ul>
                 </article>
             </article>
@@ -296,34 +369,55 @@ document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pr
                     <p>
                         nヶ月メンテしないと再びやり始めるのがだいぶしんどいので、月末アップデートを定期化するようにしてみようと考え、とりあえず以下の告知ツイートを打ち、打った後にアプデ内容を考え、太平洋夏時間9月28日正午～太平洋夏時間9月30日23:59（日本時間9月29日04:00～10月1日15:59）でメンテを行いました。
                     </p>
-                    <div style="height: 500px;"><!-- to prevent the slow load of tweet to interfere with the design -->
-                        <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online は今月も月末アップデートを行おうと思います。太平洋夏時間9月28日正午～太平洋夏時間9月30日23:59（日本時間9月29日04:00～10月1日15:59）を予定しておりますが、状況により多分前後するのでご了承ください。 <a href="https://t.co/2CDWWKfWP2">https://t.co/2CDWWKfWP2</a></p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1442918530324652032?ref_src=twsrc%5Etfw">September 28, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <div style="height: 500px;">
+                        <!-- to prevent the slow load of tweet to interfere with the design -->
+                        <blockquote class="twitter-tweet">
+                            <p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online
+                                は今月も月末アップデートを行おうと思います。太平洋夏時間9月28日正午～太平洋夏時間9月30日23:59（日本時間9月29日04:00～10月1日15:59）を予定しておりますが、状況により多分前後するのでご了承ください。
+                                <a href="https://t.co/2CDWWKfWP2">https://t.co/2CDWWKfWP2</a>
+                            </p>&mdash; 日本机戦連盟@パイグ将棋
+                            (@cet2kaik) <a
+                                href="https://twitter.com/cet2kaik/status/1442918530324652032?ref_src=twsrc%5Etfw">September
+                                28, 2021</a>
+                        </blockquote>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     </div>
                     <hr>
                     <p>
                         結果としては、以下の改善を入れることができました。
                     </p>
                     <ul>
-                        <li>このブログの開設<ul><li>更新を追いやすくなりました。</li></ul></li>
+                        <li>このブログの開設<ul>
+                                <li>更新を追いやすくなりました。</li>
+                            </ul>
+                        </li>
                         <li>棋譜表示機能<ul>
-                            <li><strong>前々から皆に望まれていた棋譜表示機能が、ついに追加されました。</strong></li>
-                            <li>取った駒もコメントに入るので、どこでどの駒を取って役の成立に至ったのかがとても追いやすくなっています。</li>
-                        </ul></li>
-                        <li>役早見表の追加<ul><li>これにより、役を覚えていない人も別窓で役の一覧などを開く必要がなくなりました。</li></ul></li>
+                                <li><strong>前々から皆に望まれていた棋譜表示機能が、ついに追加されました。</strong></li>
+                                <li>取った駒もコメントに入るので、どこでどの駒を取って役の成立に至ったのかがとても追いやすくなっています。</li>
+                            </ul>
+                        </li>
+                        <li>役早見表の追加<ul>
+                                <li>これにより、役を覚えていない人も別窓で役の一覧などを開く必要がなくなりました。</li>
+                            </ul>
+                        </li>
                         <li>UI改良<ul>
-                            <li>相手側が「再行」「終季」を押した際に、自分側には相手の選択が表示されるのですが、その表示時間が少し短かったので長くしました。</li>
-                            <li>投げ棒の音や、相手が指したときの駒の音をオフにできる機能を追加しました。</li>
-                            <li>BGMがオンオフできるようになりました。</li>
-                        </ul></li>
+                                <li>相手側が「再行」「終季」を押した際に、自分側には相手の選択が表示されるのですが、その表示時間が少し短かったので長くしました。</li>
+                                <li>投げ棒の音や、相手が指したときの駒の音をオフにできる機能を追加しました。</li>
+                                <li>BGMがオンオフできるようになりました。</li>
+                            </ul>
+                        </li>
                         <li>バグ修正<ul>
-                            <li>踏越え後に入水判定が失敗すると、最後に指した位置を表す黄色の枠線が正しく表示されないというバグがあったので、修正しました。</li>
-                            <li>実は踏越え後でなくても枠線表示は失敗してました。修正しました。</li>
-                            <li><strong>相手側が踏越え判定に成功した後に入水判定に失敗した場合に、入水判定がまるで行われなかったかのように表示されるという深刻なバグがあったので修正しました。</strong></li>
-                        </ul></li>
+                                <li>踏越え後に入水判定が失敗すると、最後に指した位置を表す黄色の枠線が正しく表示されないというバグがあったので、修正しました。</li>
+                                <li>実は踏越え後でなくても枠線表示は失敗してました。修正しました。</li>
+                                <li><strong>相手側が踏越え判定に成功した後に入水判定に失敗した場合に、入水判定がまるで行われなかったかのように表示されるという深刻なバグがあったので修正しました。</strong>
+                                </li>
+                            </ul>
+                        </li>
                         <li>内部的改良<ul>
-                            <li>点数表示時の数字の画像をリネームしました。</li>
-                            <li>依存ライブラリのバージョンを上げまくりました。</li>
-                        </ul></li>
+                                <li>点数表示時の数字の画像をリネームしました。</li>
+                                <li>依存ライブラリのバージョンを上げまくりました。</li>
+                            </ul>
+                        </li>
                     </ul>
                 </article>
             </article>
@@ -333,11 +427,27 @@ document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pr
                 <article lang="ja">
                     <h2>[0.2021.8] 月末アップデート（2021年8月）内容告知</h2>
                     <p>
-                        最近あまり cerke_online に機能が追加されていないことを憂えて、ひとつ時間を区切って一気に大きめのアップデートを入れようと考え、日本時間8月24日16:00～8月31日23:59でメンテを行いました。ということで、以下の告知ツイートを打ち、メンテを開始しました。
+                        最近あまり cerke_online
+                        に機能が追加されていないことを憂えて、ひとつ時間を区切って一気に大きめのアップデートを入れようと考え、日本時間8月24日16:00～8月31日23:59でメンテを行いました。ということで、以下の告知ツイートを打ち、メンテを開始しました。
                     </p>
-                    <div style="height: 700px;"><!-- to prevent the slow load of tweet to interfere with the design -->
-                    <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online は日本時間8月24日 16:00よりメンテナンス（というか機能追加）を行う予定です。終了時刻は8月31日 23:59を予定しておりますが、状況により前後する場合がございますのでご了承ください。</p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1430060784952823810?ref_src=twsrc%5Etfw">August 24, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                    <blockquote class="twitter-tweet" data-conversation="none"><p lang="ja" dir="ltr">具体的なメンテ内容ですが、ご要望が多く、またトップページにボタンがあるにも関わらず、なぜか実装されていなかった対CPU戦を優先して実装します。棋譜を楽にエクスポートするための機構も実装したいと思っています。フレンド対戦はアカウントシステムが必要なので次回メンテに回すつもりです。</p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a href="https://twitter.com/cet2kaik/status/1430072593004982278?ref_src=twsrc%5Etfw">August 24, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <div style="height: 700px;">
+                        <!-- to prevent the slow load of tweet to interfere with the design -->
+                        <blockquote class="twitter-tweet">
+                            <p lang="ja" dir="ltr">机戦（パイグ将棋）オンライン対戦システム cerke_online は日本時間8月24日
+                                16:00よりメンテナンス（というか機能追加）を行う予定です。終了時刻は8月31日 23:59を予定しておりますが、状況により前後する場合がございますのでご了承ください。
+                            </p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a
+                                href="https://twitter.com/cet2kaik/status/1430060784952823810?ref_src=twsrc%5Etfw">August
+                                24, 2021</a>
+                        </blockquote>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        <blockquote class="twitter-tweet" data-conversation="none">
+                            <p lang="ja" dir="ltr">
+                                具体的なメンテ内容ですが、ご要望が多く、またトップページにボタンがあるにも関わらず、なぜか実装されていなかった対CPU戦を優先して実装します。棋譜を楽にエクスポートするための機構も実装したいと思っています。フレンド対戦はアカウントシステムが必要なので次回メンテに回すつもりです。
+                            </p>&mdash; 日本机戦連盟@パイグ将棋 (@cet2kaik) <a
+                                href="https://twitter.com/cet2kaik/status/1430072593004982278?ref_src=twsrc%5Etfw">August
+                                24, 2021</a>
+                        </blockquote>
+                        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     </div>
                     <hr>
                     <p>
@@ -347,15 +457,23 @@ document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pr
                         <li>
                             <strong>CPU対戦の実装</strong>
                             <ul>
-                                <li>CPUとプレイヤーを表すためのいい感じのアイコン<img src="image/nystiper2.png" width="50" height="50" style="vertical-align: middle;"><img src="image/larta2.png" width="50" height="50" style="vertical-align: middle;">を、<a href="https://yustier.github.io/">藍碌(Airoku)さん</a><img src="https://avatars.githubusercontent.com/u/47571113?v=4" width="40" height="40" style="vertical-align: middle;">に書いて頂けました。ありがとうございます。</li>
+                                <li>CPUとプレイヤーを表すためのいい感じのアイコン<img src="image/nystiper2.png" width="50" height="50"
+                                        style="vertical-align: middle;"><img src="image/larta2.png" width="50"
+                                        height="50" style="vertical-align: middle;">を、<a
+                                        href="https://yustier.github.io/">藍碌(Airoku)さん</a><img
+                                        src="https://avatars.githubusercontent.com/u/47571113?v=4" width="40"
+                                        height="40" style="vertical-align: middle;">に書いて頂けました。ありがとうございます。</li>
                                 <li>CPUが考えるのに使った戦略を通知・表示する仕組みを実装しました。現時点では日本語での表示にのみ対応していますが、今後は燐文対応も考えていきたいと思います。</li>
                                 <li>具体的には、以下のような実装になっています。
                                     <ol start="0">
-                                        <li>「入水判定が必要であるか、4以上の踏越え判定が必要である」を「やりづらい(unlikely to succeed)」と定義する。相手がある駒を取るのが「やりづらい」に相当する、若しくは不可能である、という場合、それを「取られづらい」と定義する。「入水判定も要らず、2以下の踏越え判定しか要らない」を「やりやすい(very likely to succeed)」と定義する。</li>
+                                        <li>「入水判定が必要であるか、4以上の踏越え判定が必要である」を「やりづらい(unlikely to
+                                            succeed)」と定義する。相手がある駒を取るのが「やりづらい」に相当する、若しくは不可能である、という場合、それを「取られづらい」と定義する。「入水判定も要らず、2以下の踏越え判定しか要らない」を「やりやすい(very
+                                            likely to succeed)」と定義する。</li>
                                         <li>『無駄足は避けよ』：そもそもスタートとゴールが同一地点の手ってほぼ指さなくない？</li>
                                         <li>『無駄踏みは避けよ』：踏まずに同じ目的地に行く手段があるなら、踏むな。</li>
                                         <li>『勝ち確は行え』：駒を取って役が新たに完成し、その手がやりやすいなら、必ずそれを行う。</li>
-                                        <li>『負け確は避けよ』：取られづらくない駒で相手が役を作れて、それを避ける手があるなら、避ける手を指せ。一方で、「手を指した後で、取られづらくない駒で相手が役を作れる」もダメだなぁ。</li>
+                                        <li>『負け確は避けよ』：取られづらくない駒で相手が役を作れて、それを避ける手があるなら、避ける手を指せ。一方で、「手を指した後で、取られづらくない駒で相手が役を作れる」もダメだなぁ。
+                                        </li>
                                         <li>『激巫は行え』：取られづらい激巫を作ることができるなら、常にせよ。</li>
                                         <li>『ただ取りは行え』：駒を取ったとしてもそれがプレイヤーに取り返されづらい、かつ、その取る手そのものがやりづらくないなら、取る。</li>
                                     </ol>
@@ -371,20 +489,31 @@ document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pr
                         <li>
                             点数盤のレンダリング高速化
                             <ul>
-                                <li>今までは点数盤を単一画像としてレンダリングしていましたが、木目付きの背景と点数盤の文字を別画像に分けることによって、回線の遅い環境でも文字と目盛りはサッサとレンダリングされるようになりました。</li>
+                                <li>今までは点数盤を単一画像としてレンダリングしていましたが、木目付きの背景と点数盤の文字を別画像に分けることによって、回線の遅い環境でも文字と目盛りはサッサとレンダリングされるようになりました。
+                                </li>
                             </ul>
                         </li>
                         <li>
                             UI改良
-                            <ul><li>勝敗の表示にalertを使っていたのを、「CPUが考えるのに使った戦略を通知・表示する仕組み」があることを利用してそこに表示するようにしました。今後もalertの数を減らしていきたいと思います。</li></ul>
-                            <ul><li>試合開始ボタンにマウスカーソルを載せるとサイズが変化するようにし、ボタンであるということが伝わりやすくなりました。</li></ul>
-                            <ul><li>試合終了後、両方のアイコンが表示されるようになりました。</li></ul>
-                            <ul><li>main.htmlに直接リンクしたなどの原因によりセッションが無効な場合、entrance.htmlに戻されるようになりました。</li></ul>
+                            <ul>
+                                <li>勝敗の表示にalertを使っていたのを、「CPUが考えるのに使った戦略を通知・表示する仕組み」があることを利用してそこに表示するようにしました。今後もalertの数を減らしていきたいと思います。
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>試合開始ボタンにマウスカーソルを載せるとサイズが変化するようにし、ボタンであるということが伝わりやすくなりました。</li>
+                            </ul>
+                            <ul>
+                                <li>試合終了後、両方のアイコンが表示されるようになりました。</li>
+                            </ul>
+                            <ul>
+                                <li>main.htmlに直接リンクしたなどの原因によりセッションが無効な場合、entrance.htmlに戻されるようになりました。</li>
+                            </ul>
                         </li>
                         <li>
                             内部的改良
                             <ul>
-                                <li>今までは、cerke_onlineのサーバーにメッセージを送る際、毎回乱数を生成してidというフィールドに入れて送っていましたが、これは本当に何にも使っていない全くの無駄フィールドだったので、削除しました。</li>
+                                <li>今までは、cerke_onlineのサーバーにメッセージを送る際、毎回乱数を生成してidというフィールドに入れて送っていましたが、これは本当に何にも使っていない全くの無駄フィールドだったので、削除しました。
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -392,7 +521,7 @@ document.getElementById("arrows")!.appendChild(createArrowSvg(d, top_left));</pr
             </article>
 
         </nav>
-        
+
     </div>
 </body>
 
