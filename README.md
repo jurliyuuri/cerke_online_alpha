@@ -5,9 +5,10 @@
 
 ### 机戦とは？
 ファイクレオネという世界で遊ばれている（という設定の）ゲーム。
+* [かなり丁寧かつ包括的にルールを記述した小冊子](https://cet2kaik.booth.pm/items/3469598)
 * [日本机戦連盟公式サイト](https://sites.google.com/view/cet2kaik/トップページ)（日本語・英語・中国語・韓国語・フランス語・エスペラントに対応）
 * [はじめての人のためのパイグ将棋](https://docs.google.com/document/d/17_cfVKLX5tGPYYRp5DUjnc8LEBOCs3uwX7t9QhO0nCY/edit#) （未完。日本語）
-* [ルールが簡潔にまとまったPDF](https://raw.githubusercontent.com/sozysozbot/cerke/master/y1_huap1_summary.pdf) （英語・日本語・韓国語）
+* [ルールが1ページに簡潔にまとまったPDF](https://raw.githubusercontent.com/sozysozbot/cerke/master/y1_huap1_summary.pdf) （英語・日本語・韓国語）
 * [日本机戦連盟ニコニコ動画アカウント](https://www.nicovideo.jp/user/117068632)（日本語）
 * [日本机戦連盟Discord](https://discord.gg/DtVQa5jEck)（このリポジトリに貢献したい方は是非ご参加をお願いできればと思います）
 * [雑多なものが置いてあるGitHubリポジトリ](https://github.com/sozysozbot/cerke)
