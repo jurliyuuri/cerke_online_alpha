@@ -61,7 +61,7 @@ import {
   erasePhantomAndOptionallyCancelButton,
 } from "./draw_erase_animate";
 import {
-  normalMessageToKiarArk,
+  normalMoveToKiarArk,
   serializeAbsoluteCoord,
   serializeCiurl,
   serializeProf,
@@ -197,7 +197,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
         eraseGuide();
         erasePhantomAndOptionallyCancelButton();
 
-        sendNormalMessage(message);
+        sendNormalMove(message);
         document
           .getElementById("protective_cover_over_field")!
           .classList.add("nocover");
@@ -316,7 +316,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
             // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
             erasePhantomAndOptionallyCancelButton();
             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
-            sendNormalMessage(message);
+            sendNormalMove(message);
 
             document
               .getElementById("protective_tam_cover_over_field")!
@@ -590,7 +590,7 @@ async function sendStuff<T, U>(
   return await sendStuffTo<T, U>("slow", log, message, validateInput);
 }
 
-async function sendNormalMessage(message: NormalMove) {
+async function sendNormalMove(message: NormalMove) {
   const res: RetNormalMove = await sendStuff<NormalMove, RetNormalMove>(
     "normal move",
     message,
@@ -615,7 +615,7 @@ async function sendNormalMessage(message: NormalMove) {
     GAME_STATE.is_my_turn = false;
     KiarArk.push_body_elem_and_display({
       type: "movement",
-      dat: normalMessageToKiarArk(message, {
+      dat: normalMoveToKiarArk(message, {
         piece_moved: movement_info.piece_moved,
       }),
       piece_capture_comment: toPieceCaptureComment(movement_info.maybe_capture),
@@ -642,7 +642,7 @@ async function sendNormalMessage(message: NormalMove) {
       // no capture possible
       KiarArk.push_body_elem_and_display({
         type: "movement",
-        dat: normalMessageToKiarArk(message, {
+        dat: normalMoveToKiarArk(message, {
           water_ciurl_count: res.ciurl.filter((a) => a).length,
           piece_moved: movement_info.piece_moved,
         }),
@@ -664,7 +664,7 @@ async function sendNormalMessage(message: NormalMove) {
       // no capture possible
       KiarArk.push_body_elem_and_display({
         type: "movement",
-        dat: normalMessageToKiarArk(message, {
+        dat: normalMoveToKiarArk(message, {
           water_ciurl_count: res.ciurl.filter((a) => a).length,
           piece_moved,
         }),
@@ -680,7 +680,7 @@ async function sendNormalMessage(message: NormalMove) {
     GAME_STATE.is_my_turn = false;
     KiarArk.push_body_elem_and_display({
       type: "movement",
-      dat: normalMessageToKiarArk(message, {
+      dat: normalMoveToKiarArk(message, {
         piece_moved: movement_info.piece_moved,
         water_ciurl_count: res.ciurl.filter((a) => a).length,
       }),
@@ -994,7 +994,7 @@ function getThingsGoingAfterAGuideIsClicked(
         },
       };
 
-      sendNormalMessage(message);
+      sendNormalMove(message);
       return;
     } else {
       afterFirstTamMove(from, to);
@@ -1031,7 +1031,7 @@ function getThingsGoingAfterAGuideIsClicked(
       },
     };
 
-    sendNormalMessage(message);
+    sendNormalMove(message);
     return;
   } else {
     stepping(from, piece_to_move, to);
@@ -1066,12 +1066,12 @@ function getThingsGoingAfterStepping_Finite(
   };
 
   if (!isTamAt(step)) {
-    sendNormalMessage(message);
+    sendNormalMove(message);
   } else {
     (async () => {
       await animateStepTamLogo();
       await animatePunishStepTamAndCheckPerzej(Side.Upward);
-      await sendNormalMessage(message);
+      await sendNormalMove(message);
     })();
   }
   return;
@@ -1497,7 +1497,7 @@ export function selectOwnPieceOnHop1zuo1(
             },
           };
 
-          sendNormalMessage(message);
+          sendNormalMove(message);
         });
 
         contains_guides.appendChild(img);

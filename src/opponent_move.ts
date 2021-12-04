@@ -47,7 +47,7 @@ import { toDigitsLinzklar } from "./to_digits";
 import { Hand } from "cerke_hands_and_score";
 import { KRUT_CRUOP } from "./main_entry";
 import {
-  normalMessageToKiarArk,
+  normalMoveToKiarArk,
   serializeAbsoluteCoord,
   serializeCiurl,
   serializeProf,
@@ -164,7 +164,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       if (opponent_move.data.water_entry_ciurl) {
         KiarArk.push_body_elem_and_display({
           type: "movement",
-          dat: normalMessageToKiarArk(opponent_move, {
+          dat: normalMoveToKiarArk(opponent_move, {
             piece_moved,
             water_ciurl_count: opponent_move.data.water_entry_ciurl.filter(
               (a) => a,
@@ -177,7 +177,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       } else {
         KiarArk.push_body_elem_and_display({
           type: "movement",
-          dat: normalMessageToKiarArk(opponent_move, { piece_moved }),
+          dat: normalMoveToKiarArk(opponent_move, { piece_moved }),
           piece_capture_comment: toPieceCaptureComment(
             movement_info.maybe_capture,
           ),
@@ -197,7 +197,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       // piece_capture_comment is impossible
       KiarArk.push_body_elem_and_display({
         type: "movement",
-        dat: normalMessageToKiarArk(opponent_move, { piece_moved: piece }),
+        dat: normalMoveToKiarArk(opponent_move, { piece_moved: piece }),
       });
     } else if (opponent_move.data.type === "SrcStepDstFinite") {
       const movement_info = await animateOpponentSrcStepDstFinite(
@@ -208,7 +208,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       if (opponent_move.data.water_entry_ciurl) {
         KiarArk.push_body_elem_and_display({
           type: "movement",
-          dat: normalMessageToKiarArk(opponent_move, {
+          dat: normalMoveToKiarArk(opponent_move, {
             piece_moved,
             water_ciurl_count: opponent_move.data.water_entry_ciurl.filter(
               (a) => a,
@@ -221,7 +221,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       } else {
         KiarArk.push_body_elem_and_display({
           type: "movement",
-          dat: normalMessageToKiarArk(opponent_move, { piece_moved }),
+          dat: normalMoveToKiarArk(opponent_move, { piece_moved }),
           piece_capture_comment: toPieceCaptureComment(
             movement_info.maybe_capture,
           ),
@@ -242,21 +242,21 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display({
         type: "movement",
-        dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }),
+        dat: normalMoveToKiarArk(opponent_move, { piece_moved: "Tam2" }),
       });
     } else if (opponent_move.stepStyle === "StepsDuringFormer") {
       await animateOpponentTamSteppingDuringFormer(opponent_move);
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display({
         type: "movement",
-        dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }),
+        dat: normalMoveToKiarArk(opponent_move, { piece_moved: "Tam2" }),
       });
     } else if (opponent_move.stepStyle === "StepsDuringLatter") {
       await animateOpponentTamSteppingDuringLatter(opponent_move);
       GAME_STATE.is_my_turn = true;
       KiarArk.push_body_elem_and_display({
         type: "movement",
-        dat: normalMessageToKiarArk(opponent_move, { piece_moved: "Tam2" }),
+        dat: normalMoveToKiarArk(opponent_move, { piece_moved: "Tam2" }),
       });
     } else {
       const _a: never = opponent_move.stepStyle;

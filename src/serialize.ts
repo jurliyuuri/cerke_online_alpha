@@ -27,7 +27,7 @@ export function serializeProf(prof: Profession) {
   return ["船", "兵", "弓", "車", "虎", "馬", "筆", "巫", "将", "王"][prof];
 }
 
-export function normalMessageToKiarArk(
+export function normalMoveToKiarArk(
   message: NormalMove,
   o: {
     piece_moved: Piece | "Tam2";
@@ -38,7 +38,7 @@ export function normalMessageToKiarArk(
     const zuo1: string = (() => {
       if (o.piece_moved === "Tam2") {
         throw new Error(
-          "Tam2 was passed to `o.piece_moved` inside `normalMessageToKiarArk` even though `message.type` is `NonTamMove`",
+          "Tam2 was passed to `o.piece_moved` inside `normalMoveToKiarArk` even though `message.type` is `NonTamMove`",
         );
       }
       return serializeProf(o.piece_moved.prof);
