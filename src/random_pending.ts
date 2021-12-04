@@ -90,8 +90,8 @@ async function sendPoll<U>(
 ): Promise<U> {
   return await sendSomethingSomewhere(
     location.href.includes("staging")
-      ? `${API_ORIGIN}/random/poll/staging`
-      : `${API_ORIGIN}/random/poll`,
+      ? `${API_ORIGIN}/matching/random/poll/staging`
+      : `${API_ORIGIN}/matching/random/poll`,
     {
       access_token,
     },
@@ -105,8 +105,8 @@ async function sendCancel<U>(
 ): Promise<U> {
   return await sendSomethingSomewhere(
     location.href.includes("staging")
-      ? `${API_ORIGIN}/random/cancel/staging`
-      : `${API_ORIGIN}/random/cancel`,
+      ? `${API_ORIGIN}/matching/random/cancel/staging`
+      : `${API_ORIGIN}/matching/random/cancel`,
     {
       access_token,
     },
@@ -148,8 +148,8 @@ async function sendEntrance<U>(
 ): Promise<U> {
   return await sendSomethingSomewhere(
     location.href.includes("staging")
-      ? `${API_ORIGIN}/random/entry/staging`
-      : `${API_ORIGIN}/random/entry`,
+      ? `${API_ORIGIN}/matching/random/entry/staging`
+      : `${API_ORIGIN}/matching/random/entry`,
     {},
     validateInput,
   );

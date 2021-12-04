@@ -59,50 +59,6 @@ import {
 } from "./capture_info";
 import { drawCiurlWithAudio } from "./main";
 
-/*
-interface OpponentMoveWithPotentialWaterEntry {
-  type: "NonTamMove";
-  data: SrcDst | SrcStepDstFinite;
-}
-type OpponentMove =
-  | OpponentMoveWithPotentialWaterEntry
-  | {
-    type: "NonTamMove";
-    data: {
-      type: "FromHand";
-      color: Color;
-      prof: Profession;
-      dest: AbsoluteCoord;
-    };
-  }
-  | {
-    type: "TamMove";
-    stepStyle: "NoStep";
-    src: AbsoluteCoord;
-    firstDest: AbsoluteCoord;
-    secondDest: AbsoluteCoord;
-  }
-  | {
-    type: "TamMove";
-    stepStyle: "StepsDuringFormer" | "StepsDuringLatter";
-    src: AbsoluteCoord;
-    step: AbsoluteCoord;
-    firstDest: AbsoluteCoord;
-    secondDest: AbsoluteCoord;
-  }
-  | {
-    type: "InfAfterStep";
-    src: AbsoluteCoord;
-    step: AbsoluteCoord;
-    plannedDirection: AbsoluteCoord;
-    stepping_ciurl: Ciurl;
-    finalResult: Promise<{
-      dest: AbsoluteCoord;
-      water_entry_ciurl?: Ciurl;
-    }>;
-  };
-*/
-
 const { forbidMainPolling, isMainPollingAllowed, allowMainPolling } = (() => {
   let MAIN_POLLING_ALLOWED = true;
 
@@ -269,7 +225,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         // eslint-disable-next-line no-constant-condition
         while (true) {
           const res: RetInfPoll = await sendStuffTo<{}, RetInfPoll>(
-            "infpoll",
+            "poll/inf",
             "`polling for the opponent's afterhalfacceptance`",
             {},
             (response) => {
@@ -424,7 +380,7 @@ type RetMainPoll_Legal = {
 
 async function sendMainPoll(): Promise<RetMainPoll_Legal> {
   const res: RetMainPoll = await sendStuffTo<{}, RetMainPoll>(
-    "mainpoll",
+    "poll/main",
     "`polling for the opponent's move`",
     {},
     (response) => {
@@ -716,7 +672,7 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
     {},
     RetWhetherTyMokPoll
   >(
-    "whethertymokpoll",
+    "poll/whethertymok",
     "`polling for whether the declaration is ty mok1 or ta xot1`",
     {},
     (response) => {

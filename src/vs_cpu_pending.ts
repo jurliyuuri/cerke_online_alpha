@@ -64,8 +64,8 @@ async function sendVsCpuEntrance<U>(
 ): Promise<U> {
   return await sendSomethingSomewhere(
     location.href.includes("staging")
-      ? `${API_ORIGIN}/vs_cpu/entry/staging`
-      : `${API_ORIGIN}/vs_cpu/entry`,
+      ? `${API_ORIGIN}/matching/vs_cpu/entry/staging`
+      : `${API_ORIGIN}/matching/vs_cpu/entry`,
     {},
     validateInput,
   );

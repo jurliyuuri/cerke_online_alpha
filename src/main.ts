@@ -433,10 +433,10 @@ async function sendAfterHalfAcceptance(
     planned_destination: AbsoluteCoord;
   },
 ) {
-  const res: RetAfterHalfAcceptance = await sendStuff<
+  const res: RetAfterHalfAcceptance = await sendStuffTo<
     AfterHalfAcceptance,
     RetAfterHalfAcceptance
-  >("`after half acceptance`", message, (response) => {
+  >("decision/afterhalfacceptance", "`after half acceptance`", message, (response) => {
     console.log("Success; the server returned:", JSON.stringify(response));
     return response;
   });
@@ -582,16 +582,16 @@ async function sendAfterHalfAcceptance(
   }
 }
 
-async function sendStuff<T, U>(
+async function sendMain<T, U>(
   log: string,
   message: T,
   validateInput: (response: any) => U,
 ): Promise<U> {
-  return await sendStuffTo<T, U>("slow", log, message, validateInput);
+  return await sendStuffTo<T, U>("decision/main", log, message, validateInput);
 }
 
 async function sendNormalMove(message: NormalMove) {
-  const res: RetNormalMove = await sendStuff<NormalMove, RetNormalMove>(
+  const res: RetNormalMove = await sendMain<NormalMove, RetNormalMove>(
     "normal move",
     message,
     (response) => {
@@ -777,7 +777,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     const ty_mok1_button = createImageButton("再行", 0);
     ty_mok1_button.addEventListener("click", async () => {
       increaseRateAndAnimate(true);
-      const res: RetTyMok = await sendStuffTo<{}, RetTyMok>("whethertymok/tymok", "`send whether ty mok1`", {}, (response) => {
+      const res: RetTyMok = await sendStuffTo<{}, RetTyMok>("decision/tymok", "`send whether ty mok1`", {}, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
@@ -793,7 +793,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 
     const ta_xot1_button = createImageButton("終季", 250);
     ta_xot1_button.addEventListener("click", async () => {
-      const res: RetTaXot = await sendStuffTo<{}, RetTaXot>("whethertymok/taxot", "`send whether ty mok1`", {}, (response) => {
+      const res: RetTaXot = await sendStuffTo<{}, RetTaXot>("decision/taxot", "`send whether ty mok1`", {}, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
         return response;
       });
@@ -1109,7 +1109,7 @@ async function sendInfAfterStep(
   message: InfAfterStep,
   o: { color: Color; prof: Profession },
 ) {
-  const res = await sendStuff<InfAfterStep, RetInfAfterStep>(
+  const res = await sendMain<InfAfterStep, RetInfAfterStep>(
     "inf after step",
     message,
     (response) => {
