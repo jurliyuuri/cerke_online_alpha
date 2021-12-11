@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: prettier
-        uses: creyD/prettier_action@v3.3
+        uses: creyD/prettier_action@v4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
