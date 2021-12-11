@@ -1,0 +1,55 @@
+- name: "bot-enhancement"
+  description: ""
+  color: "5319e7"
+
+- name: "bug"
+  description: "Not working, but tolerable"
+  color: "568b84"
+
+- name: "dependencies"
+  description: "Pull requests that update a dependency file"
+  color: "0366d6"
+
+- name: "dev-enhancement"
+  description: ""
+  color: "e0c086"
+
+- name: "dev-fatal-bug"
+  description: ""
+  color: "d93f0b"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "duplicate"
+  color: "cfd8d7"
+  description: "This issue or pull request already exists"
+
+- name: "enhancement"
+  description: "New feature or request"
+  color: "a2eeef"
+
+- name: "fatal-bug"
+  description: "Something isn't working"
+  color: "d73a4a"
+
+- name: "good first issue"
+  description: "Good for newcomers"
+  color: "7057ff"
+
+- name: "help wanted"
+  description: "Extra attention is needed"
+  color: "008672"
+
+- name: "invalid"
+  description: "This doesn't seem right"
+  color: "e4e669"
+
+- name: "question"
+  description: "Further information is requested"
+  color: "d876e3"
+
+- name: "wontfix"
+  description: "This will not be worked on"
+  color: "ffffff"
