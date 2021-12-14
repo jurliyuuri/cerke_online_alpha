@@ -158,6 +158,10 @@ $min-entirety-aspect-ratio: 29/41;
     top: $container-height * 0.01;
     font-size: $lang_selector_container_font_size;
   }
+
+  #lang_selector_container > select {
+    font-size: inherit;
+  }
 }
 
 @media (max-aspect-ratio: 29/41) {
@@ -306,5 +310,9 @@ $min-entirety-aspect-ratio: 29/41;
     left: calc(#{$container-width / 2} - #{$lang_selector_container_width / 2});
     top: $container-height * 0.01;
     font-size: $lang_selector_container_font_size;
+  }
+  
+  #lang_selector_container > select {
+    font-size: inherit
   }
 }
