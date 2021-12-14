@@ -582,16 +582,9 @@ async function sendAfterHalfAcceptance(
   }
 }
 
-async function sendMain<T, U>(
-  log: string,
-  message: T,
-  validateInput: (response: any) => U,
-): Promise<U> {
-  return await sendStuffTo<T, U>("decision/main", log, message, validateInput);
-}
-
 async function sendNormalMove(message: NormalMove) {
-  const res: RetNormalMove = await sendMain<NormalMove, RetNormalMove>(
+  const res: RetNormalMove = await sendStuffTo<NormalMove, RetNormalMove>(
+    "decision/normalmove",
     "normal move",
     message,
     (response) => {
@@ -1109,7 +1102,8 @@ async function sendInfAfterStep(
   message: InfAfterStep,
   o: { color: Color; prof: Profession },
 ) {
-  const res = await sendMain<InfAfterStep, RetInfAfterStep>(
+  const res = await sendStuffTo<InfAfterStep, RetInfAfterStep>(
+    "decision/infafterstep",
     "inf after step",
     message,
     (response) => {
