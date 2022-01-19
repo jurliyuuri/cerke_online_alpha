@@ -1,10 +1,11 @@
 # cerke_online
 
 ## これはなに
-架空世界ファイクレオネの遊戯「机戦/cerke/パイグ将棋/cet2kaik」のオンライン対戦を可能にする、（2021年10月現在）唯一のアプリケーション。bot対戦もできる。
+架空世界ファイクレオネの遊戯「机戦/cerke/パイグ将棋/cet2kaik」のオンライン対戦を可能にする、（2022年1月現在）唯一のアプリケーション。bot対戦もできる。
 
 ### 机戦とは？
 ファイクレオネという世界で遊ばれている（という設定の）ゲーム。
+* [オフラインに特化した盤と駒](https://meloviliju.github.io/cerke/cerke_board)（一人で考えたいときや官定ルール以外で遊ぶときに便利。「yhuap」ボタンで初期配置）
 * [かなり丁寧かつ包括的にルールを記述した小冊子](https://cet2kaik.booth.pm/items/3469598)
 * [日本机戦連盟公式サイト](https://sites.google.com/view/cet2kaik/トップページ)（日本語・英語・中国語・韓国語・フランス語・エスペラントに対応）
 * [はじめての人のためのパイグ将棋](https://docs.google.com/document/d/17_cfVKLX5tGPYYRp5DUjnc8LEBOCs3uwX7t9QhO0nCY/edit#) （未完。日本語）
