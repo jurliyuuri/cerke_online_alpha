@@ -8,10 +8,15 @@ import * as KiarArk from "./kiar_ark";
 ).src = `image/IA_is_down=${GAME_STATE.IA_is_down}.svg`;
 console.log("drawField #", 0);
 drawField({ focus: null });
-KiarArk.push_header_elem_and_display({
-  type: "header",
-  dat: `{始時:${new Date().toISOString()}}`,
-});
+
+if (localStorage.kiar_ark) {
+  KiarArk.resurrect(JSON.parse(localStorage.kiar_ark))
+} else {
+  KiarArk.push_header_elem_and_display({
+    type: "header",
+    dat: `{始時:${new Date().toISOString()}}`,
+  });
+}
 
 let COORD_TOGGLE: boolean = false;
 document
@@ -80,15 +85,17 @@ document
   BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? LORK_LIAR / 100 : 0;
 });
 
-document.getElementById("kait_kaik_button")!.addEventListener("click", async () => {
-  document.getElementById("kait_kaik")!.classList.add("nocover");
-  const is_first_move_my_move: WhoGoesFirst = JSON.parse(sessionStorage.is_first_move_my_move);
-  if (!LORK_LIAR_ENABLED) {
-    toggleBackgroundMusic();
-  }
+if (!localStorage.getItem('game_state_backup')) {
+  document.getElementById("kait_kaik_button")!.addEventListener("click", async () => {
+    document.getElementById("kait_kaik")!.classList.add("nocover");
+    const is_first_move_my_move: WhoGoesFirst = JSON.parse(sessionStorage.is_first_move_my_move);
+    if (!LORK_LIAR_ENABLED) {
+      toggleBackgroundMusic();
+    }
 
-  await animateSeasonInitiation(is_first_move_my_move);
-});
+    await animateSeasonInitiation(is_first_move_my_move);
+  });
+}
 
 if (sessionStorage.vs === "cpu") {
   document.getElementById(
