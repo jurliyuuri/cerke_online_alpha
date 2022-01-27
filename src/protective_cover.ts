@@ -6,8 +6,8 @@ export type MembraneState = {
 }
 
 const MEMBRANE_STATE: MembraneState
-	= localStorage.getItem('membrane_state_backup')
-		? apply_to_dom_and_return(JSON.parse(localStorage.membrane_state_backup))
+	= sessionStorage.getItem('membrane_state_backup')
+		? JSON.parse(sessionStorage.membrane_state_backup) /* Reflecting this into DOM is done when "ty_zau" button is pressed */
 		: {
 			protective_cover_over_field: false,
 			protective_tam_cover_over_field: false,
@@ -16,13 +16,13 @@ const MEMBRANE_STATE: MembraneState
 		}
 	;
 
-function apply_to_dom_and_return(m: MembraneState) {
+export function apply_membrane_state_to_dom() {
 	function apply(id:
 		| "protective_cover_over_field"
 		| "protective_tam_cover_over_field"
 		| "protective_cover_over_field_while_asyncawait"
 		| "protective_cover_over_field_while_waiting_for_opponent") {
-		if (m[id]) {
+		if (MEMBRANE_STATE[id]) {
 			document.getElementById(id)?.classList.remove("nocover");
 		} else {
 			document.getElementById(id)?.classList.add("nocover");
@@ -33,7 +33,6 @@ function apply_to_dom_and_return(m: MembraneState) {
 	apply("protective_tam_cover_over_field")
 	apply("protective_cover_over_field_while_asyncawait")
 	apply("protective_cover_over_field_while_waiting_for_opponent")
-	return m;
 }
 
 export function add_cover(id:
@@ -43,7 +42,7 @@ export function add_cover(id:
 	| "protective_cover_over_field_while_waiting_for_opponent") {
 	document.getElementById(id)?.classList.remove("nocover");
 	MEMBRANE_STATE[id] = true;
-	localStorage.membrane_state_backup = JSON.stringify(MEMBRANE_STATE);
+	sessionStorage.membrane_state_backup = JSON.stringify(MEMBRANE_STATE);
 }
 
 export function remove_cover(id:
@@ -53,5 +52,5 @@ export function remove_cover(id:
 	| "protective_cover_over_field_while_waiting_for_opponent") {
 	document.getElementById(id)?.classList.add("nocover");
 	MEMBRANE_STATE[id] = false;
-	localStorage.membrane_state_backup = JSON.stringify(MEMBRANE_STATE);
+	sessionStorage.membrane_state_backup = JSON.stringify(MEMBRANE_STATE);
 }

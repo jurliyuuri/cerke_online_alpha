@@ -222,11 +222,11 @@ export function back_up_gamestate() {
     f: GAME_STATE.f,
     backupDuringStepping: GAME_STATE.backupDuringStepping
   };
-  localStorage.game_state_backup = JSON.stringify(obj);
+  sessionStorage.game_state_backup = JSON.stringify(obj);
 }
 
-export const GAME_STATE: GameState = localStorage.getItem('game_state_backup')
-  ? gamestate_from_params(JSON.parse(localStorage.game_state_backup))
+export const GAME_STATE: GameState = sessionStorage.getItem('game_state_backup')
+  ? gamestate_from_params(JSON.parse(sessionStorage.game_state_backup))
   : gamestate_from_scratch({
     IA_is_down: (() => {
       try {

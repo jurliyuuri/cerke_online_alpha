@@ -47,7 +47,7 @@ function groupTwoAndRender(input: BodyElem[]) {
 }
 
 export function display_kiar_ark() {
-  localStorage.kiar_ark = JSON.stringify(KIAR_ARK);
+  sessionStorage.kiar_ark = JSON.stringify(KIAR_ARK);
   console.log("_kiar_ark:", KIAR_ARK);
   document.getElementById("kiar_ark")!.textContent =
     `{一位色:${KIAR_ARK.initial_colors.join("")}}\n` +
