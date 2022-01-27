@@ -16,7 +16,7 @@ import {
   Side,
   coordEq,
 } from "cerke_online_utility";
-import { fromAbsoluteCoord, GAME_STATE } from "./game_state";
+import { back_up_gamestate, fromAbsoluteCoord, GAME_STATE } from "./game_state";
 import {
   BOX_SIZE,
   coordToPieceXY,
@@ -113,10 +113,12 @@ export async function sendMainPollAndDoEverythingThatFollows() {
   console.log(opponent_move);
   if (opponent_move.type === "NonTamMove") {
     GAME_STATE.opponent_has_just_moved_tam = false;
+    back_up_gamestate();
     if (opponent_move.data.type === "SrcDst") {
       const movement_info = await animateOpponentSrcDst(opponent_move.data);
       const piece_moved = movement_info.piece_moved; // USE ME
       GAME_STATE.is_my_turn = true;
+      back_up_gamestate();
       if (opponent_move.data.water_entry_ciurl) {
         KiarArk.push_body_elem_and_display({
           type: "movement",
@@ -150,6 +152,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         fromAbsoluteCoord(opponent_move.data.dest),
       );
       GAME_STATE.is_my_turn = true;
+      back_up_gamestate();
       // piece_capture_comment is impossible
       KiarArk.push_body_elem_and_display({
         type: "movement",
@@ -161,6 +164,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       );
       const piece_moved = movement_info.piece_moved; // USE ME
       GAME_STATE.is_my_turn = true;
+      back_up_gamestate();
       if (opponent_move.data.water_entry_ciurl) {
         KiarArk.push_body_elem_and_display({
           type: "movement",
@@ -189,6 +193,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     }
   } else if (opponent_move.type === "TamMove") {
     GAME_STATE.opponent_has_just_moved_tam = true;
+    back_up_gamestate();
     if (opponent_move.stepStyle === "NoStep") {
       await animateOpponentTamNoStep(
         fromAbsoluteCoord(opponent_move.src),
@@ -196,6 +201,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
         fromAbsoluteCoord(opponent_move.secondDest),
       );
       GAME_STATE.is_my_turn = true;
+      back_up_gamestate();
       KiarArk.push_body_elem_and_display({
         type: "movement",
         dat: normalMoveToKiarArk(opponent_move, { piece_moved: "Tam2" }),
@@ -210,6 +216,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     } else if (opponent_move.stepStyle === "StepsDuringLatter") {
       await animateOpponentTamSteppingDuringLatter(opponent_move);
       GAME_STATE.is_my_turn = true;
+      back_up_gamestate();
       KiarArk.push_body_elem_and_display({
         type: "movement",
         dat: normalMoveToKiarArk(opponent_move, { piece_moved: "Tam2" }),
@@ -220,6 +227,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
     }
   } else if (opponent_move.type === "InfAfterStep") {
     GAME_STATE.opponent_has_just_moved_tam = false;
+    back_up_gamestate();
     const finalResult = (async () => {
       if (opponent_move.finalResult == null) {
         // eslint-disable-next-line no-constant-condition
@@ -271,6 +279,7 @@ export async function sendMainPollAndDoEverythingThatFollows() {
       return serializeProf(movement_info.piece_moved.prof);
     })();
     GAME_STATE.is_my_turn = true;
+    back_up_gamestate();
 
     if (finalResult_resolved.water_entry_ciurl) {
       if (finalResult_resolved.water_entry_ciurl.filter((a) => a).length < 3) {
@@ -551,6 +560,7 @@ async function animateOpponentInfAfterStep(p: {
 
         console.log("drawField opponent #", 12);
         GAME_STATE.last_move_focus = [src_i, src_j];
+        back_up_gamestate();
         drawField({ focus: [src_i, src_j] });
 
         // no piece capture is possible if water entry has failed
@@ -562,11 +572,14 @@ async function animateOpponentInfAfterStep(p: {
       /* if same, the piece should not take itself */
       takeTheUpwardPieceAndCheckHand(destPiece);
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
+      back_up_gamestate();
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      back_up_gamestate();
     }
 
     console.log("drawField opponent #", 13);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
+    back_up_gamestate();
     drawField({ focus: [dest_i, dest_j] });
     return [
       result,
@@ -589,6 +602,7 @@ async function animateOpponentInfAfterStep(p: {
         alert(DICTIONARY.ja.failedWaterEntry);
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
+        back_up_gamestate();
         drawField({ focus: [src_i, src_j] });
         return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
       }
@@ -599,16 +613,20 @@ async function animateOpponentInfAfterStep(p: {
       alert(DICTIONARY.ja.failedWaterEntry);
       console.log("drawField opponent #", 14);
       GAME_STATE.last_move_focus = [src_i, src_j];
+      back_up_gamestate();
       drawField({ focus: [src_i, src_j] });
       return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     }
 
     if (!coordEq(p.src, dest)) {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
+      back_up_gamestate();
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      back_up_gamestate();
     }
     console.log("drawField opponent #", 15);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
+    back_up_gamestate();
     drawField({ focus: [dest_i, dest_j] });
     return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
   }
@@ -639,6 +657,7 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
 
   const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfDownward);
   GAME_STATE.f.hop1zuo1OfDownward.push(flipped);
+  back_up_gamestate();
   const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfDownward);
 
   if (new_state.score === old_state.score) {
@@ -809,6 +828,7 @@ async function animateOpponentSrcStepDstFinite_(
         alert(DICTIONARY.ja.failedWaterEntry);
         console.log("drawField opponent #", 16);
         GAME_STATE.last_move_focus = [src_i, src_j];
+        back_up_gamestate();
         drawField({ focus: [src_i, src_j] });
 
         // no piece capture is possible if water entry failed
@@ -820,10 +840,13 @@ async function animateOpponentSrcStepDstFinite_(
       /* if same, the piece should not take itself */
       takeTheUpwardPieceAndCheckHand(destPiece);
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
+      back_up_gamestate();
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
+      back_up_gamestate();
     }
     console.log("drawField opponent #", 17);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
+    back_up_gamestate();
     drawField({ focus: [dest_i, dest_j] });
     return {
       piece_moved,
@@ -856,6 +879,7 @@ async function animateOpponentSrcStepDstFinite_(
 
         console.log("drawField opponent #", 18);
         GAME_STATE.last_move_focus = [src_i, src_j];
+        back_up_gamestate();
         drawField({ focus: [src_i, src_j] });
         // no piece capture is possible if water entry failed
         return { piece_moved, maybe_capture: null };
@@ -864,11 +888,14 @@ async function animateOpponentSrcStepDstFinite_(
 
     if (!coordEq(src, dest)) {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
+      back_up_gamestate();
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
+      back_up_gamestate();
     }
 
     console.log("drawField opponent #", 19);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
+    back_up_gamestate();
     drawField({ focus: [dest_i, dest_j] });
 
     return {
@@ -944,6 +971,7 @@ async function animateOpponentSrcDst_(
 
         console.log("drawField opponent #", 20);
         GAME_STATE.last_move_focus = [src_i, src_j];
+        back_up_gamestate();
         drawField({ focus: [src_i, src_j] });
         // it FAILED, so no piece was captured
         return { piece_moved, maybe_capture: null };
@@ -952,10 +980,13 @@ async function animateOpponentSrcDst_(
 
     takeTheUpwardPieceAndCheckHand(destPiece);
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
+    back_up_gamestate();
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
+    back_up_gamestate();
 
     console.log("drawField opponent #", 21);
     GAME_STATE.last_move_focus = [dest_i, dest_j];
+    back_up_gamestate();
     drawField({ focus: [dest_i, dest_j] });
   } else {
     const imgNode: HTMLElement = document.getElementById(
@@ -975,6 +1006,7 @@ async function animateOpponentSrcDst_(
 
         console.log("drawField opponent #", 22);
         GAME_STATE.last_move_focus = [src_i, src_j];
+        back_up_gamestate();
         drawField({ focus: [src_i, src_j] });
         // it FAILED, so no piece was captured
         return { piece_moved, maybe_capture: null };
@@ -982,11 +1014,14 @@ async function animateOpponentSrcDst_(
     }
 
     GAME_STATE.f.currentBoard[src_i][src_j] = null;
+    back_up_gamestate();
     GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
+    back_up_gamestate();
 
     if (!o.disable_focus) {
       console.log("drawField opponent #", 23);
       GAME_STATE.last_move_focus = [dest_i, dest_j];
+      back_up_gamestate();
       drawField({ focus: [dest_i, dest_j] });
     } else {
       /* This branch should be taken, for example, 
@@ -1037,9 +1072,11 @@ async function animateOpponentFromHand(
   });
 
   GAME_STATE.f.currentBoard[dest_i][dest_j] = removed_from_hop1zuo1;
+  back_up_gamestate();
 
   console.log("drawField opponent #", 24);
   GAME_STATE.last_move_focus = [dest_i, dest_j];
+  back_up_gamestate();
   drawField({ focus: [dest_i, dest_j] });
 }
 
@@ -1061,7 +1098,9 @@ async function animateOpponentTamNoStep(
     from: coordToPieceXY(src),
   });
   GAME_STATE.f.currentBoard[src[0]][src[1]] = null;
+  back_up_gamestate();
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = piece;
+  back_up_gamestate();
 
   console.log("drawField opponent #", 25);
   drawField({ focus: null }); /* Temporary animation. Hence no focus. */
@@ -1078,10 +1117,13 @@ async function animateOpponentTamNoStep(
     from: coordToPieceXY(fstdst),
   });
   GAME_STATE.f.currentBoard[fstdst[0]][fstdst[1]] = null;
+  back_up_gamestate();
   GAME_STATE.f.currentBoard[snddst[0]][snddst[1]] = piece;
+  back_up_gamestate();
 
   console.log("drawField opponent #", 26);
   GAME_STATE.last_move_focus = [snddst[0], snddst[1]];
+  back_up_gamestate();
   drawField({ focus: [snddst[0], snddst[1]] });
 }
 

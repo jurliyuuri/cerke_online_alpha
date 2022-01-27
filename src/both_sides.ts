@@ -4,6 +4,7 @@
 ////////////////////////////////////////////////////////
 
 import {
+  back_up_gamestate,
   GAME_STATE,
   initial_board_with_IA_down,
   toAbsoluteCoord,
@@ -275,6 +276,7 @@ export async function animatePunishStepTamAndCheckPerzej(side: Side) {
   const orig_score = GAME_STATE.my_score;
   GAME_STATE.my_score +=
     (side === Side.Upward ? -5 : 5) * Math.pow(2, GAME_STATE.log2_rate);
+  back_up_gamestate();
 
   await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
 
@@ -415,6 +417,7 @@ export function endSeason(
   const orig_score = GAME_STATE.my_score;
   const orig_season = GAME_STATE.season;
   GAME_STATE.my_score += base_score * Math.pow(2, GAME_STATE.log2_rate);
+  back_up_gamestate();
 
   const seasonProgressMap: { [P in Season]: Season | null } = {
     0: 1,
@@ -447,6 +450,7 @@ export function endSeason(
   }
 
   GAME_STATE.season = new_season;
+  back_up_gamestate();
   setTimeout(async () => {
     await animateNode(denote_score, 1000 * 0.8093, {
       to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
@@ -485,16 +489,19 @@ export function endSeason(
       hop1zuo1OfDownward: [],
       hop1zuo1OfUpward: [],
     };
+    back_up_gamestate();
 
     // Reset the rate to 1x
     // レートを1倍へと戻す
     GAME_STATE.log2_rate = 0;
+    back_up_gamestate();
     // Re-render the Mak2Io1 to clear the rate-denoting dummy piece in the previous season
     // 直前の季節で生成されている可能性のある、レート表示用の駒を消すために値直を再描画する
     drawMak2Io1();
 
     allowMainPolling(); // reset another global state
     GAME_STATE.last_move_focus = null; /* the board is initialized; no focus */
+    back_up_gamestate();
 
     console.log("drawField #", 11);
     drawField({ focus: null }); /* the board is initialized; no focus */
@@ -516,6 +523,7 @@ export async function animateSeasonInitiation(w: WhoGoesFirst) {
   await animateProcessDeterminingWhoGoesFirst(w);
   await new Promise((resolve) => setTimeout(resolve, 3000 * 0.8093));
   GAME_STATE.is_my_turn = w.result;
+  back_up_gamestate();
   KiarArk.push_initial_colors_and_display(
     GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤",
   );
@@ -538,6 +546,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
   };
   drawMak2Io1(); // cargo cult
   GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
+  back_up_gamestate();
 
   const denote_rate = document.getElementById("denote_rate")!;
   setTimeout(async () => {
@@ -554,6 +563,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
       setTimeout(sendMainPollAndDoEverythingThatFollows, 500 * 0.8093);
     } else {
       GAME_STATE.is_my_turn = true;
+      back_up_gamestate();
     }
 
     document

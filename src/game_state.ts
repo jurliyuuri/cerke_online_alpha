@@ -121,26 +121,32 @@ export const initial_board_with_IA_down: Board = [
   ],
 ];
 
-export const GAME_STATE: GameState = ((p: { IA_is_down: boolean }) => {
+const gamestate_from_scratch = (p: { IA_is_down: boolean }) => gamestate_from_params({
+  IA_is_down: p.IA_is_down,
+  my_score: 20,
+  season: 0,
+  scores_of_each_season: [[], [], [], []],
+  log2_rate: 0,
+  last_move_focus: null,
+  f: {
+    currentBoard: p.IA_is_down
+      ? rotateBoard(rotateBoard(initial_board_with_IA_down))
+      : rotateBoard(initial_board_with_IA_down),
+    hop1zuo1OfDownward: [],
+    hop1zuo1OfUpward: [],
+  },
+  backupDuringStepping: null,
+});
+
+const gamestate_from_params = (p: GameStatePureParams) => {
   let _is_my_turn: boolean = true; // override this by calling the setter
-  let _my_score = 20;
-  const scores_of_each_season: [number[], number[], number[], number[]] = [
-    [],
-    [],
-    [],
-    [],
-  ];
-  let _season: Season = 0;
-  const log2_rate: Log2_Rate = 0;
+  let _my_score = p.my_score;
+  const scores_of_each_season: [number[], number[], number[], number[]] = p.scores_of_each_season;
+  let _season: Season = p.season;
+  const log2_rate: Log2_Rate = p.log2_rate;
   return {
-    last_move_focus: null,
-    f: {
-      currentBoard: p.IA_is_down
-        ? rotateBoard(rotateBoard(initial_board_with_IA_down))
-        : rotateBoard(initial_board_with_IA_down),
-      hop1zuo1OfDownward: [],
-      hop1zuo1OfUpward: [],
-    },
+    last_move_focus: p.last_move_focus,
+    f: p.f,
     IA_is_down: p.IA_is_down,
     tam_itself_is_tam_hue: true,
     opponent_has_just_moved_tam: false,
@@ -172,7 +178,7 @@ export const GAME_STATE: GameState = ((p: { IA_is_down: boolean }) => {
     get is_my_turn() {
       return _is_my_turn;
     },
-    backupDuringStepping: null,
+    backupDuringStepping: p.backupDuringStepping,
     set my_score(score: number) {
       scores_of_each_season[_season].push(score - _my_score);
       _my_score = score;
@@ -201,13 +207,40 @@ export const GAME_STATE: GameState = ((p: { IA_is_down: boolean }) => {
     },
     log2_rate,
   };
-})({
-  IA_is_down: (() => {
-    try {
-      return JSON.parse(sessionStorage.is_IA_down_for_me);
-    } catch {
-      // Maybe you entered this page without registering. Go back to entrance.html.
-      location.href = "entrance.html";
-    }
-  })(),
-});
+};
+
+type GameStatePureParams = {
+  IA_is_down: boolean, my_score: number, season: Season,
+  scores_of_each_season: [number[], number[], number[], number[]], 
+  log2_rate: Log2_Rate,
+  last_move_focus: Coord | null,
+  f: Field,
+  backupDuringStepping: null | [Coord, Piece]
+};
+
+export function back_up_gamestate() {
+  const obj: GameStatePureParams = {
+    IA_is_down: GAME_STATE.IA_is_down,
+    my_score: GAME_STATE.my_score,
+    season: GAME_STATE.season,
+    scores_of_each_season: GAME_STATE.scores_of_each_season,
+    log2_rate: GAME_STATE.log2_rate,
+    last_move_focus: GAME_STATE.last_move_focus,
+    f: GAME_STATE.f,
+    backupDuringStepping: GAME_STATE.backupDuringStepping
+  };
+  localStorage.game_state_backup = JSON.stringify(obj);
+}
+
+export const GAME_STATE: GameState = localStorage.getItem('game_state_backup')
+  ? gamestate_from_params(JSON.parse(localStorage.game_state_backup))
+  : gamestate_from_scratch({
+    IA_is_down: (() => {
+      try {
+        return JSON.parse(sessionStorage.is_IA_down_for_me);
+      } catch {
+        // Maybe you entered this page without registering. Go back to entrance.html.
+        location.href = "entrance.html";
+      }
+    })(),
+  });
