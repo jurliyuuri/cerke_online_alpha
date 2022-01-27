@@ -10,7 +10,8 @@ console.log("drawField #", 0);
 drawField({ focus: null });
 
 if (localStorage.kiar_ark) {
-  KiarArk.resurrect(JSON.parse(localStorage.kiar_ark))
+  KiarArk.resurrect(JSON.parse(localStorage.kiar_ark));
+  KiarArk.display_kiar_ark();
 } else {
   KiarArk.push_header_elem_and_display({
     type: "header",
