@@ -36,11 +36,13 @@
 [http://jurliyuuri.com/cerke_online_alpha/entrance.html](http://jurliyuuri.com/cerke_online_alpha/entrance.html) にデプロイされているものがある。
 
 ### ローカルのフロントエンド（MacかLinuxで） + ローカルのバックエンド
-1. まず `npm install`
-2. ローカルで[バックエンド](https://gitlab.com/jekto.vatimeliju/cerke_online_backend)を走らせる
-3. `export API_ORIGIN=LOCAL` する
-4. `npm start` する
-5. `localhost:8000/entrance.html` にデプロイされているものがある。
+<!-- 1. まず `npm install` -->
+<!-- 2. ローカルで[バックエンド](https://gitlab.com/jekto.vatimeliju/cerke_online_backend)を走らせる
+<!-- 3. `export API_ORIGIN=LOCAL` する -->
+<!-- 4. `npm start` する -->
+<!-- 5. `localhost:8000/entrance.html` にデプロイされているものがある。 -->
+
+**ローカルでバックエンドを走らせる機会が全然ないので全て忘れました。バックエンドのリポジトリは[ここ](https://gitlab.com/jekto.vatimeliju/cerke_online_backend)です。**
 
 ### ローカルのフロントエンド + Herokuバックエンド
 1. まず `npm install`
