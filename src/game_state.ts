@@ -40,6 +40,7 @@ export interface GameState {
 }
 
 import { toAbsoluteCoord_, fromAbsoluteCoord_ } from "cerke_online_utility";
+import { add_cover, remove_cover } from "./protective_cover";
 
 export function toAbsoluteCoord(coord: Coord): AbsoluteCoord {
   return toAbsoluteCoord_(coord, GAME_STATE.IA_is_down);
@@ -158,19 +159,11 @@ const gamestate_from_params = (p: GameStatePureParams) => {
         document.getElementById("opponent_message")!.textContent = "";
         document.getElementById("opponent_message_linzklar")!.textContent = "";
 
-        document
-          .getElementById(
-            "protective_cover_over_field_while_waiting_for_opponent",
-          )!
-          .classList.add("nocover");
+        remove_cover("protective_cover_over_field_while_waiting_for_opponent");
       } else {
         document.getElementById("my_icon")!.style.opacity = "0.3";
         document.getElementById("larta_opponent")!.style.opacity = "1";
-        document
-          .getElementById(
-            "protective_cover_over_field_while_waiting_for_opponent",
-          )!
-          .classList.remove("nocover");
+        add_cover("protective_cover_over_field_while_waiting_for_opponent");
         window.setTimeout(sendMainPollAndDoEverythingThatFollows, 500 * 0.8093);
       }
     },
@@ -211,7 +204,7 @@ const gamestate_from_params = (p: GameStatePureParams) => {
 
 type GameStatePureParams = {
   IA_is_down: boolean, my_score: number, season: Season,
-  scores_of_each_season: [number[], number[], number[], number[]], 
+  scores_of_each_season: [number[], number[], number[], number[]],
   log2_rate: Log2_Rate,
   last_move_focus: Coord | null,
   f: Field,

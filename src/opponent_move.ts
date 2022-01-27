@@ -58,6 +58,7 @@ import {
   toPieceCaptureComment,
 } from "./capture_info";
 import { drawCiurlWithAudio } from "./main";
+import { add_cover } from "./protective_cover";
 
 const { forbidMainPolling, isMainPollingAllowed, allowMainPolling } = (() => {
   let MAIN_POLLING_ALLOWED = true;
@@ -665,14 +666,10 @@ function takeTheUpwardPieceAndCheckHand(destPiece: Piece) {
   }
 
   // this will quite quickly be gone due to the setter of is_my_turn
-  document
-    .getElementById("protective_cover_over_field_while_waiting_for_opponent")!
-    .classList.remove("nocover");
+  add_cover("protective_cover_over_field_while_waiting_for_opponent");
 
   // hence add another transparent film
-  document
-    .getElementById("protective_cover_over_field_while_asyncawait")!
-    .classList.remove("nocover");
+  add_cover("protective_cover_over_field_while_asyncawait");
 
   window.setTimeout(async () => {
     await sendTyMok1OrTaXot1Poll(new_state);
@@ -748,9 +745,7 @@ async function sendTyMok1OrTaXot1Poll(o: { hands: Hand[]; score: number }) {
       });
     }
   } else {
-    document
-      .getElementById("protective_cover_over_field_while_waiting_for_opponent")!
-      .classList.remove("nocover");
+    add_cover("protective_cover_over_field_while_waiting_for_opponent");
     await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
     await sendTyMok1OrTaXot1Poll(o);
   }

@@ -79,6 +79,7 @@ import {
   increaseRateAndAnimate,
   sendStuffTo,
 } from "./both_sides";
+import { add_cover, remove_cover } from "./protective_cover";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
@@ -94,9 +95,7 @@ function cancelSteppingButUpdateTheFocus(new_focus: Coord): MovementInfo {
 function cancelStepping(): MovementInfo {
   eraseGuide();
   erasePhantomAndOptionallyCancelButton();
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.add("nocover");
+  remove_cover("protective_cover_over_field");
 
   // resurrect the original one
   const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
@@ -121,12 +120,8 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   stepsOn: Coord,
 ) {
   eraseGuide();
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.remove("nocover");
-  document
-    .getElementById("protective_tam_cover_over_field")!
-    .classList.remove("nocover");
+  add_cover("protective_cover_over_field");
+  add_cover("protective_tam_cover_over_field");
 
   // delete the original one
   GAME_STATE.backupDuringStepping = [firstDest, "Tam2"];
@@ -142,12 +137,8 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   drawCancelButton(() => {
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
-    document
-      .getElementById("protective_cover_over_field")!
-      .classList.add("nocover");
-    document
-      .getElementById("protective_tam_cover_over_field")!
-      .classList.add("nocover");
+    remove_cover("protective_cover_over_field");
+    remove_cover("protective_tam_cover_over_field");
 
     // resurrect the original one
     GAME_STATE.f.currentBoard[theVerySrc[0]][theVerySrc[1]] = "Tam2";
@@ -204,12 +195,8 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
         erasePhantomAndOptionallyCancelButton();
 
         sendNormalMove(message);
-        document
-          .getElementById("protective_cover_over_field")!
-          .classList.add("nocover");
-        document
-          .getElementById("protective_tam_cover_over_field")!
-          .classList.add("nocover");
+        remove_cover("protective_cover_over_field");
+        remove_cover("protective_tam_cover_over_field");
         return;
       });
 
@@ -229,14 +216,10 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
  */
 function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   eraseGuide();
-  document
-    .getElementById("protective_tam_cover_over_field")!
-    .classList.remove("nocover");
+  add_cover("protective_tam_cover_over_field");
 
   // stepping should now have been completed
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.add("nocover");
+  remove_cover("protective_cover_over_field");
 
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
   back_up_gamestate();
@@ -326,9 +309,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
             sendNormalMove(message);
 
-            document
-              .getElementById("protective_tam_cover_over_field")!
-              .classList.add("nocover");
+            remove_cover("protective_tam_cover_over_field");
           });
         } else {
           img.addEventListener("click", function () {
@@ -357,12 +338,8 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     // cancel Tam2's first move
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
-    document
-      .getElementById("protective_tam_cover_over_field")!
-      .classList.add("nocover");
-    document
-      .getElementById("protective_cover_over_field")!
-      .classList.add("nocover");
+    remove_cover("protective_tam_cover_over_field");
+    remove_cover("protective_cover_over_field");
 
     // resurrect the original one
     GAME_STATE.f.currentBoard[to[0]][to[1]] = null;
@@ -381,9 +358,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
 function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   eraseGuide();
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.remove("nocover");
+  add_cover("protective_cover_over_field");
 
   // delete the original one
   GAME_STATE.backupDuringStepping = [from, piece];

@@ -45,6 +45,7 @@ import {
 import { animateProcessDeterminingWhoGoesFirst, selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
+import { add_cover, remove_cover } from "./protective_cover";
 
 export function drawMak2Io1() {
   const denote_season = document.getElementById("denote_season")!;
@@ -287,31 +288,20 @@ export async function animatePunishStepTamAndCheckPerzej(side: Side) {
 
   if (GAME_STATE.my_score >= 40) {
     perzej("you win!", true);
-    document
-      .getElementById("protective_cover_over_field_while_waiting_for_opponent")
-      ?.classList.remove("nocover");
+    add_cover("protective_cover_over_field_while_waiting_for_opponent");
     return;
   } else if (GAME_STATE.my_score <= 0) {
     perzej("you lose...", true);
-    document
-      .getElementById("protective_cover_over_field_while_waiting_for_opponent")
-      ?.classList.remove("nocover");
+    add_cover("protective_cover_over_field_while_waiting_for_opponent");
     return;
   }
   await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
   drawMak2Io1();
 
   await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
-  document
-    .getElementById("protective_cover_over_field")
-    ?.classList.add("nocover");
-  document
-    .getElementById("protective_tam_cover_over_field")
-    ?.classList.add("nocover");
-
-  document
-    .getElementById("protective_cover_over_field_while_asyncawait")
-    ?.classList.add("nocover");
+  remove_cover("protective_cover_over_field");
+  remove_cover("protective_tam_cover_over_field");
+  remove_cover("protective_cover_over_field_while_asyncawait");
 }
 
 export function calculateHandsAndScore(pieces: NonTam2Piece[]) {
@@ -363,10 +353,7 @@ export async function sendStuffTo<T, U>(
   validateInput: (response: any) => U,
 ): Promise<U> {
   // cover up the UI
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
+  add_cover("protective_cover_over_field_while_asyncawait");
 
   console.log(`Sending ${log}:`, JSON.stringify(message));
   const url = `${API_ORIGIN}/${api_name}/`;
@@ -383,22 +370,22 @@ export async function sendStuffTo<T, U>(
     },
   })
     .then((res) => {
-      cover_while_asyncawait.classList.add("nocover");
+      remove_cover("protective_cover_over_field_while_asyncawait");
       return res.json();
     })
     .then(validateInput)
     .catch((error) => {
-      cover_while_asyncawait.classList.add("nocover");
+      remove_cover("protective_cover_over_field_while_asyncawait");
       console.error("Error:", error);
       return;
     });
 
   console.log(res);
-  cover_while_asyncawait.classList.add("nocover");
+  remove_cover("protective_cover_over_field_while_asyncawait");
 
   if (!res) {
     alert("network error!");
-    cover_while_asyncawait.classList.add("nocover");
+    remove_cover("protective_cover_over_field_while_asyncawait");
     throw new Error("network error!");
   }
   return res;
@@ -473,13 +460,8 @@ export function endSeason(
     alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
 
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
-    document
-      .getElementById("protective_cover_over_field")
-      ?.classList.remove("nocover");
-    document
-      .getElementById("protective_tam_cover_over_field")
-      ?.classList.remove("nocover");
-
+    add_cover("protective_cover_over_field");
+    add_cover("protective_tam_cover_over_field");
     await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
 
     GAME_STATE.f = {
@@ -507,15 +489,9 @@ export function endSeason(
     drawField({ focus: null }); /* the board is initialized; no focus */
 
     await animateSeasonInitiation(is_first_move_my_move_in_the_next_season!);
-    document
-      .getElementById("protective_cover_over_field")
-      ?.classList.add("nocover");
-    document
-      .getElementById("protective_tam_cover_over_field")
-      ?.classList.add("nocover");
-    document
-      .getElementById("protective_cover_over_field_while_asyncawait")
-      ?.classList.add("nocover");
+    remove_cover("protective_cover_over_field");
+    remove_cover("protective_tam_cover_over_field");
+    remove_cover("protective_cover_over_field_while_asyncawait");
   }, 200 * 0.8093);
 }
 
@@ -566,8 +542,6 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
       back_up_gamestate();
     }
 
-    document
-      .getElementById("protective_cover_over_field_while_asyncawait")!
-      .classList.add("nocover");
+    remove_cover("protective_cover_over_field_while_asyncawait");
   }, 200 * 0.8093);
 }
