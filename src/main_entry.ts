@@ -95,6 +95,14 @@ if (!localStorage.getItem('game_state_backup')) {
 
     await animateSeasonInitiation(is_first_move_my_move);
   });
+} else {
+  (document.getElementById("kait_kaik_button")! as HTMLImageElement).src = "image/ty_zau.png";
+  document.getElementById("kait_kaik_button")!.addEventListener("click", async () => {
+    document.getElementById("kait_kaik")!.classList.add("nocover");
+    if (!LORK_LIAR_ENABLED) {
+      toggleBackgroundMusic();
+    }
+  });
 }
 
 if (sessionStorage.vs === "cpu") {
