@@ -109,9 +109,9 @@ if (!sessionStorage.getItem('game_state_backup')) {
     // "ty zau" のボタンを押して初めて他の駒を動かせる、とするのがいいので、そうする
     apply_membrane_state_to_dom();
 
-    // Trigger the setter by assigning `GAME_STATE.IA_is_down` to itself. Double negation is required here to evade ESLint.
-    // 自分自身に代入することでセッターをトリガーする。ESLint の目から逃れるために二重否定を書いている。
-    GAME_STATE.IA_is_down = !!GAME_STATE.IA_is_down;
+    // Trigger the setter by assigning `GAME_STATE.is_my_turn` to itself. Double negation is required here to evade ESLint.
+    // GAME_STATE.is_my_turn を自分自身に代入することでセッターをトリガーする。ESLint の目から逃れるために二重否定を書いている。
+    GAME_STATE.is_my_turn = !!GAME_STATE.is_my_turn;
     document.getElementById("kait_kaik")!.classList.add("nocover");
     if (!LORK_LIAR_ENABLED) {
       toggleBackgroundMusic();
