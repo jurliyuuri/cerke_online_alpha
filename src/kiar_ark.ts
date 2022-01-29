@@ -11,7 +11,7 @@ const KIAR_ARK: {
 
 function groupTwoAndRender(input: BodyElem[]) {
   let ans: string = "";
-  for (let i = 0; i < input.length; ) {
+  for (let i = 0; i < input.length;) {
     const current: BodyElem | undefined = input[i];
     const next: BodyElem | undefined = input[i + 1];
     if (current?.type === "movement" && next?.type === "movement") {
@@ -47,6 +47,7 @@ function groupTwoAndRender(input: BodyElem[]) {
 }
 
 export function display_kiar_ark() {
+  sessionStorage.kiar_ark = JSON.stringify(KIAR_ARK);
   console.log("_kiar_ark:", KIAR_ARK);
   document.getElementById("kiar_ark")!.textContent =
     `{一位色:${KIAR_ARK.initial_colors.join("")}}\n` +
@@ -68,4 +69,14 @@ export function push_body_elem_and_display(e: BodyElem) {
 export function push_header_elem_and_display(e: HeaderElem) {
   KIAR_ARK.header.push(e);
   display_kiar_ark();
+}
+
+export function resurrect(k: {
+  header: HeaderElem[];
+  initial_colors: ("赤" | "黒")[];
+  body: BodyElem[];
+}) {
+  KIAR_ARK.header = k.header;
+  KIAR_ARK.initial_colors = k.initial_colors;
+  KIAR_ARK.body = k.body;
 }

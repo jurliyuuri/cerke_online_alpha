@@ -10,6 +10,7 @@ import {
 import { BOX_SIZE } from "./html_top_left";
 import { toPath_ } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
+import { add_cover, remove_cover } from "./protective_cover";
 
 /**
  * @param total_duration total duration in millisecond
@@ -39,14 +40,11 @@ export async function animateStepTamLogo() {
   const step_tam_logo = document.getElementById("step_tam_logo")!;
   step_tam_logo.style.display = "block";
   step_tam_logo.classList.add("step_tam");
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
+  add_cover("protective_cover_over_field_while_asyncawait");
 
   setTimeout(() => {
     step_tam_logo.style.display = "none";
-    cover_while_asyncawait.classList.add("nocover");
+    remove_cover("protective_cover_over_field_while_asyncawait");
   }, 1200 * 0.8093);
   await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }
@@ -55,14 +53,11 @@ export async function animateWaterEntryLogo() {
   const water_entry_logo = document.getElementById("water_entry_logo")!;
   water_entry_logo.style.display = "block";
   water_entry_logo.classList.add("water_entry");
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
+  add_cover("protective_cover_over_field_while_asyncawait");
 
   setTimeout(() => {
     water_entry_logo.style.display = "none";
-    cover_while_asyncawait.classList.add("nocover");
+    remove_cover("protective_cover_over_field_while_asyncawait");
   }, 1200 * 0.8093);
   await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
 }

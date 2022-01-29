@@ -2,16 +2,23 @@ import { WhoGoesFirst } from "cerke_online_api";
 import { animateSeasonInitiation, drawField } from "./both_sides";
 import { GAME_STATE } from "./game_state";
 import * as KiarArk from "./kiar_ark";
+import { apply_membrane_state_to_dom } from "./protective_cover";
 
 (
   document.getElementById("coord_annotation")! as HTMLImageElement
 ).src = `image/IA_is_down=${GAME_STATE.IA_is_down}.svg`;
 console.log("drawField #", 0);
 drawField({ focus: null });
-KiarArk.push_header_elem_and_display({
-  type: "header",
-  dat: `{始時:${new Date().toISOString()}}`,
-});
+
+if (sessionStorage.kiar_ark) {
+  KiarArk.resurrect(JSON.parse(sessionStorage.kiar_ark));
+  KiarArk.display_kiar_ark();
+} else {
+  KiarArk.push_header_elem_and_display({
+    type: "header",
+    dat: `{始時:${new Date().toISOString()}}`,
+  });
+}
 
 let COORD_TOGGLE: boolean = false;
 document
@@ -80,15 +87,37 @@ document
   BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? LORK_LIAR / 100 : 0;
 });
 
-document.getElementById("kait_kaik_button")!.addEventListener("click", async () => {
-  document.getElementById("kait_kaik")!.classList.add("nocover");
-  const is_first_move_my_move: WhoGoesFirst = JSON.parse(sessionStorage.is_first_move_my_move);
-  if (!LORK_LIAR_ENABLED) {
-    toggleBackgroundMusic();
-  }
+if (!sessionStorage.getItem('game_state_backup')) {
+  // new game
+  // 新規ゲーム
+  document.getElementById("kait_kaik_button")!.addEventListener("click", async () => {
+    document.getElementById("kait_kaik")!.classList.add("nocover");
+    const is_first_move_my_move: WhoGoesFirst = JSON.parse(sessionStorage.is_first_move_my_move);
+    if (!LORK_LIAR_ENABLED) {
+      toggleBackgroundMusic();
+    }
 
-  await animateSeasonInitiation(is_first_move_my_move);
-});
+    await animateSeasonInitiation(is_first_move_my_move);
+  });
+} else {
+  // resurrect the game
+  // ゲームを復活させる
+  (document.getElementById("kait_kaik_button")! as HTMLImageElement).src = "image/ty_zau.png";
+  document.getElementById("kait_kaik_button")!.addEventListener("click", async () => {
+
+    // Only after pressing "ty zau" will we allow the player from clicking other pieces 
+    // "ty zau" のボタンを押して初めて他の駒を動かせる、とするのがいいので、そうする
+    apply_membrane_state_to_dom();
+
+    // Trigger the setter by assigning `GAME_STATE.is_my_turn` to itself. Double negation is required here to evade ESLint.
+    // GAME_STATE.is_my_turn を自分自身に代入することでセッターをトリガーする。ESLint の目から逃れるために二重否定を書いている。
+    GAME_STATE.is_my_turn = !!GAME_STATE.is_my_turn;
+    document.getElementById("kait_kaik")!.classList.add("nocover");
+    if (!LORK_LIAR_ENABLED) {
+      toggleBackgroundMusic();
+    }
+  });
+}
 
 if (sessionStorage.vs === "cpu") {
   document.getElementById(

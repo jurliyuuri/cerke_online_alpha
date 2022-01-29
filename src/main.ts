@@ -6,7 +6,7 @@ import {
   createImageButton,
   createPieceSizeImageOnBoardByPathAndXY,
 } from "./create_html_element";
-import { GAME_STATE, fromAbsoluteCoord, toAbsoluteCoord } from "./game_state";
+import { GAME_STATE, fromAbsoluteCoord, toAbsoluteCoord, back_up_gamestate } from "./game_state";
 import { forbidMainPolling } from "./opponent_move";
 import {
   Coord,
@@ -79,6 +79,7 @@ import {
   increaseRateAndAnimate,
   sendStuffTo,
 } from "./both_sides";
+import { add_cover, remove_cover } from "./protective_cover";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
@@ -94,16 +95,16 @@ function cancelSteppingButUpdateTheFocus(new_focus: Coord): MovementInfo {
 function cancelStepping(): MovementInfo {
   eraseGuide();
   erasePhantomAndOptionallyCancelButton();
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.add("nocover");
+  remove_cover("protective_cover_over_field");
 
   // resurrect the original one
   const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
   const from: Coord = backup[0];
   const piece_moved = backup[1];
   GAME_STATE.f.currentBoard[from[0]][from[1]] = piece_moved;
+  back_up_gamestate();
   GAME_STATE.backupDuringStepping = null;
+  back_up_gamestate();
 
   SELECTED_COORD_UI = null;
 
@@ -119,16 +120,14 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   stepsOn: Coord,
 ) {
   eraseGuide();
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.remove("nocover");
-  document
-    .getElementById("protective_tam_cover_over_field")!
-    .classList.remove("nocover");
+  add_cover("protective_cover_over_field");
+  add_cover("protective_tam_cover_over_field");
 
   // delete the original one
   GAME_STATE.backupDuringStepping = [firstDest, "Tam2"];
+  back_up_gamestate();
   GAME_STATE.f.currentBoard[firstDest[0]][firstDest[1]] = null;
+  back_up_gamestate();
 
   document.getElementById("cancelButton")!.remove();
 
@@ -138,16 +137,14 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   drawCancelButton(() => {
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
-    document
-      .getElementById("protective_cover_over_field")!
-      .classList.add("nocover");
-    document
-      .getElementById("protective_tam_cover_over_field")!
-      .classList.add("nocover");
+    remove_cover("protective_cover_over_field");
+    remove_cover("protective_tam_cover_over_field");
 
     // resurrect the original one
     GAME_STATE.f.currentBoard[theVerySrc[0]][theVerySrc[1]] = "Tam2";
+    back_up_gamestate();
     GAME_STATE.backupDuringStepping = null;
+    back_up_gamestate();
 
     SELECTED_COORD_UI = null;
 
@@ -198,12 +195,8 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
         erasePhantomAndOptionallyCancelButton();
 
         sendNormalMove(message);
-        document
-          .getElementById("protective_cover_over_field")!
-          .classList.add("nocover");
-        document
-          .getElementById("protective_tam_cover_over_field")!
-          .classList.add("nocover");
+        remove_cover("protective_cover_over_field");
+        remove_cover("protective_tam_cover_over_field");
         return;
       });
 
@@ -223,17 +216,15 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
  */
 function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   eraseGuide();
-  document
-    .getElementById("protective_tam_cover_over_field")!
-    .classList.remove("nocover");
+  add_cover("protective_tam_cover_over_field");
 
   // stepping should now have been completed
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.add("nocover");
+  remove_cover("protective_cover_over_field");
 
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
+  back_up_gamestate();
   GAME_STATE.f.currentBoard[to[0]][to[1]] = "Tam2";
+  back_up_gamestate();
 
   console.log("drawField #", 4.1);
   drawField({ focus: null }); // temporary display, hence no focus
@@ -318,9 +309,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
             sendNormalMove(message);
 
-            document
-              .getElementById("protective_tam_cover_over_field")!
-              .classList.add("nocover");
+            remove_cover("protective_tam_cover_over_field");
           });
         } else {
           img.addEventListener("click", function () {
@@ -349,16 +338,14 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     // cancel Tam2's first move
     eraseGuide();
     erasePhantomAndOptionallyCancelButton();
-    document
-      .getElementById("protective_tam_cover_over_field")!
-      .classList.add("nocover");
-    document
-      .getElementById("protective_cover_over_field")!
-      .classList.add("nocover");
+    remove_cover("protective_tam_cover_over_field");
+    remove_cover("protective_cover_over_field");
 
     // resurrect the original one
     GAME_STATE.f.currentBoard[to[0]][to[1]] = null;
+    back_up_gamestate();
     GAME_STATE.f.currentBoard[from[0]][from[1]] = "Tam2";
+    back_up_gamestate();
 
     SELECTED_COORD_UI = null;
 
@@ -371,13 +358,13 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
 
 function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   eraseGuide();
-  document
-    .getElementById("protective_cover_over_field")!
-    .classList.remove("nocover");
+  add_cover("protective_cover_over_field");
 
   // delete the original one
   GAME_STATE.backupDuringStepping = [from, piece];
+  back_up_gamestate();
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
+  back_up_gamestate();
 
   console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
@@ -465,6 +452,7 @@ async function sendAfterHalfAcceptance(
     console.log("drawField #", 7);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+    back_up_gamestate();
     if (message.dest) {
       KiarArk.push_body_elem_and_display({
         type: "movement",
@@ -509,6 +497,7 @@ async function sendAfterHalfAcceptance(
     // must redraw the board with the focus on `o.src` to denote that a failed operation happened.
     const movement_info = cancelSteppingButUpdateTheFocus(o.src);
     GAME_STATE.is_my_turn = false;
+    back_up_gamestate();
 
     const zuo1: string = (() => {
       const piece: Piece = movement_info.piece_moved;
@@ -552,6 +541,7 @@ async function sendAfterHalfAcceptance(
     console.log("drawField #", 8);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+    back_up_gamestate();
 
     const zuo1: string = (() => {
       if (movement_info.piece_moved === "Tam2") {
@@ -606,6 +596,7 @@ async function sendNormalMove(message: NormalMove) {
     console.log("drawField #", 9);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+    back_up_gamestate();
     KiarArk.push_body_elem_and_display({
       type: "movement",
       dat: normalMoveToKiarArk(message, {
@@ -632,6 +623,7 @@ async function sendNormalMove(message: NormalMove) {
         fromAbsoluteCoord(message.data.src),
       );
       GAME_STATE.is_my_turn = false;
+      back_up_gamestate();
       // no capture possible
       KiarArk.push_body_elem_and_display({
         type: "movement",
@@ -648,6 +640,7 @@ async function sendNormalMove(message: NormalMove) {
       console.log("drawField #", 10.1);
       drawField({ focus: fromAbsoluteCoord(message.data.src) });
       GAME_STATE.is_my_turn = false;
+      back_up_gamestate();
 
       const [src_i, src_j] = fromAbsoluteCoord(message.data.src);
       const piece_moved: Piece | null = GAME_STATE.f.currentBoard[src_i][src_j];
@@ -671,6 +664,7 @@ async function sendNormalMove(message: NormalMove) {
     console.log("drawField #", 10);
     drawField({ focus: GAME_STATE.last_move_focus });
     GAME_STATE.is_my_turn = false;
+    back_up_gamestate();
     KiarArk.push_body_elem_and_display({
       type: "movement",
       dat: normalMoveToKiarArk(message, {
@@ -693,6 +687,7 @@ function updateFieldAfterHalfAcceptance(
     const movement_info = cancelStepping();
     console.log("lone assignment to last_move_focus, #", 0);
     GAME_STATE.last_move_focus = src;
+    back_up_gamestate();
     return { piece_moved: movement_info.piece_moved, maybe_capture: null }; // cancelled; no capture was made
   }
 
@@ -716,6 +711,7 @@ function updateFieldAfterHalfAcceptance(
   if (coordEq([src_i, src_j], [dest_i, dest_j])) {
     console.log("lone assignment to last_move_focus, #", 1);
     GAME_STATE.last_move_focus = [src_i, src_j];
+    back_up_gamestate();
     return { piece_moved: piece, maybe_capture: null }; // no capture was made
   }
 
@@ -724,9 +720,12 @@ function updateFieldAfterHalfAcceptance(
   }
 
   GAME_STATE.f.currentBoard[src_i][src_j] = null;
+  back_up_gamestate();
   GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+  back_up_gamestate();
   console.log("lone assignment to last_move_focus, #", 2);
   GAME_STATE.last_move_focus = [dest_i, dest_j];
+  back_up_gamestate();
   return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
 }
 
@@ -755,6 +754,7 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
 
   const old_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
   GAME_STATE.f.hop1zuo1OfUpward.push(flipped);
+  back_up_gamestate();
   const new_state = calculateHandsAndScore(GAME_STATE.f.hop1zuo1OfUpward);
 
   if (new_state.score === old_state.score) {
@@ -841,8 +841,10 @@ function updateField(message: NormalMove): MovementInfo {
       }
 
       GAME_STATE.f.currentBoard[i][j] = removed_from_hop1zuo1;
+      back_up_gamestate();
       console.log("lone assignment to last_move_focus, #", 3);
       GAME_STATE.last_move_focus = [i, j];
+      back_up_gamestate();
       return { piece_moved: removed_from_hop1zuo1, maybe_capture: null }; // no capture possible
     } else if (message.data.type === "SrcDst") {
       const k: {
@@ -868,9 +870,12 @@ function updateField(message: NormalMove): MovementInfo {
       }
 
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
+      back_up_gamestate();
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece_moved;
+      back_up_gamestate();
       console.log("lone assignment to last_move_focus, #", 4);
       GAME_STATE.last_move_focus = [dest_i, dest_j];
+      back_up_gamestate();
       return { piece_moved, maybe_capture: toColorProf(destPiece) };
     } else if (message.data.type === "SrcStepDstFinite") {
       const k: {
@@ -904,6 +909,7 @@ function updateField(message: NormalMove): MovementInfo {
       if (coordEq([src_i, src_j], [dest_i, dest_j])) {
         // BUT! you have to update the last_move_focus
         GAME_STATE.last_move_focus = [dest_i, dest_j];
+        back_up_gamestate();
         console.log("lone assignment to last_move_focus, #", 4.5);
         return { piece_moved: piece, maybe_capture: null }; // no capture
       }
@@ -913,8 +919,11 @@ function updateField(message: NormalMove): MovementInfo {
       }
 
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
+      back_up_gamestate();
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
+      back_up_gamestate();
       GAME_STATE.last_move_focus = [dest_i, dest_j];
+      back_up_gamestate();
       console.log("lone assignment to last_move_focus, #", 5);
       return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
     } else {
@@ -928,7 +937,9 @@ function updateField(message: NormalMove): MovementInfo {
     if (message.stepStyle === "StepsDuringLatter") {
       // We decided that Tam2 should not be present on the board if it is StepsDuringLatter
       GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = "Tam2";
+      back_up_gamestate();
       GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
+      back_up_gamestate();
       console.log("lone assignment to last_move_focus, #", 6);
       return { piece_moved: "Tam2", maybe_capture: null }; // no capture possible
     }
@@ -952,8 +963,11 @@ function updateField(message: NormalMove): MovementInfo {
     }
 
     GAME_STATE.f.currentBoard[firstDest_i][firstDest_j] = null;
+    back_up_gamestate();
     GAME_STATE.f.currentBoard[secondDest_i][secondDest_j] = piece;
+    back_up_gamestate();
     GAME_STATE.last_move_focus = [secondDest_i, secondDest_j];
+    back_up_gamestate();
     console.log("lone assignment to last_move_focus, #", 8);
     return { piece_moved: "Tam2", maybe_capture: null }; // no capture possible in TamMove
   } else {

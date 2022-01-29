@@ -4,6 +4,7 @@
 ////////////////////////////////////////////////////////
 
 import {
+  back_up_gamestate,
   GAME_STATE,
   initial_board_with_IA_down,
   toAbsoluteCoord,
@@ -44,6 +45,7 @@ import {
 import { animateProcessDeterminingWhoGoesFirst, selectOwnPieceOnBoard, selectOwnPieceOnHop1zuo1 } from "./main";
 import { toPath } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
+import { add_cover, remove_cover } from "./protective_cover";
 
 export function drawMak2Io1() {
   const denote_season = document.getElementById("denote_season")!;
@@ -275,6 +277,7 @@ export async function animatePunishStepTamAndCheckPerzej(side: Side) {
   const orig_score = GAME_STATE.my_score;
   GAME_STATE.my_score +=
     (side === Side.Upward ? -5 : 5) * Math.pow(2, GAME_STATE.log2_rate);
+  back_up_gamestate();
 
   await new Promise((resolve) => setTimeout(resolve, 200 * 0.8093));
 
@@ -285,31 +288,20 @@ export async function animatePunishStepTamAndCheckPerzej(side: Side) {
 
   if (GAME_STATE.my_score >= 40) {
     perzej("you win!", true);
-    document
-      .getElementById("protective_cover_over_field_while_waiting_for_opponent")
-      ?.classList.remove("nocover");
+    add_cover("protective_cover_over_field_while_waiting_for_opponent");
     return;
   } else if (GAME_STATE.my_score <= 0) {
     perzej("you lose...", true);
-    document
-      .getElementById("protective_cover_over_field_while_waiting_for_opponent")
-      ?.classList.remove("nocover");
+    add_cover("protective_cover_over_field_while_waiting_for_opponent");
     return;
   }
   await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
   drawMak2Io1();
 
   await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
-  document
-    .getElementById("protective_cover_over_field")
-    ?.classList.add("nocover");
-  document
-    .getElementById("protective_tam_cover_over_field")
-    ?.classList.add("nocover");
-
-  document
-    .getElementById("protective_cover_over_field_while_asyncawait")
-    ?.classList.add("nocover");
+  remove_cover("protective_cover_over_field");
+  remove_cover("protective_tam_cover_over_field");
+  remove_cover("protective_cover_over_field_while_asyncawait");
 }
 
 export function calculateHandsAndScore(pieces: NonTam2Piece[]) {
@@ -361,10 +353,7 @@ export async function sendStuffTo<T, U>(
   validateInput: (response: any) => U,
 ): Promise<U> {
   // cover up the UI
-  const cover_while_asyncawait = document.getElementById(
-    "protective_cover_over_field_while_asyncawait",
-  )!;
-  cover_while_asyncawait.classList.remove("nocover");
+  add_cover("protective_cover_over_field_while_asyncawait");
 
   console.log(`Sending ${log}:`, JSON.stringify(message));
   const url = `${API_ORIGIN}/${api_name}/`;
@@ -381,22 +370,22 @@ export async function sendStuffTo<T, U>(
     },
   })
     .then((res) => {
-      cover_while_asyncawait.classList.add("nocover");
+      remove_cover("protective_cover_over_field_while_asyncawait");
       return res.json();
     })
     .then(validateInput)
     .catch((error) => {
-      cover_while_asyncawait.classList.add("nocover");
+      remove_cover("protective_cover_over_field_while_asyncawait");
       console.error("Error:", error);
       return;
     });
 
   console.log(res);
-  cover_while_asyncawait.classList.add("nocover");
+  remove_cover("protective_cover_over_field_while_asyncawait");
 
   if (!res) {
     alert("network error!");
-    cover_while_asyncawait.classList.add("nocover");
+    remove_cover("protective_cover_over_field_while_asyncawait");
     throw new Error("network error!");
   }
   return res;
@@ -415,6 +404,7 @@ export function endSeason(
   const orig_score = GAME_STATE.my_score;
   const orig_season = GAME_STATE.season;
   GAME_STATE.my_score += base_score * Math.pow(2, GAME_STATE.log2_rate);
+  back_up_gamestate();
 
   const seasonProgressMap: { [P in Season]: Season | null } = {
     0: 1,
@@ -447,6 +437,7 @@ export function endSeason(
   }
 
   GAME_STATE.season = new_season;
+  back_up_gamestate();
   setTimeout(async () => {
     await animateNode(denote_score, 1000 * 0.8093, {
       to: getDenoteScoreNodeTopLeft(GAME_STATE.my_score),
@@ -469,13 +460,8 @@ export function endSeason(
     alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
 
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
-    document
-      .getElementById("protective_cover_over_field")
-      ?.classList.remove("nocover");
-    document
-      .getElementById("protective_tam_cover_over_field")
-      ?.classList.remove("nocover");
-
+    add_cover("protective_cover_over_field");
+    add_cover("protective_tam_cover_over_field");
     await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
 
     GAME_STATE.f = {
@@ -485,30 +471,27 @@ export function endSeason(
       hop1zuo1OfDownward: [],
       hop1zuo1OfUpward: [],
     };
+    back_up_gamestate();
 
     // Reset the rate to 1x
     // レートを1倍へと戻す
     GAME_STATE.log2_rate = 0;
+    back_up_gamestate();
     // Re-render the Mak2Io1 to clear the rate-denoting dummy piece in the previous season
     // 直前の季節で生成されている可能性のある、レート表示用の駒を消すために値直を再描画する
     drawMak2Io1();
 
     allowMainPolling(); // reset another global state
     GAME_STATE.last_move_focus = null; /* the board is initialized; no focus */
+    back_up_gamestate();
 
     console.log("drawField #", 11);
     drawField({ focus: null }); /* the board is initialized; no focus */
 
     await animateSeasonInitiation(is_first_move_my_move_in_the_next_season!);
-    document
-      .getElementById("protective_cover_over_field")
-      ?.classList.add("nocover");
-    document
-      .getElementById("protective_tam_cover_over_field")
-      ?.classList.add("nocover");
-    document
-      .getElementById("protective_cover_over_field_while_asyncawait")
-      ?.classList.add("nocover");
+    remove_cover("protective_cover_over_field");
+    remove_cover("protective_tam_cover_over_field");
+    remove_cover("protective_cover_over_field_while_asyncawait");
   }, 200 * 0.8093);
 }
 
@@ -516,6 +499,7 @@ export async function animateSeasonInitiation(w: WhoGoesFirst) {
   await animateProcessDeterminingWhoGoesFirst(w);
   await new Promise((resolve) => setTimeout(resolve, 3000 * 0.8093));
   GAME_STATE.is_my_turn = w.result;
+  back_up_gamestate();
   KiarArk.push_initial_colors_and_display(
     GAME_STATE.is_my_turn === GAME_STATE.IA_is_down ? "黒" : "赤",
   );
@@ -538,6 +522,7 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
   };
   drawMak2Io1(); // cargo cult
   GAME_STATE.log2_rate = log2RateProgressMap[orig_log2_rate];
+  back_up_gamestate();
 
   const denote_rate = document.getElementById("denote_rate")!;
   setTimeout(async () => {
@@ -554,10 +539,9 @@ export function increaseRateAndAnimate(done_by_me: boolean) {
       setTimeout(sendMainPollAndDoEverythingThatFollows, 500 * 0.8093);
     } else {
       GAME_STATE.is_my_turn = true;
+      back_up_gamestate();
     }
 
-    document
-      .getElementById("protective_cover_over_field_while_asyncawait")!
-      .classList.add("nocover");
+    remove_cover("protective_cover_over_field_while_asyncawait");
   }, 200 * 0.8093);
 }
