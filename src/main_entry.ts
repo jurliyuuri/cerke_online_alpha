@@ -47,7 +47,7 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
       : "image/toggle/kut2_cuop2_inactive.png";
 });
 
-const BACKGROUND_MUSIC = new Audio("sound/cetkaik_leti_duxe_.ogg");
+const BACKGROUND_MUSIC = new Audio(Math.random() < 0.05 ? "sound/cetkaik_ad_loop.mp3" : "sound/cetkaik_leti_duxe_.ogg");
 BACKGROUND_MUSIC.loop = true;
 
 let user_interaction: boolean = false;
