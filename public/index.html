@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>机戦（パイグ将棋）オンライン対戦システム Cerke Online</title>
+    <style>
+        @media (min-aspect-ratio: 16/9) {
+            body {
+                background-color: rgb(230, 230, 230);
+            }
+
+            #cerke_online_logo {
+                width: calc(475 / 1080 * 100vh);
+                position: absolute;
+                top: calc(289 / 1080 * 100vh);
+                left: calc(310 / 1080 * 100vh);
+            }
+
+            #feel {
+                width: calc(215 / 1080 * 100vh);
+                position: absolute;
+                top: calc(172 / 1080 * 100vh);
+                left: calc(985 / 1080 * 100vh);
+            }
+
+            #feel_title {
+                color: #222222;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(163 / 1080 * 100vh);
+                left: calc(1221 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(96 / 1080 * 100vh);
+            }
+
+            #feel_text {
+                color: #222222;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(271 / 1080 * 100vh);
+                left: calc(1221 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(48 / 1080 * 100vh);
+                line-height: 120%;
+            }
+
+            #play {
+                width: calc(215 / 1080 * 100vh);
+                position: absolute;
+                top: calc(433 / 1080 * 100vh);
+                left: calc(985 / 1080 * 100vh);
+            }
+
+            #play_title {
+                color: #d42000;
+                width: calc(387 / 1080 * 100vh);
+                position: absolute;
+                top: calc(422 / 1080 * 100vh);
+                left: calc(1221 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(96 / 1080 * 100vh);
+                text-align: justify;
+                text-align-last: justify;
+            }
+
+            #play_text {
+                color: #d42000;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(533 / 1080 * 100vh);
+                left: calc(1222 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(48 / 1080 * 100vh);
+                line-height: 120%;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            #learn {
+                width: calc(215 / 1080 * 100vh);
+                position: absolute;
+                top: calc(694 / 1080 * 100vh);
+                left: calc(985 / 1080 * 100vh);
+            }
+
+            #learn_title {
+                color: #005242;
+                width: calc(387 / 1080 * 100vh);
+                position: absolute;
+                top: calc(681 / 1080 * 100vh);
+                left: calc(1215 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(96 / 1080 * 100vh);
+                text-align: justify;
+                text-align-last: justify;
+            }
+
+            #learn_text {
+                color: #005242;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(794 / 1080 * 100vh);
+                left: calc(1222 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(48 / 1080 * 100vh);
+                line-height: 120%;
+            }
+        }
+
+        @media (max-aspect-ratio: 16/9) {
+            body {
+                background-color: rgb(230, 230, 230);
+                width: calc(1920 / 1920 * 100vw);
+                height: calc(1080 / 1920 * 100vw);
+            }
+
+            #cerke_online_logo {
+                width: calc(475 / 1920 * 100vw);
+                position: absolute;
+                top: calc(289 / 1920 * 100vw);
+                left: calc(310 / 1920 * 100vw);
+            }
+
+            #feel {
+                width: calc(215 / 1920 * 100vw);
+                position: absolute;
+                top: calc(172 / 1920 * 100vw);
+                left: calc(985 / 1920 * 100vw);
+            }
+
+            #feel_title {
+                color: #222222;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(163 / 1920 * 100vw);
+                left: calc(1221 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(96 / 1920 * 100vw);
+            }
+
+            #feel_text {
+                color: #222222;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(271 / 1920 * 100vw);
+                left: calc(1221 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(48 / 1920 * 100vw);
+                line-height: 120%;
+            }
+
+            #play {
+                width: calc(215 / 1920 * 100vw);
+                position: absolute;
+                top: calc(433 / 1920 * 100vw);
+                left: calc(985 / 1920 * 100vw);
+            }
+
+            #play_title {
+                color: #d42000;
+                width: calc(387 / 1920 * 100vw);
+                position: absolute;
+                top: calc(422 / 1920 * 100vw);
+                left: calc(1221 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(96 / 1920 * 100vw);
+                text-align: justify;
+                text-align-last: justify;
+            }
+
+            #play_text {
+                color: #d42000;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(533 / 1920 * 100vw);
+                left: calc(1222 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(48 / 1920 * 100vw);
+                line-height: 120%;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            #learn {
+                width: calc(215 / 1920 * 100vw);
+                position: absolute;
+                top: calc(694 / 1920 * 100vw);
+                left: calc(985 / 1920 * 100vw);
+            }
+
+            #learn_title {
+                color: #005242;
+                width: calc(387 / 1920 * 100vw);
+                position: absolute;
+                top: calc(681 / 1920 * 100vw);
+                left: calc(1215 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(96 / 1920 * 100vw);
+                text-align: justify;
+                text-align-last: justify;
+            }
+
+            #learn_text {
+                color: #005242;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(794 / 1920 * 100vw);
+                left: calc(1222 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(48 / 1920 * 100vw);
+                line-height: 120%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="outer_container">
+        <div id="container">
+            <img src="entrance_image/ja/cerke_online_logo.png" id="cerke_online_logo">
+
+            <a href="https://sites.google.com/view/cet2kaik/机戦とは"><img src="entrance_image/識.svg" id="feel"></a>
+            <div id="feel_title"><a href="https://sites.google.com/view/cet2kaik/机戦とは">机戦とは</a></div>
+            <div id="feel_text"><a href="https://sites.google.com/view/cet2kaik/机戦とは">このゲームの概要はこちらから。</a></div>
+
+            <a href="entrance.html"><img src="entrance_image/遊.svg" id="play"></a>
+            <div id="play_title"><a href="entrance.html">遊ぶ</a></div>
+            <div id="play_text"><a href="entrance.html">オンラインプレイはこちらから。</a></div>
+
+            <a href="https://sites.google.com/view/cet2kaik/"><img src="entrance_image/学.svg" id="learn"></a>
+            <div id="learn_title"><a href="https://sites.google.com/view/cet2kaik/">資料集</a></div>
+            <div id="learn_text"><a href="https://sites.google.com/view/cet2kaik/">ルールや世界設定などはここから。</a></div>
+        </div>
+    </div>
+</body>
