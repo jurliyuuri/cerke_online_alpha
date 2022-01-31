@@ -4,110 +4,218 @@
     <meta charset="UTF-8">
     <title>机戦（パイグ将棋）オンライン対戦システム Cerke Online</title>
     <style>
-        body {
-            background-color: rgb(230, 230, 230);
-            width: 1920px;
-            height: 1080px;
+        @media (min-aspect-ratio: 16/9) {
+            body {
+                background-color: rgb(230, 230, 230);
+            }
+
+            #cerke_online_logo {
+                width: calc(475 / 1080 * 100vh);
+                position: absolute;
+                top: calc(289 / 1080 * 100vh);
+                left: calc(310 / 1080 * 100vh);
+            }
+
+            #feel {
+                width: calc(215 / 1080 * 100vh);
+                position: absolute;
+                top: calc(172 / 1080 * 100vh);
+                left: calc(985 / 1080 * 100vh);
+            }
+
+            #feel_title {
+                color: #222222;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(163 / 1080 * 100vh);
+                left: calc(1221 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(96 / 1080 * 100vh);
+            }
+
+            #feel_text {
+                color: #222222;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(271 / 1080 * 100vh);
+                left: calc(1221 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(48 / 1080 * 100vh);
+                line-height: 120%;
+            }
+
+            #play {
+                width: calc(215 / 1080 * 100vh);
+                position: absolute;
+                top: calc(433 / 1080 * 100vh);
+                left: calc(985 / 1080 * 100vh);
+            }
+
+            #play_title {
+                color: #d42000;
+                width: calc(387 / 1080 * 100vh);
+                position: absolute;
+                top: calc(422 / 1080 * 100vh);
+                left: calc(1221 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(96 / 1080 * 100vh);
+                text-align: justify;
+                text-align-last: justify;
+            }
+
+            #play_text {
+                color: #d42000;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(533 / 1080 * 100vh);
+                left: calc(1222 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(48 / 1080 * 100vh);
+                line-height: 120%;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            #learn {
+                width: calc(215 / 1080 * 100vh);
+                position: absolute;
+                top: calc(694 / 1080 * 100vh);
+                left: calc(985 / 1080 * 100vh);
+            }
+
+            #learn_title {
+                color: #005242;
+                width: calc(387 / 1080 * 100vh);
+                position: absolute;
+                top: calc(681 / 1080 * 100vh);
+                left: calc(1215 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(96 / 1080 * 100vh);
+                text-align: justify;
+                text-align-last: justify;
+            }
+
+            #learn_text {
+                color: #005242;
+                width: calc(415 / 1080 * 100vh);
+                position: absolute;
+                top: calc(794 / 1080 * 100vh);
+                left: calc(1222 / 1080 * 100vh);
+                font-weight: bold;
+                font-size: calc(48 / 1080 * 100vh);
+                line-height: 120%;
+            }
         }
 
-        #cerke_online_logo {
-            width: 475px;
-            position: absolute;
-            top: 289px;
-            left: 310px;
-        }
+        @media (max-aspect-ratio: 16/9) {
+            body {
+                background-color: rgb(230, 230, 230);
+                width: calc(1920 / 1920 * 100vw);
+                height: calc(1080 / 1920 * 100vw);
+            }
 
-        #feel {
-            width: 215px;
-            position: absolute;
-            top: 172px;
-            left: 985px;
-        }
+            #cerke_online_logo {
+                width: calc(475 / 1920 * 100vw);
+                position: absolute;
+                top: calc(289 / 1920 * 100vw);
+                left: calc(310 / 1920 * 100vw);
+            }
 
-        #feel_title {
-            color: #222222;
-            width: 415px;
-            position: absolute;
-            top: 163px;
-            left: 1221px;
-            font-weight: bold;
-            font-size: 96px;
-        }
+            #feel {
+                width: calc(215 / 1920 * 100vw);
+                position: absolute;
+                top: calc(172 / 1920 * 100vw);
+                left: calc(985 / 1920 * 100vw);
+            }
 
-        #feel_text {
-            color: #222222;
-            width: 415px;
-            position: absolute;
-            top: 271px;
-            left: 1221px;
-            font-weight: bold;
-            font-size: 48px;
-            line-height: 120%;
-        }
+            #feel_title {
+                color: #222222;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(163 / 1920 * 100vw);
+                left: calc(1221 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(96 / 1920 * 100vw);
+            }
 
-        #play {
-            width: 215px;
-            position: absolute;
-            top: 433px;
-            left: 985px;
-        }
+            #feel_text {
+                color: #222222;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(271 / 1920 * 100vw);
+                left: calc(1221 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(48 / 1920 * 100vw);
+                line-height: 120%;
+            }
 
-        #play_title {
-            color: #d42000;
-            width: 387px;
-            position: absolute;
-            top: 422px;
-            left: 1221px;
-            font-weight: bold;
-            font-size: 96px;
-            text-align: justify;
-            text-align-last: justify;
-        }
+            #play {
+                width: calc(215 / 1920 * 100vw);
+                position: absolute;
+                top: calc(433 / 1920 * 100vw);
+                left: calc(985 / 1920 * 100vw);
+            }
 
-        #play_text {
-            color: #d42000;
-            width: 415px;
-            position: absolute;
-            top: 533px;
-            left: 1222px;
-            font-weight: bold;
-            font-size: 48px;
-            line-height: 120%;
-        }
+            #play_title {
+                color: #d42000;
+                width: calc(387 / 1920 * 100vw);
+                position: absolute;
+                top: calc(422 / 1920 * 100vw);
+                left: calc(1221 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(96 / 1920 * 100vw);
+                text-align: justify;
+                text-align-last: justify;
+            }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
+            #play_text {
+                color: #d42000;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(533 / 1920 * 100vw);
+                left: calc(1222 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(48 / 1920 * 100vw);
+                line-height: 120%;
+            }
 
-        #learn {
-            width: 215px;
-            position: absolute;
-            top: 694px;
-            left: 985px;
-        }
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
 
-        #learn_title {
-            color: #005242;
-            width: 387px;
-            position: absolute;
-            top: 681px;
-            left: 1215px;
-            font-weight: bold;
-            font-size: 96px;
-            text-align: justify;
-            text-align-last: justify;
-        }
+            #learn {
+                width: calc(215 / 1920 * 100vw);
+                position: absolute;
+                top: calc(694 / 1920 * 100vw);
+                left: calc(985 / 1920 * 100vw);
+            }
 
-        #learn_text {
-            color: #005242;
-            width: 415px;
-            position: absolute;
-            top: 794px;
-            left: 1222px;
-            font-weight: bold;
-            font-size: 48px;
-            line-height: 120%;
+            #learn_title {
+                color: #005242;
+                width: calc(387 / 1920 * 100vw);
+                position: absolute;
+                top: calc(681 / 1920 * 100vw);
+                left: calc(1215 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(96 / 1920 * 100vw);
+                text-align: justify;
+                text-align-last: justify;
+            }
+
+            #learn_text {
+                color: #005242;
+                width: calc(415 / 1920 * 100vw);
+                position: absolute;
+                top: calc(794 / 1920 * 100vw);
+                left: calc(1222 / 1920 * 100vw);
+                font-weight: bold;
+                font-size: calc(48 / 1920 * 100vw);
+                line-height: 120%;
+            }
         }
     </style>
 </head>
