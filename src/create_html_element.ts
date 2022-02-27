@@ -97,7 +97,7 @@ export function createCancelButton(): HTMLImageElement {
   return createPieceSizeImageOnBoardByPathAndXY(
     1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
     1 + 7.5 * BOX_SIZE,
-    "piece/bmun",
+    "piece_img/官字/upright/bmun",
     "piece_image_on_board",
   );
 }

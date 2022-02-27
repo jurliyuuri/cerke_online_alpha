@@ -4,10 +4,10 @@ import { Side, NonTam2Piece, Piece } from "cerke_online_utility";
 export function toPath(p: NonTam2Piece): string {
   const sideToPath = function (side: Side): string {
     if (side === Side.Downward) {
-      return "piece_rev";
+      return "reversed";
     }
     if (side === Side.Upward) {
-      return "piece";
+      return "upright";
     }
 
     const _should_not_reach_here: never = side;
@@ -62,12 +62,15 @@ export function toPath(p: NonTam2Piece): string {
     return _should_not_reach_here;
   };
 
-  return `${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`;
+  const fontToPath = function (): string { return "官字"; }
+
+  return `piece_img/${fontToPath()}/${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`;
 }
 
 export function toPath_(piece: Piece) {
+  const fontToPath = function (): string { return "官字"; }
   if (piece === "Tam2") {
-    return "piece/tam";
+    return `piece_img/${fontToPath()}/upright/tam`;
   } else {
     return toPath(piece);
   }
