@@ -70,7 +70,7 @@ export function toPath(p: NonTam2Piece): string {
 export function toPath_(piece: Piece) {
   const fontToPath = function (): string { return "官字"; }
   if (piece === "Tam2") {
-    return `piece_img/${fontToPath()}/upright/tam`;
+    return `piece_img/${fontToPath()}/upright/btam`;
   } else {
     return toPath(piece);
   }
