@@ -14,6 +14,7 @@ import {
   coordToPieceXY_Shifted,
   hop1_zuo1_left_position,
 } from "./html_top_left";
+import { getPieceFont } from "./piece_font";
 
 export function createBapPokImage(o: {
   left: number;
@@ -97,7 +98,7 @@ export function createCancelButton(): HTMLImageElement {
   return createPieceSizeImageOnBoardByPathAndXY(
     1 + 9 * BOX_SIZE + (MAX_PIECE_SIZE - PIECE_SIZE),
     1 + 7.5 * BOX_SIZE,
-    "piece_img/官字/upright/bmun",
+    `piece_img/${getPieceFont()}/upright/bmun`,
     "piece_image_on_board",
   );
 }

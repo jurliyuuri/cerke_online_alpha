@@ -1,5 +1,6 @@
 import { Color, Profession } from "cerke_online_api";
 import { Side, NonTam2Piece, Piece } from "cerke_online_utility";
+import { getPieceFont } from "./piece_font";
 
 export function toPath(p: NonTam2Piece): string {
   const sideToPath = function (side: Side): string {
@@ -62,15 +63,12 @@ export function toPath(p: NonTam2Piece): string {
     return _should_not_reach_here;
   };
 
-  const fontToPath = function (): string { return "官字"; }
-
-  return `piece_img/${fontToPath()}/${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`;
+  return `piece_img/${getPieceFont()}/${sideToPath(p.side)}/${colorToPath(p.color)}${profToPath(p.prof)}`;
 }
 
 export function toPath_(piece: Piece) {
-  const fontToPath = function (): string { return "官字"; }
   if (piece === "Tam2") {
-    return `piece_img/${fontToPath()}/upright/btam`;
+    return `piece_img/${getPieceFont()}/upright/btam`;
   } else {
     return toPath(piece);
   }
