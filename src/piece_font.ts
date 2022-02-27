@@ -28,6 +28,6 @@ export function setPieceFont(to: PieceFont) {
 const piece_fonts: PieceFont[] = allElements<PieceFont>()(["官字", "略字", "やる気なし"]);
 
 for (const font of piece_fonts) {
-	document.getElementById(`radio_${font}`)!.addEventListener("click", () => { })
+	document.getElementById(`radio_${font}`)!.addEventListener("click", () => setPieceFont(font))
 }
 
