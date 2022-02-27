@@ -19,8 +19,9 @@ export function setPieceFont(to: PieceFont) {
 	for (const id of ["contains_pieces_on_upward", "contains_pieces_on_downward", "contains_pieces_on_board", "contains_phantom"]) {
 		const elem = document.getElementById(id)!;
 		for (const child of elem.childNodes) {
-			console.log("replacing the image path", (child as HTMLImageElement).src, "into the new path", (child as HTMLImageElement).src.replace(current_piece_font, to));
-			(child as HTMLImageElement).src = (child as HTMLImageElement).src.replace(current_piece_font, to); // OH NO
+			if (child instanceof HTMLImageElement) {
+				(child as HTMLImageElement).src = (child as HTMLImageElement).src.replace(current_piece_font, to); // OH NO
+			}
 		}
 	}
 
