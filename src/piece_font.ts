@@ -13,11 +13,13 @@ let current_piece_font: PieceFont = "官字";
 export function getPieceFont() { return current_piece_font; }
 
 export function setPieceFont(to: PieceFont) {
+	console.log("changing the piece font", current_piece_font, "into", to);
 	(document.getElementById("denote_season")! as HTMLImageElement).src = `image/piece_img/${to}/upright/rtam.png`;
 
 	for (const id of ["contains_pieces_on_upward", "contains_pieces_on_downward", "contains_pieces_on_board", "contains_phantom"]) {
 		const elem = document.getElementById(id)!;
 		for (const child of elem.childNodes) {
+			console.log("replacing the image path", (child as HTMLImageElement).src, "into the new path", (child as HTMLImageElement).src.replace(current_piece_font, to));
 			(child as HTMLImageElement).src = (child as HTMLImageElement).src.replace(current_piece_font, to); // OH NO
 		}
 	}
