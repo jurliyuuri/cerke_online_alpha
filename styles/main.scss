@@ -195,8 +195,7 @@ $kaitkaik_hover_width: 220px;
 #kait_kaik:hover {
   z-index: 3000;
   position: absolute;
-  left: 235px - $field_migration_to_the_left -
-    ($kaitkaik_hover_width - $kaitkaik_width) / 2;
+  left: 235px - $field_migration_to_the_left - ($kaitkaik_hover_width - $kaitkaik_width) / 2;
   top: 415px - ($kaitkaik_hover_width - $kaitkaik_width) * $kaitkaik_ratio / 2;
 }
 
@@ -236,11 +235,8 @@ $lork_liar_default_top: 610px;
 #coord_toggle:hover {
   z-index: 3000;
   position: absolute;
-  left: $toggle_buttons_left -
-    ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
-  top: $coord_toggle_default_top -
-    ($toggle_buttons_hover_width - $toggle_buttons_width) *
-    $toggle_buttons_ratio / 2;
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $coord_toggle_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio / 2;
 }
 
 #coord_toggle_button:hover {
@@ -267,11 +263,8 @@ $lork_liar_default_top: 610px;
 #krut_cruop:hover {
   z-index: 3000;
   position: absolute;
-  left: $toggle_buttons_left -
-    ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
-  top: $krut_cruop_default_top -
-    ($toggle_buttons_hover_width - $toggle_buttons_width) *
-    $toggle_buttons_ratio / 2;
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $krut_cruop_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio / 2;
 }
 
 #krut_cruop_button:hover {
@@ -298,11 +291,8 @@ $lork_liar_default_top: 610px;
 #lork_liar:hover {
   z-index: 3000;
   position: absolute;
-  left: $toggle_buttons_left -
-    ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
-  top: $lork_liar_default_top -
-    ($toggle_buttons_hover_width - $toggle_buttons_width) *
-    $toggle_buttons_ratio / 2;
+  left: $toggle_buttons_left - ($toggle_buttons_hover_width - $toggle_buttons_width) / 2;
+  top: $lork_liar_default_top - ($toggle_buttons_hover_width - $toggle_buttons_width) * $toggle_buttons_ratio / 2;
 }
 
 #lork_liar_button:hover {
@@ -398,8 +388,14 @@ img.piece_image_on_hop1zuo1 {
 
 @font-face {
   font-family: "geometric_linzklar";
-  src: url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.ttf")
-      format("truetype"),
-    url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.woff")
-      format("woff");
+  src: url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.ttf") format("truetype"),
+    url("https://sozysozbot.github.io/geometric_linzklar/fonts/geometric_linzklar.woff") format("woff");
+}
+
+#piece_font_chooser {
+  position: absolute;
+  z-index: 2000;
+  left: -79px;
+  top: 245px;
+  line-height: 300%;
 }
