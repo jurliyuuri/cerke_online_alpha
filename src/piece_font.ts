@@ -20,7 +20,7 @@ export function setPieceFont(to: PieceFont) {
 		const elem = document.getElementById(id)!;
 		for (const child of elem.childNodes) {
 			if (child instanceof HTMLImageElement) {
-				(child as HTMLImageElement).src = (child as HTMLImageElement).src.replace(current_piece_font, to); // OH NO
+				(child as HTMLImageElement).src = decodeURI((child as HTMLImageElement).src).replace(current_piece_font, to); // OH NO
 			}
 		}
 	}
