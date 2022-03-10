@@ -54,3 +54,6 @@
 `ephemera/` 以下においてある。名前の通り、一時的ドキュメンテーションであり、リファクタリングによってガンガン古びていくことを想定したドキュメンテーションである。
 * [2021-11-06-current-situation.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-06-current-situation.md)
 * [2021-11-13-current-situation-state-machine.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-13-current-situation-state-machine.md)
+
+### 依存ライブラリ
+実装の一部は切り出して  に置いてあるので、実装を追いたい場合はそちらも見る必要がある。 https://www.npmjs.com/~jekto.vatimeliju に置いてある。
