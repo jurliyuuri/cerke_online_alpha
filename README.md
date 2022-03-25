@@ -50,10 +50,14 @@
 3. `localhost:8000/entrance.html` にデプロイされているものがある。
 
 
-## ソースコード構成について
-`ephemera/` 以下においてある。名前の通り、一時的ドキュメンテーションであり、リファクタリングによってガンガン古びていくことを想定したドキュメンテーションである。
-* [2021-11-06-current-situation.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-06-current-situation.md)
-* [2021-11-13-current-situation-state-machine.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-13-current-situation-state-machine.md)
+## 一時的ドキュメンテーション
+`ephemera/` 以下においてある。一時的ドキュメンテーションなので、リファクタリングによってガンガン古びていくことを想定している。
 
-### 依存ライブラリ
+| 概要 | ファイル |
+|----------|------|
+| ソースコード構成 | [2021-11-06-current-situation.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-06-current-situation.md) |
+| ステートマシン構成 | [2021-11-13-current-situation-state-machine.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-13-current-situation-state-machine.md) |
+| APIリファクタリング | [2021-12-04.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-12-04.md) |
+
+## 依存ライブラリ
 実装の一部は切り出して npm に置いてあるので、実装を追いたい場合はそちらも見る必要がある。 https://www.npmjs.com/~jekto.vatimeliju に置いてある。
