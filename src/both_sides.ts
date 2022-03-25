@@ -366,7 +366,7 @@ export async function sendStuffTo<T, U>(
     body: JSON.stringify(data), // data can be `string` or {object}!
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${sessionStorage.access_token}`,
+      Authorization: `Bearer ${sessionStorage.session_token}`,
     },
   })
     .then((res) => {

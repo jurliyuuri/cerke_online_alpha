@@ -165,7 +165,7 @@ export declare type RetFriendPoll = {
 アクセストークンを POST。すると部屋が無効化される。
 
 ```ts
-export declare type RetFriendPoll = {
+export declare type RetFriendDeleteRoom = {
     type: "Err";
     why_illegal: string;
 } | {
@@ -179,3 +179,5 @@ export declare type RetFriendPoll = {
 hsjoihs「ところで、アクセストークンとか `access_token` とか呼んでるこれ、意味論的に考えて『セッショントークン』では？？？」
 
 [spinachpasta](https://github.com/spinachpasta/)「はい、そうです。」
+
+ということで、互換性を破壊してリネームすることにした。 `cerke_online_api 1.9.0` で、上述の `Friend` 方面の型を足しつつ、リネーム。

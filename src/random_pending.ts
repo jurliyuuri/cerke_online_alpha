@@ -21,7 +21,7 @@ document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") {
     // cancel if out of focus
     if (typeof RESULT !== "undefined") {
-      const token = RESULT.access_token;
+      const token = RESULT.session_token;
       RESULT = undefined;
       (async () => {
         console.log(`trying to cancel ${token}:`);
@@ -42,12 +42,12 @@ document.addEventListener("visibilitychange", () => {
 
 type AccessToken = string & { __AccessTokenBrand: never };
 function let_the_game_begin(
-  access_token: AccessToken,
+  session_token: AccessToken,
   is_first_move_my_move: WhoGoesFirst,
   is_IA_down_for_me: boolean,
 ) {
   sessionStorage.vs = "someone";
-  sessionStorage.access_token = access_token;
+  sessionStorage.session_token = session_token;
   sessionStorage.is_first_move_my_move = JSON.stringify(is_first_move_my_move);
   sessionStorage.is_IA_down_for_me = JSON.stringify(is_IA_down_for_me);
   location.href = "main.html";
@@ -64,7 +64,7 @@ function apply_for_random_game() {
         setTimeout(resolve, (2 + Math.random()) * 200 * 0.8093),
       );
       const newRes: RetRandomPoll = await sendPoll<RetRandomPoll>(
-        res.access_token as AccessToken,
+        res.session_token as AccessToken,
         (a) => a,
       );
       if (newRes.type !== "Err") {
@@ -77,7 +77,7 @@ function apply_for_random_game() {
       }
     }
     let_the_game_begin(
-      res.access_token as AccessToken,
+      res.session_token as AccessToken,
       res.is_first_move_my_move,
       res.is_IA_down_for_me,
     );
@@ -85,7 +85,7 @@ function apply_for_random_game() {
 }
 
 async function sendPoll<U>(
-  access_token: AccessToken,
+  session_token: AccessToken,
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
@@ -93,14 +93,14 @@ async function sendPoll<U>(
       ? `${API_ORIGIN}/matching/random/poll/staging`
       : `${API_ORIGIN}/matching/random/poll`,
     {
-      access_token,
+      session_token,
     },
     validateInput,
   );
 }
 
 async function sendCancel<U>(
-  access_token: AccessToken,
+  session_token: AccessToken,
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
@@ -108,7 +108,7 @@ async function sendCancel<U>(
       ? `${API_ORIGIN}/matching/random/cancel/staging`
       : `${API_ORIGIN}/matching/random/cancel`,
     {
-      access_token,
+      session_token,
     },
     validateInput,
   );
