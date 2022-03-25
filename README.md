@@ -58,6 +58,7 @@
 | ソースコード構成 | [2021-11-06-current-situation.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-06-current-situation.md) |
 | ステートマシン構成 | [2021-11-13-current-situation-state-machine.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-11-13-current-situation-state-machine.md) |
 | APIリファクタリング | [2021-12-04.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2021-12-04.md) |
+| 部屋とAPI | [2022-03-25-room-and-api.md](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/ephemera/2022-03-25-room-and-api.md) |
 
 ## 依存ライブラリ
 実装の一部は切り出して npm に置いてあるので、実装を追いたい場合はそちらも見る必要がある。 https://www.npmjs.com/~jekto.vatimeliju に置いてある。
