@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>友人戦待機部屋</title>
+    <link href="pending.css" rel="stylesheet" type="text/css">
+    <script>
+        function copy_url() {
+            const textbox = document.getElementById("url");
+            textbox.select();
+            textbox.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(textbox.value);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="outer_container">
+        <div id="container">
+            <div style="margin: 0 auto; text-align: center; font-size: 30px;">
+                対戦参加用 URL (これをなんからの手段で友達に送って下さい)<br>
+                <input type="text" id="url" readonly><input type="button" value="URLをコピーする" onclick="copy_url()">
+            </div>
+            <img src="image/piece_img/官字/upright/bmun.png" id="cancel_button" style="cursor: pointer">
+
+            <svg viewBox="-20 -20 40 40" width="350" height="350" style="margin: 0 auto; display:block">
+                <g id="two_circles">
+                    <circle id="green_circle" cx="0" cy="0" r="3.82289" fill="rgb(175, 209,181)" stroke="#005242"
+                        stroke-width="0.3"></circle>
+                    <circle id="red_circle" cx="0" cy="0" r="2.32066753661" fill="rgb(233, 180,179)"
+                        stroke="rgb(212,32,0)" stroke-width="0.3"></circle>
+                </g>
+            </svg>
+        </div>
+    </div>
+    <script src="friend_make_room.js"></script>
+</body>
