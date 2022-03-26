@@ -9,7 +9,7 @@ const params = new URLSearchParams((new URL(location.href)).search);
 const room_key_ = params.get("room_key");
 const room_id_ = params.get("room_id");
 
-if (room_key_ === undefined || room_id_ === undefined) {
+if (room_key_ == null || room_id_ == null) {
 	alert("この対戦参加用 URL は無効です");
 	location.href = "entrance.html";
 } else {
