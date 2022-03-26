@@ -35,13 +35,7 @@ function make_room() {
 				o.session_token as SessionToken,
 				(a) => a,
 			);
-			if (newRes.type !== "Err") {
-				res = newRes;
-			} else {
-				// re-entry
-				make_room();
-				return;
-			}
+			res = newRes;
 		}
 		let_the_game_begin(
 			o.session_token as SessionToken,
@@ -59,8 +53,8 @@ async function sendPoll<U>(
 ): Promise<U> {
 	return await sendSomethingSomewhere(
 		location.href.includes("staging")
-			? `${API_ORIGIN}/matching/random/poll/staging`
-			: `${API_ORIGIN}/matching/random/poll`,
+			? `${API_ORIGIN}/matching/friend/poll/staging`
+			: `${API_ORIGIN}/matching/friend/poll`,
 		{
 			session_token,
 		},
