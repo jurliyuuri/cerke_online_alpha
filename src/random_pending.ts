@@ -26,7 +26,7 @@ document.addEventListener("visibilitychange", () => {
       (async () => {
         console.log(`trying to cancel ${token}:`);
         const newRes: RetRandomCancel = await sendCancel<RetRandomCancel>(
-          token as AccessToken,
+          token as SessionToken,
           (a) => a,
         );
         console.log(`got result ${JSON.stringify(newRes)}`);
@@ -40,9 +40,9 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-type AccessToken = string & { __AccessTokenBrand: never };
+type SessionToken = string & { __SessionTokenBrand: never };
 function let_the_game_begin(
-  session_token: AccessToken,
+  session_token: SessionToken,
   is_first_move_my_move: WhoGoesFirst,
   is_IA_down_for_me: boolean,
 ) {
@@ -64,7 +64,7 @@ function apply_for_random_game() {
         setTimeout(resolve, (2 + Math.random()) * 200 * 0.8093),
       );
       const newRes: RetRandomPoll = await sendPoll<RetRandomPoll>(
-        res.session_token as AccessToken,
+        res.session_token as SessionToken,
         (a) => a,
       );
       if (newRes.type !== "Err") {
@@ -77,7 +77,7 @@ function apply_for_random_game() {
       }
     }
     let_the_game_begin(
-      res.session_token as AccessToken,
+      res.session_token as SessionToken,
       res.is_first_move_my_move,
       res.is_IA_down_for_me,
     );
@@ -85,7 +85,7 @@ function apply_for_random_game() {
 }
 
 async function sendPoll<U>(
-  session_token: AccessToken,
+  session_token: SessionToken,
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
@@ -100,7 +100,7 @@ async function sendPoll<U>(
 }
 
 async function sendCancel<U>(
-  session_token: AccessToken,
+  session_token: SessionToken,
   validateInput: (response: any) => U,
 ): Promise<U> {
   return await sendSomethingSomewhere(
