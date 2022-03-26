@@ -15,7 +15,6 @@ if (room_key_ == null || room_id_ == null) {
 } else {
 	const room_key = room_key_ as RoomKey;
 	const room_id = room_id_ as RoomId;
-	alert(`Sending a JSON packet ${JSON.stringify({ room_id, room_key })}`);
 	(async () => {
 		console.log(`trying to join a room ${room_id} with a key ${room_key}:`);
 		const res: RetFriendJoinRoom = await sendJoin<RetFriendJoinRoom>(
@@ -54,8 +53,8 @@ async function sendJoin<U>(
 ): Promise<U> {
 	return await sendSomethingSomewhere(
 		location.href.includes("staging")
-			? `${API_ORIGIN}/matching/friend/delete_room/staging`
-			: `${API_ORIGIN}/matching/friend/delete_room`,
+			? `${API_ORIGIN}/matching/friend/join_room/staging`
+			: `${API_ORIGIN}/matching/friend/join_room`,
 		o,
 		validateInput,
 	);
