@@ -62,8 +62,7 @@ async function sendPoll<U>(
 	);
 }
 
-// handler
-export function delete_room() {
+document.getElementById('cancel_button')!.onclick = function delete_room() {
 	if (typeof ROOM !== "undefined") {
 		(async () => {
 			console.log(`trying to cancel ${ROOM.session_token}:`);
