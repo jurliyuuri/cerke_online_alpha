@@ -8,6 +8,8 @@ module.exports = {
     pending: ["./styles/pending.scss"],
     vs_cpu_pending: ["./src/vs_cpu_pending.ts"],
     random_pending: ["./src/random_pending.ts"],
+    friend_join_room: ["./src/friend_join_room.ts"],
+    friend_make_room: ["./src/friend_make_room.ts"],
     main: ["./src/main_entry.ts", "./styles/main.scss"],
   },
   output: {
