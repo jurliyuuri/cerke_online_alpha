@@ -5,11 +5,13 @@
     <title>友人戦待機部屋</title>
     <link href="pending.css" rel="stylesheet" type="text/css">
     <script>
-        function copy_url() {
+        function select_or_copy_url() {
             const textbox = document.getElementById("url");
             textbox.select();
             textbox.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(textbox.value);
+            if (isSecureContext) {
+                navigator.clipboard.writeText(textbox.value);
+            }
         }
     </script>
 </head>
@@ -19,7 +21,8 @@
         <div id="container">
             <div style="margin: 0 auto; text-align: center; font-size: 30px;">
                 対戦参加用 URL (これをなんらかの手段で友達に送って下さい)<br>
-                <input type="text" id="url" readonly><input type="button" value="URLをコピーする" onclick="copy_url()">
+                <input type="text" id="url" readonly><input type="button" disabled id="url-button" value="URLを生成中..."
+                    onclick="select_or_copy_url()">
             </div>
             <img src="image/piece_img/官字/upright/bmun.png" id="cancel_button" style="cursor: pointer">
 

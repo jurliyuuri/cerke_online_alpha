@@ -23,6 +23,9 @@ function make_room() {
 		const url_segments = location.href.split("/");
 		url_segments[url_segments.length - 1] = `friend_join_room.html?room_id=${o.room_id}&room_key=${o.room_key}`;
 		(document.getElementById("url") as HTMLInputElement).value = url_segments.join("/");
+		const url_button = document.getElementById("url-button") as HTMLInputElement;
+		url_button.disabled = false;
+		url_button.value = isSecureContext ? "URLをコピーする" : "全選択";
 		let res: RetFriendPoll = await sendPoll<RetFriendPoll>(
 			o.session_token as SessionToken,
 			(a) => a,
