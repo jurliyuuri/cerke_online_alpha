@@ -20,8 +20,8 @@
   },
   "homepage": "https://gitlab.com/jekto.vatimeliju/cerke_online#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.16.0",
-    "@typescript-eslint/parser": "5.16.0",
+    "@typescript-eslint/eslint-plugin": "5.17.0",
+    "@typescript-eslint/parser": "5.17.0",
     "css-loader": "6.7.1",
     "dependency-cruiser": "11.4.1",
     "eslint": "8.12.0",
@@ -43,7 +43,7 @@
   "dependencies": {
     "cerke_hands_and_score": "1.0.3",
     "cerke_online_api": "1.9.0",
-    "cerke_online_utility": "0.0.8",
+    "cerke_online_utility": "0.0.9",
     "extra-dom": "0.5.0"
   }
 }
