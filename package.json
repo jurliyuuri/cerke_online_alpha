@@ -24,7 +24,7 @@
     "@typescript-eslint/parser": "5.25.0",
     "css-loader": "6.7.1",
     "dependency-cruiser": "11.7.1",
-    "eslint": "8.15.0",
+    "eslint": "8.16.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-formatter-friendly": "7.0.0",
     "kind-of": "6.0.3",
