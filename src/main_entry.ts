@@ -59,7 +59,7 @@ export let LORK_LIAR: number = Number(
 );
 BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? LORK_LIAR / 100 : 0;
 
-function toggleBackgroundMusic() {
+export function toggleBackgroundMusic() {
   LORK_LIAR_ENABLED = !LORK_LIAR_ENABLED;
   if (!user_interaction && LORK_LIAR_ENABLED) {
     BACKGROUND_MUSIC.play();

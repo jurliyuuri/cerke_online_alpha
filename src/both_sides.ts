@@ -46,6 +46,7 @@ import { animateProcessDeterminingWhoGoesFirst, selectOwnPieceOnBoard, selectOwn
 import { toPath } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
 import { add_cover, remove_cover } from "./protective_cover";
+import { LORK_LIAR_ENABLED, toggleBackgroundMusic } from "./main_entry";
 
 export function drawMak2Io1() {
   const denote_season = document.getElementById("denote_season")!;
@@ -266,6 +267,11 @@ function perzej(
     type: "header",
     dat: `{終時:${new Date().toISOString()}}`,
   });
+
+  // stop the music if it's playing
+  if (LORK_LIAR_ENABLED) {
+    toggleBackgroundMusic();
+  }
 }
 
 export async function animatePunishStepTamAndCheckPerzej(side: Side) {
