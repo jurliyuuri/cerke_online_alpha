@@ -50,6 +50,10 @@ document.getElementById("krut_cruop_button")!.addEventListener("click", () => {
 const BACKGROUND_MUSIC = new Audio(Math.random() < 0.05 ? "sound/cetkaik_ad_loop.mp3" : "sound/cetkaik_leti_duxe_.ogg");
 BACKGROUND_MUSIC.loop = true;
 
+export function stopMusicLoop() {
+  BACKGROUND_MUSIC.loop = false;
+}
+
 let user_interaction: boolean = false;
 
 // toggles the music.
@@ -59,7 +63,7 @@ export let LORK_LIAR: number = Number(
 );
 BACKGROUND_MUSIC.volume = LORK_LIAR_ENABLED ? LORK_LIAR / 100 : 0;
 
-export function toggleBackgroundMusic() {
+function toggleBackgroundMusic() {
   LORK_LIAR_ENABLED = !LORK_LIAR_ENABLED;
   if (!user_interaction && LORK_LIAR_ENABLED) {
     BACKGROUND_MUSIC.play();
