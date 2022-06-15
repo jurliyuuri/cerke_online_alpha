@@ -28,7 +28,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-formatter-friendly": "7.0.0",
     "kind-of": "6.0.3",
-    "mini-css-extract-plugin": "2.6.0",
+    "mini-css-extract-plugin": "2.6.1",
     "minimist": "1.2.6",
     "node-sass": "7.0.1",
     "prettier": "2.7.0",
