@@ -54,6 +54,9 @@ export function drawFinalScoreDisplay(
     createHut2Img({ left: starting_position_left - spacing * -1 }),
   );
   final_score_display.append(...createTotalScoreDigits(total_score));
+
+  const to_entrance = document.getElementById("to_entrance")!;
+  to_entrance.classList.remove("nocover");
 }
 
 function createHut2Img(o: { left: number }): HTMLImageElement {
