@@ -108,6 +108,10 @@ $field_migration_to_the_left: 65px;
   cursor: not-allowed;
 }
 
+#season_transition_message_container {
+  z-index: 1500
+}
+
 #my_icon {
   position: absolute;
   left: 680px;
@@ -399,4 +403,27 @@ img.piece_image_on_hop1zuo1 {
   top: 477px;
   line-height: 300%;
   white-space: nowrap;
+}
+
+$to_entrance_width: 80px;
+$to_entrance_aspect_ratio: 876 / 308;
+
+#to_entrance img {
+  filter: grayscale(0.3);
+  position: absolute;
+  left: -104px - ($to_entrance_width / 2);
+  top: 372px - ($to_entrance_width * $to_entrance_aspect_ratio / 2);
+  width: $to_entrance_width;
+  height: $to_entrance_width * $to_entrance_aspect_ratio;
+}
+
+$hover_ratio: 1.1;
+
+#to_entrance img:hover {
+  filter: grayscale(0);
+  position: absolute;
+  left: -104px - ($to_entrance_width * $hover_ratio / 2);
+  top: 372px - ($to_entrance_width * $to_entrance_aspect_ratio * $hover_ratio / 2);
+  width: $to_entrance_width * $hover_ratio;
+  height: $to_entrance_width * $to_entrance_aspect_ratio * $hover_ratio;
 }

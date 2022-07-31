@@ -249,12 +249,14 @@ function perzej(
   // show both sides' icon
   document.getElementById("my_icon")!.style.opacity = "1";
   document.getElementById("larta_opponent")!.style.opacity = "1";
-  document.getElementById("opponent_message")!.textContent =
-    msg === "you win!"
-      ? DICTIONARY.ja.gameResult.victory
-      : msg === "draw"
-        ? DICTIONARY.ja.gameResult.draw
-        : DICTIONARY.ja.gameResult.loss;
+  if (sessionStorage.lang !== "x-faikleone") {
+    document.getElementById("opponent_message")!.textContent =
+      msg === "you win!"
+        ? DICTIONARY.ja.gameResult.victory
+        : msg === "draw"
+          ? DICTIONARY.ja.gameResult.draw
+          : DICTIONARY.ja.gameResult.loss;
+  }
   document.getElementById("opponent_message_linzklar")!.textContent =
     msg === "you win!"
       ? GAME_END_LINZKLAR.victory
@@ -423,7 +425,7 @@ export function endSeason(
         from: getDenoteScoreNodeTopLeft(orig_score),
       });
 
-      alert(DICTIONARY.ja.gameEnd);
+      if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.gameEnd); }
 
       if (GAME_STATE.my_score > 20) {
         perzej("you win!", false);
@@ -460,11 +462,21 @@ export function endSeason(
     });
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     drawMak2Io1();
-    alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
+    if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.newSeason[GAME_STATE.season]); }
 
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+    // If we don't wait until the image loads, it looks glitchy
+    await new Promise((resolve, reject) => {
+      const img = document.getElementById("season_transition_message") as HTMLImageElement;
+      img.onload = () => resolve(img);
+      img.onerror = (e) => reject(e);
+      img.src = `image/season_transition_${orig_season}_to_${new_season}.png`;
+    });
+    
     add_cover("protective_cover_over_field");
     add_cover("protective_tam_cover_over_field");
+    document.getElementById("season_transition_message_container")!.classList.remove("nocover");
     await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
 
     GAME_STATE.f = {
@@ -495,6 +507,7 @@ export function endSeason(
     remove_cover("protective_cover_over_field");
     remove_cover("protective_tam_cover_over_field");
     remove_cover("protective_cover_over_field_while_asyncawait");
+    document.getElementById("season_transition_message_container")!.classList.add("nocover");
   }, 200 * 0.8093);
 }
 
