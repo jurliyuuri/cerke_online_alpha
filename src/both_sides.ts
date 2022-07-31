@@ -461,12 +461,17 @@ export function endSeason(
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     drawMak2Io1();
     // alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
-
-    // we want to load the image for the season transition (i.e. 【春行夏来】) before actually showing it,
-    // so we need to swap out the image before the `setTimeout` happens.
-    (document.getElementById("season_transition_message") as HTMLImageElement).src = `image/season_transition_${orig_season}_to_${new_season}.png`
     
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+    // If we don't wait until the image loads, it looks glitchy
+    await new Promise((resolve, reject) => {
+      const img = document.getElementById("season_transition_message") as HTMLImageElement;
+      img.onload = () => resolve(img);
+      img.onerror = (e) => reject(e);
+      img.src = `image/season_transition_${orig_season}_to_${new_season}.png`;
+    });
+    
     add_cover("protective_cover_over_field");
     add_cover("protective_tam_cover_over_field");
     document.getElementById("season_transition_message_container")!.classList.remove("nocover");
