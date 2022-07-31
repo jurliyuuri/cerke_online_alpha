@@ -101,8 +101,10 @@ export async function sendMainPollAndDoEverythingThatFollows() {
   }
 
   console.log("ding!");
-  document.getElementById("opponent_message")!.textContent =
-    res.message != null ? DICTIONARY.ja.tactics[res.message] : "";
+  if (sessionStorage.lang !== "x-faikleone") {
+    document.getElementById("opponent_message")!.textContent =
+      res.message != null ? DICTIONARY.ja.tactics[res.message] : "";
+  }
   document.getElementById("opponent_message_linzklar")!.textContent =
     res.message != null ? TACTICS_LINZKLAR[res.message] : "";
   if (KRUT_CRUOP) {
@@ -557,7 +559,7 @@ async function animateOpponentInfAfterStep(p: {
       drawCiurlWithAudio(result.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
-        alert(DICTIONARY.ja.failedWaterEntry);
+        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
 
         console.log("drawField opponent #", 12);
         GAME_STATE.last_move_focus = [src_i, src_j];
@@ -600,7 +602,7 @@ async function animateOpponentInfAfterStep(p: {
       drawCiurlWithAudio(result.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
-        alert(DICTIONARY.ja.failedWaterEntry);
+        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         back_up_gamestate();
@@ -611,7 +613,7 @@ async function animateOpponentInfAfterStep(p: {
       await animateWaterEntryLogo();
       drawCiurlWithAudio(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
-      alert(DICTIONARY.ja.failedWaterEntry);
+      if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
       console.log("drawField opponent #", 14);
       GAME_STATE.last_move_focus = [src_i, src_j];
       back_up_gamestate();
@@ -820,7 +822,7 @@ async function animateOpponentSrcStepDstFinite_(
       drawCiurlWithAudio(water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter((a) => a).length < 3) {
-        alert(DICTIONARY.ja.failedWaterEntry);
+        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
         console.log("drawField opponent #", 16);
         GAME_STATE.last_move_focus = [src_i, src_j];
         back_up_gamestate();
@@ -870,7 +872,7 @@ async function animateOpponentSrcStepDstFinite_(
       drawCiurlWithAudio(water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter((a) => a).length < 3) {
-        alert(DICTIONARY.ja.failedWaterEntry);
+        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
 
         console.log("drawField opponent #", 18);
         GAME_STATE.last_move_focus = [src_i, src_j];
@@ -962,7 +964,7 @@ async function animateOpponentSrcDst_(
       drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter((a) => a).length < 3) {
-        alert(DICTIONARY.ja.failedWaterEntry);
+        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
 
         console.log("drawField opponent #", 20);
         GAME_STATE.last_move_focus = [src_i, src_j];
@@ -997,7 +999,7 @@ async function animateOpponentSrcDst_(
       drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter((a) => a).length < 3) {
-        alert(DICTIONARY.ja.failedWaterEntry);
+        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
 
         console.log("drawField opponent #", 22);
         GAME_STATE.last_move_focus = [src_i, src_j];

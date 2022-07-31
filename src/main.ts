@@ -490,7 +490,7 @@ async function sendAfterHalfAcceptance(
   await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
 
   if (res.ciurl.filter((a) => a).length < 3) {
-    alert(DICTIONARY.ja.failedWaterEntry);
+    if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
     eraseGuide();
     SELECTED_COORD_UI = null;
 
@@ -612,7 +612,7 @@ async function sendNormalMove(message: NormalMove) {
   await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
   const water_ciurl_count = res.ciurl.filter((a) => a).length;
   if (water_ciurl_count < 3) {
-    alert(DICTIONARY.ja.failedWaterEntry);
+    if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
     eraseGuide();
     SELECTED_COORD_UI = null;
     if (
