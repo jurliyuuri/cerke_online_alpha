@@ -17,7 +17,7 @@
 <body>
     <div id="outer_container">
     <div id="container">
-        <img src="entrance_image/ja/cerke_online_logo.png" id="cerke_online_logo" >
+        <a href="index.html"><img src="entrance_image/ja/cerke_online_logo.png" id="cerke_online_logo" ></a>
         <a href="pending_vs_cpu.html"><img src="entrance_image/ja/cpu.png" id="cpu_button"></a>
         <a href="pending_random.html"><img src="entrance_image/ja/random.png" id="random_button" style="cursor: pointer"></a>
         <a href="friend_make_room.html"><img src="entrance_image/ja/friend.png" id="friend_button"></a>
@@ -31,17 +31,18 @@
 <script>
     const raw_lang = new URLSearchParams(new URL(location.href).search).get("lang");
     const lang =  ["x-faikleone", "ja"].includes(raw_lang) ? raw_lang : "ja";
+    sessionStorage.lang = lang;
 
     const link = document.getElementById("blog_link");
     if (lang === "x-faikleone") {
         link.textContent = "klant";
         link.style.fontFamily = "cirlipa";
-        document.getElementById("lang_selector").innerHTML = `<option value="x-faikleone" style="font-family: cirlipa" selected>faikleone</option><option value="ja">現世</option>`;
+        document.getElementById("lang_selector").innerHTML = `<option value="x-faikleone" style="font-family: cirlipa" selected>faikleone</option><option value="ja">現世（日本語）</option>`;
         document.getElementById("lang_selector").style.fontFamily = "cirlipa";
     } else if (lang === "ja") {
         link.textContent = "更新履歴";
         link.style.fontFamily = "sans-serif";
-        document.getElementById("lang_selector").innerHTML = `<option value="x-faikleone" style="font-family: cirlipa">faikleone</option><option value="ja" selected>現世</option>`;
+        document.getElementById("lang_selector").innerHTML = `<option value="x-faikleone" style="font-family: cirlipa">faikleone</option><option value="ja" selected>現世（日本語）</option>`;
         document.getElementById("lang_selector").style.fontFamily = "sans-serif";
     }
 
