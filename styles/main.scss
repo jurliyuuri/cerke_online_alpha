@@ -400,3 +400,26 @@ img.piece_image_on_hop1zuo1 {
   line-height: 300%;
   white-space: nowrap;
 }
+
+$to_entrance_width: 80px;
+$to_entrance_aspect_ratio: 876 / 308;
+
+#to_entrance img {
+  filter: grayscale(0.3);
+  position: absolute;
+  left: -104px - ($to_entrance_width / 2);
+  top: 372px - ($to_entrance_width * $to_entrance_aspect_ratio / 2);
+  width: $to_entrance_width;
+  height: $to_entrance_width * $to_entrance_aspect_ratio;
+}
+
+$hover_ratio: 1.1;
+
+#to_entrance img:hover {
+  filter: grayscale(0);
+  position: absolute;
+  left: -104px - ($to_entrance_width * $hover_ratio / 2);
+  top: 372px - ($to_entrance_width * $to_entrance_aspect_ratio * $hover_ratio / 2);
+  width: $to_entrance_width * $hover_ratio;
+  height: $to_entrance_width * $to_entrance_aspect_ratio * $hover_ratio;
+}
