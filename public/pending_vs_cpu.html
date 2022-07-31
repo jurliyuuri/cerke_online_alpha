@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <title>対CPU戦待機部屋</title>
     <link href="pending.css" rel="stylesheet" type="text/css">
+    <style>
+        @font-face {
+            font-family: 'cirlipa';
+            src: url('https://sozysozbot.github.io/fonts/cirlxarli_liparxe_1.woff') format('woff');
+        }
+
+        :lang(x-lineparine) {
+            font-family: 'cirlipa';
+        }
+    </style>
 </head>
 
 <body>
     <div id="outer_container">
         <div id="container">
-            <div style="margin: 0 auto; text-align: center; font-size: 50px;">待機中</div>
+            <div style="margin: 0 auto; text-align: center; font-size: 50px;" id="waiting">待機中</div>
             <svg viewBox="-20 -20 40 40" width="350" height="350" style="margin: 0 auto; display:block">
                 <g id="two_circles">
                     <circle id="green_circle" cx="0" cy="0" r="3.82289" fill="rgb(175, 209,181)" stroke="#005242"
@@ -21,4 +31,15 @@
         </div>
     </div>
     <script src="vs_cpu_pending.js"></script>
+    <script>
+        const lang = sessionStorage.lang;
+        const waiting = document.getElementById("waiting");
+        if (lang === "x-faikleone") {
+            waiting.textContent = "mili plax";
+            waiting.style.fontFamily = "cirlipa";
+        } else if (lang === "ja") {
+            waiting.textContent = "待機中";
+            waiting.style.fontFamily = "sans-serif";
+        }
+    </script>
 </body>
