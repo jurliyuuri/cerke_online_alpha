@@ -10,6 +10,8 @@ import { apply_membrane_state_to_dom } from "./protective_cover";
 console.log("drawField #", 0);
 drawField({ focus: null });
 
+document.getElementById("kiar_ark")!.style.fontFamily = "linmarn_bitmap"
+
 if (sessionStorage.kiar_ark) {
   KiarArk.resurrect(JSON.parse(sessionStorage.kiar_ark));
   KiarArk.display_kiar_ark();
