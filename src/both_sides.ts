@@ -460,11 +460,13 @@ export function endSeason(
     });
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     drawMak2Io1();
-    alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
+    // alert(DICTIONARY.ja.newSeason[GAME_STATE.season]);
 
     await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
     add_cover("protective_cover_over_field");
     add_cover("protective_tam_cover_over_field");
+    document.getElementById("season_transition_message_container")!.classList.remove("nocover");
+    (document.getElementById("season_transition_message") as HTMLImageElement).src = `image/season_transition_${orig_season}_to_${new_season}.png`
     await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
 
     GAME_STATE.f = {
@@ -495,6 +497,7 @@ export function endSeason(
     remove_cover("protective_cover_over_field");
     remove_cover("protective_tam_cover_over_field");
     remove_cover("protective_cover_over_field_while_asyncawait");
+    document.getElementById("season_transition_message_container")!.classList.add("nocover");
   }, 200 * 0.8093);
 }
 

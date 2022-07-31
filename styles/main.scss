@@ -108,6 +108,10 @@ $field_migration_to_the_left: 65px;
   cursor: not-allowed;
 }
 
+#season_transition_message_container {
+  z-index: 1500
+}
+
 #my_icon {
   position: absolute;
   left: 680px;
