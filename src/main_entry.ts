@@ -12,8 +12,10 @@ drawField({ focus: null });
 
 if (sessionStorage.lang === "x-faikleone") {
   document.getElementById("kiar_ark")!.classList.add("always_linmarn_bitmap");
+  document.getElementById("opponent_message_linzklar")!.classList.add("always_geometric_linzklar");
 } else {
   document.getElementById("kiar_ark")!.classList.add("use_linmarn_bitmap_unless_hovered");
+  document.getElementById("opponent_message_linzklar")!.classList.add("use_geometric_linzklar_unless_hovered");
 }
 
 if (sessionStorage.kiar_ark) {
