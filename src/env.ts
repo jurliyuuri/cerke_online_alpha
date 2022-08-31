@@ -7,4 +7,4 @@ declare const process: {
 export const API_ORIGIN =
   process.env.API_ORIGIN === "LOCAL"
     ? "http://localhost:23564"
-    : "https://serene-reef-96808.herokuapp.com";
+    : "https://little-water-8645.fly.dev";
