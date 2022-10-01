@@ -49,11 +49,13 @@ function groupTwoAndRender(input: BodyElem[]) {
 export function display_kiar_ark() {
   sessionStorage.kiar_ark = JSON.stringify(KIAR_ARK);
   console.log("_kiar_ark:", KIAR_ARK);
-  document.getElementById("kiar_ark")!.textContent =
+  const text_content =
     `{一位色:${KIAR_ARK.initial_colors.join("")}}\n` +
     KIAR_ARK.header.map((a) => a.dat).join("\n") +
     "\n" +
     groupTwoAndRender(KIAR_ARK.body);
+  document.getElementById("kiar_ark")!.textContent = text_content;
+  (document.getElementById("kiar_ark_link") as HTMLLinkElement).href = `https://sozysozbot.github.io/cetkaik_platform/show_history.html?history=${encodeURIComponent(text_content)}`
 }
 
 export function push_initial_colors_and_display(e: "赤" | "黒") {
