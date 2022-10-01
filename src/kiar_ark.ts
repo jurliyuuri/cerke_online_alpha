@@ -1,3 +1,5 @@
+import { GAME_STATE } from "./game_state";
+
 export type HeaderElem = { type: "header"; dat: string };
 export type BodyElem =
   | { type: "movement"; dat: string; piece_capture_comment?: string }
@@ -55,7 +57,7 @@ export function display_kiar_ark() {
     "\n" +
     groupTwoAndRender(KIAR_ARK.body);
   document.getElementById("kiar_ark")!.textContent = text_content;
-  (document.getElementById("kiar_ark_link") as HTMLLinkElement).href = `https://sozysozbot.github.io/cetkaik_platform/show_history.html?history=${encodeURIComponent(text_content)}`
+  (document.getElementById("kiar_ark_link") as HTMLLinkElement).href = `https://sozysozbot.github.io/cetkaik_platform/show_history.html?side=${GAME_STATE.IA_is_down ? "ia" : "a"}&history=${encodeURIComponent(text_content)}`
 }
 
 export function push_initial_colors_and_display(e: "赤" | "黒") {
