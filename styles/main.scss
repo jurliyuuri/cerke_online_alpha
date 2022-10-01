@@ -338,13 +338,34 @@ $lork_liar_default_top: 610px;
   left: 0px;
 }
 
-#kiar_ark {
+#kiar_ark_container {
   position: absolute;
   left: 1025px;
   top: 15px;
   width: 425px;
   height: 910px;
+}
+
+#kiar_ark {
+  width: 425px;
+  height: 830px;
   font-size: 120%;
+}
+
+#kiar_ark_link #cetkaik_platform_blurred_img {
+  display: block;
+}
+
+#kiar_ark_link:hover #cetkaik_platform_blurred_img {
+  display: none;
+}
+
+#kiar_ark_link #cetkaik_platform_img {
+  display: none;
+}
+
+#kiar_ark_link:hover #cetkaik_platform_img {
+  display: block;
 }
 
 .selection {
