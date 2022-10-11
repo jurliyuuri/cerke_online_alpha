@@ -29,7 +29,7 @@
     "eslint-formatter-friendly": "7.0.0",
     "kind-of": "6.0.3",
     "mini-css-extract-plugin": "2.6.1",
-    "minimist": "1.2.6",
+    "minimist": "1.2.7",
     "node-sass": "7.0.3",
     "prettier": "2.7.1",
     "sass-loader": "13.1.0",
