@@ -1065,7 +1065,6 @@ function getThingsGoingAfterAGuideIsClicked(
 
   const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
   whether_to_take_or_step.classList.remove("nocover");
-  add_cover("protective_cover_over_field_while_asyncawait");
   // while the question is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
 
@@ -1076,7 +1075,6 @@ function getThingsGoingAfterAGuideIsClicked(
   maybe_stepping(from, piece_to_move, to);
   pieceTaking_button.addEventListener("click", () => {
     cancelStepping();
-    remove_cover("protective_cover_over_field_while_asyncawait");
     whether_to_take_or_step.classList.add("nocover");
     document.getElementById("yaku_all")!.style.left = "750px";
     const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
@@ -1099,7 +1097,6 @@ function getThingsGoingAfterAGuideIsClicked(
       DICTIONARY.ja.pieceSteppingExplanation);
   pieceStepping_button.addEventListener("click", () => {
     cancelStepping();
-    remove_cover("protective_cover_over_field_while_asyncawait");
     whether_to_take_or_step.classList.add("nocover");
     document.getElementById("yaku_all")!.style.left = "750px";
     stepping(from, piece_to_move, to);
