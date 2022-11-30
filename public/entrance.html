@@ -30,6 +30,18 @@
 </div>
 <script>
     const raw_lang = new URLSearchParams(new URL(location.href).search).get("lang");
+
+    // Originally written as 
+    // ["x-faikleone", "ja"].includes(raw_lang) ? raw_lang : "ja"
+    // but since CodeQL cannot understand that this is safe and gives out an alert,
+    // (private url: https://github.com/jurliyuuri/cerke_online_alpha/security/code-scanning/3 )
+    // I will instead write it in a lame way.
+
+    // もともとは
+    // ["x-faikleone", "ja"].includes(raw_lang) ? raw_lang : "ja"
+    // としていたが、これが安全であるということを CodeQL は見抜けず、警告を出すので
+    // (private url: https://github.com/jurliyuuri/cerke_online_alpha/security/code-scanning/3 )
+    // こういうダサい書き方に書き換えておく
     const lang = raw_lang === "ja" ? "ja" : raw_lang === "x-faikleone" ? "x-faikleone" : "ja";
     sessionStorage.lang = lang;
 
