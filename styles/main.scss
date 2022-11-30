@@ -87,6 +87,15 @@ $field_migration_to_the_left: 65px;
   z-index: 2000;
 }
 
+#whether_to_take_or_step {
+  position: absolute;
+  top: 250px;
+  left: 11px - $field_migration_to_the_left;
+  height: 450px;
+  width: 650px;
+  z-index: 2000;
+}
+
 #protective_cover_over_field_while_asyncawait {
   background-color: rgba(0, 0, 0, 0);
   width: 631px;

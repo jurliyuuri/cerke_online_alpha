@@ -729,6 +729,36 @@ function updateFieldAfterHalfAcceptance(
   return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
 }
 
+function askWhetherToTakeOrStep(then: (res: "手" | "撃") => void) {
+  const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
+  whether_to_take_or_step.classList.add("nocover");
+  add_cover("protective_cover_over_field_while_asyncawait");
+  // while the question is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
+  document.getElementById("yaku_all")!.style.left = "790px";
+
+  const pieceTaking_button = createImageButton("手", 0,
+    sessionStorage.lang === "x-faikleone" ? "" :
+      DICTIONARY.ja.pieceTakingExplanation
+  );
+  pieceTaking_button.addEventListener("click", async () => {
+    remove_cover("protective_cover_over_field_while_asyncawait");
+    whether_to_take_or_step.classList.remove("nocover");
+    document.getElementById("yaku_all")!.style.left = "750px";
+    then("手");
+  });
+  whether_to_take_or_step.appendChild(pieceTaking_button);
+
+  const pieceStepping_button = createImageButton("撃", 250,
+    sessionStorage.lang === "x-faikleone" ? "" :
+      DICTIONARY.ja.pieceSteppingExplanation);
+  pieceStepping_button.addEventListener("click", async () => {
+    remove_cover("protective_cover_over_field_while_asyncawait");
+    whether_to_take_or_step.classList.remove("nocover");
+    document.getElementById("yaku_all")!.style.left = "750px";
+    then("撃");
+  })
+}
+
 /**
  * Unsafe function.
  * @param destPiece Assumed to be downward; if not, an error is thrown
@@ -1030,25 +1060,31 @@ function getThingsGoingAfterAGuideIsClicked(
     return;
   }
 
-  // short-circuit evaluation
-  if (ask_whether_to_step && confirm(DICTIONARY.ja.whetherToTake)) {
-    const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
-    const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
-    const message: NormalNonTamMove = {
-      type: "NonTamMove",
-      data: {
-        type: "SrcDst",
-        src: abs_src,
-        dest: abs_dst,
-      },
-    };
-
-    sendNormalMove(message);
-    return;
-  } else {
+  if (!ask_whether_to_step) {
     stepping(from, piece_to_move, to);
     return;
   }
+
+  askWhetherToTakeOrStep(res => {
+    if (res === "手") {
+      const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
+      const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
+      const message: NormalNonTamMove = {
+        type: "NonTamMove",
+        data: {
+          type: "SrcDst",
+          src: abs_src,
+          dest: abs_dst,
+        },
+      };
+
+      sendNormalMove(message);
+      return;
+    } else {
+      stepping(from, piece_to_move, to);
+      return;
+    }
+  })
 }
 
 function isTamAt(step: Coord): boolean {

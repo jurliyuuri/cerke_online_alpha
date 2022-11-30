@@ -1,5 +1,4 @@
 export interface DictElem {
-  whetherToTake: string;
   failedWaterEntry: string;
   gameEnd: string;
   newSeason: string[];
@@ -11,6 +10,8 @@ export interface DictElem {
   };
   tymokExplanation: string,
   taxotExplanation: string,
+  pieceTakingExplanation: string,
+  pieceSteppingExplanation: string,
 }
 
 export type Tactics = {
@@ -45,7 +46,6 @@ export interface Dictionary {
 
 export const DICTIONARY: Dictionary = {
   ja: {
-    whetherToTake: "駒を取る → [OK]\n駒を踏む → [Cancel]",
     failedWaterEntry: "入水判定に失敗しました。",
     newSeason: [
       "",
@@ -68,6 +68,8 @@ export const DICTIONARY: Dictionary = {
       neutral: "いい手が思いつかなかったので、即負けしない範囲で好き勝手に指す",
     },
     tymokExplanation: "再行; シーズン続行; こいこい",
-    taxotExplanation: "終季; シーズン終了; 点数獲得"
+    taxotExplanation: "終季; シーズン終了; 点数獲得",
+    pieceSteppingExplanation: "駒を踏む",
+    pieceTakingExplanation: "駒を取る",
   },
 };
