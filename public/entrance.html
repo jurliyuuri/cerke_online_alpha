@@ -30,7 +30,7 @@
 </div>
 <script>
     const raw_lang = new URLSearchParams(new URL(location.href).search).get("lang");
-    const lang =  ["x-faikleone", "ja"].includes(raw_lang) ? raw_lang : "ja";
+    const lang = raw_lang === "ja" ? "ja" : raw_lang === "x-faikleone" ? "x-faikleone" : "ja";
     sessionStorage.lang = lang;
 
     const link = document.getElementById("blog_link");
