@@ -131,12 +131,10 @@ export function createGuideImageAt(
   const img = document.createElement("img");
   img.setAttribute("draggable", "false");
   img.classList.add("guide");
-  img.style.top = `${
-    1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
-  }px`;
-  img.style.left = `${
-    1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
-  }px`;
+  img.style.top = `${1 + row_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
+    }px`;
+  img.style.left = `${1 + column_index * BOX_SIZE + (MAX_PIECE_SIZE - MAX_PIECE_SIZE) / 2
+    }px`;
   img.src = `image/${path}.png`;
   img.width = MAX_PIECE_SIZE;
   img.height = MAX_PIECE_SIZE;
@@ -206,6 +204,7 @@ export function createPieceImgToBePlacedOnBoard(
 export function createImageButton(
   img_name: String,
   top: number,
+  title: string,
 ): HTMLInputElement {
   const node = document.createElement("input");
   node.setAttribute("type", "image");
@@ -216,5 +215,8 @@ export function createImageButton(
   node.style.left = "660px";
   node.style.top = `${top}px`;
   node.style.border = "1px solid #aaaaaa";
+  if (title) {
+    node.title = title;
+  }
   return node;
 }

@@ -9,6 +9,8 @@ export interface DictElem {
     draw: string;
     loss: string;
   };
+  tymokExplanation: string,
+  taxotExplanation: string,
 }
 
 export type Tactics = {
@@ -65,5 +67,7 @@ export const DICTIONARY: Dictionary = {
       loss_almost_certain: "なにやっても負けそうなので好き勝手に指す",
       neutral: "いい手が思いつかなかったので、即負けしない範囲で好き勝手に指す",
     },
+    tymokExplanation: "再行; シーズン続行; こいこい",
+    taxotExplanation: "終季; シーズン終了; 点数獲得"
   },
 };
