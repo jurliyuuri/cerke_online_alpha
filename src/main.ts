@@ -371,7 +371,7 @@ function maybe_stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coo
   console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
-  drawCancelButton(() => cancelMaybeStepping({ render: true }));
+  drawCancelButton(() => cancelMaybeStepping({ revert_focus: true }));
   drawHoverAt_(
     to,
     piece,
@@ -1077,7 +1077,7 @@ function getThingsGoingAfterAGuideIsClicked(
   );
   maybe_stepping(from, piece_to_move, to);
   pieceTaking_button.addEventListener("click", () => {
-    cancelMaybeStepping({ render: false });
+    cancelMaybeStepping({ revert_focus: false });
     const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
     const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
     const message: NormalNonTamMove = {
@@ -1097,13 +1097,13 @@ function getThingsGoingAfterAGuideIsClicked(
     sessionStorage.lang === "x-faikleone" ? "" :
       DICTIONARY.ja.pieceSteppingExplanation);
   pieceStepping_button.addEventListener("click", () => {
-    cancelMaybeStepping({ render: false });
+    cancelMaybeStepping({ revert_focus: false });
     stepping(from, piece_to_move, to);
   });
   whether_to_take_or_step.appendChild(pieceStepping_button);
 }
 
-function cancelMaybeStepping(o: { render: boolean }) {
+function cancelMaybeStepping(o: { revert_focus: boolean }) {
   const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
   whether_to_take_or_step.classList.add("nocover");
   document.getElementById("yaku_all")!.style.left = "750px";
@@ -1123,8 +1123,10 @@ function cancelMaybeStepping(o: { render: boolean }) {
 
   SELECTED_COORD_UI = null;
 
-  if (o.render) {
+  if (o.revert_focus) {
     drawField({ focus: GAME_STATE.last_move_focus });
+  } else {
+    drawField({})
   }
 
   return { piece_moved, maybe_capture: null };
