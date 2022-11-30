@@ -356,6 +356,32 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   drawTam2HoverNonshiftedAt(to);
 }
 
+function maybe_stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
+  eraseGuide();
+  add_cover("protective_cover_over_field");
+
+  // delete the original one
+  GAME_STATE.backupDuringStepping = [from, piece];
+  back_up_gamestate();
+  GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
+  back_up_gamestate();
+
+  console.log("drawField #", 6.1);
+  drawField({ focus: null }); /* Temporary, so no focus */
+  drawPhantomAt(from, piece);
+  drawCancelButton(cancelStepping);
+  drawHoverAt_(
+    to,
+    piece,
+    function (coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
+      const contains_guides = document.getElementById("contains_guides")!;
+
+      const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
+      contains_guides.appendChild(centralNode);
+    },
+  );
+}
+
 function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   eraseGuide();
   add_cover("protective_cover_over_field");
@@ -1047,7 +1073,9 @@ function getThingsGoingAfterAGuideIsClicked(
     sessionStorage.lang === "x-faikleone" ? "" :
       DICTIONARY.ja.pieceTakingExplanation
   );
+  maybe_stepping(from, piece_to_move, to);
   pieceTaking_button.addEventListener("click", () => {
+    cancelStepping();
     remove_cover("protective_cover_over_field_while_asyncawait");
     whether_to_take_or_step.classList.add("nocover");
     document.getElementById("yaku_all")!.style.left = "750px";
@@ -1070,6 +1098,7 @@ function getThingsGoingAfterAGuideIsClicked(
     sessionStorage.lang === "x-faikleone" ? "" :
       DICTIONARY.ja.pieceSteppingExplanation);
   pieceStepping_button.addEventListener("click", () => {
+    cancelStepping();
     remove_cover("protective_cover_over_field_while_asyncawait");
     whether_to_take_or_step.classList.add("nocover");
     document.getElementById("yaku_all")!.style.left = "750px";
