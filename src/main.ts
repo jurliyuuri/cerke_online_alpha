@@ -1107,7 +1107,21 @@ function cancelMaybeStepping() {
   const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
   whether_to_take_or_step.classList.add("nocover");
   document.getElementById("yaku_all")!.style.left = "750px";
-  cancelStepping();
+  eraseGuide();
+  erasePhantomAndOptionallyCancelButton();
+  remove_cover("protective_cover_over_field");
+
+  // resurrect the original one
+  const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
+  const from: Coord = backup[0];
+  const piece_moved = backup[1];
+  GAME_STATE.f.currentBoard[from[0]][from[1]] = piece_moved;
+  back_up_gamestate();
+  GAME_STATE.backupDuringStepping = null;
+  back_up_gamestate();
+
+  console.log("drawField #", 1);
+  drawField({ focus: GAME_STATE.last_move_focus });
 }
 
 function isTamAt(step: Coord): boolean {
