@@ -756,7 +756,8 @@ function askWhetherToTakeOrStep(then: (res: "手" | "撃") => void) {
     whether_to_take_or_step.classList.remove("nocover");
     document.getElementById("yaku_all")!.style.left = "750px";
     then("撃");
-  })
+  });
+  whether_to_take_or_step.appendChild(pieceStepping_button);
 }
 
 /**
@@ -1011,7 +1012,7 @@ function updateField(message: NormalMove): MovementInfo {
   }
 }
 
-function getThingsGoingAfterAGuideIsClicked(
+async function getThingsGoingAfterAGuideIsClicked(
   piece_to_move: "Tam2" | NonTam2PieceUpward,
   from: Coord,
   to: Coord,
@@ -1065,26 +1066,27 @@ function getThingsGoingAfterAGuideIsClicked(
     return;
   }
 
-  askWhetherToTakeOrStep(res => {
-    if (res === "手") {
-      const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
-      const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
-      const message: NormalNonTamMove = {
-        type: "NonTamMove",
-        data: {
-          type: "SrcDst",
-          src: abs_src,
-          dest: abs_dst,
-        },
-      };
+  await new Promise<void>((resolve, reject) =>
+    askWhetherToTakeOrStep(res => {
+      if (res === "手") {
+        const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
+        const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
+        const message: NormalNonTamMove = {
+          type: "NonTamMove",
+          data: {
+            type: "SrcDst",
+            src: abs_src,
+            dest: abs_dst,
+          },
+        };
 
-      sendNormalMove(message);
-      return;
-    } else {
-      stepping(from, piece_to_move, to);
-      return;
-    }
-  })
+        sendNormalMove(message);
+        resolve();
+      } else {
+        stepping(from, piece_to_move, to);
+        resolve();
+      }
+    }));
 }
 
 function isTamAt(step: Coord): boolean {
@@ -1395,9 +1397,9 @@ function display_guides_before_stepping(
     const img = createGuideImageAt(list[ind], "yellow_circle");
 
     // click on it to get things going
-    img.addEventListener("click", function () {
+    img.addEventListener("click", async function () {
       eraseGuide();
-      getThingsGoingAfterAGuideIsClicked(
+      await getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
@@ -1405,10 +1407,10 @@ function display_guides_before_stepping(
       );
     });
 
-    img.addEventListener("contextmenu", function (e) {
+    img.addEventListener("contextmenu", async function (e) {
       eraseGuide();
       e.preventDefault();
-      getThingsGoingAfterAGuideIsClicked(
+      await getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
