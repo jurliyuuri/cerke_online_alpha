@@ -80,6 +80,7 @@ import {
   sendStuffTo,
 } from "./both_sides";
 import { add_cover, remove_cover } from "./protective_cover";
+import { removeAllChildren } from "extra-dom";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
@@ -356,6 +357,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   drawTam2HoverNonshiftedAt(to);
 }
 
+// 駒を取るか踏むか決まってないときの状態を作る
 function maybe_stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   eraseGuide();
   add_cover("protective_cover_over_field");
@@ -369,7 +371,7 @@ function maybe_stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coo
   console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
-  drawCancelButton(cancelStepping);
+  drawCancelButton(cancelMaybeStepping);
   drawHoverAt_(
     to,
     piece,
@@ -1065,6 +1067,7 @@ function getThingsGoingAfterAGuideIsClicked(
 
   const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
   whether_to_take_or_step.classList.remove("nocover");
+  removeAllChildren(whether_to_take_or_step);
   // while the question is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
 
@@ -1074,9 +1077,7 @@ function getThingsGoingAfterAGuideIsClicked(
   );
   maybe_stepping(from, piece_to_move, to);
   pieceTaking_button.addEventListener("click", () => {
-    cancelStepping();
-    whether_to_take_or_step.classList.add("nocover");
-    document.getElementById("yaku_all")!.style.left = "750px";
+    cancelMaybeStepping();
     const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
     const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
     const message: NormalNonTamMove = {
@@ -1096,12 +1097,17 @@ function getThingsGoingAfterAGuideIsClicked(
     sessionStorage.lang === "x-faikleone" ? "" :
       DICTIONARY.ja.pieceSteppingExplanation);
   pieceStepping_button.addEventListener("click", () => {
-    cancelStepping();
-    whether_to_take_or_step.classList.add("nocover");
-    document.getElementById("yaku_all")!.style.left = "750px";
+    cancelMaybeStepping();
     stepping(from, piece_to_move, to);
   });
   whether_to_take_or_step.appendChild(pieceStepping_button);
+}
+
+function cancelMaybeStepping() {
+  cancelStepping();
+  const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
+  whether_to_take_or_step.classList.add("nocover");
+  document.getElementById("yaku_all")!.style.left = "750px";
 }
 
 function isTamAt(step: Coord): boolean {
