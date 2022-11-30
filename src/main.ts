@@ -80,6 +80,7 @@ import {
   sendStuffTo,
 } from "./both_sides";
 import { add_cover, remove_cover } from "./protective_cover";
+import { removeAllChildren } from "extra-dom";
 
 type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
@@ -354,6 +355,33 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
     /* This is a canceling; hence we must not overwrite last_move_focus */
   });
   drawTam2HoverNonshiftedAt(to);
+}
+
+// 駒を取るか踏むか決まってないときの状態を作る
+function maybe_stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
+  eraseGuide();
+  add_cover("protective_cover_over_field");
+
+  // delete the original one
+  GAME_STATE.backupDuringStepping = [from, piece];
+  back_up_gamestate();
+  GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
+  back_up_gamestate();
+
+  console.log("drawField #", 6.1);
+  drawField({ focus: null }); /* Temporary, so no focus */
+  drawPhantomAt(from, piece);
+  drawCancelButton(() => cancelMaybeStepping({ draw_the_field: true }));
+  drawHoverAt_(
+    to,
+    piece,
+    function (coord: Coord, piece: "Tam2" | NonTam2PieceUpward) {
+      const contains_guides = document.getElementById("contains_guides")!;
+
+      const centralNode = createPieceSizeSelectionButtonOnBoard_Shifted(coord);
+      contains_guides.appendChild(centralNode);
+    },
+  );
 }
 
 function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
@@ -729,6 +757,8 @@ function updateFieldAfterHalfAcceptance(
   return { piece_moved: piece, maybe_capture: toColorProf(destPiece) };
 }
 
+
+
 /**
  * Unsafe function.
  * @param destPiece Assumed to be downward; if not, an error is thrown
@@ -1030,8 +1060,24 @@ function getThingsGoingAfterAGuideIsClicked(
     return;
   }
 
-  // short-circuit evaluation
-  if (ask_whether_to_step && confirm(DICTIONARY.ja.whetherToTake)) {
+  if (!ask_whether_to_step) {
+    stepping(from, piece_to_move, to);
+    return;
+  }
+
+  const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
+  whether_to_take_or_step.classList.remove("nocover");
+  removeAllChildren(whether_to_take_or_step);
+  // while the question is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
+  document.getElementById("yaku_all")!.style.left = "790px";
+
+  const pieceTaking_button = createImageButton("手此", 0,
+    sessionStorage.lang === "x-faikleone" ? "" :
+      DICTIONARY.ja.pieceTakingExplanation
+  );
+  maybe_stepping(from, piece_to_move, to);
+  pieceTaking_button.addEventListener("click", () => {
+    cancelMaybeStepping({ draw_the_field: false });
     const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
     const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
     const message: NormalNonTamMove = {
@@ -1044,10 +1090,38 @@ function getThingsGoingAfterAGuideIsClicked(
     };
 
     sendNormalMove(message);
-    return;
-  } else {
+  });
+  whether_to_take_or_step.appendChild(pieceTaking_button);
+
+  const pieceStepping_button = createImageButton("撃此", 250,
+    sessionStorage.lang === "x-faikleone" ? "" :
+      DICTIONARY.ja.pieceSteppingExplanation);
+  pieceStepping_button.addEventListener("click", () => {
+    cancelMaybeStepping({ draw_the_field: false });
     stepping(from, piece_to_move, to);
-    return;
+  });
+  whether_to_take_or_step.appendChild(pieceStepping_button);
+}
+
+function cancelMaybeStepping(o: { draw_the_field: boolean }) {
+  const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
+  whether_to_take_or_step.classList.add("nocover");
+  document.getElementById("yaku_all")!.style.left = "750px";
+  eraseGuide();
+  erasePhantomAndOptionallyCancelButton();
+  remove_cover("protective_cover_over_field");
+
+  // resurrect the original one
+  const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
+  const from: Coord = backup[0];
+  const piece_moved = backup[1];
+  GAME_STATE.f.currentBoard[from[0]][from[1]] = piece_moved;
+  back_up_gamestate();
+  GAME_STATE.backupDuringStepping = null;
+  back_up_gamestate();
+
+  if (o.draw_the_field) {
+    drawField({ focus: GAME_STATE.last_move_focus });
   }
 }
 
@@ -1359,9 +1433,9 @@ function display_guides_before_stepping(
     const img = createGuideImageAt(list[ind], "yellow_circle");
 
     // click on it to get things going
-    img.addEventListener("click", function () {
+    img.addEventListener("click", async function () {
       eraseGuide();
-      getThingsGoingAfterAGuideIsClicked(
+      await getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
@@ -1369,10 +1443,10 @@ function display_guides_before_stepping(
       );
     });
 
-    img.addEventListener("contextmenu", function (e) {
+    img.addEventListener("contextmenu", async function (e) {
       eraseGuide();
       e.preventDefault();
-      getThingsGoingAfterAGuideIsClicked(
+      await getThingsGoingAfterAGuideIsClicked(
         piece,
         coord,
         list[ind],
