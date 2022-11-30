@@ -1043,7 +1043,7 @@ function getThingsGoingAfterAGuideIsClicked(
   // while the question is displayed, move the yaku_all image from `left: 750px` to `left: 790px` to avoid overlap with taxot and tymok
   document.getElementById("yaku_all")!.style.left = "790px";
 
-  const pieceTaking_button = createImageButton("手", 0,
+  const pieceTaking_button = createImageButton("手此", 0,
     sessionStorage.lang === "x-faikleone" ? "" :
       DICTIONARY.ja.pieceTakingExplanation
   );
@@ -1066,7 +1066,7 @@ function getThingsGoingAfterAGuideIsClicked(
   });
   whether_to_take_or_step.appendChild(pieceTaking_button);
 
-  const pieceStepping_button = createImageButton("撃", 250,
+  const pieceStepping_button = createImageButton("撃此", 250,
     sessionStorage.lang === "x-faikleone" ? "" :
       DICTIONARY.ja.pieceSteppingExplanation);
   pieceStepping_button.addEventListener("click", () => {
