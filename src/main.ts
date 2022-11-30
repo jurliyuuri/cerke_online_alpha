@@ -371,7 +371,7 @@ function maybe_stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coo
   console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
-  drawCancelButton(cancelMaybeStepping);
+  drawCancelButton(() => cancelMaybeStepping({ render: true }));
   drawHoverAt_(
     to,
     piece,
@@ -1077,7 +1077,7 @@ function getThingsGoingAfterAGuideIsClicked(
   );
   maybe_stepping(from, piece_to_move, to);
   pieceTaking_button.addEventListener("click", () => {
-    cancelMaybeStepping();
+    cancelMaybeStepping({ render: false });
     const abs_src: AbsoluteCoord = toAbsoluteCoord(from);
     const abs_dst: AbsoluteCoord = toAbsoluteCoord(to);
     const message: NormalNonTamMove = {
@@ -1097,17 +1097,37 @@ function getThingsGoingAfterAGuideIsClicked(
     sessionStorage.lang === "x-faikleone" ? "" :
       DICTIONARY.ja.pieceSteppingExplanation);
   pieceStepping_button.addEventListener("click", () => {
-    cancelMaybeStepping();
+    cancelMaybeStepping({ render: false });
     stepping(from, piece_to_move, to);
   });
   whether_to_take_or_step.appendChild(pieceStepping_button);
 }
 
-function cancelMaybeStepping() {
-  cancelStepping();
+function cancelMaybeStepping(o: { render: boolean }) {
   const whether_to_take_or_step = document.getElementById("whether_to_take_or_step")!;
   whether_to_take_or_step.classList.add("nocover");
   document.getElementById("yaku_all")!.style.left = "750px";
+
+  eraseGuide();
+  erasePhantomAndOptionallyCancelButton();
+  remove_cover("protective_cover_over_field");
+
+  // resurrect the original state
+  const backup: [Coord, Piece] = GAME_STATE.backupDuringStepping!;
+  const from: Coord = backup[0];
+  const piece_moved = backup[1];
+  GAME_STATE.f.currentBoard[from[0]][from[1]] = piece_moved;
+  back_up_gamestate();
+  GAME_STATE.backupDuringStepping = null;
+  back_up_gamestate();
+
+  SELECTED_COORD_UI = null;
+
+  if (o.render) {
+    drawField({ focus: GAME_STATE.last_move_focus });
+  }
+
+  return { piece_moved, maybe_capture: null };
 }
 
 function isTamAt(step: Coord): boolean {
