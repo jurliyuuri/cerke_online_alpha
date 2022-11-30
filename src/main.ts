@@ -767,7 +767,10 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     const base_score: number = new_state.score;
     const score_display = document.getElementById("score_display")!;
 
-    const ty_mok1_button = createImageButton("再行", 0);
+    const ty_mok1_button = createImageButton("再行", 0,
+      sessionStorage.lang === "x-faikleone" ? "" :
+        DICTIONARY.ja.tymokExplanation
+    );
     ty_mok1_button.addEventListener("click", async () => {
       increaseRateAndAnimate(true);
       const res: RetTyMok = await sendStuffTo<{}, RetTyMok>("decision/tymok", "`send whether ty mok1`", {}, (response) => {
@@ -784,7 +787,9 @@ function takeTheDownwardPieceAndCheckHand(destPiece: Piece) {
     });
     score_display.appendChild(ty_mok1_button);
 
-    const ta_xot1_button = createImageButton("終季", 250);
+    const ta_xot1_button = createImageButton("終季", 250,
+      sessionStorage.lang === "x-faikleone" ? "" :
+        DICTIONARY.ja.taxotExplanation);
     ta_xot1_button.addEventListener("click", async () => {
       const res: RetTaXot = await sendStuffTo<{}, RetTaXot>("decision/taxot", "`send whether ty mok1`", {}, (response) => {
         console.log("Success; the server returned:", JSON.stringify(response));
