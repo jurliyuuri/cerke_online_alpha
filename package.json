@@ -22,7 +22,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.46.1",
     "@typescript-eslint/parser": "5.46.1",
-    "css-loader": "6.7.2",
+    "css-loader": "6.7.3",
     "dependency-cruiser": "12.1.0",
     "eslint": "8.29.0",
     "eslint-config-prettier": "8.5.0",
