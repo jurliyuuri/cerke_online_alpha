@@ -32,8 +32,16 @@
 
 ## デプロイ方法
 
-### オンラインのフロントエンド + Herokuバックエンド
+### オンラインのフロントエンド + fly.io バックエンド
 [http://jurliyuuri.com/cerke_online_alpha/entrance.html](http://jurliyuuri.com/cerke_online_alpha/entrance.html) にデプロイされているものがある。
+
+具体的にどうやってデプロイされているかというと、[production 環境](https://github.com/jurliyuuri/cerke_online_alpha)のほうは
+
+- master への push を trigger に [deploy workflow](https://github.com/jurliyuuri/cerke_online_alpha/blob/master/.github/workflows/deploy.yml) が走る
+- gh-pages ブランチが更新される
+- GitHub Pages 機能で production 環境にデプロイされる。
+
+[staging 環境](https://github.com/sozysozbot/cerke_online_alpha_staging) もたぶんほぼ同様の Actions が走っている。
 
 ### ローカルのフロントエンド（MacかLinuxで） + ローカルのバックエンド
 <!-- 1. まず `npm install` -->
@@ -44,7 +52,7 @@
 
 **ローカルでバックエンドを走らせる機会が全然ないので全て忘れました。バックエンドのリポジトリは[ここ](https://gitlab.com/jekto.vatimeliju/cerke_online_backend)です。**
 
-### ローカルのフロントエンド + Herokuバックエンド
+### ローカルのフロントエンド + fly.io バックエンド
 1. まず `npm install`
 2. 次に `npm start`（WindowsだとここでコケるのでMacかLinux）
 3. `localhost:8000/entrance.html` にデプロイされているものがある。
