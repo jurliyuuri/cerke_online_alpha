@@ -415,7 +415,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
   back_up_gamestate();
 
-  console.log("drawField #", 6.1);
+  console.log("drawField #", 6.2);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
   drawCancelButtonAndAddEscEvent(cancelStepping);

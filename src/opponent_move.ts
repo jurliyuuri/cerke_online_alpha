@@ -615,7 +615,7 @@ async function animateOpponentInfAfterStep(p: {
       drawCiurlWithAudio(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       await notifyWaterEntryFailure();
-      console.log("drawField opponent #", 14);
+      console.log("drawField opponent #", 14.5);
       GAME_STATE.last_move_focus = [src_i, src_j];
       back_up_gamestate();
       drawField({ focus: [src_i, src_j] });
