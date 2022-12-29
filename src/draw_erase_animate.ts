@@ -79,11 +79,15 @@ export async function notifyWaterEntryFailure() {
   add_cover("protective_cover_over_field");
   add_cover("protective_cover_over_field_while_asyncawait");
 
-  document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
+  //「光の方が音より早いので映像の方を先に出るべき」とはよく言うが、
+  // 今回の場合は「音が先にあり、それの説明が文字で出る」が自然な順序なのだから。
+  // むしろ「音が鳴る」→「それの説明が燐字で出る」→「それの翻訳が日本語で出る」の順。
   if (KRUT_CRUOP) {
     const water_entry_sound = new Audio("sound/water_entry.wav");
     water_entry_sound.play();
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
   }
+  document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
   await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
   if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
 
