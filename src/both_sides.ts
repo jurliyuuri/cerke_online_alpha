@@ -468,7 +468,7 @@ export function endSeason(
 
     // If we don't wait until the image loads, it looks glitchy
     await new Promise((resolve, reject) => {
-      const img = document.getElementById("season_transition_message") as HTMLImageElement;
+      const img = document.getElementById("season_transition_message_or_water_entry_failure_message") as HTMLImageElement;
       img.onload = () => resolve(img);
       img.onerror = (e) => reject(e);
       img.src = `image/season_transition_${orig_season}_to_${new_season}.png`;
@@ -476,7 +476,7 @@ export function endSeason(
     
     add_cover("protective_cover_over_field");
     add_cover("protective_tam_cover_over_field");
-    document.getElementById("season_transition_message_container")!.classList.remove("nocover");
+    document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
     await new Promise((resolve) => setTimeout(resolve, 4000 * 0.8093));
 
     GAME_STATE.f = {
@@ -507,7 +507,7 @@ export function endSeason(
     remove_cover("protective_cover_over_field");
     remove_cover("protective_tam_cover_over_field");
     remove_cover("protective_cover_over_field_while_asyncawait");
-    document.getElementById("season_transition_message_container")!.classList.add("nocover");
+    document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.add("nocover");
   }, 200 * 0.8093);
 }
 

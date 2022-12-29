@@ -11,8 +11,9 @@ import { BOX_SIZE } from "./html_top_left";
 import { toPath_ } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
 import { add_cover, remove_cover } from "./protective_cover";
+import { DICTIONARY } from "./dictionary";
 
-export let WHAT_ESC_KEY_TRIGGERS: () => void = () => {};
+export let WHAT_ESC_KEY_TRIGGERS: () => void = () => { };
 
 /**
  * @param total_duration total duration in millisecond
@@ -62,6 +63,30 @@ export async function animateWaterEntryLogo() {
     remove_cover("protective_cover_over_field_while_asyncawait");
   }, 1200 * 0.8093);
   await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
+}
+
+export async function notifyWaterEntryFailure() {
+  if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+  // If we don't wait until the image loads, it looks glitchy
+  await new Promise((resolve, reject) => {
+    const img = document.getElementById("season_transition_message_or_water_entry_failure_message") as HTMLImageElement;
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(e);
+    img.src = `image/裁言勿入水.png`;
+  });
+
+  add_cover("protective_cover_over_field");
+  add_cover("protective_cover_over_field_while_asyncawait");
+
+  document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+  remove_cover("protective_cover_over_field");
+  remove_cover("protective_cover_over_field_while_asyncawait");
+  document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.add("nocover");
 }
 
 export function drawCiurl(ciurl: Ciurl, side?: Side) {
@@ -133,7 +158,7 @@ export function erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent()
     contains_phantom.removeChild(contains_phantom.firstChild);
   }
 
-  WHAT_ESC_KEY_TRIGGERS = () => {};
+  WHAT_ESC_KEY_TRIGGERS = () => { };
 }
 
 export function eraseArrow() {
