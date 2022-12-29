@@ -12,6 +12,8 @@ import { toPath_ } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
 import { add_cover, remove_cover } from "./protective_cover";
 
+export let WHAT_ESC_KEY_TRIGGERS: () => void = () => {};
+
 /**
  * @param total_duration total duration in millisecond
  * @param rotate angle to rotate, in degrees
@@ -125,11 +127,13 @@ export function eraseGuide(): void {
   removeAllChildren(document.getElementById("contains_guides_on_upward")!);
 }
 
-export function erasePhantomAndOptionallyCancelButton() {
+export function erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent() {
   const contains_phantom = document.getElementById("contains_phantom")!;
   while (contains_phantom.firstChild) {
     contains_phantom.removeChild(contains_phantom.firstChild);
   }
+
+  WHAT_ESC_KEY_TRIGGERS = () => {};
 }
 
 export function eraseArrow() {
@@ -138,7 +142,7 @@ export function eraseArrow() {
 
 export function drawPhantomAt(coord: Coord, piece: Piece) {
   const contains_phantom = document.getElementById("contains_phantom")!;
-  erasePhantomAndOptionallyCancelButton();
+  erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent();
 
   const phantom: HTMLImageElement = createPieceImgToBePlacedOnBoard(
     coord,
@@ -175,7 +179,7 @@ export function drawHoverAt_<T extends "Tam2" | NonTam2PieceUpward>(
   selectHover();
 }
 
-export function drawCancelButton(fn: () => void) {
+export function drawCancelButtonAndAddEscEvent(fn: () => void) {
   const contains_phantom = document.getElementById("contains_phantom")!;
 
   const cancelButton = createCancelButton();
@@ -187,6 +191,7 @@ export function drawCancelButton(fn: () => void) {
   cancelButton.setAttribute("id", "cancelButton");
 
   cancelButton.addEventListener("click", fn);
+  WHAT_ESC_KEY_TRIGGERS = fn;
   contains_phantom.appendChild(cancelButton);
 }
 

@@ -52,13 +52,14 @@ import { KRUT_CRUOP } from "./main_entry";
 import {
   animateStepTamLogo,
   animateWaterEntryLogo,
-  drawCancelButton,
+  drawCancelButtonAndAddEscEvent,
   drawCiurl,
   drawHoverAt_,
   drawPhantomAt,
   drawTwoCiurls,
   eraseGuide,
-  erasePhantomAndOptionallyCancelButton,
+  erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent,
+  WHAT_ESC_KEY_TRIGGERS,
 } from "./draw_erase_animate";
 import {
   normalMoveToKiarArk,
@@ -86,6 +87,25 @@ type SelectedCoord = null | Coord | ["Hop1zuo1", number];
 
 let SELECTED_COORD_UI: SelectedCoord = null;
 
+
+window.addEventListener("keydown", (event) => {
+  if (event.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+
+  switch (event.key) {
+    case "Esc": // IE/Edge specific value
+    case "Escape":
+      WHAT_ESC_KEY_TRIGGERS();
+      break;
+    default:
+      return; // Quit when this doesn't handle the key event.
+  }
+
+  // Cancel the default action to avoid it being handled twice
+  event.preventDefault();
+}, true);
+
 function cancelSteppingButUpdateTheFocus(new_focus: Coord): MovementInfo {
   const movement_info = cancelStepping();
   console.log("drawField #", 1.1);
@@ -95,7 +115,7 @@ function cancelSteppingButUpdateTheFocus(new_focus: Coord): MovementInfo {
 
 function cancelStepping(): MovementInfo {
   eraseGuide();
-  erasePhantomAndOptionallyCancelButton();
+  erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent();
   remove_cover("protective_cover_over_field");
 
   // resurrect the original one
@@ -135,9 +155,9 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
   console.log("drawField #", 2);
   drawField({ focus: null });
   drawPhantomAt(firstDest, "Tam2");
-  drawCancelButton(() => {
+  drawCancelButtonAndAddEscEvent(() => {
     eraseGuide();
-    erasePhantomAndOptionallyCancelButton();
+    erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent();
     remove_cover("protective_cover_over_field");
     remove_cover("protective_tam_cover_over_field");
 
@@ -193,7 +213,7 @@ function getThingsGoingAfterSecondTamMoveThatStepsInTheLatterHalf(
         };
 
         eraseGuide();
-        erasePhantomAndOptionallyCancelButton();
+        erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent();
 
         sendNormalMove(message);
         remove_cover("protective_cover_over_field");
@@ -306,7 +326,7 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
               };
 
             // the cancel button, which must be destroyed since the move can no longer be cancelled, is also destroyed here
-            erasePhantomAndOptionallyCancelButton();
+            erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent();
             eraseGuide(); // this removes the central guide, as well as the yellow and green ones
             sendNormalMove(message);
 
@@ -335,10 +355,10 @@ function afterFirstTamMove(from: Coord, to: Coord, step?: Coord) {
   };
 
   drawPhantomAt(from, "Tam2");
-  drawCancelButton(() => {
+  drawCancelButtonAndAddEscEvent(() => {
     // cancel Tam2's first move
     eraseGuide();
-    erasePhantomAndOptionallyCancelButton();
+    erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent();
     remove_cover("protective_tam_cover_over_field");
     remove_cover("protective_cover_over_field");
 
@@ -371,7 +391,7 @@ function maybe_stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coo
   console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
-  drawCancelButton(() => cancelMaybeStepping({ draw_the_field: true }));
+  drawCancelButtonAndAddEscEvent(() => cancelMaybeStepping({ draw_the_field: true }));
   drawHoverAt_(
     to,
     piece,
@@ -397,7 +417,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   console.log("drawField #", 6.1);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
-  drawCancelButton(cancelStepping);
+  drawCancelButtonAndAddEscEvent(cancelStepping);
   drawHoverAt_(
     to,
     piece,
@@ -1108,7 +1128,7 @@ function cancelMaybeStepping(o: { draw_the_field: boolean }) {
   whether_to_take_or_step.classList.add("nocover");
   document.getElementById("yaku_all")!.style.left = "750px";
   eraseGuide();
-  erasePhantomAndOptionallyCancelButton();
+  erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent();
   remove_cover("protective_cover_over_field");
 
   // resurrect the original one
