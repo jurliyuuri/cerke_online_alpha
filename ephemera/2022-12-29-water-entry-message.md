@@ -65,3 +65,5 @@ drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
 https://twitter.com/hsjoihs/status/1608385214656688131
 
 たしかに。ここに z-index つけても意味ないのか。内側の img につけよう。
+
+あと順序ミスってる原因わかったな。えっと最初から `final_dest` に動かしてしまっている。だから、最初は `planned_dest` に動かして、その後で `final_dest` に動かさなければ。
