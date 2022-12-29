@@ -12,6 +12,7 @@ import { toPath_ } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
 import { add_cover, remove_cover } from "./protective_cover";
 import { DICTIONARY } from "./dictionary";
+import { KRUT_CRUOP } from "./main_entry";
 
 export let WHAT_ESC_KEY_TRIGGERS: () => void = () => { };
 
@@ -79,9 +80,13 @@ export async function notifyWaterEntryFailure() {
   add_cover("protective_cover_over_field_while_asyncawait");
 
   document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
-  await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+  if (KRUT_CRUOP) {
+    const water_entry_sound = new Audio("sound/water_entry.wav");
+    water_entry_sound.play();
+  }
+  await new Promise((resolve) => setTimeout(resolve, 1700 * 0.8093));
   if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
-  await new Promise((resolve) => setTimeout(resolve, 1500 * 0.8093));
 
   remove_cover("protective_cover_over_field");
   remove_cover("protective_cover_over_field_while_asyncawait");
