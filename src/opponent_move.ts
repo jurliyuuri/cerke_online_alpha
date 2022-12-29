@@ -564,7 +564,8 @@ async function animateOpponentInfAfterStep(p: {
         if (!coordEq(final_dest, planned_dest)) {
           await animateNode(srcNode, 750 * 0.8093, {
             to: coordToPieceXY(final_dest),
-            from: coordToPieceXY(planned_dest),
+            from: coordToPieceXY(p.src,
+            ) /* must be src, since the node is not renewed */,
           });
         }
         console.log("drawField opponent #", 12);
@@ -636,7 +637,8 @@ async function animateOpponentInfAfterStep(p: {
         if (!coordEq(final_dest, planned_dest)) {
           await animateNode(srcNode, 750 * 0.8093, {
             to: coordToPieceXY(final_dest),
-            from: coordToPieceXY(planned_dest),
+            from: coordToPieceXY(p.src,
+            ) /* must be src, since the node is not renewed */,
           });
         }
         console.log("drawField opponent #", 14);
@@ -660,7 +662,8 @@ async function animateOpponentInfAfterStep(p: {
       if (!coordEq(final_dest, planned_dest)) {
         await animateNode(srcNode, 750 * 0.8093, {
           to: coordToPieceXY(final_dest),
-          from: coordToPieceXY(planned_dest),
+          from: coordToPieceXY(p.src,
+          ) /* must be src, since the node is not renewed */,
         });
       }
       console.log("drawField opponent #", 14.5);
