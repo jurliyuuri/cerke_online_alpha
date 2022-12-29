@@ -33,3 +33,5 @@ D:\cetkaik\cerke_online\src\main.ts
 ということで、`erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent` という名前へと改名し、Esc に結び付けたイベントを消すようにし、
 
 逆に `drawCancelButton` は `drawCancelButtonAndAddEscEvent` へと改名してイベントを登録。よし、ステージング環境で試そう
+
+上手く行った。これは production にマージしにいくか。
