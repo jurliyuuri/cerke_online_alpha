@@ -561,11 +561,12 @@ async function animateOpponentInfAfterStep(p: {
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
         await notifyWaterEntryFailure();
 
-        await animateNode(srcNode, 750 * 0.8093, {
-          to: coordToPieceXY(final_dest),
-          from: coordToPieceXY(planned_dest),
-        });
-
+        if (!coordEq(final_dest, planned_dest)) {
+          await animateNode(srcNode, 750 * 0.8093, {
+            to: coordToPieceXY(final_dest),
+            from: coordToPieceXY(planned_dest),
+          });
+        }
         console.log("drawField opponent #", 12);
         GAME_STATE.last_move_focus = [src_i, src_j];
         back_up_gamestate();
@@ -631,10 +632,13 @@ async function animateOpponentInfAfterStep(p: {
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
         await notifyWaterEntryFailure();
-        await animateNode(srcNode, 750 * 0.8093, {
-          to: coordToPieceXY(final_dest),
-          from: coordToPieceXY(planned_dest),
-        });
+
+        if (!coordEq(final_dest, planned_dest)) {
+          await animateNode(srcNode, 750 * 0.8093, {
+            to: coordToPieceXY(final_dest),
+            from: coordToPieceXY(planned_dest),
+          });
+        }
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         back_up_gamestate();
@@ -653,10 +657,12 @@ async function animateOpponentInfAfterStep(p: {
       drawCiurlWithAudio(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       await notifyWaterEntryFailure();
-      await animateNode(srcNode, 750 * 0.8093, {
-        to: coordToPieceXY(final_dest),
-        from: coordToPieceXY(planned_dest),
-      });
+      if (!coordEq(final_dest, planned_dest)) {
+        await animateNode(srcNode, 750 * 0.8093, {
+          to: coordToPieceXY(final_dest),
+          from: coordToPieceXY(planned_dest),
+        });
+      }
       console.log("drawField opponent #", 14.5);
       GAME_STATE.last_move_focus = [src_i, src_j];
       back_up_gamestate();
