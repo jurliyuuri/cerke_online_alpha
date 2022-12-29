@@ -79,9 +79,9 @@ export async function notifyWaterEntryFailure() {
   add_cover("protective_cover_over_field_while_asyncawait");
 
   document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
-  await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
   if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
-  await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 1500 * 0.8093));
 
   remove_cover("protective_cover_over_field");
   remove_cover("protective_cover_over_field_while_asyncawait");
