@@ -59,3 +59,9 @@ drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
 …えっと、z-index の一覧を見なくては。
 
 よくわかんないので 7000 にしておこう。こうやって z-index はどんどんインフレしていく。
+
+![](https://cdn.discordapp.com/attachments/668122592720322570/1057944774751043668/z-index.png)
+
+https://twitter.com/hsjoihs/status/1608385214656688131
+
+たしかに。ここに z-index つけても意味ないのか。内側の img につけよう。
