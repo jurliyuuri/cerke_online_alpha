@@ -39,6 +39,7 @@ import {
   animateWaterEntryLogo,
   drawArrow,
   eraseArrow,
+  notifyWaterEntryFailure,
 } from "./draw_erase_animate";
 import { DICTIONARY, TACTICS_LINZKLAR } from "./dictionary";
 import { drawScoreDisplay } from "./score_display";
@@ -522,45 +523,51 @@ async function animateOpponentInfAfterStep(p: {
   );
 
   const result = await p.finalResult;
-  const dest: Coord = fromAbsoluteCoord(result.dest);
-  const [dest_i, dest_j] = dest;
+  const final_dest: Coord = fromAbsoluteCoord(result.dest);
+  const planned_dest: Coord = p.plannedDirection;
+  const [dest_i, dest_j] = final_dest;
   const destPiece: Piece | null = GAME_STATE.f.currentBoard[dest_i][dest_j];
 
   /* The whole scheme works even if the move was cancelled, since cancellation is exactly the same thing as choosing the original position as the final destination */
 
   /* it IS possible that you are returning to the original position, in which case you don't do anything */
-  if (destPiece !== null && !coordEq(p.src, dest)) {
-    // this is when the capture happens
-    const destNode: HTMLElement = document.getElementById(
-      `field_piece_${dest_i}_${dest_j}`,
-    )!;
-    await animateNode(srcNode, 750 * 0.8093, {
-      to: coordToPieceXY(dest),
-      from: coordToPieceXY(
-        p.src,
-      ) /* must be src, since the node is not renewed */,
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
-
-    await animateNode(
-      destNode,
-      750 * 0.8093,
-      {
-        to: position_for_temporarily_appending_hop1zuo1_of_downward(),
-        from: coordToPieceXY([dest_i, dest_j]),
-      },
-      "50",
-      180,
-    );
-
+  if (destPiece !== null && !coordEq(p.src, final_dest)) {
     if (result.water_entry_ciurl) {
+      const destNode: HTMLElement = document.getElementById(
+        `field_piece_${dest_i}_${dest_j}`,
+      )!;
+      await animateNode(srcNode, 750 * 0.8093, {
+        to: coordToPieceXY(planned_dest),
+        from: coordToPieceXY(
+          p.src,
+        ) /* must be src, since the node is not renewed */,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+      await animateNode(
+        destNode,
+        750 * 0.8093,
+        {
+          to: position_for_temporarily_appending_hop1zuo1_of_downward(),
+          from: coordToPieceXY([dest_i, dest_j]),
+        },
+        "50",
+        180,
+      );
       await animateWaterEntryLogo();
       drawCiurlWithAudio(result.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
-        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+        await notifyWaterEntryFailure();
 
+        if (!coordEq(final_dest, planned_dest)) {
+          await animateNode(srcNode, 750 * 0.8093, {
+            to: coordToPieceXY(final_dest),
+            from: coordToPieceXY(p.src,
+            ) /* must be src, since the node is not renewed */,
+          });
+        }
         console.log("drawField opponent #", 12);
         GAME_STATE.last_move_focus = [src_i, src_j];
         back_up_gamestate();
@@ -569,9 +576,32 @@ async function animateOpponentInfAfterStep(p: {
         // no piece capture is possible if water entry has failed
         return [result, { piece_moved: piece, maybe_capture: null }];
       }
+    } else {
+      const destNode: HTMLElement = document.getElementById(
+        `field_piece_${dest_i}_${dest_j}`,
+      )!;
+      await animateNode(srcNode, 750 * 0.8093, {
+        to: coordToPieceXY(final_dest),
+        from: coordToPieceXY(
+          p.src,
+        ) /* must be src, since the node is not renewed */,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+      await animateNode(
+        destNode,
+        750 * 0.8093,
+        {
+          to: position_for_temporarily_appending_hop1zuo1_of_downward(),
+          from: coordToPieceXY([dest_i, dest_j]),
+        },
+        "50",
+        180,
+      );
     }
 
-    if (!coordEq(p.src, dest)) {
+    if (!coordEq(p.src, final_dest)) {
       /* if same, the piece should not take itself */
       takeTheUpwardPieceAndCheckHand(destPiece);
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
@@ -589,20 +619,28 @@ async function animateOpponentInfAfterStep(p: {
       { piece_moved: piece, maybe_capture: toColorProf(destPiece) },
     ];
   } else {
-    // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
-    await animateNode(srcNode, 750 * 0.8093, {
-      to: coordToPieceXY(dest),
-      from: coordToPieceXY(
-        p.src,
-      ) /* must be src, since the node is not renewed */,
-    });
-
     if (result.water_entry_ciurl) {
+      // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+      await animateNode(srcNode, 750 * 0.8093, {
+        to: coordToPieceXY(planned_dest),
+        from: coordToPieceXY(
+          p.src,
+        ) /* must be src, since the node is not renewed */,
+      });
+
       await animateWaterEntryLogo();
       drawCiurlWithAudio(result.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (result.water_entry_ciurl.filter((a) => a).length < 3) {
-        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+        await notifyWaterEntryFailure();
+
+        if (!coordEq(final_dest, planned_dest)) {
+          await animateNode(srcNode, 750 * 0.8093, {
+            to: coordToPieceXY(final_dest),
+            from: coordToPieceXY(p.src,
+            ) /* must be src, since the node is not renewed */,
+          });
+        }
         console.log("drawField opponent #", 14);
         GAME_STATE.last_move_focus = [src_i, src_j];
         back_up_gamestate();
@@ -610,18 +648,32 @@ async function animateOpponentInfAfterStep(p: {
         return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
       }
     } else if (result.thwarted_by_failing_water_entry_ciurl) {
+      // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
+      await animateNode(srcNode, 750 * 0.8093, {
+        to: coordToPieceXY(planned_dest),
+        from: coordToPieceXY(
+          p.src,
+        ) /* must be src, since the node is not renewed */,
+      });
       await animateWaterEntryLogo();
       drawCiurlWithAudio(result.thwarted_by_failing_water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
-      if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
-      console.log("drawField opponent #", 14);
+      await notifyWaterEntryFailure();
+      if (!coordEq(final_dest, planned_dest)) {
+        await animateNode(srcNode, 750 * 0.8093, {
+          to: coordToPieceXY(final_dest),
+          from: coordToPieceXY(p.src,
+          ) /* must be src, since the node is not renewed */,
+        });
+      }
+      console.log("drawField opponent #", 14.5);
       GAME_STATE.last_move_focus = [src_i, src_j];
       back_up_gamestate();
       drawField({ focus: [src_i, src_j] });
       return [result, { piece_moved: piece, maybe_capture: null }]; // no piece capture; in this branch, either self-occlusion is happening or else destPiece is null.
     }
 
-    if (!coordEq(p.src, dest)) {
+    if (!coordEq(p.src, final_dest)) {
       GAME_STATE.f.currentBoard[src_i][src_j] = null;
       back_up_gamestate();
       GAME_STATE.f.currentBoard[dest_i][dest_j] = piece;
@@ -822,7 +874,7 @@ async function animateOpponentSrcStepDstFinite_(
       drawCiurlWithAudio(water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter((a) => a).length < 3) {
-        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+        await notifyWaterEntryFailure();
         console.log("drawField opponent #", 16);
         GAME_STATE.last_move_focus = [src_i, src_j];
         back_up_gamestate();
@@ -872,7 +924,7 @@ async function animateOpponentSrcStepDstFinite_(
       drawCiurlWithAudio(water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (water_entry_ciurl.filter((a) => a).length < 3) {
-        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+        await notifyWaterEntryFailure();
 
         console.log("drawField opponent #", 18);
         GAME_STATE.last_move_focus = [src_i, src_j];
@@ -964,7 +1016,7 @@ async function animateOpponentSrcDst_(
       drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter((a) => a).length < 3) {
-        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+        await notifyWaterEntryFailure();
 
         console.log("drawField opponent #", 20);
         GAME_STATE.last_move_focus = [src_i, src_j];
@@ -999,7 +1051,7 @@ async function animateOpponentSrcDst_(
       drawCiurlWithAudio(o.water_entry_ciurl, Side.Downward);
       await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
       if (o.water_entry_ciurl.filter((a) => a).length < 3) {
-        if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+        await notifyWaterEntryFailure();
 
         console.log("drawField opponent #", 22);
         GAME_STATE.last_move_focus = [src_i, src_j];

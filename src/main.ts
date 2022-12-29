@@ -59,6 +59,7 @@ import {
   drawTwoCiurls,
   eraseGuide,
   erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent,
+  notifyWaterEntryFailure,
   WHAT_ESC_KEY_TRIGGERS,
 } from "./draw_erase_animate";
 import {
@@ -414,7 +415,7 @@ function stepping(from: Coord, piece: "Tam2" | NonTam2PieceUpward, to: Coord) {
   GAME_STATE.f.currentBoard[from[0]][from[1]] = null;
   back_up_gamestate();
 
-  console.log("drawField #", 6.1);
+  console.log("drawField #", 6.2);
   drawField({ focus: null }); /* Temporary, so no focus */
   drawPhantomAt(from, piece);
   drawCancelButtonAndAddEscEvent(cancelStepping);
@@ -538,7 +539,7 @@ async function sendAfterHalfAcceptance(
   await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
 
   if (res.ciurl.filter((a) => a).length < 3) {
-    if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+    await notifyWaterEntryFailure();
     eraseGuide();
     SELECTED_COORD_UI = null;
 
@@ -660,7 +661,7 @@ async function sendNormalMove(message: NormalMove) {
   await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
   const water_ciurl_count = res.ciurl.filter((a) => a).length;
   if (water_ciurl_count < 3) {
-    if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+    await notifyWaterEntryFailure();
     eraseGuide();
     SELECTED_COORD_UI = null;
     if (

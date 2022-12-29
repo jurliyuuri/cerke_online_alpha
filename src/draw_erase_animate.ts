@@ -11,8 +11,10 @@ import { BOX_SIZE } from "./html_top_left";
 import { toPath_ } from "./piece_to_path";
 import { removeAllChildren } from "extra-dom";
 import { add_cover, remove_cover } from "./protective_cover";
+import { DICTIONARY } from "./dictionary";
+import { KRUT_CRUOP } from "./main_entry";
 
-export let WHAT_ESC_KEY_TRIGGERS: () => void = () => {};
+export let WHAT_ESC_KEY_TRIGGERS: () => void = () => { };
 
 /**
  * @param total_duration total duration in millisecond
@@ -62,6 +64,38 @@ export async function animateWaterEntryLogo() {
     remove_cover("protective_cover_over_field_while_asyncawait");
   }, 1200 * 0.8093);
   await new Promise((resolve) => setTimeout(resolve, 1000 * 0.8093));
+}
+
+export async function notifyWaterEntryFailure() {
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+  // If we don't wait until the image loads, it looks glitchy
+  await new Promise((resolve, reject) => {
+    const img = document.getElementById("season_transition_message_or_water_entry_failure_message") as HTMLImageElement;
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(e);
+    img.src = `image/裁言勿入水.png`;
+  });
+
+  add_cover("protective_cover_over_field");
+  add_cover("protective_cover_over_field_while_asyncawait");
+
+  //「光の方が音より早いので映像の方を先に出るべき」とはよく言うが、
+  // 今回の場合は「音が先にあり、それの説明が文字で出る」が自然な順序なのだから。
+  // むしろ「音が鳴る」→「それの説明が燐字で出る」→「それの翻訳が日本語で出る」の順。
+  if (KRUT_CRUOP) {
+    const water_entry_sound = new Audio("sound/water_entry.wav");
+    water_entry_sound.play();
+    await new Promise((resolve) => setTimeout(resolve, 500 * 0.8093));
+  }
+  document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
+  await new Promise((resolve) => setTimeout(resolve, 1700 * 0.8093));
+  if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
+  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
+
+
+  remove_cover("protective_cover_over_field");
+  remove_cover("protective_cover_over_field_while_asyncawait");
+  document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.add("nocover");
 }
 
 export function drawCiurl(ciurl: Ciurl, side?: Side) {
@@ -133,7 +167,7 @@ export function erasePhantomAndOptionallyCancelButtonWhileAlsoRemovingEscEvent()
     contains_phantom.removeChild(contains_phantom.firstChild);
   }
 
-  WHAT_ESC_KEY_TRIGGERS = () => {};
+  WHAT_ESC_KEY_TRIGGERS = () => { };
 }
 
 export function eraseArrow() {

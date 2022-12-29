@@ -6,7 +6,7 @@ import { apply_membrane_state_to_dom } from "./protective_cover";
 
 (
   document.getElementById("coord_annotation")! as HTMLImageElement
-).src = `image/IA_is_down=${GAME_STATE.IA_is_down}.svg`;
+).src = `image/IA_is_down=${GAME_STATE.IA_is_down}_x-faikleone=${sessionStorage.lang === "x-faikleone"}.svg`;
 console.log("drawField #", 0);
 drawField({ focus: null });
 
