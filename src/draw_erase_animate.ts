@@ -80,12 +80,11 @@ export async function notifyWaterEntryFailure() {
   add_cover("protective_cover_over_field_while_asyncawait");
 
   document.getElementById("season_transition_message_or_water_entry_failure_message_container")!.classList.remove("nocover");
-  await new Promise((resolve) => setTimeout(resolve, 300 * 0.8093));
   if (KRUT_CRUOP) {
     const water_entry_sound = new Audio("sound/water_entry.wav");
     water_entry_sound.play();
   }
-  await new Promise((resolve) => setTimeout(resolve, 1700 * 0.8093));
+  await new Promise((resolve) => setTimeout(resolve, 2000 * 0.8093));
   if (sessionStorage.lang !== "x-faikleone") { alert(DICTIONARY.ja.failedWaterEntry); }
 
   remove_cover("protective_cover_over_field");
