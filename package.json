@@ -23,7 +23,7 @@
     "@typescript-eslint/eslint-plugin": "5.57.0",
     "@typescript-eslint/parser": "5.57.0",
     "css-loader": "6.7.3",
-    "dependency-cruiser": "12.11.0",
+    "dependency-cruiser": "12.11.1",
     "eslint": "8.37.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-formatter-friendly": "7.0.0",
