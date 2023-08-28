@@ -30,7 +30,7 @@
     "kind-of": "6.0.3",
     "mini-css-extract-plugin": "2.7.6",
     "minimist": "1.2.8",
-    "node-sass": "8.0.0",
+    "node-sass": "9.0.0",
     "prettier": "3.0.2",
     "sass-loader": "13.3.2",
     "style-loader": "3.3.3",
