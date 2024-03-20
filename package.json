@@ -38,7 +38,7 @@
     "typescript": "5.4.3",
     "webpack": "5.90.3",
     "webpack-cli": "5.1.4",
-    "webpack-dev-server": "4.15.1"
+    "webpack-dev-server": "4.15.2"
   },
   "dependencies": {
     "cerke_hands_and_score": "1.0.3",
