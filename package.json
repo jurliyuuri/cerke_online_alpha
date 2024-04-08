@@ -33,7 +33,7 @@
     "node-sass": "9.0.0",
     "prettier": "3.2.5",
     "sass-loader": "13.3.3",
-    "style-loader": "3.3.4",
+    "style-loader": "4.0.0",
     "ts-loader": "9.5.1",
     "typescript": "5.4.4",
     "webpack": "5.91.0",
