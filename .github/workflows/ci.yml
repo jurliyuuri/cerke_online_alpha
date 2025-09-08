@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: lint
-        uses: reviewdog/action-eslint@v1.33.2
+        uses: reviewdog/action-eslint@v1.34.0
         with:
           reporter: github-pr-review
           fail_on_error: true
