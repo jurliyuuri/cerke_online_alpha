@@ -20,8 +20,8 @@
   },
   "homepage": "https://gitlab.com/jekto.vatimeliju/cerke_online#readme",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "8.53.0",
-    "@typescript-eslint/parser": "8.53.0",
+    "@typescript-eslint/eslint-plugin": "8.53.1",
+    "@typescript-eslint/parser": "8.53.1",
     "css-loader": "7.1.2",
     "dependency-cruiser": "17.3.6",
     "eslint": "9.39.2",
